@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Desarrollo de Conos</title>
+<style>
+  :root{
+    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
+    --borde:#d0d5dd; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
+  }
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;color:var(--texto);background:#fff}
+  header{background:var(--azul);color:#fff;padding:16px 20px}
+  header h1{margin:0;font-size:1.25rem}
+  header p{margin:4px 0 0;font-size:.85rem;opacity:.9}
+  main{max-width:1200px;margin:0 auto;padding:20px}
+  .layout{display:grid;grid-template-columns:360px 1fr;gap:20px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--gris);border:1px solid var(--borde);border-radius:8px;padding:16px}
+  .panel h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
+  label{display:block;font-size:.85rem;margin:10px 0 4px;font-weight:600}
+  input,select{width:100%;padding:8px;border:1px solid var(--borde);border-radius:6px;font-size:.9rem;background:#fff}
+  input:focus,select:focus{outline:2px solid var(--azul);border-color:var(--azul)}
+  .fila{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  button{width:100%;padding:10px;margin-top:14px;border:none;border-radius:6px;background:var(--azul);color:#fff;font-size:.95rem;font-weight:600;cursor:pointer}
+  button:hover{background:#164a80}
+  button.sec{background:#fff;color:var(--azul);border:1px solid var(--azul)}
+  button.sec:hover{background:var(--azul-claro)}
+  .aviso{margin-top:10px;padding:8px 10px;border-radius:6px;font-size:.82rem;display:none}
+  .aviso.error{background:#fdecea;color:var(--error);display:block}
+  .aviso.ok{background:#e7f5ec;color:var(--ok);display:block}
+  .resultado{background:#fff;border:1px solid var(--borde);border-radius:8px;padding:16px;min-height:200px}
+  .resultado h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
+  .esquema{margin-bottom:16px;background:var(--azul-claro);border-radius:6px;padding:10px;min-height:40px}
+  .esquema img{display:block;margin:0 auto;max-width:100%;height:auto}
+  table{border-collapse:collapse;width:auto;min-width:240px;margin:8px auto 0;font-size:.9rem}
+  th,td{border:1px solid var(--borde);padding:6px 18px;text-align:right}
+  th{background:var(--azul-claro);text-align:center;font-weight:600}
+  td:first-child,th:first-child{text-align:center}
+  .tabla-wrap{max-height:400px;overflow:auto;border-radius:6px;display:none}
+  .tabla-wrap.visible{display:block}
+  .resumen{display:flex;flex-direction:column;gap:6px;margin:12px 0 8px;font-size:.95rem;color:var(--texto);font-weight:600}
+  .resumen .dato{background:var(--azul-claro);padding:10px 14px;border-radius:6px;color:var(--azul)}
+  .nota{font-size:.78rem;color:#667085;margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Calculadora de Desarrollo de Conos</h1>
+  <p>Cono completo, cono truncado y cono excéntrico</p>
+  <p style="margin-top:8px;font-size:.95rem;font-weight:600;opacity:1;">Creado por: J.N.G</p>
+</header>
+
+<main>
+<div class="layout">
+
+  <section class="panel">
+    <h2>Datos de entrada</h2>
+
+    <label for="tipo">Tipo de cono</label>
+    <select id="tipo">
+      <option value="completo">1. Cono completo (concentrico)</option>
+      <option value="truncado" selected>2. Cono truncado (concentrico)</option>
+	  <p style="margin-top:8px;font-size:.95rem;font-weight:600;opacity:1;">Creado por: J.N.G</p>
+
+    </select>
+
+    <div class="esquema" id="esquemaEntrada"></div>
+
+    <label for="unidad">Unidad</label>
+    <select id="unidad">
+      <option value="mm" selected>Milímetros (mm)</option>
+      <option value="pulg">Pulgadas (in)</option>
+    </select>
+
+    <div id="campos"></div>
+
+    <label for="lineas">Nº de líneas de desarrollo (N)</label>
+    <select id="lineas">
+      <option>12</option>
+      <option selected>24</option>
+      <option>36</option>
+      <option>48</option>
+      <option>72</option>
+      <option>96</option>
+    </select>
+
+    <button id="btnCalcular">Calcular desarrollo</button>
+    <button id="btnCSV" class="sec">Exportar CSV</button>
+    <div class="aviso" id="aviso"></div>
+
+    <p class="nota">
+      Para trazar sobre chapa antes de rolar use el <strong>diámetro medio</strong>.
+      Para marcar directamente sobre la pieza use el <strong>diámetro exterior</strong>.
+    </p>
+  </section>
+
+  <section class="resultado">
+    <h2>Patrón plano</h2>
+    <div id="imagenPatron" class="esquema"></div>
+    <div id="resumenSalida"></div>
+    <button id="btnTabla" class="sec">Ver tabla detallada</button>
+    <div id="tablaSalida" class="tabla-wrap"></div>
+  </section>
+
+</div>
+</main>
+
+<script src="cono.js"></script>
+</body>
+</html>

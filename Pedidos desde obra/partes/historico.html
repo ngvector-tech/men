@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico y Exportación</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+    body{background:#f4f6f9;color:#333;padding:15px;padding-bottom:80px}
+    .header-logo{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;padding:5px 10px}
+    .logo-men{font-size:1.5rem;font-weight:800;color:#2563eb;letter-spacing:1px}
+    h1{font-size:1.2rem;color:#1e293b;text-align:right}
+    .container{max-width:100%;margin:0 auto;background:#fff;padding:15px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.05)}
+    .actions-top{display:flex;gap:10px;margin-bottom:15px}
+    button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s}
+    .btn-back{background:#64748b;color:#fff;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:8px;font-size:.95rem;font-weight:600}
+    .btn-clear{background:#ef4444;color:#fff;font-size:.85rem;padding:6px 12px}
+    .table-wrapper{width:100%;overflow-x:auto;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:20px;-webkit-overflow-scrolling:touch}
+    table{width:100%;border-collapse:collapse;min-width:750px}
+    th{background:#f8fafc;color:#64748b;font-size:.85rem;text-transform:uppercase;padding:10px;text-align:left;border-bottom:2px solid #e2e8f0}
+    td{padding:10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;font-size:.95rem}
+    .col-fecha{width:120px}.col-operario{width:160px}.col-ot{width:100px}.col-desc{width:250px}.col-horas{width:80px}.col-accion{width:50px;text-align:center}
+    .btn-delete{background:#fee2e2;color:#ef4444;padding:6px;border-radius:6px;width:32px;height:32px;border:none;cursor:pointer}
+    .footer-actions{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 15px;box-shadow:0 -4px 10px rgba(0,0,0,.1);display:flex;gap:10px;z-index:100}
+    .btn-excel{background:#16a34a;color:#fff;flex:1;font-size:1.1rem}.no-data{text-align:center;color:#94a3b8;padding:30px;font-style:italic}
+    @media(max-width:600px){body{padding:10px;padding-bottom:85px}.container{padding:10px}.header-logo{padding:5px}.logo-men{font-size:1.4rem}h1{font-size:1.05rem}.actions-top{flex-direction:column;align-items:stretch!important}.btn-back,.btn-clear{width:100%;min-height:44px}.footer-actions{padding:10px}.btn-excel{min-height:48px;font-size:1rem}}
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-logo">
+    <div class="logo-men">MEN</div>
+    <h1>Lista</h1>
+  </div>
+  
+  <div class="actions-top" style="justify-content:space-between;align-items:center;">
+    <a href="index.html" class="btn-back">⬅️ Volver a Introducir</a>
+    <button class="btn-clear" onclick="borrarTodoElHistorial()">⚠️ Vaciar Todo</button>
+  </div>
+  
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-fecha">Fecha</th>
+          <th class="col-operario">Operario</th>
+          <th class="col-ot">OT</th>
+          <th class="col-desc">Descripción</th>
+          <th class="col-horas">Horas</th>
+          <th class="col-accion"></th>
+        </tr>
+      </thead>
+      <tbody id="tabla-historico-cuerpo"></tbody>
+    </table>
+    <div id="mensaje-vacio" class="no-data" style="display:none">No hay registros guardados en la nube.</div>
+  </div>
+</div>
+
+<div class="footer-actions">
+  <button class="btn-excel" onclick="exportarExcel()">🍏 Exportar a Excel (.xls)</button>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://qjyyvobhzybugiqlmdyp.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+
+  let supabaseClient = null;
+  let listaTrabajos = [];
+
+  async function cargarHistorico() {
+    if (!supabaseClient) return;
+
+    const tbody = document.getElementById('tabla-historico-cuerpo');
+    const mensajeVacio = document.getElementById('mensaje-vacio');
+    
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px">Cargando registros...</td></tr>';
+
+    try {
+      const { data, error } = await supabaseClient
+        .from('historico_trabajos')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) throw error;
+
+      listaTrabajos = data || [];
+      tbody.innerHTML = "";
+
+      if (listaTrabajos.length === 0) {
+        mensajeVacio.style.display = "block";
+        return;
+      }
+
+      mensajeVacio.style.display = "none";
+
+      listaTrabajos.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.fecha || 'No asignada'}</strong></td>
+          <td>${item.operario || ''}</td>
+          <td><span style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">${item.ot || ''}</span></td>
+          <td>${item.desc || ''}</td>
+          <td><strong>${item.horas || '0'} h</strong></td>
+          <td><button class="btn-delete" onclick="eliminarFilaUnica(${item.id})">🗑️</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    } catch (err) {
+      tbody.innerHTML = "";
+      console.error("Error detallado al cargar:", err);
+      alert("Error al leer los datos de la nube: " + (err.message || err));
+    }
+  }
+
+  async function eliminarFilaUnica(id) {
+    if (!supabaseClient) return;
+    if (confirm("¿Quieres eliminar este registro definitivamente?")) {
+      try {
+        const { error } = await supabaseClient
+          .from('historico_trabajos')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        cargarHistorico();
+      } catch (err) {
+        alert("No se pudo eliminar el registro de la nube.");
+        console.error(err);
+      }
+    }
+  }
+
+  async function borrarTodoElHistorial() {
+    if (!supabaseClient) return;
+    if (confirm("⚠️ ¿Se borrarán TODOS los partes guardados para siempre de la base de datos?")) {
+      try {
+        const { error } = await supabaseClient
+          .from('historico_trabajos')
+          .delete()
+          .gt('id', 0);
+
+        if (error) throw error;
+        cargarHistorico();
+      } catch (err) {
+        alert("Error al vaciar el histórico de la nube.");
+        console.error(err);
+      }
+    }
+  }
+
+  function exportarExcel() {
+    if (listaTrabajos.length === 0) {
+      alert("No hay datos para exportar.");
+      return;
+    }
+
+    let contenidoTabla = `<table border="1"><tr style="background-color:#16a34a;color:white;font-weight:bold;"><th>FECHA</th><th>OPERARIO</th><th>Nº OT</th><th>DESCRIPCION</th><th>HORAS TRABAJADAS</th></tr>`;
+    
+    listaTrabajos.forEach(item => {
+      contenidoTabla += `<tr><td>${item.fecha||'No asignada'}</td><td>${item.operario||''}</td><td>${item.ot||''}</td><td>${item.desc||''}</td><td>${item.horas||''}</td></tr>`;
+    });
+    
+    contenidoTabla += '</table>';
+
+    const plantillaExcel = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://w3.org"><head><meta charset="UTF-8"></head><body>${contenidoTabla}</body></html>`;
+    const blob = new Blob([plantillaExcel], { type: 'application/vnd.ms-excel' });
+    const urlDescarga = URL.createObjectURL(blob);
+    const hoy = new Date().toISOString().slice(0, 10);
+    
+    const enlaceTemporal = document.createElement('a');
+    enlaceTemporal.href = urlDescarga;
+    enlaceTemporal.download = `Reporte_Trabajos_${hoy}.xls`;
+    document.body.appendChild(enlaceTemporal);
+    enlaceTemporal.click();
+    document.body.removeChild(enlaceTemporal);
+    
+    setTimeout(() => URL.revokeObjectURL(urlDescarga), 1000);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof supabase !== 'undefined' && supabase.createClient) {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      cargarHistorico();
+    } else {
+      console.error("La librería de Supabase no se cargó correctamente desde la CDN.");
+    }
+  });
+</script>
+</body>
+</html>

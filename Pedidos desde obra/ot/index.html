@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de OTs</title>
+    <!-- ENLACE CDN COREGIDO Y COMPLETO -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .logo-men { color: #2980b9; font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 5px; letter-spacing: 1px; }
+        h1 { text-align: center; color: #2c3e50; margin-top: 0; margin-bottom: 20px; font-size: 24px; }
+        .btn { display: inline-block; padding: 12px 20px; border: none; border-radius: 5px; background-color: #3498db; color: white; text-decoration: none; font-size: 16px; cursor: pointer; width: 100%; text-align: center; margin-bottom: 20px; }
+        .btn:hover { background-color: #2980b9; }
+        .btn-danger { background-color: #e74c3c; width: auto; padding: 8px 14px; font-size: 14px; border: none; border-radius: 4px; color: white; cursor: pointer; }
+        .btn-danger:hover { background-color: #c0392b; }
+        .tabla-contenedor { overflow-x: auto; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background-color: #2c3e50; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+        th:nth-child(1), td:nth-child(1) { width: 15%; } 
+        th:nth-child(2), td:nth-child(2) { width: 15%; } 
+        th:nth-child(3), td:nth-child(3) { width: 40%; } 
+        th:nth-child(4), td:nth-child(4) { width: 18%; } 
+        th:nth-child(5), td:nth-child(5) { width: 12%; text-align: center; }
+        .ot-roja { color: #e74c3c; font-weight: bold; font-size: 16px; word-break: break-word; }
+        .texto-ajustable { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.4; }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            th, td { padding: 8px 4px; font-size: 13px; }
+            .btn-danger { padding: 6px 8px; font-size: 11px; }
+            .ot-roja { font-size: 13px; }
+            table { min-width: 550px; } 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-men">MEN</div>
+    <h1>Listado de &Oacute;rdenes de Trabajo</h1>
+    <button class="btn" onclick="irAFormulario()">Nueva OT (solo administrador)</button>
+    <div class="tabla-contenedor">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>OT</th>
+                    <th>Descripci&oacute;n</th>
+                    <th>Cliente</th>
+                    <th style="text-align: center;">Acci&oacute;n</th>
+                </tr>
+            </thead>
+            <tbody id="listaOTs">
+                <tr><td colspan="5" style="text-align:center; padding: 20px;">Cargando registros...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const PASS = "2026men";
+
+    // URL DE API REAL CORREGIDA
+    const SUPABASE_URL = "https://qjyyvobhzybugiqlmdyp.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+    
+    // Inicialización limpia de Supabase en el navegador
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function irAFormulario() {
+        const password = prompt("Introduce la contrase?a para ingresar datos:");
+        if (password === PASS) {
+            window.location.href = "formulario.html";
+        } else if (password !== null) {
+            alert("Contrase?a incorrecta.");
+        }
+    }
+
+    function formatearFecha(fechaString) {
+        if(!fechaString) return "-";
+        const partes = fechaString.split("-");
+        if(partes.length !== 3) return fechaString;
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    async function cargarOTs() {
+        const lista = document.getElementById('listaOTs');
+        try {
+            const { data: ots, error } = await supabaseClient
+                .from('ots')
+                .select('*')
+                .order('fecha', { ascending: false });
+
+            if (error) throw error;
+
+            if (!ots || ots.length === 0) {
+                lista.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">No hay registros ingresados</td></tr>`;
+                return;
+            }
+
+            lista.innerHTML = '';
+            ots.forEach((ot) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="texto-ajustable" style="font-weight: 500;">${formatearFecha(ot.fecha)}</td>
+                    <td class="ot-roja">${ot.ot}</td>
+                    <td class="texto-ajustable">${ot.descripcion}</td>
+                    <td class="texto-ajustable">${ot.cliente}</td>
+                    <td style="text-align: center;"><button class="btn btn-danger" onclick="eliminarLinea(${ot.id})">Borrar</button></td>
+                `;
+                lista.appendChild(tr);
+            });
+        } catch (err) {
+            lista.innerHTML = `<tr><td colspan="5" style="text-align:center; color: red; padding: 20px;">Error de red o base de datos</td></tr>`;
+            console.error(err);
+        }
+    }
+
+    async function eliminarLinea(id) {
+        const password = prompt("Introduce la contrase?a para borrar este registro:");
+        if (password === PASS) {
+            const { error } = await supabaseClient
+                .from('ots')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert("No se pudo borrar el registro.");
+                console.error(error);
+            } else {
+                cargarOTs();
+            }
+        } else if (password !== null) {
+            alert("Contrase?a incorrecta. No se borr? el registro.");
+        }
+    }
+
+    window.onload = cargarOTs;
+</script>
+</body>
+</html>

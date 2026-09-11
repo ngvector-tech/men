@@ -1,0 +1,11 @@
+
+en el directorio de explorador en la barra de direccion escribir CMD y luego enter (nta se debe disponer de phyton)
+
+escribir:
+python -m http.server 8000
+
+deberia aparecer:
+Serving HTTP on :: port 8000 ...
+
+abrir exploardor web, direcciomn:
+http://localhost:8000/index.html

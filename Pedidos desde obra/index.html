@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pedidos - MEN</title>
+    <!-- Librería de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f1f5f9; 
+            margin: 0; 
+            padding: 20px; 
+            color: #0f172a; 
+        }
+        .contenedor { 
+            max-width: 900px; 
+            margin: 0 auto; 
+        }
+
+        /* Cabecera superior */
+        .cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .titulo-men {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #0284c7;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        /* Control de Vistas */
+        .vista { display: none; }
+        .vista.activa { display: block !important; }
+
+        /* Rejilla de tarjetas */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 15px; 
+            margin-top: 15px; 
+        }
+
+        /* Estilos de Tarjetas */
+        .tarjeta { 
+            background: #ffffff; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 8px; 
+            padding: 25px 15px 15px 15px; 
+            text-align: center; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: #0f172a !important; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease, border-color 0.1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .tarjeta:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        /* MINIATURAS ORIGINALES */
+        .tarjeta img { 
+            max-width: 100%; 
+            height: 90px;           /* ALTO DE LA MINIATURA */
+            object-fit: contain; 
+            margin-bottom: 10px; 
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Etiqueta / Badge tipo botón fijado en la tarjeta */
+        .badge-norma {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background-color: #ff0000;
+            color: #ffffff;
+            font-size: 0.5rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Globo flotante temporal */
+        .globo-info {
+            position: fixed;
+            background-color: #0f172a;
+            color: #38bdf8;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            display: none;
+            max-width: 250px;
+            text-align: center;
+            pointer-events: none;
+            border: 1px solid #38bdf8;
+        }
+
+        /* Ficha Técnica */
+        .ficha-box {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .box-info-azul {
+            background: #f8fafc;
+            padding: 12px;
+            border-left: 4px solid #0284c7;
+            margin: 15px 0;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .esquema-pr {
+            border: 1px dashed #cbd5e1;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        /* Botones */
+        .btn { 
+            background: #2563eb; 
+            color: #ffffff; 
+            border: none; 
+            padding: 10px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-sec { background: #64748b; }
+        .btn-admin { background: #475569; }
+        .btn-add { background: #16a34a; width: 100%; margin-top: 15px; padding: 12px; font-size: 16px; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; }
+
+        /* Bloques */
+        .box-lista { 
+            background: #ffffff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 25px; 
+            border: 1px solid #cbd5e1; 
+        }
+        .item-lista { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid #e2e8f0; 
+            padding: 10px 0; 
+        }
+        .notif-flotante {
+            display: none;
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Barra de Búsqueda */
+        .caja-busqueda {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 20px;
+        }
+        .caja-busqueda input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <!-- CABECERA DE LA PÁGINA -->
+        <div class="cabecera">
+            <h1 class="titulo-men">MEN</h1>
+            <a href="admin.html" class="btn btn-admin">⚙️ Panel Admin</a>
+        </div>
+
+        <!-- GLOBO DE INFORMACIÓN TEMPORAL -->
+        <div id="globoNorma" class="globo-info"></div>
+        
+        <!-- OPERARIO -->
+        <div style="margin-bottom: 15px;">
+            <label><strong>Nombre del Operario / Solicitante:</strong></label>
+            <input type="text" id="nombreUsuario" placeholder="Introduce tu nombre..." style="padding: 8px; width: 250px; margin-left: 10px; border-radius: 4px; border: 1px solid #cbd5e1;">
+        </div>
+
+        <!-- BARRA DE BÚSQUEDA RÁPIDA -->
+        <div class="caja-busqueda">
+            <input type="text" id="inputBuscador" placeholder="🔍 Buscar únicamente por Nombre de Artículo..." oninput="buscarArticulos()">
+        </div>
+
+        <!-- NAVEGACIÓN PASO A PASO -->
+        <div id="nav" style="display:none; margin-bottom: 15px;">
+            <button class="btn btn-sec" onclick="atras()">⬅ Paso Atrás</button>
+            <button class="btn" onclick="irInicio()">🏠 Inicio</button>
+            <h3 id="breadcrumb" style="display:inline-block; margin-left: 15px;"></h3>
+        </div>
+
+        <!-- VISTAS DE NAVEGACIÓN -->
+        <div id="v-cat" class="vista activa">
+            <h2>Categorías</h2>
+            <div id="grid-cat" class="grid"></div>
+        </div>
+
+        <div id="v-art" class="vista">
+            <div id="grid-art" class="grid"></div>
+        </div>
+
+        <div id="v-dim" class="vista">
+            <div id="grid-dim" class="grid"></div>
+        </div>
+
+        <div id="v-pres" class="vista">
+            <div id="grid-pres" class="grid"></div>
+        </div>
+
+        <div id="v-mat" class="vista">
+            <div id="grid-mat" class="grid"></div>
+        </div>
+
+        <!-- VISTA RESULTADOS DE BÚSQUEDA -->
+        <div id="v-busqueda" class="vista">
+            <h2>Resultados de Búsqueda</h2>
+            <div id="grid-busqueda" class="grid"></div>
+        </div>
+
+        <!-- FICHA DETALLE DE PRODUCTO -->
+        <div id="v-ficha" class="vista">
+            <div class="ficha-box">
+                <div style="text-align:center;">
+                    <img id="imgArt" src="" style="max-width:100%; max-height:160px; object-fit:contain;" onerror="this.src='PR.jpg'">
+                    <h2 id="lblArt" style="margin: 10px 0 5px 0;"></h2>
+                    <div id="lblRef" style="color:#dc2626; font-family:monospace; font-size: 1.5em; font-weight: bold; margin-bottom: 15px;"></div>
+                </div>
+
+                <div class="box-info-azul">
+                    <p style="margin: 3px 0;"><strong>Categoría:</strong> <span id="lblCat"></span></p>
+                    <p style="margin: 3px 0;"><strong>Dimensión:</strong> <span id="lblD"></span></p>
+                    <p style="margin: 3px 0;"><strong>Presión/SCH:</strong> <span id="lblP"></span></p>
+                    <p style="margin: 3px 0;"><strong>Material base:</strong> <span id="lblM"></span></p>
+                </div>
+
+                <!-- Imagen Esquema Codos / Asientos Clamp / Cotas (PR.jpg) -->
+                <div id="bloqueEsquema" class="esquema-pr" style="text-align:center; display:none;">
+                    <img src="PR.jpg" alt="Esquema de dimensiones" style="max-width:100%; height:auto; display:block; margin:0 auto;">
+                    <div style="margin-top: 8px; font-weight: bold; font-size: 0.85rem; color: #334155;">
+                        COTAS (mm): A: <span id="dimA">-</span> | B: <span id="dimB">-</span> | C: <span id="dimC">-</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label><strong>Cantidad a Solicitar:</strong></label>
+                    <input type="number" id="cantInput" value="1" min="1" style="width:100%; padding:10px; margin-top:5px; border:1px solid #cbd5e1; border-radius:4px; box-sizing: border-box;">
+                    <button class="btn btn-add" onclick="agregarALista()">Añadir</button>
+                    <div id="msgConfirmacion" class="notif-flotante">✓ Añadido a la lista</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN LISTA -->
+        <div class="box-lista">
+            <h3>Tu Lista de Pedido</h3>
+            <div id="listaItems"><p style="color:#94a3b8;">Ninguna referencia seleccionada.</p></div>
+            <button class="btn" onclick="guardarPedido()" style="margin-top:15px; width:100%; background:#0284c7; padding:12px; font-size:16px;">📤 Enviar Pedido a Supabase</button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DE SUPABASE
+        const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+        
+        let _supabase = null;
+        try {
+            _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error("Error al inicializar Supabase:", e);
+        }
+
+        // MAPA DE EQUIVALENCIAS DE NORMAS
+        const NORMAS_INFO = [
+            { claves: ["DIN118", "DIN 118"], texto: "Alimentario" },
+            { claves: ["DIN-118"], texto: "Alimentario" },
+            { claves: ["ASME BPE"], texto: "Alimentario" },
+            { claves: ["CODO SMS 3008_3017", "CODO SMS 3008_3017"], texto: "Alimentario" },
+            { claves: ["ASME B36.10M", "ASME B36.10","ASME B16-9"], texto: "Vapor norma antigua" },
+            { claves: ["ASTM A312","ASTM 403","ASTM A403"], texto: "Schedule (inox)" },
+            { claves: ["DIN EN 10357 SERIE A", "DIN EN 10357 SERIE B", "DIN EN 10357 SERIE C", "DIN EN 10357 SERIE D", "DIN EN 10357"], texto: "Alimentario norma actual" },
+            { claves: ["EN10216-2 SERIE 1 P235GH", "EN10216-2 SERIE 2 P235GH", "EN10216-2 SERIE 3 P235GH"], texto: "Vapor norma actual" },
+            { claves: ["P265GH"], texto: "Compatible con P235GH" },
+            { claves: ["TE RECORTADA ISO5251"], texto: "Estandar no alimentaria" },
+            { claves: ["TE REDUCIDA EN10253-3"], texto: "Estandar no alimentaria" },
+            { claves: ["EN10253-3_EN10253-4"], texto: "Estandar no alimentaria" },
+            { claves: ["TUBERIA EN10312"], texto: "Pressfitting" },
+            { claves: ["EN-10217-1 P-235TR1"], texto: "Temp. ambiente ejem. red incendio" },
+            { claves: ["CODO EN10217-1"], texto: "Temp. ambiente ejem. red incendio" },
+            { claves: ["CODO EN10253-1 TIPO5"], texto: "No apto vapor y altas presiones radio 5D" },
+            { claves: ["EN10217-7", "EN10296-2","EN10253-3 EN10253-4"], texto: "Comunmente milimetrico estandar" },
+            { claves: ["EN10253-2 TIPO3 P235GH","CONCENTRICA P235GH","EXCENTRICA P235GH","P235GH DIN2615"], texto: "Vapor norma actual" },
+            { claves: ["ASIENTO CLAMP"], texto: "Alimentario" },
+            { claves: ["CLAMP"], texto: "Alimentario" },
+            { claves: ["HOUSING"], texto: "Alimentario" },
+            { claves: ["EN-1092"], texto: "Norma actual" },
+            { claves: ["CONCENTRICA EN10253-1"], texto: "No apta presion/tempetratura" }
+        ];
+
+        let baseDatos = [];
+        let dbTecnica = {};
+        let historialNavegacion = [];
+        let selCat="", selArt="", selDim="", selPres="", selMat="", artSel=null;
+        let listaPedido = [];
+        let temporizadorBusqueda = null;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const nombreGuardado = sessionStorage.getItem('operarioNombre');
+            if (nombreGuardado) {
+                document.getElementById('nombreUsuario').value = nombreGuardado;
+            }
+
+            document.getElementById('nombreUsuario').addEventListener('input', (e) => {
+                sessionStorage.setItem('operarioNombre', e.target.value.trim());
+            });
+
+            await cargarBaseDatos();
+            await cargarDatosTecnicos();
+            iniciarCategorias();
+        });
+
+        // OBTENER TEXTO DE LA NORMA SI COINCIDE
+        function obtenerTextoNorma(texto) {
+            if (!texto) return null;
+            const textoUpper = texto.toUpperCase();
+            
+            for (const item of NORMAS_INFO) {
+                for (const clave of item.claves) {
+                    if (textoUpper.includes(clave.toUpperCase())) {
+                        return item.texto;
+                    }
+                }
+            }
+            return null;
+        }
+
+        // GENERAR HTML DEL BADGE TIPO BOTÓN
+        function crearBadgeHTML(texto) {
+            const norma = obtenerTextoNorma(texto);
+            return norma ? `<div class="badge-norma">${norma}</div>` : '';
+        }
+
+        // MOSTRAR GLOBO TEMPORAL
+        function mostrarGlobo(e, texto) {
+            const globo = document.getElementById('globoNorma');
+            globo.innerText = "ℹ️ " + texto;
+            globo.style.display = 'block';
+
+            const x = e.clientX || (e.touches && e.touches[0].clientX);
+            const y = e.clientY || (e.touches && e.touches[0].clientY);
+
+            globo.style.left = (x - 80) + 'px';
+            globo.style.top = (y - 45) + 'px';
+
+            setTimeout(() => {
+                globo.style.display = 'none';
+            }, 2000);
+        }
+
+        async function cargarBaseDatos() {
+            try {
+                const res = await fetch('articulos.txt');
+                if (!res.ok) throw new Error("No se encontró articulos.txt");
+                const text = await res.text();
+                
+                const lineas = text.split(/\r?\n/);
+                baseDatos = [];
+
+                for (let i = 0; i < lineas.length; i++) {
+                    const linea = lineas[i].trim();
+                    if (!linea) continue;
+
+                    const c = linea.split(';').map(x => x.replace(/"/g, '').trim());
+                    if (c.length >= 6) {
+                        baseDatos.push({ 
+                            cat: c[0], 
+                            art: c[1], 
+                            dim: c[2], 
+                            pres: c[3], 
+                            mat: c[4], 
+                            ref: c[5] 
+                        });
+                    }
+                }
+            } catch (e) { 
+                console.error("❌ Error en cargarBaseDatos:", e); 
+            }
+        }
+
+        // LECTURA Y MAPEO DE DATOS.TXT (MANEJA REFERENCIAS MENxxxxx)
+        async function cargarDatosTecnicos() {
+            try {
+                const res = await fetch('Datos.txt');
+                if(!res.ok) return;
+                const text = await res.text();
+                const lineas = text.split(/\r?\n/);
+                dbTecnica = {};
+
+                for (let i = 0; i < lineas.length; i++) {
+                    const limpia = lineas[i].trim();
+                    if (!limpia) continue;
+
+                    const c = limpia.split(/[,;]/).map(x => x.trim());
+                    if(c[0]) {
+                        dbTecnica[c[0].toUpperCase()] = { 
+                            a: c[1] || '-', 
+                            b: c[2] || '-', 
+                            c: c[3] || '-' 
+                        };
+                    }
+                }
+            } catch (e) {
+                console.warn("⚠️ No se pudo cargar Datos.txt.");
+            }
+        }
+
+        function cambiarVista(idVista, titulo) {
+            document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
+            const objetivo = document.getElementById(idVista);
+            if (objetivo) objetivo.classList.add('activa');
+            
+            const nav = document.getElementById('nav');
+            if (nav) nav.style.display = idVista === 'v-cat' ? 'none' : 'block';
+            
+            const breadcrumb = document.getElementById('breadcrumb');
+            if (breadcrumb) breadcrumb.innerText = titulo || '';
+        }
+
+        function irInicio() {
+            document.getElementById('inputBuscador').value = '';
+            historialNavegacion = [];
+            iniciarCategorias();
+        }
+
+        function atras() {
+            if (historialNavegacion.length > 0) {
+                const fn = historialNavegacion.pop();
+                fn();
+            } else {
+                irInicio();
+            }
+        }
+
+        /* FUNCIÓN DE BÚSQUEDA OPTIMIZADA CON PALABRA COMPLETA PARA TÉRMINOS CORTOS */
+        function buscarArticulos() {
+            clearTimeout(temporizadorBusqueda);
+
+            temporizadorBusqueda = setTimeout(() => {
+                const query = document.getElementById('inputBuscador').value.trim().toLowerCase();
+                const grid = document.getElementById('grid-busqueda');
+
+                if (query === '') {
+                    irInicio();
+                    return;
+                }
+
+                // Para términos cortos (2 o menos caracteres, ej: "TE"), se fuerza coincidencia de PALABRA EXACTA con \b
+                let coincidentes = [];
+                if (query.length <= 2) {
+                    const regex = new RegExp(`\\b${query}\\b`, 'i');
+                    coincidentes = baseDatos.filter(item => regex.test(item.art));
+                } else {
+                    coincidentes = baseDatos.filter(item => 
+                        item.art.toLowerCase().includes(query)
+                    );
+                }
+
+                // Obtenemos solo artículos ÚNICOS
+                const articulosUnicos = [];
+                const nombresSet = new Set();
+
+                for (const item of coincidentes) {
+                    if (!nombresSet.has(item.art)) {
+                        nombresSet.add(item.art);
+                        articulosUnicos.push(item);
+                    }
+                }
+
+                cambiarVista('v-busqueda', `Búsqueda: "${query}" (${articulosUnicos.length} artículos)`);
+
+                if (articulosUnicos.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; color:#64748b;">No se encontraron artículos coincidentes.</p>';
+                    return;
+                }
+
+                // Construcción única del HTML en memoria
+                let htmlAcumulado = '';
+                articulosUnicos.forEach(item => {
+                    htmlAcumulado += `
+                        <div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(item.art)}', () => seleccionarDesdeBusqueda('${escapeQuotes(item.cat)}', '${escapeQuotes(item.art)}'))">
+                            ${crearBadgeHTML(item.art)}
+                            <img src="imagenes/${item.art}.png" onerror="this.src='PR.jpg'">
+                            <div>${item.art}</div>
+                            <small style="color:#0284c7; display:block; margin-top: 4px;">Categoría: ${item.cat}</small>
+                        </div>`;
+                });
+
+                grid.innerHTML = htmlAcumulado;
+            }, 300);
+        }
+
+        function seleccionarDesdeBusqueda(cat, art) {
+            historialNavegacion.push(() => buscarArticulos());
+            selCat = cat;
+            pasoDimensiones(art);
+        }
+
+        function iniciarCategorias() {
+            cambiarVista('v-cat', 'Categorías');
+            const cats = [...new Set(baseDatos.map(x => x.cat))];
+            const grid = document.getElementById('grid-cat');
+            if (!grid) return;
+            
+            let htmlAcumulado = '';
+            cats.forEach(c => {
+                htmlAcumulado += `
+                    <div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(c)}', () => pasoArticulos('${escapeQuotes(c)}'))">
+                        ${crearBadgeHTML(c)}
+                        <div>${c}</div>
+                    </div>`;
+            });
+            grid.innerHTML = htmlAcumulado;
+        }
+
+        function pasoArticulos(cat) {
+            selCat = cat;
+            historialNavegacion.push(() => iniciarCategorias());
+            cambiarVista('v-art', `${selCat} > Selecciona Artículo`);
+            
+            const arts = [...new Set(baseDatos.filter(x => x.cat === cat).map(x => x.art))];
+            const grid = document.getElementById('grid-art');
+            
+            let htmlAcumulado = '';
+            arts.forEach(a => {
+                htmlAcumulado += `
+                    <div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(a)}', () => pasoDimensiones('${escapeQuotes(a)}'))">
+                        ${crearBadgeHTML(a)}
+                        <img src="imagenes/${a}.png" onerror="this.src='PR.jpg'">
+                        <div>${a}</div>
+                    </div>`;
+            });
+            grid.innerHTML = htmlAcumulado;
+        }
+
+        function pasoDimensiones(art) {
+            selArt = art;
+            cambiarVista('v-dim', `${selCat} > ${selArt} > Selecciona Dimensión`);
+
+            const dims = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === selArt).map(x => x.dim))];
+            const grid = document.getElementById('grid-dim');
+            
+            let htmlAcumulado = '';
+            dims.forEach(d => {
+                htmlAcumulado += `
+                    <div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(d)}', () => pasoPresion('${escapeQuotes(d)}'))">
+                        ${crearBadgeHTML(d)}
+                        <div>${d}</div>
+                    </div>`;
+            });
+            grid.innerHTML = htmlAcumulado;
+        }
+
+        function pasoPresion(dim) {
+            selDim = dim;
+            historialNavegacion.push(() => pasoDimensiones(selArt));
+            cambiarVista('v-pres', `${selCat} > ${selArt} (${selDim}) > Selecciona Presión / SCH`);
+
+            const pres = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === selArt && x.dim === selDim).map(x => x.pres))];
+            const grid = document.getElementById('grid-pres');
+            
+            let htmlAcumulado = '';
+            pres.forEach(p => {
+                htmlAcumulado += `
+                    <div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(p)}', () => pasoMaterial('${escapeQuotes(p)}'))">
+                        ${crearBadgeHTML(p)}
+                        <div>${p}</div>
+                    </div>`;
+            });
+            grid.innerHTML = htmlAcumulado;
+        }
+
+        function pasoMaterial(pres) {
+            selPres = pres;
+            historialNavegacion.push(() => pasoPresion(selDim));
+            cambiarVista('v-mat', `${selCat} > ${selArt} (${selDim}) > ${selPres} > Selecciona Material`);
+
+            const mats = baseDatos.filter(x => x.cat === selCat && x.art === selArt && x.dim === selDim && x.pres === selPres);
+            const grid = document.getElementById('grid-mat');
+            
+            let htmlAcumulado = '';
+            mats.forEach(m => {
+                htmlAcumulado += `
+                    <div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(m.mat)}', () => cargarFicha('${m.ref}'))">
+                        ${crearBadgeHTML(m.mat)}
+                        <div>${m.mat}</div>
+                        <small style="color:#dc2626;">${m.ref}</small>
+                    </div>`;
+            });
+            grid.innerHTML = htmlAcumulado;
+        }
+
+        // GESTOR DE CLICS
+        function gestionarClick(e, texto, funcionNavegacion) {
+            const infoNorma = obtenerTextoNorma(texto);
+            if (infoNorma) {
+                mostrarGlobo(e, infoNorma);
+            }
+            funcionNavegacion();
+        }
+
+        // CARGA FICHA TÉCNICA EXTRAYENDO DE DATOS.TXT POR REFERENCIA MENxxxxx
+        function cargarFicha(ref) {
+            artSel = baseDatos.find(x => x.ref === ref);
+            if(!artSel) return;
+
+            if (historialNavegacion.length === 0 || historialNavegacion[historialNavegacion.length - 1].name !== 'bound cargarFicha') {
+                historialNavegacion.push(() => pasoMaterial(selPres));
+            }
+
+            cambiarVista('v-ficha', 'Ficha Técnica de Producto');
+
+            document.getElementById('lblArt').innerText = artSel.art;
+            document.getElementById('lblRef').innerText = artSel.ref;
+            document.getElementById('lblCat').innerText = artSel.cat;
+            document.getElementById('lblD').innerText = artSel.dim;
+            document.getElementById('lblP').innerText = artSel.pres;
+            document.getElementById('lblM').innerText = artSel.mat;
+            
+            // Imagen del artículo principal
+            document.getElementById('imgArt').src = `imagenes/${artSel.art}.png`;
+
+            // CONDICIONAL: Mostrar PR.jpg solo en CODO o ASIENTO CLAMP
+            const nombreArticulo = (artSel.art || '').toUpperCase();
+            const categoriaArticulo = (artSel.cat || '').toUpperCase();
+            const bloqueEsquema = document.getElementById('bloqueEsquema');
+
+            const esCodoOClamp = nombreArticulo.includes('CODO') || 
+                                 nombreArticulo.includes('ASIENTO CLAMP') ||
+                                 categoriaArticulo.includes('CODO') || 
+                                 categoriaArticulo.includes('ASIENTO CLAMP');
+
+            if (esCodoOClamp) {
+                bloqueEsquema.style.display = 'block';
+            } else {
+                bloqueEsquema.style.display = 'none';
+            }
+
+            // Búsqueda de cotas A, B, C en Datos.txt usando la referencia MENxxxxx
+            const claveRef = artSel.ref.toUpperCase();
+            const dt = dbTecnica[claveRef] || { a: '-', b: '-', c: '-' };
+            
+            document.getElementById('dimA').innerText = dt.a;
+            document.getElementById('dimB').innerText = dt.b;
+            document.getElementById('dimC').innerText = dt.c;
+        }
+
+        function agregarALista() {
+            if(!artSel) return;
+
+            const cant = parseInt(document.getElementById('cantInput').value) || 1;
+            const lineaFormateada = `${artSel.ref} - ${artSel.art} (${artSel.dim} - ${artSel.pres} - ${artSel.mat})`;
+            
+            listaPedido.push({
+                referencia: artSel.ref,
+                detalle_linea: lineaFormateada,
+                cantidad: cant
+            });
+
+            renderizarLista();
+
+            const msg = document.getElementById('msgConfirmacion');
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 2000);
+        }
+
+        function renderizarLista() {
+            const div = document.getElementById('listaItems');
+            if (listaPedido.length === 0) {
+                div.innerHTML = '<p style="color:#94a3b8;">Ninguna referencia seleccionada.</p>';
+                return;
+            }
+            
+            let htmlAcumulado = '';
+            listaPedido.forEach((item, idx) => {
+                htmlAcumulado += `
+                    <div class="item-lista">
+                        <span><strong>${item.referencia}</strong> - ${item.detalle_linea} | UNIDADES: <strong>${item.cantidad}</strong></span>
+                        <button onclick="borrarLinea(${idx})" style="background:#ef4444; color:white; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;">✕</button>
+                    </div>`;
+            });
+            div.innerHTML = htmlAcumulado;
+        }
+
+        function borrarLinea(idx) {
+            listaPedido.splice(idx, 1);
+            renderizarLista();
+        }
+
+        async function guardarPedido() {
+            const nombre = document.getElementById('nombreUsuario').value.trim();
+            if (!nombre) {
+                alert("Por favor, introduce el Nombre del Operario antes de enviar.");
+                return;
+            }
+            if (listaPedido.length === 0) {
+                alert("La lista está vacía.");
+                return;
+            }
+
+            if (!_supabase) {
+                alert("Error de conexión con Supabase. Revisa las claves.");
+                return;
+            }
+
+            const registros = listaPedido.map(item => ({
+                operario: nombre,
+                referencia: item.referencia,
+                detalle_linea: item.detalle_linea,
+                cantidad: item.cantidad
+            }));
+
+            const { error } = await _supabase.from('pedidos').insert(registros);
+
+            if (error) {
+                alert("Error al enviar el pedido a Supabase: " + error.message);
+            } else {
+                alert("¡Pedido enviado correctamente a Supabase!");
+                listaPedido = [];
+                renderizarLista();
+            }
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'");
+        }
+    </script>
+</body>
+</html>

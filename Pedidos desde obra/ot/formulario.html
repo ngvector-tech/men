@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso de OT</title>
+    <!-- ENLACE CDN COREGIDO Y COMPLETO -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .form-card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        .logo-men { color: #2980b9; font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 5px; letter-spacing: 1px; }
+        h2 { text-align: center; color: #2c3e50; margin-top: 0; margin-bottom: 20px; font-size: 22px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input[type="text"], input[type="date"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; -webkit-appearance: none; }
+        textarea { resize: vertical; min-height: 80px; }
+        .btn-submit { width: 100%; padding: 12px; background-color: #2ecc71; border: none; color: white; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-submit:hover { background-color: #27ae60; }
+        .btn-back { display: block; text-align: center; margin-top: 15px; color: #7f8c8d; text-decoration: none; font-size: 14px; }
+        .btn-back:hover { color: #333; }
+        @media (max-width: 480px) {
+            .form-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-card">
+    <div class="logo-men">MEN</div>
+    <h2>Nueva &Oacute;rden de Trabajo</h2>
+    
+    <form id="otForm" accept-charset="UTF-8">
+        <div class="form-group">
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" required>
+        </div>
+        <div class="form-group">
+            <label for="ot">N&uacute;mero de OT:</label>
+            <input type="text" id="ot" required placeholder="Ej: 15/25">
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripci&oacute;n:</label>
+            <textarea id="descripcion" required placeholder="Detalles del trabajo..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="cliente">Cliente:</label>
+            <input type="text" id="cliente" required placeholder="Nombre del cliente">
+        </div>
+        <button type="submit" class="btn-submit">Pasar a lista</button>
+    </form>
+    
+    <a href="index.html" class="btn-back">Volver al listado sin guardar</a>
+</div>
+
+<script>
+    // URL DE API REAL CORREGIDA
+    const SUPABASE_URL = "https://qjyyvobhzybugiqlmdyp.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+    
+    // Inicialización limpia de Supabase en el navegador
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    window.onload = function() {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        let mm = hoy.getMonth() + 1; 
+        let dd = hoy.getDate();
+
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        document.getElementById('fecha').value = yyyy + '-' + mm + '-' + dd;
+    }
+
+    document.getElementById('otForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const nuevaOT = {
+            fecha: document.getElementById('fecha').value,
+            ot: document.getElementById('ot').value.trim(),
+            descripcion: document.getElementById('descripcion').value.trim(),
+            cliente: document.getElementById('cliente').value.trim()
+        };
+
+        try {
+            const { error } = await supabaseClient
+                .from('ots')
+                .insert([nuevaOT]);
+
+            if (error) throw error;
+            
+            window.location.href = "index.html";
+        } catch (err) {
+            alert("Error crítico al guardar la información");
+            console.error(err);
+        }
+    });
+</script>
+</body>
+</html>

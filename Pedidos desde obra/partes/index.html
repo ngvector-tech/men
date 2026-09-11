@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción de Trabajos</title>
+    <!-- Cargamos la librería oficial desde un servidor de alta compatibilidad -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; padding: 15px; padding-bottom: 80px; }
+        .header-logo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 5px 10px; }
+        .logo-men { font-size: 1.5rem; font-weight: 800; color: #2563eb; letter-spacing: 1px; }
+        h1 { font-size: 1.2rem; color: #1e293b; text-align: right; }
+        .container { max-width: 100%; margin: 0 auto; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .actions-top { display: flex; gap: 10px; margin-bottom: 15px; }
+        button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; -webkit-tap-highlight-color: transparent; }
+        .btn-add { background-color: #2563eb; color: white; flex: 1; }
+        .btn-add:active { background-color: #1d4ed8; }
+        .btn-view { background-color: #64748b; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; padding: 12px 16px; }
+        .table-wrapper { width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 750px; }
+        th { background-color: #f8fafc; color: #64748b; font-size: 0.85rem; text-transform: uppercase; padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 8px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        table input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; outline: none; }
+        table input:focus { border-color: #2563eb; background-color: #f8fafc; }
+        .col-fecha { width: 155px; } .col-operario { width: 160px; } .col-ot { width: 100px; } .col-desc { width: 220px; } .col-horas { width: 85px; } .col-accion { width: 50px; text-align: center; }
+        .btn-delete { background-color: #ef4444; color: white; padding: 8px; border-radius: 6px; width: 36px; height: 36px; }
+        .footer-actions { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 12px 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); display: flex; gap: 10px; z-index: 100; }
+        .btn-send { background-color: #22c55e; color: white; flex: 1; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-logo">
+            <div class="logo-men">MEN</div>
+            <h1>Nueva Entrada</h1>
+        </div>
+        
+        <div class="actions-top">
+            <button class="btn-add" onclick="agregarLinea()">➕ Añadir Línea</button>
+            <button class="btn-view" onclick="accederAlHistorico()">📊 Ver lista (Solo administrador)</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-fecha">Fecha</th>
+                        <th class="col-operario">Operario</th>
+                        <th class="col-ot">OT</th>
+                        <th class="col-desc">Descripción</th>
+                        <th class="col-horas">Horas</th>
+                        <th class="col-accion"></th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-cuerpo"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer-actions">
+        <button class="btn-send" onclick="enviarDatos()">📥 Enviar Datos al Histórico</button>
+    </div>
+
+   <script>
+    // CONFIGURACIÓN DE TU ENLACE TÉCNICO REAL A LA BASE DE DATOS
+    const SUPABASE_URL = "https://qjyyvobhzybugiqlmdyp.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+    
+    let supabaseClient = null;
+
+    function obtenerFechaActual() {
+        const hoy = new Date();
+        const year = hoy.getFullYear();
+        const month = String(hoy.getMonth() + 1).padStart(2, '0');
+        const day = String(hoy.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function agregarLinea() {
+        const tbody = document.getElementById('tabla-cuerpo');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="date" class="input-fecha" value="${obtenerFechaActual()}"></td>
+            <td><input type="text" class="input-operario" placeholder="Nombre"></td>
+            <td><input type="text" class="input-ot" placeholder="Nº OT"></td>
+            <td><input type="text" class="input-desc" placeholder="Detalles"></td>
+            <td><input type="number" class="input-horas" placeholder="0.0" step="0.5" min="0"></td>
+            <td><button class="btn-delete" onclick="eliminarLinea(this)">🗑️</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function eliminarLinea(boton) {
+        if (confirm("¿Estás seguro de que deseas eliminar esta línea?")) {
+            boton.closest('tr').remove();
+        }
+    }
+
+    async function enviarDatos() {
+        if (!supabaseClient) {
+            alert("Error técnico: No se ha podido establecer la conexión con Supabase. Revisa la consola.");
+            return;
+        }
+
+        const filas = document.querySelectorAll('#tabla-cuerpo tr');
+        if (filas.length === 0) {
+            alert("No hay líneas para enviar.");
+            return;
+        }
+
+        let nuevosRegistros = [];
+
+        // REVISIÓN Y VALIDACIÓN DE FILAS MÚLTIPLES
+        for (let i = 0; i < filas.length; i++) {
+            const fila = filas[i];
+            const inputFecha = fila.querySelector('.input-fecha');
+            const inputOperario = fila.querySelector('.input-operario');
+            const inputOt = fila.querySelector('.input-ot');
+            const inputDesc = fila.querySelector('.input-desc');
+            const inputHoras = fila.querySelector('.input-horas');
+
+            const fechaOriginal = inputFecha ? inputFecha.value : ""; 
+            let fechaFormateada = "No asignada";
+            
+            if (fechaOriginal) {
+                const partes = fechaOriginal.split("-");
+                if (partes.length === 3) {
+                    fechaFormateada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                }
+            }
+
+            const registro = {
+                fecha: fechaFormateada,
+                operario: inputOperario ? inputOperario.value.trim() : "No asignado",
+                ot: inputOt ? inputOt.value.trim() : "No asignada",
+                desc: inputDesc ? inputDesc.value.trim() : "Sin descripción",
+                horas: inputHoras ? inputHoras.value.trim() : "0"
+            };
+            nuevosRegistros.push(registro);
+        }
+
+        try {
+            // Inserción masiva directa en tu tabla remota
+            const { data, error } = await supabaseClient
+                .from('historico_trabajos')
+                .insert(nuevosRegistros);
+
+            if (error) throw error;
+
+            alert("¡Datos guardados con éxito en el histórico de la nube!");
+            document.getElementById('tabla-cuerpo').innerHTML = "";
+            agregarLinea();
+        } catch (err) {
+            console.error("Error al insertar en Supabase:", err);
+            alert("Error al intentar transmitir los registros:\n" + (err.message || "Permiso denegado por políticas RLS o fallo de red."));
+        }
+    }
+
+    function accederAlHistorico() {
+        const clave = prompt("Introduce la contraseña para ver el histórico:");
+        if (clave === "2026men") {
+            window.location.href = "historico.html";
+        } else if (clave !== null) {
+            alert("Contraseña incorrecta. Acceso denegado.");
+        }
+    }
+
+    // Inicialización corregida para CDN v2
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof supabase !== 'undefined' && supabase.createClient) {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } else {
+            console.error("No se pudo cargar la librería de Supabase.");
+        }
+        agregarLinea();
+    });
+</script>
+</body>
+</html>

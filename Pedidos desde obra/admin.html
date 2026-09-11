@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEN - Lista</title>
+    <!-- Librería de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f1f5f9; 
+            margin: 0; 
+            padding: 20px; 
+            color: #0f172a; 
+        }
+        .contenedor { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+        }
+        .cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .titulo-men {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #0284c7;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        .btn { 
+            background: #2563eb; 
+            color: #ffffff; 
+            border: none; 
+            padding: 10px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-sec { background: #64748b; }
+        .btn-compartir { 
+            background: #16a34a; 
+            font-size: 1rem; 
+            padding: 12px 20px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .btn-borrar {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-borrar:hover { background: #dc2626; }
+        .btn-borrar:disabled {
+            background: #cbd5e1;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+        
+        .acciones-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .tabla-contenedor {
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            overflow-x: auto;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+        .badge-cantidad {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        .estado-msg {
+            padding: 20px;
+            text-align: center;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <!-- CABECERA -->
+        <div class="cabecera">
+            <h1 class="titulo-men">MEN</h1>
+            <div>
+                <button class="btn btn-sec" onclick="cargarPedidos()">🔄 Actualizar</button>
+                <a href="index.html" class="btn">🏠 Volver a Pedidos</a>
+            </div>
+        </div>
+
+        <!-- SECCIÓN LISTA Y BOTÓN COMPARTIR -->
+        <div class="acciones-bar">
+            <div>
+                <h2 style="margin: 0; display: inline-block;">Lista</h2>
+                <span id="labelOperario" style="margin-left: 10px; color: #0284c7; font-weight: bold;"></span>
+            </div>
+            <button class="btn btn-compartir" onclick="compartirYBorrar()">📤 Compartir / Enviar Mi Pedido</button>
+        </div>
+
+        <!-- TABLA DE PEDIDOS -->
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Operario</th>
+                        <th>Referencia</th>
+                        <th>Detalle</th>
+                        <th>Cantidad</th>
+                        <th style="text-align: center;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpoTabla">
+                    <tr>
+                        <td colspan="6" class="estado-msg">Cargando registros de Supabase...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+
+    let _supabase = null;
+    let registrosActuales = [];
+
+    // OBTENER OPERARIO ACTIVO
+    function obtenerOperarioActivo() {
+        return (sessionStorage.getItem('operarioNombre') || '').trim();
+    }
+
+    // INICIALIZACIÓN SEGURA DE SUPABASE
+    function inicializarSupabase() {
+        try {
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            } else if (typeof createClient === 'function') {
+                _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch (e) {
+            console.error("Error inicializando Supabase:", e);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        inicializarSupabase();
+
+        const op = obtenerOperarioActivo();
+        const lbl = document.getElementById('labelOperario');
+        if (lbl) {
+            lbl.innerText = op ? `(Sesión: ${op})` : `(Sin operario definido)`;
+        }
+
+        cargarPedidos();
+    });
+
+    // CARGAR PEDIDOS DESDE SUPABASE
+    async function cargarPedidos() {
+        const tbody = document.getElementById('cuerpoTabla');
+        tbody.innerHTML = '<tr><td colspan="6" class="estado-msg">Cargando registros...</td></tr>';
+
+        if (!_supabase) {
+            inicializarSupabase();
+        }
+
+        if (!_supabase) {
+            tbody.innerHTML = '<tr><td colspan="6" class="estado-msg" style="color:#ef4444;">Error: La librería de Supabase no se ha cargado. Revisa la consola (F12).</td></tr>';
+            return;
+        }
+
+        try {
+            const { data, error } = await _supabase
+                .from('pedidos')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Error de Supabase:", error);
+                tbody.innerHTML = `<tr><td colspan="6" class="estado-msg" style="color:#ef4444;">Error de Supabase: ${error.message} (Código: ${error.code})</td></tr>`;
+                return;
+            }
+
+            registrosActuales = data || [];
+
+            if (registrosActuales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="estado-msg">No hay elementos en la lista.</td></tr>';
+                return;
+            }
+
+            const operarioActivo = obtenerOperarioActivo();
+            tbody.innerHTML = '';
+            
+            registrosActuales.forEach(p => {
+                const fecha = p.created_at ? new Date(p.created_at).toLocaleString('es-ES') : '-';
+                const esMio = operarioActivo && (p.operario || '').trim().toLowerCase() === operarioActivo.toLowerCase();
+
+                tbody.innerHTML += `
+                    <tr style="${esMio ? 'background-color: #f0fdf4;' : ''}">
+                        <td><small style="color:#64748b;">${fecha}</small></td>
+                        <td><strong>${p.operario || 'Anónimo'}</strong></td>
+                    <td><code style="color: #ef4444; font-weight: bold;">${p.referencia || '-'}</code></td>
+                        <td>${p.detalle_linea || '-'}</td>
+                        <td><span class="badge-cantidad">${p.cantidad || 1}</span></td>
+                        <td style="text-align: center;">
+                            <button class="btn-borrar" 
+                                    onclick="eliminarLinea(${p.id}, '${escapeQuotes(p.operario)}')" 
+                                    ${!esMio ? 'disabled title="Solo el operario activo puede borrar esta línea"' : 'title="Eliminar fila"'}>
+                                ✕
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            console.error("Error inesperado:", err);
+            tbody.innerHTML = `<tr><td colspan="6" class="estado-msg" style="color:#ef4444;">Error inesperado: ${err.message}</td></tr>`;
+        }
+    }
+
+    // ELIMINAR LÍNEA INDIVIDUAL (SOLO OPERARIO ACTIVO)
+    async function eliminarLinea(id, operarioRegistro) {
+        const operarioActivo = obtenerOperarioActivo();
+
+        if (!operarioActivo) {
+            alert("Debes indicar un operario en la sesión para realizar esta acción.");
+            return;
+        }
+
+        if (operarioRegistro.trim().toLowerCase() !== operarioActivo.toLowerCase()) {
+            alert(`No tienes permisos para eliminar este registro. Pertenece a "${operarioRegistro}".`);
+            return;
+        }
+
+        if (!confirm("¿Deseas eliminar este registro de la lista?")) return;
+
+        const { error } = await _supabase
+            .from('pedidos')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            alert("Error al eliminar la línea: " + error.message);
+        } else {
+            cargarPedidos();
+        }
+    }
+
+    // COMPARTIR Y ELIMINAR SOLO LÍNEAS DEL OPERARIO ACTIVO
+    async function compartirYBorrar() {
+        const operarioActivo = obtenerOperarioActivo();
+
+        if (!operarioActivo) {
+            alert("No hay operario activo en la sesión. Escribe tu nombre en la pantalla de entrada.");
+            return;
+        }
+
+        const misRegistros = registrosActuales.filter(p => 
+            (p.operario || '').trim().toLowerCase() === operarioActivo.toLowerCase()
+        );
+
+        if (misRegistros.length === 0) {
+            alert(`No hay ninguna línea registrada a nombre de "${operarioActivo}" para enviar.`);
+            return;
+        }
+
+        let textoCompartir = `*LISTA DE PEDIDOS MEN - ${operarioActivo.toUpperCase()}*\n\n`;
+        misRegistros.forEach((p, index) => {
+            textoCompartir += `${index + 1}. ${p.detalle_linea} | CANT: ${p.cantidad}\n`;
+        });
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: `Pedido MEN - ${operarioActivo}`,
+                    text: textoCompartir
+                });
+            } catch (err) {
+                console.log("Envío cancelado:", err);
+                return;
+            }
+        } else {
+            await navigator.clipboard.writeText(textoCompartir);
+            alert("¡Lista copiada al portapapeles!");
+        }
+
+        const idsMisRegistros = misRegistros.map(r => r.id);
+        
+        const { error } = await _supabase
+            .from('pedidos')
+            .delete()
+            .in('id', idsMisRegistros);
+
+        if (error) {
+            alert("Error al borrar tus líneas enviadas: " + error.message);
+        } else {
+            cargarPedidos();
+        }
+    }
+
+    function escapeQuotes(str) {
+        return str ? str.replace(/'/g, "\\'") : '';
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadoras de Fabricación</title>
+<style>
+  :root{
+    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
+    --borde:#d0d5dd; --texto:#1f2937;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    margin:0;color:var(--texto);background:#fff;
+  }
+  header{background:var(--azul);color:#fff;padding:20px}
+  header h1{margin:0;font-size:1.4rem}
+  header p{margin:6px 0 0;font-size:.9rem;opacity:.9}
+  main{max-width:900px;margin:0 auto;padding:24px}
+  h2{font-size:1.1rem;color:var(--azul);margin:24px 0 12px}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+    gap:14px;
+  }
+  a.boton{
+    display:block;text-decoration:none;color:#fff;
+    background:var(--azul);border-radius:10px;
+    padding:18px 20px;font-weight:600;font-size:1rem;
+    transition:background .15s, transform .05s;
+    box-shadow:0 2px 6px rgba(30,95,168,.15);
+  }
+  a.boton:hover{background:#164a80}
+  a.boton:active{transform:scale(.98)}
+  a.boton .sub{
+    display:block;font-weight:400;font-size:.82rem;
+    opacity:.9;margin-top:4px;
+  }
+  .footer{
+    text-align:center;font-size:.8rem;color:#667085;
+    margin-top:40px;padding-top:16px;border-top:1px solid var(--borde);
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Calculadoras de Fabricación</h1>
+  <p>Herramientas de desarrollo y trazado para taller</p>
+</header>
+
+<main>
+
+  <h2>Calculadoras disponibles</h2>
+  <div class="grid">
+
+    <a class="boton" href="Injertos.html">
+      Injertos de tubería
+      <span class="sub">Intersecciones tubo-tubo, tubo-cono, truncados</span>
+    </a>
+
+    <a class="boton" href="Cono.html">
+      Desarrollo de conos
+      <span class="sub">Cono completo, truncado y excéntrico</span>
+    </a>
+
+    <a class="boton" href="bayoneta.html">
+      Bayoneta de tubería
+      <span class="sub">Cálculo de carrete y corte de codos</span>
+    </a>
+
+    <a class="boton" href="Curva a gajos.html">
+      Curva a gajos (Miter Bend)
+      <span class="sub">Codo segmentado por partes</span>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    Creado por: J.N.G
+  </div>
+
+</main>
+</body>
+</html>
