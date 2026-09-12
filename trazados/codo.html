@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Codo a Inglete (dos codos acoplados)</title>
+<style>
+  :root{
+    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
+    --borde:#d0d5dd; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
+  }
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;color:var(--texto);background:#fff}
+  header{background:var(--azul);color:#fff;padding:16px 20px}
+  header h1{margin:0;font-size:1.25rem}
+  header p{margin:4px 0 0;font-size:.85rem;opacity:.9}
+  main{max-width:900px;margin:0 auto;padding:20px}
+  .layout{display:grid;grid-template-columns:360px 1fr;gap:20px}
+  @media(max-width:800px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--gris);border:1px solid var(--borde);border-radius:8px;padding:16px}
+  .panel h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
+  label{display:block;font-size:.85rem;margin:10px 0 4px;font-weight:600}
+  input{width:100%;padding:8px;border:1px solid var(--borde);border-radius:6px;font-size:.9rem;background:#fff}
+  input:focus{outline:2px solid var(--azul);border-color:var(--azul)}
+  button{width:100%;padding:10px;margin-top:14px;border:none;border-radius:6px;background:var(--azul);color:#fff;font-size:.95rem;font-weight:600;cursor:pointer}
+  button:hover{background:#164a80}
+  .aviso{margin-top:10px;padding:8px 10px;border-radius:6px;font-size:.82rem;display:none}
+  .aviso.error{background:#fdecea;color:var(--error);display:block}
+  .aviso.ok{background:#e7f5ec;color:var(--ok);display:block}
+
+  /* Panel derecho */
+  .resultado{
+    background:#fff;
+    border:1px solid var(--borde);
+    border-radius:8px;
+    padding:16px;
+    min-height:200px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .resultado h2{font-size:1rem;margin:0;color:var(--azul)}
+
+  /* Esquema de entrada (izquierda) */
+  .esquema{
+    margin-bottom:16px;
+    background:var(--azul-claro);
+    border-radius:6px;
+    padding:10px;
+    min-height:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .esquema img{display:block;max-width:100%;height:auto}
+
+  /* Contenedor del patrón (derecha) */
+  #imagenPatron{
+    background:transparent;
+    border-radius:6px;
+    padding:0;
+    min-height:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    order:1;
+  }
+  #imagenPatron img{
+    display:block;
+    max-width:320px;
+    width:100%;
+    height:auto;
+    margin:0 auto;
+  }
+
+  #salida{order:2}
+
+  table{border-collapse:collapse;width:100%;font-size:.95rem}
+  th,td{border:1px solid var(--borde);padding:8px 14px;text-align:left}
+  th{background:var(--azul-claro);font-weight:600;color:var(--azul)}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .nota{font-size:.78rem;color:#667085;margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Calculadora de Codo a Inglete</h1>
+  <p>Dos codos acoplados — Entrada: diámetro (A), desnivel total (B) y radio del codo (R) — Salida: ángulo por codo (C) y arcos exterior (D) e interior (E)</p>
+  <p style="margin-top:8px;font-size:.95rem;font-weight:600;opacity:1;">Creado por: J.N.G</p>
+</header>
+
+<main>
+<div class="layout">
+
+  <section class="panel">
+    <h2>Datos de entrada</h2>
+
+    <div class="esquema" id="esquemaEntrada">
+      <img src="img/offsetcodo.png" alt="Esquema del codo a inglete">
+    </div>
+
+    <label for="in_A">Diámetro del tubo (A)</label>
+    <input type="number" id="in_A" value="104" step="any" min="0">
+
+    <label for="in_B">Desnivel total de los dos codos (B)</label>
+    <input type="number" id="in_B" value="90.8" step="any" min="0">
+
+    <label for="in_R">Radio del codo al eje (R)</label>
+    <input type="number" id="in_R" value="155" step="any" min="0">
+
+    <button id="btnCalcular">Calcular</button>
+    <div class="aviso" id="aviso"></div>
+
+    <p class="nota">
+      B se mide entre ejes (desnivel total de los dos codos acoplados). R se mide al eje del tubo.<br>
+      Fórmula: B = 2·R·(1 − cos C) → C = arccos(1 − B/(2R))<br>
+      Condiciones: 0 &lt; B ≤ 4·R y R &gt; A/2.
+    </p>
+  </section>
+
+  <section class="resultado">
+    <h2>Resultados</h2>
+    <div id="imagenPatron"></div>
+    <div id="salida"></div>
+  </section>
+
+</div>
+</main>
+
+<script src="codo.js"></script>
+</body>
+</html>
