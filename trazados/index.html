@@ -41,12 +41,54 @@
     text-align:center;font-size:.8rem;color:#667085;
     margin-top:40px;padding-top:16px;border-top:1px solid var(--borde);
   }
+   #salida{order:2}
+
+  table{border-collapse:collapse;width:100%;font-size:.95rem}
+  th,td{border:1px solid var(--borde);padding:8px 14px;text-align:left}
+  th{background:var(--azul-claro);font-weight:600;color:var(--azul)}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .nota{font-size:.78rem;color:#667085;margin-top:10px}
+  header{
+  background:var(--azul);
+  color:#fff;
+  padding:16px 20px;
+}
+.header-contenido{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+header{
+  background:var(--azul);
+  color:#fff;
+  padding:16px 20px;
+}
+.header-contenido{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+.header-texto h1{margin:0;font-size:1.25rem}
+.header-texto p{margin:4px 0 0;font-size:.85rem;opacity:.9}
+.header-texto .autor{margin-top:8px;font-size:.95rem;font-weight:600;opacity:1}
+
+.header-logo img{
+  display:block;
+  height:60px;          /* ajusta este valor al tamaño que quieras */
+  width:auto;
+}
 </style>
 </head>
 <body>
 <header>
   <h1>Calculadoras de Fabricación</h1>
   <p>Herramientas de desarrollo y trazado para taller</p>
+  <div class="header-logo">
+      <img src="img/logo_men.png" alt="MEN">
+    </div>
+  </div>
 </header>
 
 <main>
@@ -82,6 +124,7 @@
   <div class="footer">
     Creado por: J.N.G
   </div>
+  
 
 </main>
 </body>

@@ -40,6 +40,44 @@
   .resumen .dato .letra{display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;background:var(--azul);color:#fff;border-radius:50%;font-weight:700;margin-right:10px}
   .resumen .dato .valor{font-size:1.05rem}
   .nota{font-size:.78rem;color:#667085;margin-top:10px}
+   #salida{order:2}
+
+  table{border-collapse:collapse;width:100%;font-size:.95rem}
+  th,td{border:1px solid var(--borde);padding:8px 14px;text-align:left}
+  th{background:var(--azul-claro);font-weight:600;color:var(--azul)}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .nota{font-size:.78rem;color:#667085;margin-top:10px}
+  header{
+  background:var(--azul);
+  color:#fff;
+  padding:16px 20px;
+}
+.header-contenido{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+header{
+  background:var(--azul);
+  color:#fff;
+  padding:16px 20px;
+}
+.header-contenido{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+.header-texto h1{margin:0;font-size:1.25rem}
+.header-texto p{margin:4px 0 0;font-size:.85rem;opacity:.9}
+.header-texto .autor{margin-top:8px;font-size:.95rem;font-weight:600;opacity:1}
+
+.header-logo img{
+  display:block;
+  height:60px;          /* ajusta este valor al tamaño que quieras */
+  width:auto;
+}
 </style>
 </head>
 <body>
@@ -47,6 +85,10 @@
   <h1>Calculadora de Degradado de Codo</h1>
   <p>Arco exterior, arco interior y avance tangencial</p>
   <p style="margin-top:8px;font-size:.95rem;font-weight:600;opacity:1;">Creado por: J.N.G</p>
+   <div class="header-logo">
+      <img src="img/logo_men.png" alt="MEN">
+    </div>
+  </div>
 </header>
 
 <main>
