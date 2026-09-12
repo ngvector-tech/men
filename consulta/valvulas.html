@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultor de Dimensiones de Válvulas (EN 558)</title>
+<style>
+  :root{
+    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
+    --borde:#d0d5dd; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
+  }
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;color:var(--texto);background:#fff}
+  header{background:var(--azul);color:#fff;padding:16px 20px}
+  header h1{margin:0;font-size:1.25rem}
+  header p{margin:4px 0 0;font-size:.85rem;opacity:.9}
+  main{max-width:1000px;margin:0 auto;padding:20px}
+  .layout{display:grid;grid-template-columns:380px 1fr;gap:20px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--gris);border:1px solid var(--borde);border-radius:8px;padding:16px}
+  .panel h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
+  label{display:block;font-size:.85rem;margin:10px 0 4px;font-weight:600}
+  select{width:100%;padding:8px;border:1px solid var(--borde);border-radius:6px;font-size:.9rem;background:#fff}
+  select:focus{outline:2px solid var(--azul);border-color:var(--azul)}
+  .resultado{
+    background:#fff;border:1px solid var(--borde);border-radius:8px;
+    padding:16px;min-height:200px;
+  }
+  .resultado h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
+  .imagen-area{
+    text-align:center;min-height:180px;background:var(--azul-claro);
+    border-radius:6px;display:flex;align-items:center;justify-content:center;
+    padding:10px;margin-bottom:16px;
+  }
+  .imagen-area img{max-width:100%;max-height:220px}
+  .imagen-area p{color:#667085;font-size:.85rem}
+  .dato{
+    background:var(--azul-claro);border-radius:6px;padding:14px 16px;
+    color:var(--azul);font-size:1.1rem;font-weight:600;display:none;
+  }
+  .dato.visible{display:block}
+  .dato .valor{font-size:1.4rem;display:block;margin-top:4px}
+  .nota{font-size:.78rem;color:#667085;margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Consultor de Dimensiones de Válvulas</h1>
+  <p>Distancias entre caras (face-to-face) según norma EN 558</p>
+  <p style="margin-top:8px;font-size:.95rem;font-weight:600;opacity:1;">Creado por: J.N.G</p>
+</header>
+
+<main>
+<div class="layout">
+
+  <section class="panel">
+    <h2>Selección de válvula</h2>
+
+    <label for="tipoValvula">Tipo de válvula</label>
+    <select id="tipoValvula">
+      <option value="">— Seleccione un tipo —</option>
+      <option value="globo">Válvula de globo (Serie 1)</option>
+      <option value="retencion">Válvula antirretorno wafer (Serie 16)</option>
+      <option value="filtro">Filtro con brida (Serie 1)</option>
+      <option value="bola">Válvula de bola con brida (Serie 14)</option>
+      <option value="mariposa_wafer">Válvula de mariposa Wafer (Serie 20)</option>
+      <option value="mariposa_lug">Válvula de mariposa Lug (Serie 20)</option>
+    </select>
+
+    <label for="dn">DN — Diámetro nominal</label>
+    <select id="dn" disabled><option value="">— Seleccione DN —</option></select>
+
+    <label for="pn">PN — Presión nominal</label>
+    <select id="pn" disabled><option value="">— Seleccione PN —</option></select>
+
+    <p class="nota">
+      Los valores mostrados son ejemplos orientativos. Confirme siempre con el catálogo del fabricante.
+    </p>
+  </section>
+
+  <section class="resultado">
+    <h2>Resultado</h2>
+
+    <div id="imagenArea" class="imagen-area">
+      <p>Seleccione una válvula para ver su imagen</p>
+    </div>
+
+    <div id="resultado" class="dato"></div>
+  </section>
+
+</div>
+</main>
+
+<script src="valvulas.js"></script>
+</body>
+</html>
