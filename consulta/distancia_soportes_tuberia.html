@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distancia entre Soportes de Tubería</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+  }
+  .container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 22px;
+  }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 5px;
+  }
+  select {
+    width: 100%;
+    padding: 9px 10px;
+    font-size: 15px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    background: #fff;
+  }
+  select:focus { outline: none; border-color: #4a90d9; }
+  #resultBox {
+    margin-top: 24px;
+    padding: 18px;
+    border-radius: 8px;
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    text-align: center;
+    display: none;
+  }
+  #resultBox.show { display: block; }
+  #resultBox .label {
+    font-size: 13px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  #resultBox .value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+  }
+  #resultBox.warning .value {
+    font-size: 16px;
+    color: #b04a3f;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Distancia entre Soportes de Tubería</h1>
+
+  <div class="field">
+    <label for="normaSelect">Norma / Material</label>
+    <select id="normaSelect">
+      <option value="">-</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="dnSelect">DN</label>
+    <select id="dnSelect">
+      <option value="">-</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="fluidoSelect">Tipo de fluido</label>
+    <select id="fluidoSelect">
+      <option value="">-</option>
+      <option value="liquido">Agua / Líquidos</option>
+      <option value="vapor">Vapor / Gases</option>
+    </select>
+  </div>
+
+  <div id="resultBox">
+    <div class="label">Maxima distancia entre soportes</div>
+    <div class="value" id="resultValue">-</div>
+  </div>
+</div>
+
+<script>
+const DATA = {"ASME - Acero Carbono":{"DN15":{"vapor":2.7,"liquido":2.1},"DN20":{"vapor":3.0,"liquido":2.4},"DN25":{"vapor":2.7,"liquido":2.1},"DN32":{"vapor":3.5,"liquido":2.8},"DN40":{"vapor":4.0,"liquido":3.0},"DN50":{"vapor":4.0,"liquido":3.0},"DN65":{"vapor":4.5,"liquido":3.4},"DN80":{"vapor":4.5,"liquido":3.7},"DN100":{"vapor":5.2,"liquido":4.3},"DN125":{"vapor":5.8,"liquido":4.9},"DN150":{"vapor":6.4,"liquido":5.2},"DN200":{"vapor":7.3,"liquido":5.8},"DN250":{"vapor":8.5,"liquido":6.7},"DN300":{"vapor":9.1,"liquido":7.0},"DN350":{"vapor":9.8,"liquido":7.6},"DN400":{"vapor":10.7,"liquido":8.2},"DN450":{"vapor":11.3,"liquido":8.5},"DN500":{"vapor":11.9,"liquido":9.1},"DN600":{"vapor":12.8,"liquido":9.8},"DN700":{"vapor":13.5,"liquido":10.5},"DN800":{"vapor":14.2,"liquido":11.2},"DN900":{"vapor":15.0,"liquido":12.0}},"ASTM - Acero Inoxidable":{"DN15":{"vapor":2.3,"liquido":1.8},"DN20":{"vapor":2.6,"liquido":2.0},"DN25":{"vapor":2.7,"liquido":2.1},"DN32":{"vapor":3.1,"liquido":2.4},"DN40":{"vapor":3.5,"liquido":2.7},"DN50":{"vapor":3.9,"liquido":3.0},"DN65":{"vapor":4.3,"liquido":3.4},"DN80":{"vapor":4.5,"liquido":3.6},"DN100":{"vapor":5.2,"liquido":4.2},"DN125":{"vapor":4.7,"liquido":4.7},"DN150":{"vapor":6.3,"liquido":5.0},"DN200":{"vapor":7.1,"liquido":5.6},"DN250":{"vapor":8.0,"liquido":6.3},"DN300":{"vapor":8.6,"liquido":6.7},"DN350":{"vapor":9.2,"liquido":7.1},"DN400":{"vapor":10.0,"liquido":7.7},"DN450":{"vapor":10.5,"liquido":8.1},"DN500":{"vapor":11.1,"liquido":8.6},"DN600":{"vapor":12.0,"liquido":9.2},"DN700":{"vapor":12.8,"liquido":9.8},"DN800":{"vapor":13.5,"liquido":10.5},"DN900":{"vapor":14.3,"liquido":11.2}},"DIN 10357 - Inox":{"DN15":{"vapor":1.5,"liquido":1.2},"DN20":{"vapor":1.8,"liquido":1.4},"DN25":{"vapor":2.0,"liquido":1.5},"DN32":{"vapor":2.3,"liquido":1.8},"DN40":{"vapor":2.6,"liquido":2.0},"DN50":{"vapor":2.9,"liquido":2.2},"DN65":{"vapor":3.3,"liquido":2.5},"DN80":{"vapor":3.6,"liquido":2.8},"DN100":{"vapor":4.2,"liquido":3.2},"DN125":{"vapor":4.6,"liquido":3.6},"DN150":{"vapor":5.0,"liquido":4.0},"DN200":{"vapor":5.7,"liquido":4.5},"DN250":{"vapor":6.4,"liquido":5.1},"DN300":{"vapor":7.0,"liquido":5.5},"DN350":{"vapor":7.5,"liquido":5.8},"DN400":{"vapor":8.0,"liquido":6.2},"DN450":{"vapor":8.5,"liquido":6.6},"DN500":{"vapor":9.0,"liquido":7.0},"DN600":{"vapor":9.8,"liquido":7.5},"DN700":{"vapor":10.5,"liquido":8.0},"DN800":{"vapor":11.2,"liquido":8.5},"DN900":{"vapor":12.0,"liquido":9.0}},"EN 10216-2 P235GH":{"DN15":{"vapor":2.5,"liquido":2.0},"DN20":{"vapor":2.9,"liquido":2.3},"DN25":{"vapor":2.7,"liquido":2.1},"DN32":{"vapor":3.4,"liquido":2.7},"DN40":{"vapor":3.8,"liquido":2.9},"DN50":{"vapor":4.0,"liquido":3.0},"DN65":{"vapor":4.4,"liquido":3.4},"DN80":{"vapor":4.5,"liquido":3.6},"DN100":{"vapor":5.1,"liquido":4.2},"DN125":{"vapor":5.7,"liquido":4.8},"DN150":{"vapor":6.3,"liquido":5.1},"DN200":{"vapor":7.1,"liquido":5.7},"DN250":{"vapor":8.2,"liquido":6.5},"DN300":{"vapor":8.8,"liquido":6.9},"DN350":{"vapor":9.5,"liquido":7.4},"DN400":{"vapor":10.4,"liquido":8.0},"DN450":{"vapor":11.0,"liquido":8.3},"DN500":{"vapor":11.6,"liquido":8.9},"DN600":{"vapor":12.5,"liquido":9.6},"DN700":{"vapor":13.2,"liquido":10.2},"DN800":{"vapor":14.0,"liquido":11.0},"DN900":{"vapor":14.7,"liquido":11.7}}};
+const DNS_ORDEN = ["DN15", "DN20", "DN25", "DN32", "DN40", "DN50", "DN65", "DN80", "DN100", "DN125", "DN150", "DN200", "DN250", "DN300", "DN350", "DN400", "DN450", "DN500", "DN600", "DN700", "DN800", "DN900"];
+
+const normaSelect = document.getElementById('normaSelect');
+const dnSelect = document.getElementById('dnSelect');
+const fluidoSelect = document.getElementById('fluidoSelect');
+const resultBox = document.getElementById('resultBox');
+const resultValue = document.getElementById('resultValue');
+
+Object.keys(DATA).forEach(norma => {
+  const opt = document.createElement('option');
+  opt.value = norma;
+  opt.textContent = norma;
+  normaSelect.appendChild(opt);
+});
+
+DNS_ORDEN.forEach(dn => {
+  const opt = document.createElement('option');
+  opt.value = dn;
+  opt.textContent = dn;
+  dnSelect.appendChild(opt);
+});
+
+function calcular() {
+  const norma = normaSelect.value;
+  const dn = dnSelect.value;
+  const fluido = fluidoSelect.value;
+
+  if (!norma || !dn || !fluido) {
+    resultBox.classList.remove('show', 'warning');
+    return;
+  }
+
+  const entry = DATA[norma] && DATA[norma][dn];
+  if (!entry) {
+    resultValue.textContent = 'Criterio no mapeado';
+    resultBox.classList.add('show', 'warning');
+    resultBox.classList.remove('warning');
+    resultBox.classList.add('warning');
+    return;
+  }
+
+  const valor = entry[fluido];
+  resultValue.textContent = valor.toFixed(2) + ' metros';
+  resultBox.classList.remove('warning');
+  resultBox.classList.add('show');
+}
+
+[normaSelect, dnSelect, fluidoSelect].forEach(sel => sel.addEventListener('change', calcular));
+</script>
+
+</body>
+</html>

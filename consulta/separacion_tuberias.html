@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Separación entre Tuberías</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+  }
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 22px;
+  }
+  .tubo-block {
+    background: #f9fafb;
+    border: 1px solid #e6e9eb;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .tubo-block h2 {
+    font-size: 14px;
+    margin: 0 0 12px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .fields-row { display: flex; gap: 14px; }
+  .field { flex: 1; margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 5px;
+  }
+  select, input[type="number"] {
+    width: 100%;
+    padding: 9px 10px;
+    font-size: 15px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    background: #fff;
+  }
+  select:focus, input:focus { outline: none; border-color: #4a90d9; }
+  #resultBox {
+    margin-top: 22px;
+    padding: 18px;
+    border-radius: 8px;
+    background: #eef7ee;
+    border: 1px solid #cfe8cf;
+    text-align: center;
+  }
+  #resultBox .label {
+    font-size: 13px;
+    color: #5a8a5a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  #resultBox .value {
+    font-size: 30px;
+    font-weight: 700;
+    color: #1c5c1c;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Separación entre Tuberías (eje a eje)</h1>
+
+  <div class="tubo-block">
+    <h2>Tubería 1</h2>
+    <div class="fields-row">
+      <div class="field">
+        <label for="dn1">DN</label>
+        <select id="dn1"></select>
+      </div>
+      <div class="field">
+        <label for="aisla1">Aislamiento (mm)</label>
+        <input type="number" id="aisla1" value="0" min="0" step="0.1">
+      </div>
+    </div>
+  </div>
+
+  <div class="tubo-block">
+    <h2>Tubería 2</h2>
+    <div class="fields-row">
+      <div class="field">
+        <label for="dn2">DN</label>
+        <select id="dn2"></select>
+      </div>
+      <div class="field">
+        <label for="aisla2">Aislamiento (mm)</label>
+        <input type="number" id="aisla2" value="0" min="0" step="0.1">
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="config">Configuración de bridas</label>
+    <select id="config">
+      <option value="Ambas Bridas Alineadas">Ambas Bridas Alineadas</option>
+      <option value="Una Brida Sola (Max)" selected>Una Brida Sola (Max)</option>
+      <option value="Sin Bridas">Sin Bridas</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="clearance">Holgura / Clearance (mm)</label>
+    <input type="number" id="clearance" value="25" min="0" step="0.1">
+  </div>
+
+  <div id="resultBox">
+    <div class="label">Distancia entre ejes</div>
+    <div class="value" id="resultValue">-</div>
+  </div>
+</div>
+
+<script>
+const TABLA_ASME = {"DN15":{"od":21.3,"fod":90.0},"DN20":{"od":26.7,"fod":100.0},"DN25":{"od":33.4,"fod":110.0},"DN32":{"od":42.2,"fod":115.0},"DN40":{"od":48.3,"fod":125.0},"DN50":{"od":60.3,"fod":150.0},"DN65":{"od":73.0,"fod":180.0},"DN80":{"od":88.9,"fod":190.0},"DN90":{"od":101.6,"fod":210.0},"DN100":{"od":114.3,"fod":230.0},"DN125":{"od":141.3,"fod":255.0},"DN150":{"od":168.3,"fod":280.0},"DN200":{"od":219.1,"fod":345.0},"DN250":{"od":273.0,"fod":405.0},"DN300":{"od":323.8,"fod":485.0},"DN350":{"od":355.6,"fod":535.0},"DN400":{"od":406.4,"fod":595.0},"DN450":{"od":457.0,"fod":635.0},"DN500":{"od":508.0,"fod":700.0},"DN600":{"od":610.0,"fod":815.0}};
+const DNS_ORDEN = ["DN15", "DN20", "DN25", "DN32", "DN40", "DN50", "DN65", "DN80", "DN90", "DN100", "DN125", "DN150", "DN200", "DN250", "DN300", "DN350", "DN400", "DN450", "DN500", "DN600"];
+
+const dn1Select = document.getElementById('dn1');
+const dn2Select = document.getElementById('dn2');
+const aisla1Input = document.getElementById('aisla1');
+const aisla2Input = document.getElementById('aisla2');
+const configSelect = document.getElementById('config');
+const clearanceInput = document.getElementById('clearance');
+const resultValue = document.getElementById('resultValue');
+
+DNS_ORDEN.forEach(dn => {
+  const opt1 = document.createElement('option');
+  opt1.value = dn; opt1.textContent = dn;
+  dn1Select.appendChild(opt1);
+
+  const opt2 = document.createElement('option');
+  opt2.value = dn; opt2.textContent = dn;
+  dn2Select.appendChild(opt2);
+});
+
+dn1Select.value = 'DN100';
+dn2Select.value = 'DN150';
+
+function calcular() {
+  const dn1 = dn1Select.value;
+  const dn2 = dn2Select.value;
+  const aisla1 = parseFloat(aisla1Input.value) || 0;
+  const aisla2 = parseFloat(aisla2Input.value) || 0;
+  const config = configSelect.value;
+  const clearance = parseFloat(clearanceInput.value) || 0;
+
+  const t1 = TABLA_ASME[dn1];
+  const t2 = TABLA_ASME[dn2];
+  if (!t1 || !t2) {
+    resultValue.textContent = '-';
+    return;
+  }
+
+  const od1 = t1.od, fod1 = t1.fod;
+  const od2 = t2.od, fod2 = t2.fod;
+
+  let radio1 = 0, radio2 = 0;
+
+  if (config === 'Sin Bridas') {
+    radio1 = od1 / 2.0;
+    radio2 = od2 / 2.0;
+  } else if (config === 'Ambas Bridas Alineadas') {
+    radio1 = fod1 / 2.0;
+    radio2 = fod2 / 2.0;
+  } else if (config === 'Una Brida Sola (Max)') {
+    const casoA = (fod1 / 2.0) + (od2 / 2.0);
+    const casoB = (od1 / 2.0) + (fod2 / 2.0);
+    if (casoA > casoB) {
+      radio1 = fod1 / 2.0;
+      radio2 = od2 / 2.0;
+    } else {
+      radio1 = od1 / 2.0;
+      radio2 = fod2 / 2.0;
+    }
+  }
+
+  const resultado = radio1 + radio2 + aisla1 + aisla2 + clearance;
+  resultValue.textContent = resultado.toFixed(1) + ' mm';
+}
+
+[dn1Select, dn2Select, aisla1Input, aisla2Input, configSelect, clearanceInput]
+  .forEach(el => el.addEventListener('input', calcular));
+
+calcular();
+</script>
+
+</body>
+</html>
