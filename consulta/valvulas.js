@@ -4,7 +4,120 @@
    Racores DIN 11851 según catálogo facilitado.
    ========================================================= */
 const baseDatos = {
-	  /* ---------- VÁLVULAS AÑADIDAS ---------- */
+
+  /* ---------- VÁLVULAS SANITARIAS DIN 11851 (solo A) ---------- */
+
+  mariposa_sanitaria_mm: {
+    tipo: "valvula",
+    nombre: "Válvula mariposa M-M DIN 11851",
+    imagen: "img/valvula_mariposa_MM_DIN11851.png",
+    datos: {
+      "DN10":  { "DIN11851": 78 },
+      "DN15":  { "DIN11851": 78 },
+      "DN20":  { "DIN11851": 78 },
+      "DN25":  { "DIN11851": 78 },
+      "DN32":  { "DIN11851": 78 },
+      "DN40":  { "DIN11851": 90 },
+      "DN50":  { "DIN11851": 106 },
+      "DN65":  { "DIN11851": 124 },
+      "DN80":  { "DIN11851": 139 },
+      "DN100": { "DIN11851": 159 },
+      "DN125": { "DIN11851": 185 },
+      "DN150": { "DIN11851": 215 }
+    }
+  },
+    mariposa_sanitaria_hs: {
+    tipo: "valvula",
+    nombre: "Válvula mariposa H-S DIN 11851",
+    imagen: "img/valvula_mariposa_HS_DIN11851.png",
+    datos: {
+
+      "DN25":  { "DIN11851": 66},
+      "DN32":  { "DIN11851": 68 },
+      "DN40":  { "DIN11851": 70 },
+      "DN50":  { "DIN11851": 72 },
+      "DN65":  { "DIN11851": 76 },
+      "DN80":  { "DIN11851": 97 },
+      "DN100": { "DIN11851": 108 },
+      "DN125": { "DIN11851": 144 },
+      "DN150": { "DIN11851": 160 }
+    }
+  },
+    mariposa_sanitaria_hh: {
+    tipo: "valvula",
+    nombre: "Válvula mariposa H-H DIN 11851",
+    imagen: "img/valvula_mariposa_HH_DIN11851.png",
+    datos: {
+
+      "DN25":  { "DIN11851": 88},
+      "DN32":  { "DIN11851": 94 },
+      "DN40":  { "DIN11851": 96 },
+      "DN50":  { "DIN11851": 100 },
+      "DN65":  { "DIN11851": 108 },
+      "DN80":  { "DIN11851": 134 },
+      "DN100": { "DIN11851": 152 },
+      "DN125": { "DIN11851": 180 },
+      "DN150": { "DIN11851": 198 }
+    }
+  },
+  mariposa_sanitaria_ms: {
+    tipo: "valvula",
+    nombre: "Válvula mariposa M-S DIN 11851",
+    imagen: "img/valvula_mariposa_MS_DIN11851.png",
+    datos: {
+
+      "DN25":  { "DIN11851": 52 },
+      "DN32":  { "DIN11851": 53 },
+      "DN40":  { "DIN11851": 61 },
+      "DN50":  { "DIN11851": 61 },
+      "DN65":  { "DIN11851": 80 },
+      "DN80":  { "DIN11851": 84 },
+      "DN100": { "DIN11851": 118 },
+      "DN125": { "DIN11851": 112 },
+      "DN150": { "DIN11851": 124 }
+    }
+  },
+
+  mariposa_sanitaria_s: {
+    tipo: "valvula",
+    nombre: "Válvula mariposa S-S DIN 11851",
+    imagen: "img/valvula_mariposa_SS_DIN11851.png",
+    datos: {
+      "DN10":  { "DIN11851": 50 },
+      "DN15":  { "DIN11851": 50 },
+      "DN20":  { "DIN11851": 50 },
+      "DN25":  { "DIN11851": 50 },
+      "DN32":  { "DIN11851": 50 },
+      "DN40":  { "DIN11851": 50 },
+      "DN50":  { "DIN11851": 52 },
+      "DN65":  { "DIN11851": 56 },
+      "DN80":  { "DIN11851": 60 },
+      "DN100": { "DIN11851": 64 },
+      "DN125": { "DIN11851": 80 },
+      "DN150": { "DIN11851": 90 },
+      "DN200": { "DIN11851": 90 }
+    }
+  },
+    mariposa_sanitaria_eb: {
+    tipo: "valvula",
+    nombre: "Válvula mariposa entre brida DIN 11851",
+    imagen: "img/valvula_mariposa_entrebrida_DIN11851.png",
+    datos: {
+
+      "DN25":  { "DIN11851": 90 },
+      "DN32":  { "DIN11851": 90 },
+      "DN40":  { "DIN11851": 100 },
+      "DN50":  { "DIN11851": 100 },
+      "DN65":  { "DIN11851": 100 },
+      "DN80":  { "DIN11851": 136 },
+      "DN100": { "DIN11851": 136 },
+      "DN125": { "DIN11851": 168 },
+      "DN150": { "DIN11851": 178 }
+
+    }
+  },
+
+  /* ---------- VÁLVULAS AÑADIDAS ---------- */
 
   guillotina: {
     tipo: "valvula",
@@ -28,7 +141,7 @@ const baseDatos = {
     }
   },
 
-    compuerta_serie14: {
+  compuerta_serie14: {
     tipo: "valvula",
     nombre: "Válvula de compuerta (EN 558 Serie 14 - corta)",
     imagen: "img/valvula_compuerta_serie14.png",
@@ -267,6 +380,16 @@ const baseDatos = {
 const $ = id => document.getElementById(id);
 let tipoActual = null;
 
+/* Tipos que NO usan PN (solo tienen parámetro A) */
+const tiposSinPN = [
+  'mariposa_sanitaria_mm',
+  'mariposa_sanitaria_ms',
+  'mariposa_sanitaria_s',
+  'mariposa_sanitaria_hh',
+  'mariposa_sanitaria_hs',
+  'mariposa_sanitaria_eb'
+];
+
 /* --- Cambio de tipo (válvula o racor) --- */
 $('tipoValvula').addEventListener('change', function() {
   tipoActual = this.value;
@@ -302,7 +425,9 @@ $('tipoValvula').addEventListener('change', function() {
 
   /* Mostrar/ocultar PN según tipo */
   const pnLabel = document.querySelector('label[for="pn"]');
-  if (info.tipo === 'valvula') {
+  const sinPN = tiposSinPN.includes(tipoActual);
+
+  if (info.tipo === 'valvula' && !sinPN) {
     pnSelect.style.display = '';
     if (pnLabel) pnLabel.style.display = '';
     pnSelect.disabled = false;
@@ -310,6 +435,7 @@ $('tipoValvula').addEventListener('change', function() {
     pnSelect.style.display = 'none';
     if (pnLabel) pnLabel.style.display = 'none';
     pnSelect.disabled = true;
+    pnSelect.innerHTML = '<option value="">— Seleccione PN —</option>';
   }
 
   /* Mostrar imagen */
@@ -334,8 +460,8 @@ $('dn').addEventListener('change', function() {
 
   if (!this.value || !tipoActual) return;
 
+  /* Racor: tabla con solo A, B, C y H */
   if (tipo.tipo === 'racor') {
-    /* Racor: tabla con solo A, B, C y H */
     const d = tipo.datos[this.value];
     if (!d) return;
 
@@ -359,7 +485,21 @@ $('dn').addEventListener('change', function() {
     return;
   }
 
-  /* Válvula: rellenar PN */
+  /* Válvulas sanitarias DIN 11851: solo parámetro A, sin PN */
+  if (tiposSinPN.includes(tipoActual)) {
+    const d = tipo.datos[this.value];
+    if (!d) return;
+
+    const valorA = Object.values(d)[0];
+
+    resDiv.innerHTML =
+      'Distancia entre caras (FTF)' +
+      '<span class="valor">' + valorA + ' mm</span>';
+    resDiv.classList.add('visible');
+    return;
+  }
+
+  /* Válvula normal: rellenar PN */
   pnSelect.innerHTML = '<option value="">— Seleccione PN —</option>';
   pnSelect.disabled = true;
 
