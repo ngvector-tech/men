@@ -4,6 +4,73 @@
    Racores DIN 11851 según catálogo facilitado.
    ========================================================= */
 const baseDatos = {
+	  /* ---------- VÁLVULAS AÑADIDAS ---------- */
+
+  guillotina: {
+    tipo: "valvula",
+    nombre: "Válvula de guillotina (EN 558 Serie 20)",
+    imagen: "img/valvula_guillotina.png",
+    datos: {
+      "DN50":   { "PN10": 43,  "PN16": 43 },
+      "DN65":   { "PN10": 46,  "PN16": 46 },
+      "DN80":   { "PN10": 46,  "PN16": 46 },
+      "DN100":  { "PN10": 52,  "PN16": 52 },
+      "DN125":  { "PN10": 56,  "PN16": 56 },
+      "DN150":  { "PN10": 56,  "PN16": 56 },
+      "DN200":  { "PN10": 60,  "PN16": 60 },
+      "DN250":  { "PN10": 68,  "PN16": 68 },
+      "DN300":  { "PN10": 78,  "PN16": 78 },
+      "DN350":  { "PN10": 78,  "PN16": 78 },
+      "DN400":  { "PN10": 102, "PN16": 102 },
+      "DN450":  { "PN10": 114, "PN16": 114 },
+      "DN500":  { "PN10": 127, "PN16": 127 },
+      "DN600":  { "PN10": 154, "PN16": 154 }
+    }
+  },
+
+    compuerta_serie14: {
+    tipo: "valvula",
+    nombre: "Válvula de compuerta (EN 558 Serie 14 - corta)",
+    imagen: "img/valvula_compuerta_serie14.png",
+    datos: {
+      "DN50":  { "PN10": 150, "PN16": 150 },
+      "DN65":  { "PN10": 170, "PN16": 170 },
+      "DN80":  { "PN10": 180, "PN16": 180 },
+      "DN100": { "PN10": 190, "PN16": 190 },
+      "DN125": { "PN10": 200, "PN16": 200 },
+      "DN150": { "PN10": 210, "PN16": 210 },
+      "DN200": { "PN10": 230, "PN16": 230 },
+      "DN250": { "PN10": 250, "PN16": 250 },
+      "DN300": { "PN10": 270, "PN16": 270 },
+      "DN350": { "PN10": 290, "PN16": 290 },
+      "DN400": { "PN10": 310, "PN16": 310 },
+      "DN450": { "PN10": 330, "PN16": 330 },
+      "DN500": { "PN10": 350, "PN16": 350 },
+      "DN600": { "PN10": 390, "PN16": 390 }
+    }
+  },
+
+  compuerta_serie15: {
+    tipo: "valvula",
+    nombre: "Válvula de compuerta (EN 558 Serie 15 - larga)",
+    imagen: "img/valvula_compuerta_serie15.png",
+    datos: {
+      "DN50":  { "PN10": 250, "PN16": 250 },
+      "DN65":  { "PN10": 270, "PN16": 270 },
+      "DN80":  { "PN10": 280, "PN16": 280 },
+      "DN100": { "PN10": 300, "PN16": 300 },
+      "DN125": { "PN10": 325, "PN16": 325 },
+      "DN150": { "PN10": 350, "PN16": 350 },
+      "DN200": { "PN10": 400, "PN16": 400 },
+      "DN250": { "PN10": 450, "PN16": 450 },
+      "DN300": { "PN10": 500, "PN16": 500 },
+      "DN350": { "PN10": 550, "PN16": 550 },
+      "DN400": { "PN10": 600, "PN16": 600 },
+      "DN450": { "PN10": 650, "PN16": 650 },
+      "DN500": { "PN10": 700, "PN16": 700 },
+      "DN600": { "PN10": 800, "PN16": 800 }
+    }
+  },
 
   /* ---------- VÁLVULAS ---------- */
 
