@@ -184,8 +184,8 @@ function calcular() {
   const dilatacionTotal = alfa * longitud * deltaTemp;
 
   // Mostrar resultados en la interfaz
-  dilatacionValue.textContent = dilatacionTotal.toFixed(3) + ' mm';
-  deltaTempValue.textContent = deltaTemp.toFixed(2) + ' °C';
+  dilatacionValue.textContent = dilatacionTotal.toFixed(0) + ' mm';
+  deltaTempValue.textContent = deltaTemp.toFixed(0) + ' °C';
   alfaValue.textContent = alfa.toExponential(2) + ' 1/°C';
 
   resultBox.classList.remove('warning');
