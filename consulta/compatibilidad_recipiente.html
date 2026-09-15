@@ -94,6 +94,22 @@
     color: #999;
     margin: 18px 0 8px;
   }
+  #btnLimpiar {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  #btnLimpiar:hover {
+    background: #333;
+  }
 </style>
 </head>
 <body>
@@ -108,6 +124,8 @@
     <label for="ingredienteInput">Ingrediente</label>
     <input list="ingredienteList" id="ingredienteInput" type="text" placeholder="Escribe o selecciona un ingrediente..." autocomplete="off">
     <datalist id="ingredienteList"></datalist>
+	<!-- BOTÓN NUEVO -->
+  <button type="button" id="btnLimpiar">Nueva consulta</button>
   </div>
 
   <div id="results"></div>
@@ -738,6 +756,17 @@ function onIngredienteChange() {
 
 ingredienteInput.addEventListener('input', onIngredienteChange);
 ingredienteInput.addEventListener('change', onIngredienteChange);
+document.getElementById('btnLimpiar').addEventListener('click', function() {
+  // Limpiar la selección del ingrediente
+  const ingredienteInput = document.getElementById('ingredienteInput');
+  ingredienteInput.value = '';
+
+  // Vaciar el contenedor de resultados
+  document.getElementById('results').innerHTML = '';
+
+  // Dejar el foco nuevamente en el input
+  ingredienteInput.focus();
+});
 </script>
 </body>
 </html>

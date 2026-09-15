@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Compatibilidad de Juntas</title>
 <style>
+#btnLimpiar {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  #btnLimpiar:hover {
+    background: #333;
+  }
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -113,6 +129,8 @@
     <label for="fluidoInput">Fluido</label>
     <input list="fluidoList" id="fluidoInput" type="text" placeholder="Escribe o selecciona un fluido..." autocomplete="off">
     <datalist id="fluidoList"></datalist>
+	<!-- BOTÓN NUEVO -->
+  <button type="button" id="btnLimpiar">Nueva consulta</button>
   </div>
 
   <div class="field" id="tempField">
@@ -127,10 +145,10 @@
 const MATERIALES = ["NBR","FPM","EPDM","VMQ","FFPM","CR","FVMQ","HNBR","PTFE"];
 const DESCRIPCIONES = {
   "A": "Buen comportamiento",
-  "B": "Moderada agresión",
-  "C": "Fuerte agresión",
-  "D": "Sin datos, probablemente adecuado",
-  "E": "No existen datos, probablemente adecuado"
+  "B": "Moderado deterioro",
+  "C": "Alto deterioro",
+  "D": "No existen datos, probablemente adecuado",
+  "E": "No existen datos"
 };
 const ORDEN = {"A":0, "B":1, "C":2, "D":3, "E":4};
 
@@ -141,10 +159,12 @@ const DATA = [["ÁCIDO SULFÚRICO/ÁCIDO NÍTRICO/AGUA 10/87/3%","20","C","A","A
 const fluidosUnicos = [...new Set(DATA.map(r => r[0]))].sort((a,b) => a.localeCompare(b, 'es'));
 
 const fluidoInput = document.getElementById('fluidoInput');
+
 const fluidoList = document.getElementById('fluidoList');
 const tempField = document.getElementById('tempField');
 const tempSelect = document.getElementById('tempSelect');
 const resultsDiv = document.getElementById('results');
+
 
 fluidosUnicos.forEach(f => {
   const opt = document.createElement('option');
@@ -210,7 +230,7 @@ function renderResultados(registro) {
   conValor.forEach(({ mat, letra }) => {
     const row = document.createElement('div');
     row.className = 'result-row letra-' + letra;
-    row.innerHTML = `<span class="mat-name">${mat} — ${letra}</span><span class="mat-desc">${DESCRIPCIONES[letra] || ''}</span>`;
+    row.innerHTML = `<span class="mat-name">${mat}</span><span class="mat-desc">${DESCRIPCIONES[letra] || ''}</span>`;
     resultsDiv.appendChild(row);
   });
 
@@ -239,6 +259,7 @@ function onFluidoChange() {
   renderTempOptions(fluido);
 }
 
+
 fluidoInput.addEventListener('input', onFluidoChange);
 fluidoInput.addEventListener('change', onFluidoChange);
 
@@ -248,6 +269,23 @@ tempSelect.addEventListener('change', () => {
   const registros = getRegistrosDeFluido(fluido);
   const registro = registros.find(r => r[1] === temp);
   renderResultados(registro);
+});
+document.getElementById('btnLimpiar').addEventListener('click', function() {
+  // Limpiar el campo de texto de fluido
+  const fluidoInput = document.getElementById('fluidoInput');
+  fluidoInput.value = '';
+
+  // Limpiar el selector de temperatura y ocultarlo
+  const tempSelect = document.getElementById('tempSelect');
+  const tempField = document.getElementById('tempField');
+  tempSelect.innerHTML = '';
+  tempField.style.display = 'none';
+
+  // Limpiar la lista de resultados
+  document.getElementById('results').innerHTML = '';
+
+  // Dejar el foco listo en el campo de texto para escribir un nuevo fluido
+  fluidoInput.focus();
 });
 </script>
 
