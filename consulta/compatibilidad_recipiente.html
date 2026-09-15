@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compatibilidad de Metales</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+  }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 22px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 18px;
+  }
+  .legend {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #333;
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+  .legend b { color: #111; }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 5px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 9px 10px;
+    font-size: 15px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    background: #fff;
+  }
+  input:focus { outline: none; border-color: #4a90d9; }
+  #results { margin-top: 22px; }
+  .result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .result-row .mat-name { font-weight: 700; }
+  .result-row .mat-desc { font-weight: 500; font-size: 13px; }
+  .nivel-excelente { background: #2e7d32; color: #fff; }
+  .nivel-bueno     { background: #a5d6a7; color: #1b5e20; }
+  .nivel-pobre     { background: #ffb74d; color: #7a3e00; }
+  .nivel-nousar    { background: #c62828; color: #fff; }
+  .sin-dato {
+    background: #f5f5f5;
+    color: #999;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .no-results {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    padding: 20px 0;
+  }
+  .section-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #999;
+    margin: 18px 0 8px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Compatibilidad de Metales</h1>
+  <div class="legend">
+    <b>Excelente</b> · <b>Bueno</b> · <b>Pobre</b> · <b>No usar</b><br>
+    Selecciona un ingrediente para ver la compatibilidad con cada metal.
+  </div>
+
+  <div class="field">
+    <label for="ingredienteInput">Ingrediente</label>
+    <input list="ingredienteList" id="ingredienteInput" type="text" placeholder="Escribe o selecciona un ingrediente..." autocomplete="off">
+    <datalist id="ingredienteList"></datalist>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+const METALES = [
+  "Acero al carbono",
+  "Acero inoxidable 17_4PH",
+  "Acero inoxidable 316",
+  "Acero inoxidable Alloy 20",
+  "Hastelloy C",
+  "Hierro ducti_hierro fundido",
+  "Laton_bronce",
+  "Metal _A",
+  "Metal _G",
+  "Monel"
+];
+
+const ORDEN = { "Excelente": 0, "Bueno": 1, "Pobre": 2, "No usar": 3 };
+const CLASE = {
+  "Excelente": "nivel-excelente",
+  "Bueno": "nivel-bueno",
+  "Pobre": "nivel-pobre",
+  "No usar": "nivel-nousar"
+};
+
+const DATA = [
+["Aceite Crudo, agrio","Bueno","","Excelente","Excelente","","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Aceite Crudo, dulce","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Aceite de Alquitran","Excelente","Excelente","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Aceite de Castor","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Aceite de Cocina","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Bueno","Excelente"],
+["Aceite de Coco","Pobre","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Aceite de Creosota","Bueno","Bueno","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Aceite de Grasa de Cerdo","Pobre","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Aceite de Linaza","Excelente","","Excelente","Excelente","","Excelente","Bueno","Excelente","Excelente","Bueno"],
+["Aceite de Madera China","Pobre","","Excelente","Excelente","Excelente","Pobre","Pobre","Excelente","Excelente","Excelente"],
+["Aceite de Maiz","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Aceite de Mesa","Pobre","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Aceite de Oliva","Bueno","","Excelente","Excelente","","Bueno","Pobre","Excelente","Excelente","Excelente"],
+["Aceite de Palma","Pobre","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Aceite de Pino","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Aceite de Semillas de Algodón","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Aceite de Soja","Pobre","","Excelente","Excelente","","Pobre","Bueno","Excelente","Excelente","Excelente"],
+["Aceite de Templado","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente",""],
+["Aceite deTransformador","Excelente","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Aceite de Tung","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Pobre"],
+["Aceite Hidr., Base Petroleo","Excelente","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Aceite Lubr., Base Petroleo","Excelente","","Excelente","Excelente","","Excelente","Bueno","Excelente","Excelente","Bueno"],
+["Aceite secante","Pobre","","Bueno","Bueno","","Bueno","Pobre","Bueno","Bueno","Bueno"],
+["Aceite Vegetal","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Aceites Animales","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Bueno"],
+["Aceites de Pescado","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Aceites Minerales","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Aceites Solubles","Bueno","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente",""],
+["Aceites y Grasas","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Acetaldeido","Pobre","","Excelente","Excelente","Excelente","Pobre","Pobre","Excelente","Excelente","Excelente"],
+["Acetamina","Bueno","","Bueno","","Excelente","Bueno","Bueno","Bueno","Bueno",""],
+["Acetato de Aluminio","","Bueno","Excelente","Bueno","Bueno","No usar","No usar","Excelente","No usar","Pobre"],
+["Acetatode Amilo","Pobre","Excelente","Bueno","Excelente","Excelente","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Acetato de Amonio","","","Bueno","Excelente","Bueno","Bueno","No usar","Bueno","Bueno","Bueno"],
+["Acetato deButilo","","","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Acetato de Celulosa","","","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Acetato de Cobre","No usar","","Excelente","Excelente","Bueno","No usar","No usar","Excelente","No usar","Pobre"],
+["Acetato de Etilo","Bueno","Excelente","Bueno","Bueno","Bueno","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Acetato de Metilo","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Acetato de Plomo","No usar","","Bueno","Bueno","","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Acetato de Sodio","Pobre","","Bueno","Bueno","Bueno","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Acetato de Vinilo","","","Bueno","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Acetato Isopropílico","","","Bueno","Excelente","","","","Bueno","Bueno",""],
+["Acetato Polivinílico","","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Acetileno","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente"],
+["Acetona","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Acido Acético, 10%","Pobre","Excelente","Excelente","Excelente","Excelente","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Acido Acético, 80%","Pobre","Excelente","Excelente","Excelente","Excelente","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Acido Acético, aireado","No usar","","Excelente","","Excelente","No usar","No usar","Excelente","Excelente","Excelente"],
+["Acido Acético, crudo","Pobre","Excelente","Excelente","Excelente","Excelente","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Acido Acético, glacial","","Excelente","No usar","","Excelente","","","No usar","No usar",""],
+["Acido Acético, Libre de aire","No usar","Excelente","Excelente","Excelente","Excelente","No usar","Bueno","Excelente","Excelente","Excelente"],
+["Acido Acético, puro","No usar","Excelente","Excelente","Excelente","Excelente","No usar","Pobre","Excelente","Excelente","No usar"],
+["Acido Arsenico","No usar","","Bueno","Bueno","Bueno","No usar","No usar","Bueno","Bueno","No usar"],
+["Acido Benzoico","No usar","Excelente","Bueno","Bueno","Excelente","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Acido Bórico","No usar","","Bueno","Bueno","Excelente","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Acido Butírico","No usar","","Bueno","Bueno","Excelente","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Acido Cianídrico","No usar","","Excelente","Excelente","Bueno","Pobre","No usar","Excelente","","Pobre"],
+["Acido Cítrico","No usar","Pobre","Bueno","Excelente","Excelente","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Acido Clorosulfónico, seco","Bueno","","Bueno","Bueno","Excelente","Bueno","Pobre","Bueno","","Bueno"],
+["Acido Cresílico","Pobre","","Bueno","Bueno","","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Acido Crómico < 50%","No usar","Pobre","Pobre","Bueno","Bueno","No usar","No usar","Pobre","No usar","Pobre"],
+["Acido Crómico > 50%","No usar","No usar","Pobre","Bueno","Bueno","Pobre","No usar","Pobre","No usar","No usar"],
+["Acido Esteárico","Pobre","","Bueno","Bueno","Excelente","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Acido Fénico","No usar","Bueno","Bueno","Excelente","","No usar","No usar","Bueno","Bueno","Bueno"],
+["Acido Fluobórico","","","Bueno","Excelente","","","","Bueno","",""],
+["Acido Fluorosilícico","No usar","","Bueno","Bueno","Bueno","No usar","Bueno","Bueno","","Excelente"],
+["Acido Fórmico, caliente","No usar","No usar","Bueno","Bueno","Bueno","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Acido Fórmico, frio","No usar","Bueno","Bueno","Excelente","Excelente","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Acido Fosforico 10%","No usar","Bueno","No usar","Bueno","","No usar","No usar","No usar","No usar","No usar"],
+["Acido Fosforico 50% cal.","No usar","No usar","No usar","Bueno","","No usar","No usar","No usar","No usar","Pobre"],
+["Acido Fosforico 50% frio","No usar","Bueno","Bueno","Bueno","","No usar","No usar","Bueno","Bueno","Pobre"],
+["Acido Fosforico 85%cal.","Pobre","","Bueno","Bueno","","Pobre","No usar","Bueno","Bueno",""],
+["Acido Fosforico 85% frio","Bueno","Pobre","Excelente","Bueno","","Bueno","No usar","Excelente","Excelente","Excelente"],
+["Acido Ftalico","Pobre","","Bueno","Bueno","Bueno","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Acido Fumárico","","","","Excelente","","","","","",""],
+["Acido Gálico5%","No usar","","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","","Bueno"],
+["Acido Hidrofluosilísico","No usar","","Pobre","Bueno","","No usar","Excelente","Pobre","Pobre","Bueno"],
+["Acido Láctico Conc., frio","No usar","No usar","Bueno","Excelente","Bueno","No usar","No usar","Bueno","Bueno","No usar"],
+["Acido Láctico Conc., cal.","No usar","No usar","Excelente","Excelente","Excelente","No usar","No usar","Excelente","Excelente","No usar"],
+["Acido Láctico Diluido, cal.","No usar","No usar","Excelente","Excelente","Bueno","No usar","No usar","Excelente","Excelente","No usar"],
+["Acido Láctico Diluido, frio","No usar","Bueno","Excelente","Excelente","Excelente","No usar","No usar","Excelente","Excelente","Pobre"],
+["Acido Linoleico","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Acido Maleico","Bueno","","Bueno","Bueno","Excelente","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Acido Málico","No usar","","Bueno","Bueno","","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Acido Nicotínico","Bueno","","Excelente","Excelente","","Pobre","Excelente","Excelente","Excelente","Excelente"],
+["Acido Nítrico 10%","No usar","Excelente","Excelente","Excelente","","No usar","No usar","Excelente","No usar","No usar"],
+["Acido Nítrico 100%","No usar","No usar","Excelente","Excelente","","No usar","No usar","Excelente","No usar","No usar"],
+["Acido Nitrico 30%","No usar","No usar","Excelente","Excelente","","No usar","No usar","Excelente","No usar","No usar"],
+["Acido Nitrico 80%","No usar","No usar","Pobre","Bueno","","No usar","No usar","Pobre","No usar","No usar"],
+["Acido Nitrico Anhidro","No usar","No usar","Excelente","Excelente","","Pobre","No usar","Excelente","No usar","No usar"],
+["Acido Nitroso 10%","No usar","","Bueno","Bueno","","No usar","No usar","Bueno","Bueno","No usar"],
+["Acido Olaico","","","Bueno","Bueno","","","","Bueno","Bueno","Excelente"],
+["Acido Oleico","Pobre","","Bueno","Excelente","Bueno","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Acido Oxálico","No usar","No usar","Bueno","Bueno","","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Acido Palmitico","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Acido Pirico","No usar","Pobre","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","","No usar"],
+["Acido Pirolgalico","Bueno","Bueno","Bueno","Excelente","","Bueno","Bueno","Bueno","","Bueno"],
+["Acido Salicílico","No usar","","Excelente","Bueno","","No usar","Pobre","Excelente","Excelente","Bueno"],
+["Acido Sulfurico 0 a 77%","No usar","","Pobre","Bueno","","No usar","Pobre","Pobre","No usar","Bueno"],
+["Acido Sulfurico 100%","Pobre","Bueno","Excelente","Excelente","","Bueno","Pobre","Excelente","No usar","No usar"],
+["Acido Sulfuroso","No usar","","Bueno","Bueno","Bueno","No usar","No usar","Bueno","Bueno","No usar"],
+["Acido Tánico","Pobre","Bueno","Bueno","Bueno","Bueno","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Acido Tartárico","No usar","Excelente","Excelente","Excelente","Bueno","No usar","Bueno","Excelente","Excelente","Bueno"],
+["Acido Tricloroacetico","","","No usar","Bueno","Excelente","No usar","Bueno","No usar","","Bueno"],
+["Acido Urico","","","Excelente","Excelente","Excelente","","","Excelente","Excelente",""],
+["Acidos Grasos","No usar","","Excelente","Excelente","Excelente","No usar","Pobre","Excelente","Excelente","Bueno"],
+["Acrilonita","Excelente","","Excelente","Bueno","Excelente","Pobre","Excelente","Excelente","Pobre","Excelente"],
+["Agua Carbonatada","Bueno","Bueno","Excelente","Excelente","","Excelente","Bueno","Excelente","Excelente","Bueno"],
+["Agua Clorada","","No usar","Pobre","Excelente","No usar","","","Pobre","Pobre","No usar"],
+["Agua de Mar","No usar","","Bueno","Bueno","","No usar","Pobre","Bueno","Bueno","Excelente"],
+["Agua Destilada","No usar","Excelente","Excelente","Excelente","Excelente","No usar","Excelente","Excelente","Excelente","Excelente"],
+["Agua Fria","Pobre","Excelente","Excelente","Excelente","Excelente","Pobre","Excelente","Excelente","Excelente","Excelente"],
+["Agua Oxigenada, conc.","No usar","","Bueno","Bueno","No usar","No usar","No usar","Bueno","No usar","No usar"],
+["Agua Oxigenada, diluida","No usar","","Bueno","Bueno","No usar","No usar","Pobre","Bueno","Pobre","No usar"],
+["Aguardiente de Remolacha","Bueno","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Aguarrás","Bueno","Excelente","Bueno","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Aguas Cloacales","Pobre","Excelente","Bueno","Bueno","","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Aire","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente"],
+["Alcohol Amílico","Bueno","","Excelente","Bueno","Bueno","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Alcohol Butílico","Bueno","","Excelente","Excelente","Excelente","Pobre","Bueno","Excelente","Excelente","Excelente"],
+["Alcohol de Oleum","","","Bueno","Bueno","","No usar","No usar","Bueno","","No usar"],
+["Alcohol Diacetona","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Bueno"],
+["Alcohol Etílico","Bueno","","Bueno","Excelente","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Alcohol Isopropílico","Bueno","","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Alcohol Metílico","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Alcohol Propílico","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Alcoholes Grasos","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente",""],
+["Aldehido Benzoico","Excelente","","Excelente","Excelente","Bueno","Pobre","Excelente","Excelente","Excelente","Bueno"],
+["Almidón","Pobre","","Bueno","Excelente","","Pobre","Bueno","Excelente","Excelente","Excelente"],
+["Alquitran","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Alquitrán para Caminos","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Alumbre","","Pobre","Bueno","Bueno","Excelente","No usar","No usar","Bueno","Bueno","Pobre"],
+["Alumbre Amoniacal","","","Excelente","Excelente","Excelente","","","Excelente","Excelente",""],
+["Alumbre de Cromo","Bueno","","Excelente","Excelente","","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Alumina","","","Excelente","","Excelente","","Excelente","Excelente","",""],
+["Aluminato de Sodio","Pobre","","Excelente","Bueno","Bueno","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Aminas","Bueno","Excelente","Excelente","Excelente","Bueno","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Amoníaco (solucion)","Bueno","","Excelente","Excelente","Bueno","Bueno","No usar","Excelente","Excelente","Bueno"],
+["Amoníaco Acuoso","Excelente","","Excelente","Excelente","Bueno","Excelente","No usar","Excelente","Excelente","Bueno"],
+["Anhídrido Amoniacal liquido","Excelente","Excelente","Excelente","Excelente","Excelente","Bueno","No usar","Excelente","Excelente","Bueno"],
+["Anhídrido Acético","No usar","Bueno","Bueno","Bueno","Excelente","No usar","No usar","Bueno","Bueno","Bueno"],
+["Anhídrido Fosforico","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Anhídrido Ftalico","Pobre","","Bueno","Bueno","Excelente","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Anhídrido Maleico","","","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Anilina","Pobre","","Bueno","Excelente","Bueno","Pobre","No usar","Bueno","Bueno","Bueno"],
+["Aqua Regia (ácido fuerte)","No usar","","Bueno","Bueno","","No usar","No usar","Bueno","No usar",""],
+["Asfalto, Emulsion","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Asfalto, Líquido","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Azucar, Jarabe y Mermelada","","Excelente","Excelente","Excelente","","Pobre","Bueno","Excelente","Excelente",""],
+["Azufre","Pobre","","Bueno","Excelente","","Pobre","No usar","Bueno","Bueno","Bueno"],
+["Azufre, Fundido","Pobre","","Bueno","Excelente","Bueno","Bueno","No usar","Bueno","Bueno","No usar"],
+["Barniz","Pobre","","Excelente","Excelente","Excelente","Pobre","Excelente","Excelente","Excelente","Excelente"],
+["Benceno (Benzol)","Bueno","Bueno","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno","Excelente"],
+["Benzoato de Sodio","","","Bueno","Bueno","","","","Bueno","Bueno","Bueno"],
+["Bicarbonato de Amonio","Pobre","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Bicarbonato de Potasio","","","Excelente","Excelente","","","","Excelente","Excelente","Bueno"],
+["Bicarbonato de Sodio","Pobre","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Bicromato de Potasio","","","Excelente","Excelente","","","","Excelente","Excelente","Excelente"],
+["Bicromato de Sodio","","","Bueno","Bueno","","","","Bueno","",""],
+["Bisulfato de Magnesio","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Bisulfato dePotasio","","","Excelente","Excelente","","","","Excelente","Excelente","Bueno"],
+["Bisulfato de Sodio 10%","No usar","","Excelente","Excelente","","No usar","Bueno","Excelente","Excelente","Bueno"],
+["Bisulfito de Calcio","No usar","","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","Bueno","No usar"],
+["Bisulfito de Potasio","No usar","","Bueno","Bueno","","No usar","Pobre","Bueno","Bueno","No usar"],
+["Bisulfito de Sodio 10%","No usar","","Excelente","Bueno","Bueno","No usar","Bueno","Excelente","Excelente","Bueno"],
+["Bisulfuro de Carbono","Bueno","","Bueno","Bueno","","Bueno","Pobre","Bueno","Bueno","Bueno"],
+["Bisulfuro de Magnesio","","","Bueno","Bueno","","No usar","No usar","Bueno","Bueno","Bueno"],
+["Borato de Sodio","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Borax (Borato de Sodio)","Pobre","","Excelente","","Excelente","Pobre","No usar","Excelente","Excelente","Excelente"],
+["Bromo, seco","No usar","","No usar","Bueno","Excelente","No usar","Bueno","No usar","No usar","Excelente"],
+["Bromuro de Amonio 5%","","","Bueno","Bueno","","","","Bueno","Bueno","Bueno"],
+["Bromuro de Etilo","","","Bueno","Pobre","","Bueno","Excelente","Bueno","Bueno","Bueno"],
+["Bromuro de Metilo","","","Bueno","Excelente","","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Bromuro de Plata","","Pobre","Excelente","Excelente","","","","Excelente","Excelente","Bueno"],
+["Bromuro de Potasio","No usar","Pobre","Excelente","Bueno","","No usar","Pobre","Excelente","Excelente","Bueno"],
+["Bromuro de Propilo","","","Bueno","Excelente","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Bromuro de Sodio 10%","Pobre","","Bueno","Bueno","","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Bromuro de Zinc","","","Bueno","Bueno","Excelente","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Butadieno","Bueno","","Excelente","Excelente","Bueno","Bueno","Pobre","No usar","Excelente","Pobre"],
+["Butano","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Butileno","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Café","","","Excelente","Excelente","","No usar","Excelente","Bueno","Excelente","Bueno"],
+["Carbonato de Amonio","Bueno","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Carbonato de Bario","Bueno","","Bueno","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Carbonato de Calcio","No usar","","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Carbonato de Cobre","","","Excelente","Excelente","","","","Excelente","",""],
+["Carbonato de Magnesio","","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Carbonato de Manganeso","","","Bueno","Excelente","","","","Bueno","Bueno",""],
+["Carbonato de Potasio","Bueno","Excelente","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Carbonato de Sodio","Bueno","","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Caseína","","","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","Pobre"],
+["Ceras","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Cerveza","No usar","Excelente","Excelente","Excelente","","No usar","Bueno","Excelente","Excelente","Excelente"],
+["Cetonas","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Cianuro de Bario","","","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","No usar"],
+["Cianuro de Cobre","","","Excelente","Excelente","","No usar","No usar","Excelente","Excelente","Pobre"],
+["Cianuro de Mercurio","No usar","","Excelente","Excelente","Bueno","No usar","No usar","Excelente","Excelente","Pobre"],
+["Cianuro de Plata","","","Excelente","Excelente","","No usar","No usar","Excelente","Excelente","Bueno"],
+["Cianuro de Potasio","Bueno","","Bueno","Bueno","Bueno","Bueno","No usar","Bueno","Bueno","Bueno"],
+["Cianuro de Sodio","Bueno","Bueno","Excelente","Excelente","","Bueno","No usar","Excelente","Excelente","Bueno"],
+["Ciclohexano","Excelente","","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente","Bueno"],
+["Ciclohexanona","","","Excelente","Excelente","Bueno","","Bueno","Excelente","Excelente","Bueno"],
+["Citrato de Amonio Ferroso","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Citrato de Sodio","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Clorato de Calcio","","","Bueno","Bueno","","Pobre","No usar","Bueno","Bueno","Bueno"],
+["Clorato de Potasio","Bueno","Bueno","Bueno","Bueno","","Bueno","Bueno","Bueno","Pobre","Pobre"],
+["Clorato de Sodio","Pobre","","Bueno","Bueno","Bueno","Pobre","Bueno","Bueno","Bueno","Pobre"],
+["Cloro gas, seco","Bueno","Pobre","Bueno","Excelente","Excelente","Bueno","Pobre","Bueno","Bueno","Excelente"],
+["Clorobenceno, húmedo","Bueno","","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Clorofila, seca","","","Bueno","Excelente","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Cloroformo, seco","Bueno","Bueno","Excelente","Excelente","Bueno","Pobre","Bueno","Excelente","Excelente","Excelente"],
+["Cloruro de Acetilo","","","Pobre","","Excelente","No usar","Excelente","Pobre","Pobre","Bueno"],
+["Cloruro de Aluminio (solucion)","","Pobre","No usar","Bueno","Excelente","","","No usar","No usar","Bueno"],
+["Cloruro de Aluminio seco","Pobre","","Pobre","No usar","Bueno","No usar","Bueno","Pobre","Pobre","Bueno"],
+["Cloruro de Amilo","","","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Cloruro deAmonio","No usar","Pobre","Pobre","Bueno","Bueno","No usar","No usar","Pobre","Pobre","Bueno"],
+["Cloruro de Bario","Pobre","Bueno","Bueno","Pobre","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Cloruro de Calcio","Pobre","Bueno","Bueno","Bueno","Excelente","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Cloruro de Etilo, humedo","No usar","","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Cloruro de Etilo, seco","Bueno","Excelente","Excelente","Excelente","Bueno","Bueno","Bueno","Bueno","Excelente","Bueno"],
+["Cloruro de Litio","","","Bueno","Excelente","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Cloruro de Magnesio","Pobre","Pobre","Bueno","Bueno","Excelente","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Cloruro de Mercurio","No usar","","Bueno","Bueno","Bueno","No usar","No usar","Bueno","Bueno","No usar"],
+["Cloruro de Metileno","Bueno","","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Cloruro de Metilo","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Cloruro de Niquel","No usar","","Bueno","Excelente","Excelente","No usar","No usar","Bueno","Bueno","Bueno"],
+["Cloruro de Potasio","Pobre","Bueno","Bueno","Excelente","Bueno","Bueno","Pobre","Bueno","Bueno","Bueno"],
+["Cloruro de Sodio","Pobre","","Bueno","Excelente","Bueno","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Cloruro Ferroso","No usar","","No usar","No usar","No usar","No usar","Bueno","No usar","No usar","No usar"],
+["Cloruro Polivinílico","","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Cloruros de Azufre","No usar","","No usar","Excelente","","No usar","Bueno","No usar","No usar","Bueno"],
+["Cola","Excelente","","Bueno","Excelente","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Colorantesde Anilina","Pobre","","Excelente","Excelente","","Pobre","Pobre","Excelente","Excelente","Excelente"],
+["Combustible JP-4","Excelente","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Combustible JP-5","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Combustible JP-6","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Combustible p/Quemadores","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Combustible RP-1","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Cresol","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Cromatode Potasio","","","Bueno","Bueno","","Bueno","Bueno","Bueno","","Bueno"],
+["Cromatode Sodio","Bueno","","Excelente","Bueno","","Bueno","Pobre","Excelente","","Bueno"],
+["Detergentes sinteticos","","","Bueno","Excelente","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Dextrina","","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Dicloroetano","","","Pobre","Bueno","","Pobre","","Pobre","Pobre","Bueno"],
+["Dicloroetil Eter","","","Bueno","Bueno","","Bueno","Bueno","Bueno","",""],
+["Dicromato de Potasio","Pobre","","Bueno","Excelente","","Pobre","No usar","Bueno","","Bueno"],
+["Diesel Oil","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Dietil Benceno","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Dietilamina","Excelente","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Dietilenglicol","","","Excelente","Excelente","","Excelente","Bueno","Excelente","Excelente","Bueno"],
+["Dimetil Formamida","","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Dimetil Ftalato","","","No usar","","","","","No usar","No usar",""],
+["Dioxano","","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Dióxido de Azufre, Humedo","","Pobre","Excelente","Bueno","Bueno","","No usar","Excelente","Excelente","Excelente"],
+["Dióxido de Azufre, seco","Bueno","Excelente","Excelente","Bueno","Excelente","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Dióxido de Carbono, seco","Excelente","Excelente","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Dipentano","","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente",""],
+["Dowtherm","Bueno","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Emuls. De Látex de Goma","Bueno","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente",""],
+["Emulsión de Resina","Pobre","","Excelente","Excelente","","Pobre","Bueno","Excelente","Excelente","Excelente"],
+["Esencias Minerales","Bueno","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Esmalte","","","Excelente","","","","Excelente","Excelente","Excelente",""],
+["Estireno","Excelente","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Etano","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Eter Isopropílico","Excelente","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Eteres","Excelente","Bueno","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Etil Eter","","","Excelente","Excelente","Bueno","Pobre","Bueno","Excelente","Excelente","Excelente"],
+["Etilacrilato","Pobre","","Excelente","Excelente","Excelente","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Etilbenceno","","","Bueno","Excelente","Excelente","","","Bueno","Bueno",""],
+["Etilencloruro","","","Excelente","Excelente","Bueno","","","Excelente","Excelente","Bueno"],
+["Etilendicloruro","","","Bueno","Excelente","","","","Bueno","Bueno","Bueno"],
+["Etilenglicol","Bueno","Excelente","Bueno","Excelente","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Extractos de Café, Calientes","Pobre","","Excelente","Excelente","","Pobre","Bueno","Excelente","Pobre","Excelente"],
+["Fenol","No usar","Bueno","Excelente","Excelente","Excelente","No usar","Bueno","Excelente","Excelente","Excelente"],
+["Ferricianuro de Potasio","Pobre","Bueno","Excelente","Bueno","","Pobre","No usar","Excelente","Excelente","Bueno"],
+["Ferrocianuro de Potasio","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Ferrocianuro de Sodio","","","Excelente","Excelente","","","","Excelente","Excelente","Bueno"],
+["Fluido de Perforación","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Fluidos de Limpieza en Seco","Bueno","","Excelente","Excelente","","Bueno","Pobre","Excelente","Excelente","Bueno"],
+["Fluidos Siliconados","","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno",""],
+["Fluor gas, seco","","","Bueno","Excelente","Excelente","","","","","Excelente"],
+["Fluoruro de Aluminio","No usar","","Pobre","","Excelente","No usar","","Pobre","Pobre","Bueno"],
+["Fluoruro de Sodio","No usar","Bueno","Bueno","Excelente","","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Formaldehido, caliente","No usar","","Pobre","Bueno","Bueno","No usar","Bueno","Pobre","Pobre","Bueno"],
+["Formaldehido, frio","Excelente","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Formiato de Metilo","Pobre","","Bueno","Excelente","Bueno","Pobre","Excelente","Bueno","Bueno","Bueno"],
+["Fosfato de Amonio","No usar","","Bueno","Bueno","","No usar","No usar","Bueno","Bueno","Pobre"],
+["Fosfato de Clacio","","","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno",""],
+["Fosfato de Potasio","","","Bueno","Bueno","Bueno","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Fosfato de Sodio","Pobre","Bueno","Bueno","Bueno","Bueno","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Fosfato de Tributilo","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Fosfato Di-básico de Amonio","No usar","","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","Bueno","Pobre"],
+["Fosfato Di-Basico de K","Excelente","","Excelente","Excelente","Bueno","Excelente","Bueno","Excelente","Excelente","Bueno"],
+["Fosfato Di-Basico de Sodio","Pobre","","Bueno","Bueno","Bueno","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Fosfato Disodico","","","Bueno","Bueno","","","","Bueno","Bueno","Pobre"],
+["Fosfato Ester","Excelente","","Excelente","Excelente","","Excelente","No usar","Excelente","Excelente","Excelente"],
+["Fosfato Tri-básico de Amonio","No usar","","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","Bueno","Pobre"],
+["Fosfato Tri-Basico de K","Excelente","","Bueno","Bueno","","Excelente","","Bueno","Bueno","Bueno"],
+["Fosfato Tri-Basico de Sodio","Pobre","","Bueno","Bueno","Bueno","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Fosfato Trisodico","","","Bueno","Bueno","Excelente","","","Bueno","Bueno",""],
+["Freon 11, MF, 112, BF","","","Excelente","Excelente","Bueno","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Freon 113, TF","","","Excelente","Excelente","Bueno","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Freon 12,13,32,114,114","","","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Freon 21,30","","","Excelente","Excelente","Bueno","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Freon 22","","","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente",""],
+["Freon Gas, seco","Bueno","Excelente","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Freon, húmedo","","Bueno","Pobre","Bueno","Bueno","No usar","No usar","Pobre","Pobre","Bueno"],
+["Fuel Oil","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Furfural","Excelente","Bueno","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Gas Amoniaco caliente","","","Excelente","Excelente","Bueno","Bueno","No usar","Excelente","Excelente","Bueno"],
+["Gas de Generador","Bueno","Excelente","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Excelente"],
+["Gas de Horno de Coca","Bueno","","Excelente","Excelente","","Bueno","Pobre","Excelente","Bueno","Bueno"],
+["Gas de Iluminación","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Gas Licuado de Petroleo","Bueno","","Bueno","Bueno","","Bueno","Excelente","Bueno","Bueno","Bueno"],
+["Gas Manufacturado","Bueno","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Excelente"],
+["Gas Natural","Bueno","","Excelente","Bueno","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Gas Natural, ácido","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","No usar"],
+["Gas Odorizante","Bueno","","Bueno","Excelente","","Bueno","Excelente","Bueno","Bueno","Bueno"],
+["Gas Propano","Bueno","Excelente","Bueno","Excelente","Excelente","Bueno","Excelente","Bueno","Bueno","Bueno"],
+["Gases de Combustión","","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Gases Nitrosos","Bueno","","Excelente","Excelente","","Pobre","No usar","Excelente","Excelente","No usar"],
+["Gasolina con Plomo","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Bueno"],
+["Gasolina sin Plomo","Excelente","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Gasolina Sulfurada","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Pobre"],
+["Gasolina, aviación","Excelente","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Gasolina, refinada","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Gelatina","No usar","","Excelente","Excelente","","No usar","Excelente","Excelente","Excelente","Bueno"],
+["Glicerina (Glicerol)","Pobre","Excelente","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Glicol","Pobre","","Bueno","Excelente","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Glicol Amina","","Excelente","Bueno","","No usar","Bueno","No usar","Excelente","Bueno",""],
+["Glucosa","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Goma Laca Blanqueada","Excelente","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Grafito","","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Grasa","Excelente","","Excelente","Excelente","","Excelente","Pobre","Excelente","Excelente","Bueno"],
+["Grasa de Cerdo","","","Excelente","Excelente","","Excelente","Bueno","Excelente","Excelente",""],
+["Helio, gas","","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Heptano","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Hexafluoruro de Azufre","","","Excelente","Excelente","","","Bueno","Excelente","Excelente",""],
+["Hexano","Bueno","","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Hexanol Terciario","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Hidrato de Bario","","","Excelente","Excelente","","","No usar","Excelente","Excelente","Bueno"],
+["Hidrógeno gas, caliente","Bueno","","Bueno","Excelente","Excelente","","","Bueno","Bueno",""],
+["Hidrógeno gas, frio","Bueno","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Hidrosulfito de Zinc","Excelente","","Excelente","Excelente","Excelente","Bueno","Pobre","Excelente","","Bueno"],
+["Hidrox. De K Diluido, cal.","Bueno","Pobre","Bueno","Bueno","","Bueno","No usar","Bueno","Bueno","Excelente"],
+["Hidrox. De K Diluido, frio","Excelente","Bueno","Bueno","Bueno","","Excelente","No usar","Bueno","Bueno","Excelente"],
+["Hidrox. De K hasta 70%, cal.","Excelente","No usar","Bueno","Bueno","","Bueno","No usar","Bueno","Bueno","Excelente"],
+["Hidrox. De K hasta 70%, Frio","Bueno","Pobre","Bueno","Bueno","","Bueno","No usar","Bueno","Bueno","Excelente"],
+["Hidrox. De Sodio 20%, cal.","Bueno","Pobre","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Hidrox. De Sodio 20%, Frio","Excelente","Excelente","Excelente","Bueno","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Hidrox. De Sodio 50%, cal.","Bueno","Pobre","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Hidrox. De Sodio 50%, Frio","Excelente","Bueno","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Hidrox. De Sodio 70%, cal.","Bueno","Pobre","Excelente","Bueno","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Hidrox. De Sodio 70%, Frio","Excelente","Bueno","Excelente","Bueno","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Hidroxido de Aluminio","No usar","Bueno","Excelente","Bueno","Bueno","No usar","Excelente","Excelente","Excelente","Bueno"],
+["Hidroxido de Amonio 28%","Pobre","Excelente","Bueno","Excelente","Bueno","Pobre","No usar","Bueno","Bueno","No usar"],
+["Hidroxido de Amonio Conc.","Pobre","Excelente","Bueno","Excelente","Bueno","Pobre","No usar","Bueno","Bueno","Pobre"],
+["Hidroxido de Bario","Pobre","Excelente","Bueno","Excelente","","Bueno","Pobre","Bueno","Bueno","Bueno"],
+["Hidroxido de Calcio","Pobre","","Bueno","Bueno","Excelente","Pobre","Pobre","Bueno","Bueno","Excelente"],
+["Hidroxido de Magnesio","Bueno","Excelente","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Hidroxido de Magnesio, cal.","Bueno","Excelente","Excelente","Excelente","Bueno","Bueno","No usar","Excelente","Excelente","Excelente"],
+["HidroxidoFerrico","","","Excelente","Excelente","","","","Excelente","Excelente","Excelente"],
+["Hipocloritode Sodio","No usar","No usar","No usar","Pobre","Excelente","No usar","No usar","No usar","No usar","No usar"],
+["Hiposulfitode Sodio","","","Bueno","Bueno","","","","Bueno","Bueno","Bueno"],
+["Humos Acidos","No usar","","Bueno","Bueno","","No usar","No usar","Bueno","No usar",""],
+["Iodoformo","Bueno","","Excelente","Excelente","","Pobre","Pobre","Excelente","","Pobre"],
+["Yoduro de Potasio","Pobre","Bueno","Bueno","Bueno","","Pobre","No usar","Bueno","Bueno","Pobre"],
+["Iso-Butano","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Iso-Octano","Excelente","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Jarabe de Coca-Cola","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Jugo de Ananá","Pobre","","Excelente","Excelente","","Pobre","Pobre","Excelente","Excelente","Excelente"],
+["Jugo de Manzana","No usar","","Bueno","Excelente","","No usar","Pobre","Bueno","Bueno","Excelente"],
+["Jugo de Tomate","Pobre","","Excelente","Excelente","","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Jugos Cítricos","No usar","","Bueno","Excelente","","No usar","Bueno","Bueno","Bueno","Excelente"],
+["Jugos de Caña de Azucar","","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Jugos de Comidas","","","Excelente","Excelente","","","No usar","Excelente","Excelente",""],
+["Jugos de Fruta","No usar","","Excelente","Excelente","","No usar","Bueno","Excelente","","Bueno"],
+["Kerosene","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Ketchup","No usar","","Excelente","Excelente","","No usar","No usar","Excelente","Excelente","Bueno"],
+["Lactato de Sodio","","","Excelente","Excelente","","","","Excelente","Excelente","Bueno"],
+["Lactosa","","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Leche y Prod. De la Leche","No usar","","Excelente","Excelente","","No usar","Bueno","Excelente","Excelente","Bueno"],
+["Lecitina","","","Bueno","Bueno","","Pobre","Pobre","Bueno","","Bueno"],
+["Licor de Amoníaco","","","Excelente","Excelente","Bueno","","","Excelente","Excelente",""],
+["Licor Polisulfuroso","","","Bueno","Excelente","","Bueno","No usar","Bueno","Bueno","Bueno"],
+["Licores Borax","Pobre","","Bueno","Excelente","Bueno","Pobre","Excelente","Bueno","Bueno","Excelente"],
+["Líquido de Frenos","","Excelente","Bueno","","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Liquidos Azucarados","Bueno","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Manteca","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Mayonesa","No usar","","Excelente","Excelente","","No usar","No usar","Excelente","Excelente","Bueno"],
+["Melaza Comestible","Pobre","","Excelente","Excelente","","Pobre","Excelente","Excelente","Excelente","Excelente"],
+["Melaza Impura","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Mercurio","Excelente","","Excelente","Excelente","Bueno","Excelente","No usar","Excelente","Excelente","Bueno"],
+["Metafosfato de Sodio","Bueno","Bueno","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","Excelente"],
+["Metano","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Metanol","","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Metasilicato de Sodio, cal.","No usar","","Excelente","Excelente","Excelente","No usar","Bueno","Excelente","Excelente","Excelente"],
+["Metasilicato de Sodio, frio","Pobre","","Excelente","Excelente","","Pobre","Bueno","Excelente","Excelente","Excelente"],
+["Metil Cellosolve","Bueno","","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Metilacetona","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Metilamina","Bueno","","Excelente","Excelente","Bueno","Bueno","No usar","Excelente","Excelente","Pobre"],
+["Metilcelulosa","","","Excelente","Excelente","Bueno","","","Excelente","Excelente",""],
+["Metiletilcetona","Excelente","","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Metilisobutilcetona","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Mezcla de Acidos (frío)","Pobre","","Bueno","Bueno","","Pobre","No usar","Bueno","","Pobre"],
+["Mezclas Agua-Petroleo","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente",""],
+["Monoclorobenceno, seco","","","Bueno","Bueno","","","","Bueno","Bueno","Bueno"],
+["Monosulfato de Amonio","","","Excelente","Bueno","Bueno","","","Excelente","","Bueno"],
+["Monóxido deCarbono","","Excelente","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","","Excelente"],
+["Mostaza","Bueno","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Motogasolina","Excelente","Excelente","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Nafta","Bueno","","Bueno","Bueno","Excelente","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Naftaleno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Nitrato Cúprico","","","Excelente","Excelente","","","","Excelente","Bueno","No usar"],
+["Nitrato de Aluminio","","","Pobre","Bueno","Bueno","No usar","No usar","Pobre","Pobre","Pobre"],
+["Nitrato de Amonio","No usar","Excelente","Excelente","Bueno","Bueno","No usar","No usar","Excelente","Bueno","No usar"],
+["Nitrato de Bario","","","Excelente","Excelente","","","","Excelente","Bueno",""],
+["Nitrato de Calcio","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Nitrato de Cobre","No usar","","Bueno","Bueno","","No usar","No usar","Bueno","Bueno","No usar"],
+["Nitrato de Magnesio","","","Excelente","Excelente","","","","Excelente","Bueno","Bueno"],
+["Nitrato de Niquel","No usar","","Bueno","Excelente","","No usar","No usar","Bueno","Bueno","Bueno"],
+["Nitrato de Plata","No usar","","Excelente","Excelente","","No usar","No usar","Excelente","Bueno","No usar"],
+["Nitrato de Potasio","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Nitrato de Sodio","Bueno","Bueno","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","","Bueno"],
+["Nitrato Ferrico","No usar","Bueno","Pobre","Excelente","Bueno","No usar","No usar","Pobre","Pobre","No usar"],
+["Nitrato Mercuroso","","","Excelente","Excelente","","","No usar","Excelente","Bueno","No usar"],
+["Nitrito de Sodio","","","Bueno","Bueno","Bueno","","","Bueno","Bueno","Pobre"],
+["Nitrobenceno","Bueno","","Excelente","Excelente","Bueno","Bueno","No usar","Excelente","Excelente","Bueno"],
+["Nitrogeno","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Oleum","Bueno","","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","","Pobre"],
+["Otras Cetonas","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Oxalato de Aluminio","","","No usar","Excelente","Excelente","","","No usar","No usar","Bueno"],
+["Oxalato de Amonio5%","","","Excelente","Excelente","","","","Excelente","","Bueno"],
+["Oxalato de Potasio","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Oxido de Etileno","Bueno","","Bueno","Bueno","Excelente","Bueno","Pobre","Bueno","Bueno","Bueno"],
+["Oxido Nitroso","Bueno","","Bueno","Bueno","Bueno","Pobre","Bueno","Bueno","Bueno","No usar"],
+["Oxigeno","Bueno","Excelente","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","No usar","Excelente"],
+["Ozono, humedo","Pobre","","Excelente","Excelente","Excelente","Pobre","Bueno","Excelente","","Excelente"],
+["Ozono, seco","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","","Excelente"],
+["Parafina","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Paraformaldehido","Bueno","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Paraldehido","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Pentano","Bueno","","Excelente","Excelente","","Bueno","Excelente","Excelente","","Bueno"],
+["Perborato de Sodio","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Percloroetileno, seco","Bueno","","Excelente","Excelente","Bueno","Bueno","Pobre","Excelente","Excelente","Bueno"],
+["Permanganato de Potasio","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","","Bueno"],
+["Peroxido de Sodio","Pobre","Bueno","Bueno","Bueno","Bueno","Pobre","No usar","Bueno","Bueno","Bueno"],
+["Persulfato de Amonio","","","Excelente","Excelente","","","Pobre","Excelente","","No usar"],
+["Petrolato","Pobre","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Petroleo Refinado","Excelente","","Excelente","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente"],
+["Petroleo Refinado","Bueno","","Excelente","Excelente","Excelente","Pobre","Pobre","Excelente","Excelente","Excelente"],
+["Pinturas y Solventes","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Polifosfato de Sodio","","","Bueno","Bueno","Bueno","","","Bueno","Bueno","Bueno"],
+["Polvo húmedo Blanquedor","","","Pobre","Bueno","Excelente","","Bueno","Pobre","Pobre","No usar"],
+["Preparados Carbonatados","No usar","Bueno","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Pobre"],
+["Propilenglicol","Bueno","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Pulpade Papel","","","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Resina","Pobre","Bueno","Excelente","Excelente","","Pobre","Excelente","Excelente","Excelente","Excelente"],
+["Resinas de Melamina","","","Pobre","Pobre","","No usar","","Pobre","Pobre",""],
+["Resorcinol","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Sal","Pobre","","Bueno","Excelente","","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Salicilato de Sodio","","","Excelente","Excelente","","","","Excelente","Excelente",""],
+["Salmuera","","","Bueno","Bueno","","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Sangre (Jugos de Carne)","","Excelente","Excelente","Excelente","","No usar","Bueno","Excelente","Excelente","Bueno"],
+["Silicato de Calcio","","","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno",""],
+["Silicato de Etilo","","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Silicato de Sodio","Bueno","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Silicato de Sodio, caliente","Pobre","","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Soda Caustica","Bueno","","Excelente","Excelente","","Bueno","","Excelente","Excelente","Excelente"],
+["Sol. de Jabón (Estereato)","Excelente","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Excelente"],
+["Soluc. Electrolit. De Cianuro","","","Bueno","Bueno","","No usar","No usar","Bueno","","No usar"],
+["Solución de Sales Saturadas","No usar","","Bueno","Bueno","Excelente","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Solución Electrolítica de Plata","","","Excelente","Excelente","","","","Excelente","",""],
+["Soluciones Fertilizantes","Bueno","","Bueno","Bueno","","Bueno","Pobre","Bueno","Bueno","Bueno"],
+["Solventes Aromáticos","Pobre","","Excelente","Excelente","","Bueno","Excelente","Excelente","Excelente","Bueno"],
+["Solventes Clorados","Pobre","","Excelente","Excelente","","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Solventes de Acetato","Excelente","","Excelente","","Excelente","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Solventes de Goma","Excelente","","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Suerode Manteca","No usar","","Excelente","Excelente","","No usar","No usar","Excelente","Excelente","No usar"],
+["Sulafato de Magnesio","Bueno","Excelente","Excelente","Excelente","Excelente","Bueno","Bueno","Excelente","Excelente","Bueno"],
+["Sulafato de Manganeso","","","Excelente","Excelente","","No usar","Bueno","Excelente","Excelente","Bueno"],
+["Sulfato de Alumino","No usar","Excelente","Bueno","Bueno","Excelente","No usar","Pobre","Bueno","Bueno","Pobre"],
+["Sulfato de Amonio","Pobre","Bueno","Bueno","Bueno","Bueno","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Sulfato de Bario","Pobre","","Excelente","Excelente","","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Sulfato de Berilio","","","Bueno","Excelente","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Sulfato de Calcio","Pobre","Bueno","Bueno","Bueno","Bueno","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Sulfato de Cobre","No usar","Bueno","Bueno","Bueno","Excelente","No usar","No usar","Bueno","Bueno","Pobre"],
+["Sulfato de Cromo","","","Bueno","Pobre","","No usar","Pobre","Bueno","No usar","Bueno"],
+["Sulfato de Etilo","","","Bueno","Bueno","","","","Bueno","Bueno",""],
+["Sulfato de Magnesion","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Sulfato de Niquel","No usar","","Bueno","Excelente","Bueno","No usar","No usar","Bueno","Bueno","Bueno"],
+["Sulfato de Niquel Amonio","No usar","","Excelente","Excelente","","No usar","No usar","Excelente","Excelente","Pobre"],
+["Sulfato de Plomo","","","Bueno","Bueno","","No usar","Pobre","Bueno","Bueno","Bueno"],
+["Sulfato de Potasio","Bueno","Excelente","Excelente","Excelente","","Pobre","Bueno","Excelente","Excelente","Bueno"],
+["Sulfato de Sodio","Bueno","Bueno","Excelente","Excelente","","Bueno","Bueno","Excelente","Excelente","Excelente"],
+["Sulfato de Zinc","No usar","","Bueno","Excelente","Excelente","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Sulfato Dietilico","","","Bueno","Bueno","","Bueno","Bueno","Bueno","Bueno","Bueno"],
+["Sulfato Ferrico","No usar","Bueno","Bueno","Excelente","","No usar","No usar","Bueno","Bueno","No usar"],
+["Sulfato Ferroso","No usar","","Bueno","Bueno","Bueno","No usar","Bueno","Bueno","Bueno","Bueno"],
+["Sulfato Ferroso, saturado","Pobre","","Excelente","Excelente","Bueno","Pobre","Pobre","Excelente","Excelente","Bueno"],
+["Sulfato, Licor blanco","Pobre","Bueno","Bueno","No usar","","Pobre","Pobre","Bueno","Bueno","Pobre"],
+["Sulfato, Licor negro","Pobre","Excelente","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Sulfato, Licor verde","Pobre","Excelente","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Sulfito de Amonio","Pobre","","Excelente","Bueno","","Pobre","Pobre","Excelente","Excelente","No usar"],
+["Sulfito de Potasio","Bueno","","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","Excelente","Pobre"],
+["Sulfito de Sodio","","Excelente","Excelente","Excelente","Bueno","Excelente","Pobre","Excelente","Excelente","Bueno"],
+["Sulfuro de Amonio","No usar","","Bueno","Bueno","","No usar","No usar","Bueno","Bueno","Bueno"],
+["Sulfuro de Bario","Pobre","","Bueno","Bueno","","No usar","No usar","Bueno","Bueno","Pobre"],
+["Sulfuro de Hidrog., Humedo","Pobre","","Bueno","Bueno","No usar","No usar","No usar","Bueno","Bueno","Pobre"],
+["Sulfuro de Hidrogeno, Seco","Bueno","Bueno","Excelente","Bueno","Bueno","Bueno","Pobre","Excelente","Excelente","Bueno"],
+["Sulfuro de Potasio","Bueno","","Excelente","Excelente","Bueno","Bueno","Bueno","Excelente","Excelente","Pobre"],
+["Sulfuro de Sodio","Bueno","Excelente","Bueno","Bueno","","Bueno","No usar","Bueno","Bueno","Bueno"],
+["Tatraetil Plomo","Pobre","","Bueno","Bueno","","Pobre","Bueno","Bueno","Bueno","Excelente"],
+["Tetraborato de Sodio","","","Excelente","Excelente","","Excelente","","Excelente","Excelente",""],
+["Tetracloruro de Carb., húmedo","No usar","","Bueno","Bueno","Bueno","No usar","No usar","Bueno","Bueno","Bueno"],
+["Tetracloruro de Carbono, Seco","Bueno","Excelente","Excelente","Excelente","Excelente","Pobre","Pobre","Excelente","Excelente","Excelente"],
+["Tinta de Prensa","No usar","","Excelente","Excelente","","No usar","Pobre","Excelente","Excelente","Bueno"],
+["Tiosulfato de Sodio","No usar","","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Tiosulfato de Sodio","Bueno","Excelente","Bueno","Bueno","","Pobre","Pobre","Bueno","Bueno","Bueno"],
+["Tolueno (Toluol)","Excelente","","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente","Excelente"],
+["Tricloroetileno","Bueno","Excelente","Bueno","Bueno","Excelente","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Tricloruro Fosforoso","Bueno","","Excelente","Excelente","","Pobre","","Excelente","Excelente",""],
+["Trietanolamina","","","Bueno","Bueno","Excelente","","","Bueno","Bueno","Bueno"],
+["Trietilamina","","","Bueno","Bueno","Excelente","","Bueno","Bueno","",""],
+["Trioxido de Azufre","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","No usar",""],
+["Trioxido de Azufre, seco","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","Bueno","No usar","Bueno"],
+["Urea","Pobre","","Bueno","Bueno","Excelente","Pobre","Bueno","Bueno","Bueno","Bueno"],
+["Vapor de Agua (100°C)","Excelente","Excelente","Excelente","Excelente","","Excelente","Excelente","Excelente","Excelente","Bueno"],
+["Vapores de Acido Acético","","No usar","No usar","Bueno","Excelente","","No usar","No usar","No usar","Pobre"],
+["Vinagre","No usar","","Excelente","Excelente","Excelente","No usar","Bueno","Excelente","Excelente","Bueno"],
+["Wisky y Vinos","No usar","","Excelente","Excelente","Excelente","No usar","Bueno","Excelente","Excelente","Excelente"],
+["Xileno, seco","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"]
+];
+// Construir lista única de ingredientes ordenada alfabéticamente
+const ingredientesUnicos = [...new Set(DATA.map(r => r[0]))].sort((a,b) => a.localeCompare(b, 'es'));
+
+const ingredienteInput = document.getElementById('ingredienteInput');
+const ingredienteList = document.getElementById('ingredienteList');
+const resultsDiv = document.getElementById('results');
+
+ingredientesUnicos.forEach(i => {
+  const opt = document.createElement('option');
+  opt.value = i;
+  ingredienteList.appendChild(opt);
+});
+
+function renderResultados(registro) {
+  resultsDiv.innerHTML = '';
+  if (!registro) {
+    resultsDiv.innerHTML = '<div class="no-results">Sin datos para este ingrediente.</div>';
+    return;
+  }
+
+  const conValor = [];
+  const sinValor = [];
+
+  METALES.forEach((metal, idx) => {
+    const letra = registro[1 + idx];
+    if (letra === "" || letra === undefined) {
+      sinValor.push(metal);
+    } else {
+      conValor.push({ metal, letra });
+    }
+  });
+
+  conValor.sort((a, b) => (ORDEN[a.letra] ?? 99) - (ORDEN[b.letra] ?? 99));
+
+  conValor.forEach(({ metal, letra }) => {
+    const row = document.createElement('div');
+    row.className = 'result-row ' + (CLASE[letra] || '');
+    row.innerHTML = `<span class="mat-name">${metal} — ${letra}</span><span class="mat-desc">${letra}</span>`;
+    resultsDiv.appendChild(row);
+  });
+
+  if (sinValor.length > 0) {
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'Sin valorar';
+    resultsDiv.appendChild(label);
+
+    sinValor.forEach(metal => {
+      const row = document.createElement('div');
+      row.className = 'result-row sin-dato';
+      row.innerHTML = `<span class="mat-name">${metal}</span><span class="mat-desc">Sin valorar</span>`;
+      resultsDiv.appendChild(row);
+    });
+  }
+}
+
+function onIngredienteChange() {
+  const ing = ingredienteInput.value.trim();
+  if (!ingredientesUnicos.includes(ing)) {
+    resultsDiv.innerHTML = '';
+    return;
+  }
+  const registro = DATA.find(r => r[0] === ing);
+  renderResultados(registro);
+}
+
+ingredienteInput.addEventListener('input', onIngredienteChange);
+ingredienteInput.addEventListener('change', onIngredienteChange);
+</script>
+</body>
+</html>
