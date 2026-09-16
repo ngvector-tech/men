@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso Operarios</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    padding: 28px 32px 32px;
+    width: 100%;
+    max-width: 480px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 0 0 22px;
+  }
+  .operarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .operario-btn {
+    padding: 14px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #c7ccd1;
+    border-radius: 8px;
+    background: #f8f9fa;
+    color: #222;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .operario-btn:hover {
+    background: #4a90d9;
+    color: #fff;
+    border-color: #4a90d9;
+  }
+  .operario-btn.activo {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+  .login-box {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e3e6;
+  }
+  .login-box.visible { display: block; }
+  .login-box label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+  }
+  .login-box input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .login-box input:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+  .login-box button {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+  }
+  .login-box button:hover { background: #333; }
+  .error {
+    color: #c0392b;
+    font-size: 13px;
+    margin-bottom: 10px;
+    min-height: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Selecciona tu usuario</h1>
+
+  <div class="operarios" id="operariosBox"></div>
+
+  <div class="login-box" id="loginBox">
+    <label for="passInput">Contraseña para <span id="nombreOperario"></span></label>
+    <input type="password" id="passInput" placeholder="Introduce la contraseña">
+    <div class="error" id="errorMsg"></div>
+    <button type="button" id="btnEntrar">Entrar</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN DE OPERARIOS Y CONTRASEÑAS
+// Edita aquí: "Nombre visible": "contraseña"
+// ============================================================
+const OPERARIOS = {
+  "Arturo":   "5248",
+  "Nahum":  "6724",
+  "Juanma":  "3249",
+  "Paco":    "5862",
+  "Ricardo": "7435"
+};
+
+const operariosBox = document.getElementById('operariosBox');
+const loginBox    = document.getElementById('loginBox');
+const nombreSpan  = document.getElementById('nombreOperario');
+const passInput   = document.getElementById('passInput');
+const errorMsg    = document.getElementById('errorMsg');
+const btnEntrar   = document.getElementById('btnEntrar');
+
+let operarioSeleccionado = null;
+
+// Crear un botón por cada operario
+Object.keys(OPERARIOS).forEach(nombre => {
+  const btn = document.createElement('button');
+  btn.className = 'operario-btn';
+  btn.textContent = nombre;
+  btn.type = 'button';
+  btn.addEventListener('click', () => seleccionarOperario(nombre, btn));
+  operariosBox.appendChild(btn);
+});
+
+function seleccionarOperario(nombre, btn) {
+  operarioSeleccionado = nombre;
+  document.querySelectorAll('.operario-btn').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  nombreSpan.textContent = nombre;
+  loginBox.classList.add('visible');
+  passInput.value = '';
+  errorMsg.textContent = '';
+  passInput.focus();
+}
+
+btnEntrar.addEventListener('click', validar);
+passInput.addEventListener('keydown', e => { if (e.key === 'Enter') validar(); });
+
+function validar() {
+  if (!operarioSeleccionado) return;
+  const pass = passInput.value;
+
+  if (pass === OPERARIOS[operarioSeleccionado]) {
+    // Intentamos guardar en sessionStorage; si falla (file://),
+    // pasamos el operario por la URL como respaldo.
+    try {
+      sessionStorage.setItem('operario', operarioSeleccionado);
+      window.location.href = 'panel.html';
+    } catch (e) {
+      window.location.href = 'panel.html?op=' + encodeURIComponent(operarioSeleccionado);
+    }
+  } else {
+    errorMsg.textContent = 'Contraseña incorrecta. Inténtalo de nuevo.';
+    passInput.value = '';
+    passInput.focus();
+  }
+}
+</script>
+</body>
+</html>

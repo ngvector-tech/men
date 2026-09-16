@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Vínculos</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+  }
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+  }
+  .bienvenida {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 22px;
+  }
+  .vinculos {
+    display: grid;
+    gap: 12px;
+  }
+  .vinculo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: #f8f9fa;
+    border: 1px solid #e0e3e6;
+    border-left: 4px solid #4a90d9;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #222;
+    transition: all 0.15s;
+  }
+  .vinculo:hover {
+    background: #eaf4ff;
+    transform: translateX(2px);
+  }
+  .vinculo .titulo {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .vinculo .url {
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
+    word-break: break-all;
+  }
+  .vinculo .flecha {
+    font-size: 20px;
+    color: #4a90d9;
+    margin-left: 12px;
+  }
+  .vacio {
+    text-align: center;
+    color: #888;
+    padding: 30px 0;
+    font-style: italic;
+  }
+  .cerrar {
+    display: block;
+    margin: 26px auto 0;
+    padding: 10px 24px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .cerrar:hover { background: #333; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Panel de Vínculos</h1>
+  <div class="bienvenida">Bienvenido, <strong id="nombreUser"></strong></div>
+  <div class="vinculos" id="vinculosBox"></div>
+  <button class="cerrar" id="btnCerrar">Cerrar sesión</button>
+</div>
+
+<script>
+// ============================================================
+// VÍNCULOS POR OPERARIO
+// Cada operario tiene una lista de { titulo, url }
+// Edita libremente: añade, quita o cambia los que quieras
+// ============================================================
+const VINCULOS = {
+  "Arturo": [
+
+    { titulo: "Documentación",   url: "https://autode.sk/4huHBcz" },
+	  { titulo: "Documentación",   url: "https://autode.sk/4rhZtLh" }
+	    //{ titulo: "Documentación",   url: "" }
+
+  ],
+  "Nahum": [
+     //{ titulo: "Documentación",   url: "" },
+	    //{ titulo: "Documentación",   url: "" }
+  ],
+  "Juanma": [
+ //{ titulo: "Documentación",   url: "" },
+	    //{ titulo: "Documentación",   url: "" }
+  ],
+  "Paco": [
+   //{ titulo: "Documentación",   url: "" },
+	    //{ titulo: "Documentación",   url: "" }
+  ],
+  "Ricardo": [
+ //{ titulo: "Documentación",   url: "" },
+	    //{ titulo: "Documentación",   url: "" }
+  ]
+};
+
+// --- Obtener el operario: primero sessionStorage, si no, la URL ---
+let operario = null;
+try {
+  operario = sessionStorage.getItem('operario');
+} catch (e) { /* sessionStorage bloqueado */ }
+
+if (!operario) {
+  const params = new URLSearchParams(window.location.search);
+  operario = params.get('op');
+}
+
+// --- Protección: si no hay operario válido, volver al login ---
+if (!operario || !VINCULOS[operario]) {
+  window.location.href = 'index.html';
+}
+
+document.getElementById('nombreUser').textContent = operario;
+
+const box = document.getElementById('vinculosBox');
+const lista = VINCULOS[operario] || [];
+
+if (lista.length === 0) {
+  box.innerHTML = '<div class="vacio">No tienes vínculos asignados.</div>';
+} else {
+  lista.forEach(v => {
+    const a = document.createElement('a');
+    a.className = 'vinculo';
+    a.href = v.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.innerHTML = `
+      <div>
+        <div class="titulo">${v.titulo}</div>
+        <div class="url">${v.url}</div>
+      </div>
+      <div class="flecha">→</div>
+    `;
+    box.appendChild(a);
+  });
+}
+
+// --- Cerrar sesión ---
+document.getElementById('btnCerrar').addEventListener('click', () => {
+  try { sessionStorage.removeItem('operario'); } catch (e) {}
+  window.location.href = 'index.html';
+});
+</script>
+</body>
+</html>
