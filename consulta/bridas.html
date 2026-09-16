@@ -2267,7 +2267,7 @@ function updateImage(cat) {
   
   
   // Limpia el nombre de categorÃ­a para evitar caracteres invalidos
-  const imgPath = `img/${encodeURIComponent(cat)}.png`;
+  const imgPath = `consulta/img/${encodeURIComponent(cat)}.png`;
   
   imgBox.innerHTML = `
     <img src="${imgPath}" alt="Esquema ${cat}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>Imagen no encontrada: img/${cat}.png</span>';">
