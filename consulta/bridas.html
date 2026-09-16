@@ -2258,7 +2258,11 @@ function initCategories() {
 // Cargar imagen de la categorÃ­a desde la carpeta img/
 function updateImage(cat) {
   if (!cat) {
+<<<<<<< HEAD
+    imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria para ver su esquema (img/PLANA.png)</span>';
+=======
     imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria para ver su esquema (img/plana.png)</span>';
+>>>>>>> 36670af3cc8ac59f6bc6bda76472aac8405d18ce
 	
     return;
   }
@@ -2398,5 +2402,8 @@ btnLimpiar.addEventListener('click', function() {
 // InicializaciÃ³n
 initCategories();
 </script>
+<link rel="stylesheet" href="men-header.css">
+...
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

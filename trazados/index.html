@@ -7,138 +7,144 @@
 <style>
   :root{
     --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
-    --borde:#d0d5dd; --texto:#1f2937;
+    --borde:#e0e3e6; --texto:#1f2937;
   }
-  *{box-sizing:border-box}
-  body{
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    margin:0;color:var(--texto);background:#fff;
-  }
-  header{background:var(--azul);color:#fff;padding:20px}
-  header h1{margin:0;font-size:1.4rem}
-  header p{margin:6px 0 0;font-size:.9rem;opacity:.9}
-  main{max-width:900px;margin:0 auto;padding:24px}
-  h2{font-size:1.1rem;color:var(--azul);margin:24px 0 12px}
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
-    gap:14px;
-  }
-  a.boton{
-    display:block;text-decoration:none;color:#fff;
-    background:var(--azul);border-radius:10px;
-    padding:18px 20px;font-weight:600;font-size:1rem;
-    transition:background .15s, transform .05s;
-    box-shadow:0 2px 6px rgba(30,95,168,.15);
-  }
-  a.boton:hover{background:#164a80}
-  a.boton:active{transform:scale(.98)}
-  a.boton .sub{
-    display:block;font-weight:400;font-size:.82rem;
-    opacity:.9;margin-top:4px;
-  }
-  .footer{
-    text-align:center;font-size:.8rem;color:#667085;
-    margin-top:40px;padding-top:16px;border-top:1px solid var(--borde);
-  }
-   #salida{order:2}
 
-  table{border-collapse:collapse;width:100%;font-size:.95rem}
-  th,td{border:1px solid var(--borde);padding:8px 14px;text-align:left}
-  th{background:var(--azul-claro);font-weight:600;color:var(--azul)}
-  td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-  .nota{font-size:.78rem;color:#667085;margin-top:10px}
-  header{
-  background:var(--azul);
-  color:#fff;
-  padding:16px 20px;
-}
-.header-contenido{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
-header{
-  background:var(--azul);
-  color:#fff;
-  padding:16px 20px;
-}
-.header-contenido{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
-.header-texto h1{margin:0;font-size:1.25rem}
-.header-texto p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-.header-texto .autor{margin-top:8px;font-size:.95rem;font-weight:600;opacity:1}
+  * { box-sizing: border-box; }
 
-.header-logo img{
-  display:block;
-  height:60px;          /* ajusta este valor al tamaño que quieras */
-  width:auto;
-}
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+    display: block !important; /* la cabecera MEN queda arriba, no al lado */
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 22px;
+  }
+
+  h2 {
+    font-size: 14px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 20px 0 12px;
+  }
+
+  /* ---------- Rejilla de botones ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  a.boton {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    background: #111;
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: background .15s, transform .05s;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+  a.boton:hover { background: #333; }
+  a.boton:active { transform: scale(.98); }
+
+  a.boton .sub {
+    display: block;
+    font-weight: 400;
+    font-size: 12px;
+    opacity: .85;
+    margin-top: 4px;
+  }
+
+  /* ---------- Pie ---------- */
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #667085;
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--borde);
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>Calculadoras de Fabricación</h1>
-  <p>Herramientas de desarrollo y trazado para taller</p>
-  <div class="header-logo">
-      <img src="img/logo_men.png" alt="MEN">
-    </div>
-  </div>
-</header>
 
-<main>
+<div class="container">
+  <h1>Calculadoras de Fabricación</h1>
+  <p class="subtitulo">Herramientas de desarrollo y trazado para taller</p>
 
   <h2>Calculadoras disponibles</h2>
+
   <div class="grid">
 
-   <a class="boton" href="bayoneta.html">
+    <a class="boton" href="bayoneta.html">
       Bayoneta de tubería
       <span class="sub">Cálculo de carrete y corte de codo</span>
     </a>
-	
-		   <a class="boton" href="codoDegradado.html">
+
+    <a class="boton" href="codoDegradado.html">
       Codo degradado
-      <span class="sub">Codo degradado a angulo</span>
+      <span class="sub">Codo degradado a ángulo</span>
     </a>
-	
-	   <a class="boton" href="codo.html">
+
+    <a class="boton" href="codo.html">
       Offset de codo
-      <span class="sub">Doble codo enfrontado</span>
+      <span class="sub">Doble codo enfrentado</span>
     </a>
 
     <a class="boton" href="Cono.html">
       Desarrollo de conos
       <span class="sub">Cono completo, truncado y excéntrico</span>
     </a>
-	  <a class="boton" href="injerto.html">
+
+    <a class="boton" href="injerto.html">
       Injertos
       <span class="sub">Injertos de 0º a 90º</span>
     </a>
-	 </a>
-	  <a class="boton" href="Taladroencirculo.html">
-      Taladro en circulo
-      <span class="sub">Taldros distribuidos en un circulo</span>
+
+    <a class="boton" href="Taladroencirculo.html">
+      Taladro en círculo
+      <span class="sub">Taladros distribuidos en un círculo</span>
     </a>
-
-  
-
- 
-
-	
-
 
   </div>
 
   <div class="footer">
     Creado por: J.N.G
   </div>
-  
+</div>
 
-</main>
+<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

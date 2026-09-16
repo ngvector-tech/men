@@ -5,155 +5,239 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Consultor de Dimensiones de Válvulas (EN 558)</title>
 <style>
-  :root{
-    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
-    --borde:#d0d5dd; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
-  }
-  *{box-sizing:border-box}
-  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;color:var(--texto);background:#fff}
-  header{background:var(--azul);color:#fff;padding:16px 20px}
-  header h1{margin:0;font-size:1.25rem}
-  header p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-  main{max-width:1400px;margin:0;padding:20px}
+  * { box-sizing: border-box; }
 
-  .layout{display:grid;grid-template-columns:380px 1fr;gap:20px}
-  @media(max-width:900px){.layout{grid-template-columns:1fr}}
-  .panel{background:var(--gris);border:1px solid var(--borde);border-radius:8px;padding:16px}
-  .panel h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
-  label{display:block;font-size:.85rem;margin:10px 0 4px;font-weight:600}
-  select{width:100%;padding:8px;border:1px solid var(--borde);border-radius:6px;font-size:.9rem;background:#fff}
-  select:focus{outline:2px solid var(--azul);border-color:var(--azul)}
-  .resultado{
-    background:#fff;border:1px solid var(--borde);border-radius:8px;
-    padding:16px;min-height:200px;
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
   }
-  .resultado h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
-  .imagen-area{
-    text-align:center;min-height:180px;background:var(--azul-claro);
-    border-radius:6px;display:flex;align-items:center;justify-content:center;
-    padding:10px;margin-bottom:16px;
-  }
-  .imagen-area img{max-width:100%;max-height:220px}
-  .imagen-area p{color:#667085;font-size:.85rem}
-  .dato{
-    background:var(--azul-claro);border-radius:6px;padding:14px 16px;
-    color:var(--azul);font-size:1.1rem;font-weight:600;display:none;
-  }
-  .dato.visible{display:block}
-  .dato .valor{font-size:1.4rem;display:block;margin-top:4px}
-  .nota{font-size:.78rem;color:#667085;margin-top:10px}
-    #salida{order:2}
 
-  table{border-collapse:collapse;width:100%;font-size:.95rem}
-  th,td{border:1px solid var(--borde);padding:8px 14px;text-align:left}
-  th{background:var(--azul-claro);font-weight:600;color:var(--azul)}
-  td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-  .nota{font-size:.78rem;color:#667085;margin-top:10px}
-  header{
-  background:var(--azul);
-  color:#fff;
-  padding:16px 20px;
-}
-.header-contenido{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
-header{
-  background:var(--azul);
-  color:#fff;
-  padding:16px 20px;
-}
-.header-contenido{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
-.header-texto h1{margin:0;font-size:1.25rem}
-.header-texto p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-.header-texto .autor{margin-top:8px;font-size:.95rem;font-weight:600;opacity:1}
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
 
-.header-logo img{
-  display:block;
-  height:60px;          /* ajusta este valor al tamaño que quieras */
-  width:auto;
-}
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 22px;
+  }
+
+  /* ===== Layout en dos columnas como el original ===== */
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ===== Panel de selección ===== */
+  .panel {
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .panel h2 {
+    font-size: 14px;
+    margin: 0 0 12px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .field { margin-bottom: 16px; }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 5px;
+  }
+
+  select {
+    width: 100%;
+    padding: 9px 10px;
+    font-size: 15px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    background: #fff;
+    color: #222;
+  }
+  select:focus { outline: none; border-color: #4a90d9; }
+  select:disabled { background: #f1f3f5; color: #999; cursor: not-allowed; }
+
+  .nota {
+    font-size: 12px;
+    font-weight: 700;
+    color: #b04a3f;
+    margin-top: 14px;
+    line-height: 1.4;
+  }
+
+  /* ===== Panel de resultado ===== */
+  .resultado {
+    background: #fff;
+    border: 1px solid #e0e3e6;
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 260px;
+  }
+  .resultado h2 {
+    font-size: 14px;
+    margin: 0 0 12px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .imagen-area {
+    text-align: center;
+    min-height: 180px;
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 16px;
+  }
+  .imagen-area img { max-width: 100%; max-height: 220px; }
+  .imagen-area p { color: #667085; font-size: 13px; }
+
+  .dato {
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    border-radius: 8px;
+    padding: 18px;
+    text-align: center;
+    display: none;
+  }
+  .dato.visible { display: block; }
+
+  .dato .label {
+    font-size: 13px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .dato .valor {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+    display: block;
+  }
+
+  /* Tabla de dimensiones (si la usa valvulas.js) */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  th, td {
+    border: 1px solid #e0e3e6;
+    padding: 8px 14px;
+    text-align: left;
+  }
+  th { background: #f4f6f8; font-weight: 600; color: #111; }
+  td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
-<header>
-  <h1>Consultor de Dimensiones de Válvulas y accesorio</h1>
-  <p>Dimensiones en valvula según norma EN 558</p>
-  <p style="margin-top:8px;font-size:.95rem;font-weight:600;opacity:1;">Creado por: J.N.G</p>
-  <div class="header-logo">
-      <img src="img/logo_men.png" alt="MEN">
-    </div>
+
+<div class="container">
+  <h1>Consultor de Dimensiones de Válvulas y Accesorios</h1>
+  <p class="subtitulo">Dimensiones según norma EN 558</p>
+
+  <div class="layout">
+
+    <!-- ================= PANEL IZQUIERDO ================= -->
+    <section class="panel">
+      <h2>Selección</h2>
+
+      <div class="field">
+        <label for="tipoValvula">Tipo de válvula</label>
+        <select id="tipoValvula">
+          <option value="">— Seleccione un tipo —</option>
+          <option value="filtro">Filtro con brida (Serie 1)</option>
+          <option value="retencion">Válvula antirretorno wafer (Serie 16)</option>
+          <option value="bola">Válvula de bola con brida (Serie 14)</option>
+          <option value="compuerta_serie14">Válvula de compuerta (Serie 14 - corta)</option>
+          <option value="compuerta_serie15">Válvula de compuerta (Serie 15 - larga)</option>
+          <option value="globo">Válvula de globo (Serie 1)</option>
+          <option value="guillotina">Válvula de guillotina (Serie 20)</option>
+          <option value="mariposa_lug">Válvula de mariposa Lug (Serie 20)</option>
+          <option value="mariposa_wafer">Válvula de mariposa Wafer (Serie 20)</option>
+          <option value="mariposa_sanitaria_hh">Válvula mariposa H-H DIN 11851</option>
+          <option value="mariposa_sanitaria_mm">Válvula mariposa M-M DIN 11851</option>
+          <option value="mariposa_sanitaria_ms">Válvula mariposa M-S DIN 11851</option>
+          <option value="mariposa_sanitaria_s">Válvula mariposa S-S DIN 11851</option>
+          <option value="mariposa_sanitaria_eb">Válvula mariposa entre brida DIN 11851</option>
+          <option value="casquillo">Racor casquillo soldar DIN 11851</option>
+          <option value="macho">Racor macho soldar DIN 11851</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="dn">DN — Diámetro nominal</label>
+        <select id="dn" disabled>
+          <option value="">— Seleccione DN —</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="pn">PN — Presión nominal</label>
+        <select id="pn" disabled>
+          <option value="">— Seleccione PN —</option>
+        </select>
+      </div>
+
+      <p class="nota">
+        Los valores mostrados son ejemplos orientativos. Confirme siempre con el catálogo del fabricante.
+      </p>
+    </section>
+
+    <!-- ================= PANEL DERECHO ================= -->
+    <section class="resultado">
+      <h2>Resultado</h2>
+
+      <div id="imagenArea" class="imagen-area">
+        <p>Seleccione una válvula o accesorio para ver su imagen</p>
+      </div>
+
+      <div id="resultado" class="dato"></div>
+    </section>
+
   </div>
-</header>
-
-<main>
-<div class="layout">
-
-  <section class="panel">
-    <h2>Selección de válvula o accesorio</h2>
-
-    <label for="tipoValvula">Tipo de válvula</label>
-    <select id="tipoValvula">
-      <option value="">— Seleccione un tipo —</option>
-
-      
-    
-      <option value="filtro">Filtro con brida (Serie 1)</option>
-	    <option value="retencion">Válvula antirretorno wafer (Serie 16)</option>
-      <option value="bola">Válvula de bola con brida (Serie 14)</option>
-	     <option value="compuerta_serie14">Válvula de compuerta (Serie 14 - corta)</option>
-      <option value="compuerta_serie15">Válvula de compuerta (Serie 15 - larga)</option>
-	  <option value="globo">Válvula de globo (Serie 1)</option>
-	  <option value="guillotina">Válvula de guillotina (Serie 20)</option>
-   <option value="mariposa_lug">Válvula de mariposa Lug (Serie 20)</option>
-	     <option value="mariposa_wafer">Válvula de mariposa Wafer (Serie 20)</option>
-		 <option value="mariposa_sanitaria_hh">Válvula mariposa H-H DIN 11851</option>
-		 <option value="mariposa_sanitaria_mm">Válvula mariposa M-M DIN 11851</option>
-		 
-		 <option value="mariposa_sanitaria_ms">Válvula mariposa M-S DIN 11851</option>
-		 <option value="mariposa_sanitaria_s">Válvula mariposa S-S DIN 11851</option>
-		 
-		 
-		 <option value="mariposa_sanitaria_eb">Válvula mariposa entre brida DIN 11851</option>
-		 	  	  <option value="casquillo">Racor casquillo soldar DIN 11851</option>
-<option value="macho">Racor macho soldar DIN 11851</option>
-	  
-	  
-    
-
-    </select>
-
-    <label for="dn">DN — Diámetro nominal</label>
-    <select id="dn" disabled><option value="">— Seleccione DN —</option></select>
-
-    <label for="pn">PN — Presión nominal</label>
-    <select id="pn" disabled><option value="">— Seleccione PN —</option></select>
-
-  <p class="nota" style="font-weight:700; color:#b42318;">
-  Los valores mostrados son ejemplos orientativos. Confirme siempre con el catálogo del fabricante.
-</p>
-  </section>
-
-  <section class="resultado">
-    <h2>Resultado</h2>
-
-    <div id="imagenArea" class="imagen-area">
-      <p>Seleccione una válvula o accesorio para ver su imagen</p>
-    </div>
-
-    <div id="resultado" class="dato"></div>
-  </section>
-
 </div>
-</main>
 
 <script src="valvulas.js"></script>
+<link rel="stylesheet" href="men-header.css">
+...
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

@@ -7,150 +7,291 @@
 <style>
   :root{
     --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
-    --borde:#d0d5dd; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
+    --borde:#e0e3e6; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
   }
-  *{box-sizing:border-box}
-  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;color:var(--texto);background:#fff}
-  header{background:var(--azul);color:#fff;padding:16px 20px}
-  header h1{margin:0;font-size:1.25rem}
-  header p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-  main{max-width:1400px;margin:0 auto;padding:20px}
-  .layout{display:grid;grid-template-columns:360px 1fr;gap:20px}
-  @media(max-width:900px){.layout{grid-template-columns:1fr}}
-  .panel{background:var(--gris);border:1px solid var(--borde);border-radius:8px;padding:16px}
-  .panel h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
-  label{display:block;font-size:.85rem;margin:10px 0 4px;font-weight:600}
-  input,select{width:100%;padding:8px;border:1px solid var(--borde);border-radius:6px;font-size:.9rem;background:#fff}
-  input:focus,select:focus{outline:2px solid var(--azul);border-color:var(--azul)}
-  .fila{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  button{width:100%;padding:10px;margin-top:14px;border:none;border-radius:6px;background:var(--azul);color:#fff;font-size:.95rem;font-weight:600;cursor:pointer}
-  button:hover{background:#164a80}
-  button.sec{background:#fff;color:var(--azul);border:1px solid var(--azul)}
-  button.sec:hover{background:var(--azul-claro)}
-  .aviso{margin-top:10px;padding:8px 10px;border-radius:6px;font-size:.82rem;display:none}
-  .aviso.error{background:#fdecea;color:var(--error);display:block}
-  .aviso.ok{background:#e7f5ec;color:var(--ok);display:block}
-  .resultado{background:#fff;border:1px solid var(--borde);border-radius:8px;padding:16px;min-height:200px}
-  .resultado h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
 
-  .esquema{
-    margin-bottom:16px;
-    background:var(--azul-claro);
-    border-radius:6px;
-    padding:10px;
-    min-height:40px;
-  }
-  .esquema img{
-    display:block;
-    margin:0 auto;
-    max-width:100%;
-    height:auto;
-  }
-  .esquema:empty{display:none;}
+  * { box-sizing: border-box; }
 
-  .nota{font-size:.78rem;color:#667085;margin-top:10px}
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+    display: block !important; /* la cabecera MEN queda arriba, no al lado */
+  }
 
-  /* --- Tabla de resultados compacta --- */
-  .tabla-gen{
-    width:50%;
-    max-width:520px;
-    border-collapse:collapse;
-    margin-top:10px;
-    font-size:.88rem;
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
   }
-  .tabla-gen th{
-    background:var(--azul);
-    color:#fff;
-    padding:8px;
-    text-align:left;
-  }
-  .tabla-gen td{
-    border-bottom:1px solid var(--borde);
-    padding:6px 8px;
-  }
-  .tabla-gen tr:nth-child(even){background:var(--azul-claro)}
 
-  /* Primera columna ajustada al texto, segunda pegada a su derecha */
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 22px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Panel izquierdo ---------- */
+  .panel {
+    background: #f4f6f8;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .panel h2 {
+    font-size: 14px;
+    margin: 0 0 12px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .esquema {
+    margin-bottom: 14px;
+    background: #e8f0fa;
+    border-radius: 6px;
+    padding: 10px;
+    min-height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .esquema img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+  }
+  .esquema:empty { display: none; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    margin: 10px 0 4px;
+    font-weight: 600;
+    color: #444;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    font-size: 15px;
+    background: #fff;
+    color: #222;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+
+  .fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #333; }
+
+  button.sec {
+    background: #fff;
+    color: #111;
+    border: 1px solid #c7ccd1;
+  }
+  button.sec:hover { background: #f4f6f8; }
+
+  .aviso {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: none;
+  }
+  .aviso.error {
+    background: #fdecea;
+    color: var(--error);
+    display: block;
+  }
+  .aviso.ok {
+    background: #e7f5ec;
+    color: var(--ok);
+    display: block;
+  }
+
+  /* ---------- Panel derecho ---------- */
+  .resultado {
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 200px;
+  }
+  .resultado h2 {
+    font-size: 14px;
+    margin: 0 0 12px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  #svgPatron {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f6f8;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  #svgPatron svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Tabla que genera brida.js */
+  .tabla-gen {
+    width: 50%;
+    max-width: 520px;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .tabla-gen th {
+    background: #f4f6f8;
+    color: #111;
+    padding: 8px;
+    text-align: left;
+    border: 1px solid var(--borde);
+    font-weight: 600;
+  }
+  .tabla-gen td {
+    border: 1px solid var(--borde);
+    padding: 6px 8px;
+  }
+  .tabla-gen tr:nth-child(even) { background: #f4f6f8; }
+
   .tabla-gen th:first-child,
-  .tabla-gen td:first-child{
-    width:1%;
-    white-space:nowrap;
-    padding-right:18px;
+  .tabla-gen td:first-child {
+    width: 1%;
+    white-space: nowrap;
+    padding-right: 18px;
   }
   .tabla-gen th:last-child,
-  .tabla-gen td:last-child{
-    text-align:left;
+  .tabla-gen td:last-child {
+    text-align: left;
   }
 
-  .titulo{font-weight:700;color:var(--texto);padding:6px 0 2px}
-
-  .header-contenido{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
+  .titulo {
+    font-weight: 700;
+    color: #111;
+    padding: 6px 0 2px;
   }
-  .header-texto h1{margin:0;font-size:1.25rem}
-  .header-texto p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-  .header-texto .autor{margin-top:8px;font-size:.95rem;font-weight:600;opacity:1}
-  .header-logo img{display:block;height:60px;width:auto;}
+
+  .nota {
+    font-size: 12px;
+    color: #667085;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="header-contenido">
-    <div class="header-texto">
-      <h1>Calculadora de cuerda entre orificios</h1>
-      <p class="autor">Creado por: J.N.G</p>
-    </div>
-    <div class="header-logo">
-      <img src="img/logo_men.png" alt="MEN">
-    </div>
+
+<div class="container">
+  <h1>Calculadora de cuerda entre orificios</h1>
+  <p class="subtitulo">Cuerda, paso angular y cotas auxiliares de la brida</p>
+
+  <div class="layout">
+
+    <!-- ==================== PANEL IZQUIERDO ==================== -->
+    <section class="panel">
+      <h2>Datos de entrada</h2>
+
+      <div class="esquema" id="esquemaEntrada"></div>
+
+      <label for="unidad">Unidad</label>
+      <select id="unidad">
+        <option value="mm" selected>Milímetros (mm)</option>
+        <option value="pulg">Pulgadas (in)</option>
+      </select>
+
+      <div class="fila">
+        <div>
+          <label for="in_K">Radio K (centro orificios)</label>
+          <input type="number" id="in_K" value="300" step="any" min="0">
+        </div>
+        <div>
+          <label for="in_N">Nº de orificios (N)</label>
+          <input type="number" id="in_N" value="12" step="1" min="3">
+        </div>
+      </div>
+
+      <button id="btnCalcular">Calcular</button>
+      <button id="btnCSV" class="sec">Exportar CSV</button>
+      <button id="btnSVG" class="sec">Exportar SVG</button>
+      <div class="aviso" id="aviso"></div>
+
+      <p class="nota">
+        K es el radio de la circunferencia sobre la que están los centros de los orificios.
+        El programa calcula la cuerda entre dos orificios consecutivos, el paso angular
+        y las cotas auxiliares (perímetro y diámetro).
+      </p>
+    </section>
+
+    <!-- ==================== PANEL DERECHO ==================== -->
+    <section class="resultado">
+      <h2>Resultados</h2>
+      <div id="svgPatron"></div>
+      <div id="resumenSalida"></div>
+    </section>
+
   </div>
-</header>
-
-<main>
-<div class="layout">
-
-  <section class="panel">
-    <h2>Datos de entrada</h2>
-
-    <div class="esquema" id="esquemaEntrada"></div>
-
-    <label for="unidad">Unidad</label>
-    <select id="unidad">
-      <option value="mm" selected>Milímetros (mm)</option>
-      <option value="pulg">Pulgadas (in)</option>
-    </select>
-
-    <div class="fila">
-      <div><label for="in_K">Radio K (centro orificios)</label>
-        <input type="number" id="in_K" value="300" step="any" min="0"></div>
-      <div><label for="in_N">Nº de orificios (N)</label>
-        <input type="number" id="in_N" value="12" step="1" min="3"></div>
-    </div>
-
-    <button id="btnCalcular">Calcular</button>
-    <button id="btnCSV" class="sec">Exportar CSV</button>
-    <button id="btnSVG" class="sec">Exportar SVG</button>
-    <div class="aviso" id="aviso"></div>
-
-    <p class="nota">
-      K es el radio de la circunferencia sobre la que están los centros de los orificios.
-      El programa calcula la cuerda entre dos orificios consecutivos, el paso angular
-      y las cotas auxiliares (perímetro y diámetro).
-    </p>
-  </section>
-
-  <section class="resultado">
-    <h2>Resultados</h2>
-    <div id="svgPatron" style="margin-bottom:16px"></div>
-    <div id="resumenSalida"></div>
-  </section>
-
 </div>
-</main>
 
 <script src="brida.js"></script>
+
+<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

@@ -7,161 +7,261 @@
 <style>
   :root{
     --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
-    --borde:#d0d5dd; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
-  }
-  *{box-sizing:border-box}
-  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;color:var(--texto);background:#fff}
-  header{background:var(--azul);color:#fff;padding:16px 20px}
-  header h1{margin:0;font-size:1.25rem}
-  header p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-  main{max-width:900px;margin:0 auto;padding:20px}
-  .layout{display:grid;grid-template-columns:360px 1fr;gap:20px}
-  @media(max-width:800px){.layout{grid-template-columns:1fr}}
-  .panel{background:var(--gris);border:1px solid var(--borde);border-radius:8px;padding:16px}
-  .panel h2{font-size:1rem;margin:0 0 12px;color:var(--azul)}
-  label{display:block;font-size:.85rem;margin:10px 0 4px;font-weight:600}
-  input{width:100%;padding:8px;border:1px solid var(--borde);border-radius:6px;font-size:.9rem;background:#fff}
-  input:focus{outline:2px solid var(--azul);border-color:var(--azul)}
-  button{width:100%;padding:10px;margin-top:14px;border:none;border-radius:6px;background:var(--azul);color:#fff;font-size:.95rem;font-weight:600;cursor:pointer}
-  button:hover{background:#164a80}
-  .aviso{margin-top:10px;padding:8px 10px;border-radius:6px;font-size:.82rem;display:none}
-  .aviso.error{background:#fdecea;color:var(--error);display:block}
-  .aviso.ok{background:#e7f5ec;color:var(--ok);display:block}
-
-  /* Panel derecho */
-  .resultado{
-    background:#fff;
-    border:1px solid var(--borde);
-    border-radius:8px;
-    padding:16px;
-    min-height:200px;
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-  }
-  .resultado h2{font-size:1rem;margin:0;color:var(--azul)}
-
-  /* Esquema de entrada (izquierda) */
-  .esquema{
-    margin-bottom:16px;
-    background:var(--azul-claro);
-    border-radius:6px;
-    padding:10px;
-    min-height:40px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-  }
-  .esquema img{display:block;max-width:100%;height:auto}
-
-  /* Contenedor del patrón (derecha) */
-  #imagenPatron{
-    background:transparent;
-    border-radius:6px;
-    padding:0;
-    min-height:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    order:1;
-  }
-  #imagenPatron img{
-    display:block;
-    max-width:320px;
-    width:100%;
-    height:auto;
-    margin:0 auto;
+    --borde:#e0e3e6; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
   }
 
-  #salida{order:2}
+  * { box-sizing: border-box; }
 
-  table{border-collapse:collapse;width:100%;font-size:.95rem}
-  th,td{border:1px solid var(--borde);padding:8px 14px;text-align:left}
-  th{background:var(--azul-claro);font-weight:600;color:var(--azul)}
-  td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-  .nota{font-size:.78rem;color:#667085;margin-top:10px}
-  header{
-  background:var(--azul);
-  color:#fff;
-  padding:16px 20px;
-}
-.header-contenido{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
-header{
-  background:var(--azul);
-  color:#fff;
-  padding:16px 20px;
-}
-.header-contenido{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
-.header-texto h1{margin:0;font-size:1.25rem}
-.header-texto p{margin:4px 0 0;font-size:.85rem;opacity:.9}
-.header-texto .autor{margin-top:8px;font-size:.95rem;font-weight:600;opacity:1}
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+    display: block !important; /* evita que men-header quede al lado de la tarjeta */
+  }
 
-.header-logo img{
-  display:block;
-  height:60px;          /* ajusta este valor al tamaño que quieras */
-  width:auto;
-}
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 22px;
+    line-height: 1.5;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Panel izquierdo ---------- */
+  .panel {
+    background: #f4f6f8;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .panel h2 {
+    font-size: 14px;
+    margin: 0 0 12px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .esquema {
+    margin-bottom: 14px;
+    background: #e8f0fa;
+    border-radius: 6px;
+    padding: 10px;
+    min-height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .esquema img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    margin: 10px 0 4px;
+    font-weight: 600;
+    color: #444;
+  }
+
+  input {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    font-size: 15px;
+    background: #fff;
+    color: #222;
+  }
+  input:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #333; }
+
+  .aviso {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: none;
+  }
+  .aviso.error {
+    background: #fdecea;
+    color: var(--error);
+    display: block;
+  }
+  .aviso.ok {
+    background: #e7f5ec;
+    color: var(--ok);
+    display: block;
+  }
+
+  /* ---------- Panel derecho ---------- */
+  .resultado {
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .resultado h2 {
+    font-size: 14px;
+    margin: 0;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  #imagenPatron {
+    background: transparent;
+    border-radius: 6px;
+    padding: 0;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    order: 1;
+  }
+  #imagenPatron img {
+    display: block;
+    max-width: 320px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  #salida { order: 2; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--borde);
+    padding: 8px 14px;
+    text-align: left;
+  }
+  th {
+    background: #f4f6f8;
+    font-weight: 600;
+    color: #111;
+  }
+  td:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .nota {
+    font-size: 12px;
+    color: #667085;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
-<header>
+
+<div class="container">
   <h1>Calculadora de Codo a Inglete</h1>
-  <p>Dos codos acoplados — Entrada: diámetro (A), desnivel total (B) y radio del codo (R) — Salida: ángulo por codo (C) y arcos exterior (D) e interior (E)</p>
-  <p style="margin-top:8px;font-size:.95rem;font-weight:600;opacity:1;">Creado por: J.N.G</p>
-    <div class="header-logo">
-      <img src="img/logo_men.png" alt="MEN">
-    </div>
+  <p class="subtitulo">
+    Dos codos acoplados — Entrada: diámetro (A), desnivel total (B) y radio del codo (R)
+    — Salida: ángulo por codo (C) y arcos exterior (D) e interior (E)
+  </p>
+
+  <div class="layout">
+
+    <!-- ==================== PANEL IZQUIERDO ==================== -->
+    <section class="panel">
+      <h2>Datos de entrada</h2>
+
+      <div class="esquema" id="esquemaEntrada">
+        <img src="img/offsetcodo.png" alt="Esquema del codo a inglete">
+      </div>
+
+      <label for="in_A">Diámetro del tubo (A)</label>
+      <input type="number" id="in_A" value="104" step="any" min="0">
+
+      <label for="in_B">Desnivel total de los dos codos (B)</label>
+      <input type="number" id="in_B" value="90.8" step="any" min="0">
+
+      <label for="in_R">Radio del codo al eje (R)</label>
+      <input type="number" id="in_R" value="155" step="any" min="0">
+
+      <button id="btnCalcular">Calcular</button>
+      <div class="aviso" id="aviso"></div>
+
+      <p class="nota">
+        B se mide entre ejes (desnivel total de los dos codos acoplados). R se mide al eje del tubo.<br>
+        Fórmula: B = 2·R·(1 − cos C) → C = arccos(1 − B/(2R))<br>
+        Condiciones: 0 &lt; B ≤ 4·R y R &gt; A/2.
+      </p>
+    </section>
+
+    <!-- ==================== PANEL DERECHO ==================== -->
+    <section class="resultado">
+      <h2>Resultados</h2>
+      <div id="imagenPatron"></div>
+      <div id="salida"></div>
+    </section>
+
   </div>
-</header>
-
-<main>
-<div class="layout">
-
-  <section class="panel">
-    <h2>Datos de entrada</h2>
-
-    <div class="esquema" id="esquemaEntrada">
-      <img src="img/offsetcodo.png" alt="Esquema del codo a inglete">
-    </div>
-
-    <label for="in_A">Diámetro del tubo (A)</label>
-    <input type="number" id="in_A" value="104" step="any" min="0">
-
-    <label for="in_B">Desnivel total de los dos codos (B)</label>
-    <input type="number" id="in_B" value="90.8" step="any" min="0">
-
-    <label for="in_R">Radio del codo al eje (R)</label>
-    <input type="number" id="in_R" value="155" step="any" min="0">
-
-    <button id="btnCalcular">Calcular</button>
-    <div class="aviso" id="aviso"></div>
-
-    <p class="nota">
-      B se mide entre ejes (desnivel total de los dos codos acoplados). R se mide al eje del tubo.<br>
-      Fórmula: B = 2·R·(1 − cos C) → C = arccos(1 − B/(2R))<br>
-      Condiciones: 0 &lt; B ≤ 4·R y R &gt; A/2.
-    </p>
-  </section>
-
-  <section class="resultado">
-    <h2>Resultados</h2>
-    <div id="imagenPatron"></div>
-    <div id="salida"></div>
-  </section>
-
 </div>
-</main>
 
 <script src="codo.js"></script>
+
+<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

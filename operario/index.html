@@ -104,22 +104,35 @@
     margin-bottom: 10px;
     min-height: 18px;
   }
+    /* Ajustes SOLO para esta página, sin tocar men-header.css */
+  body { display: block !important; }
+  .men-header { margin-bottom: 24px; }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Selecciona tu usuario</h1>
+<body>
 
-  <div class="operarios" id="operariosBox"></div>
+  <!-- men-header.js insertará aquí la cabecera automáticamente -->
 
-  <div class="login-box" id="loginBox">
-    <label for="passInput">Contraseña para <span id="nombreOperario"></span></label>
-    <input type="password" id="passInput" placeholder="Introduce la contraseña">
-    <div class="error" id="errorMsg"></div>
-    <button type="button" id="btnEntrar">Entrar</button>
+  <div style="display:flex; justify-content:center; padding:20px 16px;">
+    <div class="container">
+      <h1>Selecciona tu usuario</h1>
+
+      <div class="operarios" id="operariosBox"></div>
+
+      <div class="login-box" id="loginBox">
+        <label for="passInput">Contraseña para <span id="nombreOperario"></span></label>
+        <input type="password" id="passInput" placeholder="Introduce la contraseña">
+        <div class="error" id="errorMsg"></div>
+        <button type="button" id="btnEntrar">Entrar</button>
+      </div>
+    </div>
   </div>
-</div>
+
+  <link rel="stylesheet" href="men-header.css">
+  <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
 
 <script>
 // ============================================================
