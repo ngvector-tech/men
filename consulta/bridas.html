@@ -197,7 +197,7 @@
 
   <!-- Espacio para la imagen asociada a la CategorÃ­a -->
   <div class="image-container" id="imgBox">
-    <span class="img-placeholder">Selecciona una categoria para ver su esquema (consulta/img/[CATEGORIA].png)</span>
+    <span class="img-placeholder">Selecciona una categoria para ver su esquema (img/[CATEGORIA].png)</span>
   </div>
 
   <!-- Resultados con los datos restantes -->
@@ -2258,7 +2258,7 @@ function initCategories() {
 // Cargar imagen de la categorÃ­a desde la carpeta img/
 function updateImage(cat) {
   if (!cat) {
-    imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria para ver su esquema (consulta/img/plana.png)</span>';
+    imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria para ver su esquema (img/plana.png)</span>';
 	
     return;
   }
@@ -2267,10 +2267,10 @@ function updateImage(cat) {
   
   
   // Limpia el nombre de categorÃ­a para evitar caracteres invalidos
-  const imgPath = `consulta/img/${encodeURIComponent(cat)}.png`;
+  const imgPath = `img/${encodeURIComponent(cat)}.png`;
   
   imgBox.innerHTML = `
-    <img src="${imgPath}" alt="Esquema ${cat}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>Imagen no encontrada: consulta/img/${cat}.png</span>';">
+    <img src="${imgPath}" alt="Esquema ${cat}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>Imagen no encontrada: img/${cat}.png</span>';">
   `;
 }
 
