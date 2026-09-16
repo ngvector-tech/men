@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resistencia Química del Polipropileno</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f0f4f8;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #2d3748;
+  }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    padding: 28px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 22px;
+    background: #1a202c;
+    color: #ffffff;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 0 0 20px;
+  }
+  .legend {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4a5568;
+    background: #edf2f7;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+  }
+  .legend b { color: #1a202c; }
+  .field {
+    margin-bottom: 18px;
+  }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  select, input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #2d3748;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus {
+    outline: none;
+    border-color: #3182ce;
+  }
+  #btnLimpiar {
+    background: #2b6cb0;
+    color: #ffffff;
+    border: none;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  #btnLimpiar:hover {
+    background: #2c5282;
+  }
+  #results {
+    margin-top: 24px;
+  }
+  .result-card {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+  }
+  .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 6px;
+  }
+  .reactivo-name { font-weight: 700; font-size: 16px; }
+  .conc-tag { font-size: 13px; opacity: 0.85; font-weight: 500; }
+  .res-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 14px;
+  }
+
+  /* Escala de colores según comportamiento óptimo (de claro a oscuro) */
+  .res-alta {
+    background-color: #2e7d32; /* Verde Oscuro Intenso - Óptimo */
+    color: #ffffff;
+  }
+  .res-moderada {
+    background-color: #81c784; /* Verde Claro - Comportamiento aceptable / moderado */
+    color: #1b5e20;
+  }
+  .res-no {
+    background-color: #e0e0e0; /* Color Neutro / Claro - No recomendado */
+    color: #424242;
+  }
+  .res-sin-dato {
+    background-color: #f5f5f5;
+    color: #9e9e9e;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Resistencia Química - Polipropileno</h1>
+
+  <div class="legend">
+    <b>Escala de Comportamiento:</b><br>
+    🟢 <b>Verde Oscuro (Alta resistencia):</b> Comportamiento óptimo.<br>
+    🟢 <b>Verde Claro (Resistencia moderada):</b> Comportamiento aceptable.<br>
+    ⚪ <b>Gris / Claro (No resiste / Sin dato):</b> No recomendado o información no disponible.
+  </div>
+
+  <div class="field">
+    <label for="reactivoInput">Reactivo</label>
+    <input list="reactivoList" id="reactivoInput" type="text" placeholder="Escribe o selecciona un reactivo..." autocomplete="off">
+    <datalist id="reactivoList"></datalist>
+  </div>
+
+  <div class="field" id="concField" style="display: none;">
+    <label for="concSelect">Concentración</label>
+    <select id="concSelect"></select>
+  </div>
+
+  <div class="field" id="tempField" style="display: none;">
+    <label for="tempSelect">Temperatura (°C)</label>
+    <select id="tempSelect">
+      <option value="todas">Mostrar 20°C y 60°C</option>
+      <option value="20">20°C</option>
+      <option value="60">60°C</option>
+    </select>
+  </div>
+
+  <button type="button" id="btnLimpiar">Nueva consulta</button>
+
+  <div id="results"></div>
+</div>
+
+<script>
+// Datos estructurados a partir del documento del polipropileno
+// Estructura: [Reactivo, Concentracion, Resistencia 20°, Resistencia 60°]
+const DATA = [
+  ["Anhídrido acético", "100%", "Alta resitencia", "No resiste"],
+  ["Aceite de almendras", "Normal", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de algodón", "Concentrado", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de cacahuate", "Concentrado", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de castor", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de coco", "Concentrado", "Alta resitencia", "No resiste"],
+  ["Aceite de linaza", "Concentrado", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de oliva", "Concentrado", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de silicón", "Concentrado", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de soya", "Concentrado", "Alta resitencia", "Resistencia moderada"],
+  ["Acetato de amilo", "100%", "Resistencia moderada", "No resiste"],
+  ["Acetato de amonio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Aceite de menta", "Concentrado", "Alta resitencia", "No resiste"],
+  ["Acetato de metilo", "100%", "Alta resitencia", "No resiste"],
+  ["Acetato de sodio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Acetona", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Acetofenona", "100%", "Alta resitencia", "Resistencia moderada"],
+  ["Ácido acético glacial", "Al 50%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido acético glacial", "96%", "Alta resitencia", "Resistencia moderada"],
+  ["Ácido benzoico", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Ácido bórico", "Solución saturada", "Alta resitencia", "Sin datos"],
+  ["Ácido cítrico", "10%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido clorhídrico", "Hasta 7%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido clorhídrico", "Hasta 20%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido clorhídrico", "Hasta 30%", "Alta resitencia", "No resiste"],
+  ["Ácido dicloroacético", "Hasta 40%", "Resistencia moderada", "No resiste"],
+  ["Ácido diglicoico", "100%", "Alta resitencia", "No resiste"],
+  ["Ácido  fluorhídrico", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Ácido  fluorhídrico", "Solución diluida", "Alta resitencia", "No resiste"],
+  ["Ácido fórmico", "Hasta el 40%", "Alta resitencia", "No resiste"],
+  ["Ácido fórmico", "10%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido fórmico anhidro", "85%", "Alta resitencia", "No resiste"],
+  ["Ácido fosfórico", "100%", "Alta resitencia", "No resiste"],
+  ["Ácido glicílico", "85%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido hidrobrómico", "30%", "Alta resitencia", "No resiste"],
+  ["Ácido láctico", "Hasta el 48%", "Alta resitencia", "No resiste"],
+  ["Ácido maleico", "Solución", "Alta resitencia", "Alta resitencia"],
+  ["Ácido mono cloro acético", "85%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido nítrico", "10%", "Resistencia moderada", "No resiste"],
+  ["Ácido nítrico", "30%", "Resistencia moderada", "No resiste"],
+  ["Ácido oxálico", "Solución saturada", "Alta resitencia", "Resistencia moderada"],
+  ["Ácido perclórico", "2 normal", "Alta resitencia", "No resiste"],
+  ["Ácido pícrico", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Ácido propiónico", "50%", "Alta resitencia", "No resiste"],
+  ["Ácido succínico", "Solucion saturada", "Alta resitencia", "Alta resitencia"],
+  ["Ácido sulfúrico", "Hasta el 10%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido sulfúrico", "Entre el 10% y 30%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido sulfúrico", "50%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido sulfúrico", "96%", "Alta resitencia", "No resiste"],
+  ["Ácido sulfuroso", "Solución", "Alta resitencia", "No resiste"],
+  ["Ácido tartárico", "10%", "Alta resitencia", "Alta resitencia"],
+  ["Ácido tricloro acético", "Arriba del 50%", "Alta resitencia", "Alta resitencia"],
+  ["Acrilonitrilo", "100%", "Alta resitencia", "No resiste"],
+  ["Agua clorada", "Solución saturada", "Alta resitencia", "Resistencia moderadat"],
+  ["Agua destilada", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Agua para beber", "Normal", "Alta resitencia", "Alta resitencia"],
+  ["Agua marina", "Normal", "Alta resitencia", "Alta resitencia"],
+  ["Agua mineral", "Normal", "Alta resitencia", "Alta resitencia"],
+  ["Agua salobre", "Normal", "Alta resitencia", "Alta resitencia"],
+  ["Aire", "Normal", "Alta resitencia", "Alta resitencia"],
+  ["Alcohol amílico", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Alcohol bencílico", "100%", "Alta resitencia", "No resiste"],
+  ["Alcohol etílico", "95%", "Alta resitencia", "Alta resitencia"],
+  ["Alcohol isopropílico", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Alcohol metílico", "5%", "Alta resitencia", "Resistencia moderada"],
+  ["Alumina", "Solución", "Alta resitencia", "No resiste"],
+  ["Amonio", "Solución hasta el 30%", "Alta resitencia", "No resiste"],
+  ["Anilina", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Anisol", "100%", "Resistencia moderada", "No resiste"],
+  ["Benzonato de sodio", "35%", "Alta resitencia", "Resistencia moderada"],
+  ["Bicarbonato de amonio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Bicarbonato de potasio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Bicarbonato de sodio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Bisulfato de sodio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Borato de potasio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Borax", "Solución", "Alta resitencia", "Alta resitencia"],
+  ["Bromuro de potasio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Butano", "100%", "Alta resitencia", "No resiste"],
+  ["Butanol", "100%", "Alta resitencia", "Resistencia moderada"],
+  ["Butil glicol", "100%", "Alta resitencia", "No resiste"],
+  ["Butil fenol", "Solución saturada fría", "Alta resitencia", "No resiste"],
+  ["Butil ftalato", "100%", "Alta resitencia", "Resistencia moderada"],
+  ["Carbonato de bario", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Carbonato de calcio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Carbonato de magnesio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Carbonato de sodio", "50%", "Alta resitencia", "Alta resitencia"],
+  ["Cloro etileno", "100%", "Resistencia moderada", "Resistencia moderada"],
+  ["Ciclo hexano", "100%", "Alta resitencia", "No resiste"],
+  ["Ciclohexanol", "100%", "Alta resitencia", "No resiste"],
+  ["Clorato de potasio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Clorato de sodio", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Clorito de sodio", "20%", "Alta resitencia", "Resistencia moderada"],
+  ["Cloro etanol", "100%", "Alta resitencia", "No resiste"],
+  ["Cloruro de amonio", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Cloruro de bario", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Cloruro de benzalconio", "100%", "Alta resitencia", "No resiste"],
+  ["Cloruro de calcio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Cloruro cúprico", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Cloruro estánico", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Cloruro de magnesio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Cloruro de mercurio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Cloruro de níquel", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Cloruro de potasio", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Cloruro de sodio", "10%", "Alta resitencia", "Alta resitencia"],
+  ["Cresol", "Hasta 90%", "Alta resitencia", "No resiste"],
+  ["Cromato de potasio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Dextrina", "Solución", "Alta resitencia", "Alta resitencia"],
+  ["Dextrosa", "Solución", "Alta resitencia", "Alta resitencia"],
+  ["Di butil ftalato", "100%", "Alta resitencia", "Resistencia moderada"],
+  ["Dicloroetileno", "100%", "Resistencia moderada", "No resiste"],
+  ["Dicromato de sodio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Dietanolamina", "100%", "Resistencia moderada", "No resiste"],
+  ["Dietil eter", "100%", "Alta resitencia", "Resistencia moderada"],
+  ["Dietilen glicol", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Dimetilamina", "100%", "Alta resitencia", "No resiste"],
+  ["Dimitil formamida", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Dioctil ftalato", "100%", "Resistencia moderada", "No resiste"],
+  ["Dioxano", "100%", "Resistencia moderada", "Resistencia moderada"],
+  ["Dióxido de azufre (seco)", "100%", "Alta resitencia", "No resiste"],
+  ["Dióxido de azufre (húmedo)", "100%", "Alta resitencia", "No resiste"],
+  ["Dióxido de carbono", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Éter de petróleo", "Concentrado", "Resistencia moderada", "Resistencia moderada"],
+  ["Etilen glicol", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Formaldehido", "Hasta el 40%", "Alta resitencia", "No resiste"],
+  ["Fenol", "5%", "Alta resitencia", "Alta resitencia"],
+  ["Fluoruro de amonio", "Solución", "Alta resitencia", "Alta resitencia"],
+  ["Fluoruro de potasio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Fosfato de amonio", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Fructosa", "Solución", "Alta resitencia", "Alta resitencia"],
+  ["Frutas, jugo", "Cualquiera", "Alta resitencia", "Alta resitencia"],
+  ["Glicerina", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Glucosa", "20%", "Alta resitencia", "Alta resitencia"],
+  ["Hexano", "100%", "Alta resitencia", "No resiste"],
+  ["Hidróxido de amonio", "Solución", "Alta resitencia", "No resiste"],
+  ["Hidróxido de bario", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Hidróxido de calcio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Hidróxido de potasio", "50%", "Alta resitencia", "Alta resitencia"],
+  ["Hidróxido de sodio", "60%", "Alta resitencia", "Alta resitencia"],
+  ["Hipoclorito de calcio", "Solución", "Alta resitencia", "No resiste"],
+  ["Hipoclorito de sodio", "5%", "Alta resitencia", "Alta resitencia"],
+  ["Hipoclorito de sodio", "20%", "Alta resitencia", "Alta resitencia"],
+  ["Jugo de Manzana", "Cualquiera", "Alta resitencia", "No resiste"],
+  ["Lanolina", "Cualquiera", "Alta resitencia", "No resiste"],
+  ["Leche", "Cualquiera", "Alta resitencia", "Alta resitencia"],
+  ["Metafosfato de amonio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Metafosfato de sodio", "Solución", "Alta resitencia", "No resiste"],
+  ["Metil amina", "Hasta el 32%", "Alta resitencia", "No resiste"],
+  ["Metil-etil-cetona", "100%", "Alta resitencia", "No resiste"],
+  ["Naftas", "Cualquiera", "No resiste", "No resiste"],
+  ["Nitrato de amonio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Nitrato de calcio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Nitrato mercuroso", "Solución", "Alta resitencia", "No resiste"],
+  ["Nitrato de níquel", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Nitrato de potasio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Nitrato de sodio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Nitrobenceno", "100%", "Alta resitencia", "No resiste"],
+  ["Ortofosfato de sodio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Oxi cloruro de fósforo", "100%", "Alta resitencia", "No resiste"],
+  ["Perborato de sodio", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Perclorato de potasio", "10%", "Alta resitencia", "Alta resitencia"],
+  ["Permanganato de potasio", "2N", "Alta resitencia", "No resiste"],
+  ["Persulfato de potasio", "Solución Saturada", "Alta resitencia", "No resiste"],
+  ["Peróxido de hidrógeno", "Hasta el 10%", "Alta resitencia", "No resiste"],
+  ["Peróxido de hidrógeno", "Hasta el 30%", "Alta resitencia", "No resiste"],
+  ["Piridina", "100%", "Resistencia moderada", "No resiste"],
+  ["Silicato de sodio", "Cualquiera", "Alta resitencia", "Alta resitencia"],
+  ["Sulfato de amonio", "Cualquiera", "Alta resitencia", "No resiste"],
+  ["Sulfato de bario", "Cualquiera", "Alta resitencia", "Alta resitencia"],
+  ["Sulfato de cúprico", "Cualquiera", "Alta resitencia", "Alta resitencia"],
+  ["Sulfato de magnesio", "Solución saturada", "Alta resitencia", "Alta resitencia"],
+  ["Sulfato de níquel", "Solución", "Alta resitencia", "Alta resitencia"],
+  ["Sulfato de potasio", "Hasta el 32%", "Alta resitencia", "No resiste"],
+  ["Sulfato de sodio", "100%", "Alta resitencia", "No resiste"],
+  ["Sulfito de sodio", "100%", "Alta resitencia", "Alta resitencia"],
+  ["Tetracloruro de carbono", "Cualquiera", "No resiste", "No resiste"],
+  ["Tiofeno", "Solución saturada", "Alta resitencia", "Resistencia moderada"],
+  ["Tiosulfato de sodio", "Solución", "Alta resitencia", "No resiste"],
+  ["Trietanolamina", "Solución saturada", "Alta resitencia", "No resiste"],
+  ["Urea", "Cualquiera", "Alta resitencia", "No resiste"],
+  ["Vinagre", "Cualquiera", "Alta resitencia", "Alta resitencia"],
+  ["Yodo", "Sin especificación", "Alta resitencia", "No resiste"],
+  ["Yoduro de potasio", "Solución saturada", "Alta resitencia", "No resiste"]
+];
+
+const reactivoInput = document.getElementById('reactivoInput');
+const reactivoList = document.getElementById('reactivoList');
+const concField = document.getElementById('concField');
+const concSelect = document.getElementById('concSelect');
+const tempField = document.getElementById('tempField');
+const tempSelect = document.getElementById('tempSelect');
+const resultsDiv = document.getElementById('results');
+const btnLimpiar = document.getElementById('btnLimpiar');
+
+// Cargar la lista de reactivos sin duplicados
+function init() {
+  const reactivosUnicos = [...new Set(DATA.map(item => item[0]))].sort();
+  reactivoList.innerHTML = '';
+  reactivosUnicos.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r;
+    reactivoList.appendChild(opt);
+  });
+}
+
+// Evento al ingresar o seleccionar un Reactivo
+reactivoInput.addEventListener('input', () => {
+  const val = reactivoInput.value.trim();
+  const opciones = DATA.filter(item => item[0].toLowerCase() === val.toLowerCase());
+
+  if (opciones.length > 0) {
+    // Si hay varias concentraciones para este reactivo
+    concSelect.innerHTML = '';
+    
+    if (opciones.length > 1) {
+      const optDefault = document.createElement('option');
+      optDefault.value = "todas";
+      optDefault.textContent = "-- Todas las concentraciones --";
+      concSelect.appendChild(optDefault);
+    }
+
+    opciones.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item[1];
+      opt.textContent = item[1] || 'Estándar / Única';
+      concSelect.appendChild(opt);
+    });
+
+    concField.style.display = 'block';
+    tempField.style.display = 'block';
+    renderResults();
+  } else {
+    concField.style.display = 'none';
+    tempField.style.display = 'none';
+    resultsDiv.innerHTML = '';
+  }
+});
+
+concSelect.addEventListener('change', renderResults);
+tempSelect.addEventListener('change', renderResults);
+
+// Obtener la clase CSS según el nivel de resistencia (óptimo = color más oscuro)
+function getResistenciaClass(resTexto) {
+  if (!resTexto || resTexto === "Sin datos" || resTexto.trim() === "") return "res-sin-dato";
+  const text = resTexto.toLowerCase();
+  if (text.includes("alta")) return "res-alta"; // Verde oscuro intenso
+  if (text.includes("moderada")) return "res-moderada"; // Verde claro
+  return "res-no"; // Gris / Claro
+}
+
+function renderResults() {
+  const reactivoVal = reactivoInput.value.trim();
+  const concVal = concSelect.value;
+  const tempVal = tempSelect.value;
+
+  let filtrados = DATA.filter(item => item[0].toLowerCase() === reactivoVal.toLowerCase());
+
+  if (concVal && concVal !== "todas") {
+    filtrados = filtrados.filter(item => item[1] === concVal);
+  }
+
+  resultsDiv.innerHTML = '';
+
+  if (filtrados.length === 0) {
+    resultsDiv.innerHTML = '<div style="text-align:center; color:#888;">No se encontraron resultados.</div>';
+    return;
+  }
+
+  filtrados.forEach(item => {
+    const [reactivo, concentracion, res20, res60] = item;
+
+    // Evaluamos el rendimiento global o individual para colorear la tarjeta
+    let cardClass = "res-alta";
+    if (tempVal === "20") {
+      cardClass = getResistenciaClass(res20);
+    } else if (tempVal === "60") {
+      cardClass = getResistenciaClass(res60);
+    } else {
+      // Si se muestran ambos, se destaca la de mejor o peor comportamiento
+      const c20 = getResistenciaClass(res20);
+      const c60 = getResistenciaClass(res60);
+      cardClass = (c20 === "res-alta" || c60 === "res-alta") ? "res-alta" : (c20 === "res-moderada" || c60 === "res-moderada") ? "res-moderada" : "res-no";
+    }
+
+    const card = document.createElement('div');
+    card.className = `result-card ${cardClass}`;
+
+    let htmlDetails = '';
+    if (tempVal === "todas" || tempVal === "20") {
+      htmlDetails += `<div class="res-detail"><span>Resistencia a 20°C:</span> <strong>${res20}</strong></div>`;
+    }
+    if (tempVal === "todas" || tempVal === "60") {
+      htmlDetails += `<div class="res-detail"><span>Resistencia a 60°C:</span> <strong>${res60 || 'Sin datos'}</strong></div>`;
+    }
+
+    card.innerHTML = `
+      <div class="result-header">
+        <span class="reactivo-name">${reactivo}</span>
+        <span class="conc-tag">Conc: ${concentracion || 'N/A'}</span>
+      </div>
+      ${htmlDetails}
+    `;
+
+    resultsDiv.appendChild(card);
+  });
+}
+
+// Botón Limpiar
+btnLimpiar.addEventListener('click', () => {
+  reactivoInput.value = '';
+  concField.style.display = 'none';
+  tempField.style.display = 'none';
+  resultsDiv.innerHTML = '';
+});
+
+init();
+</script>
+</body>
+</html>
