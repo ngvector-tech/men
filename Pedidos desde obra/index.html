@@ -38,6 +38,7 @@
         .acciones-lista { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
         .badge-cantidad { background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 12px; font-weight: bold; }
         .estado-msg { padding: 15px; text-align: center; color: #64748b; }
+        .obligatorio { color: #dc2626; }
     </style>
 </head>
 <body>
@@ -49,10 +50,18 @@
 
         <div id="globoNorma" class="globo-info"></div>
 
-        <!-- OPERARIO -->
-        <div style="margin-bottom: 15px;">
-            <label><strong>Nombre del Operario / Solicitante:</strong></label>
-            <input type="text" id="nombreUsuario" placeholder="Introduce tu nombre..." style="padding: 8px; width: 250px; margin-left: 10px; border-radius: 4px; border: 1px solid #cbd5e1;">
+        <!-- OPERARIO Y OBRA -->
+        <div style="margin-bottom: 15px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+            <div>
+                <label><strong>Nombre del Operario:</strong></label>
+                <input type="text" id="nombreUsuario" placeholder="Introduce tu nombre..."
+                       style="padding: 8px; width: 220px; margin-left: 10px; border-radius: 4px; border: 1px solid #cbd5e1;">
+            </div>
+            <div>
+                <label><strong>Nº de Obra: <span class="obligatorio">*</span></strong></label>
+                <input type="text" id="obraUsuario" placeholder="Ej: OBR-2026/145" required
+                       style="padding: 8px; width: 200px; margin-left: 10px; border-radius: 4px; border: 1px solid #cbd5e1;">
+            </div>
         </div>
 
         <!-- BUSCADOR -->
@@ -107,7 +116,10 @@
         <!-- MI LISTA INTEGRADA -->
         <div class="box-lista">
             <div class="acciones-lista">
-                <h3 style="margin: 0;">Mi Lista <span id="contadorLista" style="color:#0284c7; font-weight:bold;"></span></h3>
+                <h3 style="margin: 0;">Mi Lista
+                    <span id="contadorLista" style="color:#0284c7; font-weight:bold;"></span>
+                    <span id="labelObra" style="color:#0284c7; font-weight:normal; font-size:0.9rem;"></span>
+                </h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     <button id="btnBorrarTodo" class="btn-borrar-todo" onclick="borrarMiLista()" disabled>🗑️ Borrar Mi Lista</button>
                     <button class="btn-compartir" onclick="compartirLista()">📤 Compartir</button>
@@ -116,16 +128,19 @@
             <div class="aviso-envio">⚠️ No olvides borrar la lista tras enviar</div>
             <div id="listaItems"><p class="estado-msg">Cargando tu lista...</p></div>
 
-            <!-- PROMPT DE NOMBRE INLINE -->
+            <!-- PROMPT DE DATOS INLINE -->
             <div id="promptNombre" style="display:none; padding: 15px; background: #fef9c3; border: 1px solid #facc15; border-radius: 6px; margin-top: 10px;">
                 <label style="display:block; font-weight:bold; margin-bottom:8px; color:#854d0e;">
-                    Introduce tu nombre para ver tu lista:
+                    Introduce tus datos para ver tu lista <span class="obligatorio">(* obligatorio)</span>
                 </label>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <input type="text" id="nombreUsuarioInline" placeholder="Tu nombre..."
-                           onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarNombreInline();}"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
                            style="flex:1; min-width:150px; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem;">
-                    <button class="btn" onclick="guardarNombreInline()" style="background:#0284c7; padding:10px 20px;">
+                    <input type="text" id="obraUsuarioInline" placeholder="Nº de obra (obligatorio) *" required
+                           onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
+                           style="flex:1; min-width:150px; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem;">
+                    <button class="btn" onclick="guardarDatosInline()" style="background:#0284c7; padding:10px 20px;">
                         Guardar
                     </button>
                 </div>
@@ -134,7 +149,7 @@
     </div>
 
     <script>
-        // ============ CONFIG SUPABASE ============
+	        // ============ CONFIG SUPABASE ============
         const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
 
@@ -176,17 +191,26 @@
         let selCat="", selArt="", selDim="", selPres="", artSel=null;
         let temporizadorBusqueda = null;
 
-        // ============ OPERARIO ============
+        // ============ OPERARIO / OBRA ============
         function obtenerOperarioActivo() {
             return (sessionStorage.getItem('operarioNombre') || '').trim();
         }
+        function obtenerObraActiva() {
+            return (sessionStorage.getItem('operarioObra') || '').trim();
+        }
 
         window.addEventListener('DOMContentLoaded', async () => {
-            const nombreGuardado = sessionStorage.getItem('operarioNombre');
-            if (nombreGuardado) document.getElementById('nombreUsuario').value = nombreGuardado;
+            const nombreGuardado = sessionStorage.getItem('operarioNombre') || '';
+            const obraGuardada = sessionStorage.getItem('operarioObra') || '';
+            document.getElementById('nombreUsuario').value = nombreGuardado;
+            document.getElementById('obraUsuario').value = obraGuardada;
 
             document.getElementById('nombreUsuario').addEventListener('input', (e) => {
                 sessionStorage.setItem('operarioNombre', e.target.value.trim());
+                cargarMiLista();
+            });
+            document.getElementById('obraUsuario').addEventListener('input', (e) => {
+                sessionStorage.setItem('operarioObra', e.target.value.trim());
                 cargarMiLista();
             });
 
@@ -267,7 +291,6 @@
             const bc = document.getElementById('breadcrumb');
             if (bc) bc.innerText = titulo || '';
         }
-
         function irInicio() {
             document.getElementById('inputBuscador').value = '';
             historialNavegacion = [];
@@ -428,34 +451,37 @@
             document.getElementById('dimC').innerText = dt.c;
         }
 
+        // ============ LIMPIAR VALORES "SEGUIR" ============
+        function limpiarDetalle(v) {
+            if (!v) return '';
+            const t = String(v).trim();
+            const low = t.toLowerCase();
+            if (low === 'seguir' || low === '>' || low === '-' || low === '') return '';
+            return t;
+        }
+
         // ============ AÑADIR A MI LISTA (INSERT DIRECTO) ============
         async function agregarALista() {
             if (!artSel) return;
             const nombre = document.getElementById('nombreUsuario').value.trim();
-            if (!nombre) { alert("Introduce tu nombre antes de añadir."); return; }
+            const obra = document.getElementById('obraUsuario').value.trim();
+            if (!nombre) { alert("Introduce tu nombre y obra antes de añadir."); return; }
+            if (!obra)   { alert("⚠️ El Nº de Obra es obligatorio. Rellénalo antes de añadir."); return; }
             if (!_supabase) { alert("Error Supabase."); return; }
 
             const cant = parseInt(document.getElementById('cantInput').value) || 1;
-            // Limpiar valores "Seguir" (o vacíos / ">" ) del detalle
-function limpiarDetalle(v) {
-    if (!v) return '';
-    const t = String(v).trim();
-    const lower = t.toLowerCase();
-    if (lower === 'seguir' || lower === '>' || lower === '-' || lower === '') return '';
-    return t;
-}
 
-const partes = [
-    limpiarDetalle(artSel.dim),
-    limpiarDetalle(artSel.pres),
-    limpiarDetalle(artSel.mat)
-].filter(p => p !== '');
-
-const detalle = partes.length > 0 ? ` (${partes.join(' - ')})` : '';
-const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
+            const partes = [
+                limpiarDetalle(artSel.dim),
+                limpiarDetalle(artSel.pres),
+                limpiarDetalle(artSel.mat)
+            ].filter(p => p !== '');
+            const detalle = partes.length > 0 ? ` (${partes.join(' - ')})` : '';
+            const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
 
             const { error } = await _supabase.from('pedidos').insert([{
                 operario: nombre,
+                obra: obra,
                 referencia: artSel.ref,
                 detalle_linea: lineaFormateada,
                 cantidad: cant
@@ -470,17 +496,19 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
             cargarMiLista();
         }
 
-        // ============ CARGAR MI LISTA (solo operario activo) ============
+        // ============ CARGAR MI LISTA ============
         async function cargarMiLista() {
             const div = document.getElementById('listaItems');
             const prompt = document.getElementById('promptNombre');
             const operario = obtenerOperarioActivo();
+            const obra = obtenerObraActiva();
 
-            if (!operario) {
+            if (!operario || !obra) {
                 div.innerHTML = '';
                 prompt.style.display = 'block';
                 actualizarBotonBorrarTodo(0);
                 document.getElementById('contadorLista').innerText = '';
+                document.getElementById('labelObra').innerText = '';
                 return;
             }
 
@@ -492,6 +520,7 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
             }
 
             div.innerHTML = '<p class="estado-msg">Cargando...</p>';
+            document.getElementById('labelObra').innerText = `(Obra: ${obra})`;
 
             const { data, error } = await _supabase
                 .from('pedidos')
@@ -520,6 +549,7 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
                     <div class="item-lista">
                         <span>
                             <strong style="color:#dc2626;">${p.referencia || '-'}</strong> — ${p.detalle_linea || '-'}
+                            <br><small style="color:#0284c7; font-weight:bold;">Obra: ${p.obra || '-'}</small>
                             <br><small style="color:#64748b;">${fecha}</small>
                         </span>
                         <span class="badge-cantidad">x${p.cantidad || 1}</span>
@@ -542,19 +572,22 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
                 btn.innerText = `🗑️ Borrar Mi Lista`;
             }
         }
+		        // ============ GUARDAR DATOS INLINE ============
+        function guardarDatosInline() {
+            const inputN = document.getElementById('nombreUsuarioInline');
+            const inputO = document.getElementById('obraUsuarioInline');
+            const nombre = inputN.value.trim();
+            const obra = inputO.value.trim();
 
-                // ============ GUARDAR NOMBRE INLINE ============
-        function guardarNombreInline() {
-            const input = document.getElementById('nombreUsuarioInline');
-            const nombre = input.value.trim();
-            if (!nombre) {
-                alert("Escribe un nombre.");
-                return;
-            }
-            // Sincronizar con el input superior y con sessionStorage
+            if (!nombre) { alert("Escribe un nombre."); inputN.focus(); return; }
+            if (!obra)   { alert("⚠️ El Nº de Obra es obligatorio."); inputO.focus(); return; }
+
             document.getElementById('nombreUsuario').value = nombre;
+            document.getElementById('obraUsuario').value = obra;
             sessionStorage.setItem('operarioNombre', nombre);
-            input.value = '';
+            sessionStorage.setItem('operarioObra', obra);
+            inputN.value = '';
+            inputO.value = '';
             cargarMiLista();
         }
 
@@ -592,19 +625,20 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
             }
         }
 
-        // ============ COMPARTIR LISTA (copia al portapapeles, sin aviso) ============
+        // ============ COMPARTIR LISTA ============
         async function compartirLista() {
             const operario = obtenerOperarioActivo();
+            const obra = obtenerObraActiva();
             if (!operario) { alert("No hay operario activo."); return; }
+            if (!obra) { alert("⚠️ Falta el Nº de Obra. Rellénalo antes de compartir."); return; }
             if (registrosLista.length === 0) { alert("No hay líneas para compartir."); return; }
 
-            // Construir texto SIN el aviso
-            let texto = `*LISTA DE PEDIDOS MEN - ${operario.toUpperCase()}*\n\n`;
+            let texto = `*LISTA DE PEDIDOS MEN - ${operario.toUpperCase()}*\n`;
+            texto += `*Obra:* ${obra}\n\n`;
             registrosLista.forEach((p, i) => {
                 texto += `${i + 1}. ${p.detalle_linea} | CANT: ${p.cantidad}\n`;
             });
 
-            // 1) Copiar siempre al portapapeles (con fallback)
             let copiado = false;
             try {
                 await navigator.clipboard.writeText(texto);
@@ -625,7 +659,6 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
                 }
             }
 
-            // 2) Si el dispositivo soporta share (móvil), abrir el diálogo compartir
             if (navigator.share) {
                 try {
                     await navigator.share({
@@ -643,7 +676,6 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
                 }
             }
 
-            // 3) Sin share (escritorio) o falló → solo aviso de copiado
             if (copiado) {
                 alert("📋 Lista copiada al portapapeles.");
             } else {
@@ -657,4 +689,3 @@ const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
     </script>
 </body>
 </html>
-       
