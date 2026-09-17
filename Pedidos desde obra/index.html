@@ -115,6 +115,21 @@
             </div>
             <div class="aviso-envio">⚠️ No olvides borrar la lista tras enviar</div>
             <div id="listaItems"><p class="estado-msg">Cargando tu lista...</p></div>
+
+            <!-- PROMPT DE NOMBRE INLINE -->
+            <div id="promptNombre" style="display:none; padding: 15px; background: #fef9c3; border: 1px solid #facc15; border-radius: 6px; margin-top: 10px;">
+                <label style="display:block; font-weight:bold; margin-bottom:8px; color:#854d0e;">
+                    Introduce tu nombre para ver tu lista:
+                </label>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <input type="text" id="nombreUsuarioInline" placeholder="Tu nombre..."
+                           onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarNombreInline();}"
+                           style="flex:1; min-width:150px; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem;">
+                    <button class="btn" onclick="guardarNombreInline()" style="background:#0284c7; padding:10px 20px;">
+                        Guardar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -421,7 +436,23 @@
             if (!_supabase) { alert("Error Supabase."); return; }
 
             const cant = parseInt(document.getElementById('cantInput').value) || 1;
-            const lineaFormateada = `${artSel.ref} - ${artSel.art} (${artSel.dim} - ${artSel.pres} - ${artSel.mat})`;
+            // Limpiar valores "Seguir" (o vacíos / ">" ) del detalle
+function limpiarDetalle(v) {
+    if (!v) return '';
+    const t = String(v).trim();
+    const lower = t.toLowerCase();
+    if (lower === 'seguir' || lower === '>' || lower === '-' || lower === '') return '';
+    return t;
+}
+
+const partes = [
+    limpiarDetalle(artSel.dim),
+    limpiarDetalle(artSel.pres),
+    limpiarDetalle(artSel.mat)
+].filter(p => p !== '');
+
+const detalle = partes.length > 0 ? ` (${partes.join(' - ')})` : '';
+const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
 
             const { error } = await _supabase.from('pedidos').insert([{
                 operario: nombre,
@@ -442,14 +473,19 @@
         // ============ CARGAR MI LISTA (solo operario activo) ============
         async function cargarMiLista() {
             const div = document.getElementById('listaItems');
+            const prompt = document.getElementById('promptNombre');
             const operario = obtenerOperarioActivo();
 
             if (!operario) {
-                div.innerHTML = '<p class="estado-msg">Introduce tu nombre arriba para ver tu lista.</p>';
+                div.innerHTML = '';
+                prompt.style.display = 'block';
                 actualizarBotonBorrarTodo(0);
                 document.getElementById('contadorLista').innerText = '';
                 return;
             }
+
+            prompt.style.display = 'none';
+
             if (!_supabase) {
                 div.innerHTML = '<p class="estado-msg" style="color:#ef4444;">Error Supabase.</p>';
                 return;
@@ -507,6 +543,21 @@
             }
         }
 
+                // ============ GUARDAR NOMBRE INLINE ============
+        function guardarNombreInline() {
+            const input = document.getElementById('nombreUsuarioInline');
+            const nombre = input.value.trim();
+            if (!nombre) {
+                alert("Escribe un nombre.");
+                return;
+            }
+            // Sincronizar con el input superior y con sessionStorage
+            document.getElementById('nombreUsuario').value = nombre;
+            sessionStorage.setItem('operarioNombre', nombre);
+            input.value = '';
+            cargarMiLista();
+        }
+
         // ============ BORRAR LÍNEA ============
         async function eliminarLinea(id) {
             const operario = obtenerOperarioActivo();
@@ -523,7 +574,7 @@
             else cargarMiLista();
         }
 
-               // ============ BORRAR MI LISTA COMPLETA ============
+        // ============ BORRAR MI LISTA COMPLETA ============
         async function borrarMiLista() {
             const operario = obtenerOperarioActivo();
             if (!operario) { alert("No hay operario activo."); return; }
@@ -606,3 +657,4 @@
     </script>
 </body>
 </html>
+       
