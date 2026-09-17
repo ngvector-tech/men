@@ -523,7 +523,7 @@
             else cargarMiLista();
         }
 
-        // ============ BORRAR MI LISTA COMPLETA ============
+               // ============ BORRAR MI LISTA COMPLETA ============
         async function borrarMiLista() {
             const operario = obtenerOperarioActivo();
             if (!operario) { alert("No hay operario activo."); return; }
@@ -533,29 +533,70 @@
             const ids = registrosLista.map(r => r.id);
             const { error } = await _supabase.from('pedidos').delete().in('id', ids);
 
-            if (error) alert("Error al borrar: " + error.message);
-            else { alert(`✅ Borradas ${ids.length} líneas.`); cargarMiLista(); }
+            if (error) {
+                alert("Error al borrar: " + error.message);
+            } else {
+                alert(`✅ Borradas ${ids.length} líneas.`);
+                cargarMiLista();
+            }
         }
 
-        // ============ COMPARTIR LISTA ============
+        // ============ COMPARTIR LISTA (copia al portapapeles, sin aviso) ============
         async function compartirLista() {
             const operario = obtenerOperarioActivo();
             if (!operario) { alert("No hay operario activo."); return; }
             if (registrosLista.length === 0) { alert("No hay líneas para compartir."); return; }
 
+            // Construir texto SIN el aviso
             let texto = `*LISTA DE PEDIDOS MEN - ${operario.toUpperCase()}*\n\n`;
             registrosLista.forEach((p, i) => {
                 texto += `${i + 1}. ${p.detalle_linea} | CANT: ${p.cantidad}\n`;
             });
-            texto += `\n⚠️ No olvides borrar la lista tras enviar.`;
 
+            // 1) Copiar siempre al portapapeles (con fallback)
+            let copiado = false;
+            try {
+                await navigator.clipboard.writeText(texto);
+                copiado = true;
+            } catch (err) {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = texto;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    copiado = true;
+                } catch (e2) {
+                    console.warn("No se pudo copiar al portapapeles:", e2);
+                }
+            }
+
+            // 2) Si el dispositivo soporta share (móvil), abrir el diálogo compartir
             if (navigator.share) {
                 try {
-                    await navigator.share({ title: `Pedido MEN - ${operario}`, text: texto });
-                } catch (err) { console.log("Cancelado:", err); return; }
+                    await navigator.share({
+                        title: `Pedido MEN - ${operario}`,
+                        text: texto
+                    });
+                    if (copiado) alert("✅ Compartido y copiado al portapapeles.");
+                    return;
+                } catch (err) {
+                    if (err && err.name === 'AbortError') {
+                        if (copiado) alert("📋 Lista copiada al portapapeles.");
+                        return;
+                    }
+                    console.log("Share falló, se usará solo el portapapeles:", err);
+                }
+            }
+
+            // 3) Sin share (escritorio) o falló → solo aviso de copiado
+            if (copiado) {
+                alert("📋 Lista copiada al portapapeles.");
             } else {
-                await navigator.clipboard.writeText(texto);
-                alert("¡Lista copiada al portapapeles!\n\n⚠️ No olvides borrar la lista tras enviar.");
+                alert("No se pudo copiar automáticamente. Copia manualmente:\n\n" + texto);
             }
         }
 
