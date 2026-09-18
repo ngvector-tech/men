@@ -442,8 +442,8 @@
             document.getElementById('lblRef').innerText = artSel.ref;
             document.getElementById('lblCat').innerText = artSel.cat;
             document.getElementById('lblD').innerText = artSel.dim;
-            document.getElementById('lblP').innerText = artSel.pres;
-            document.getElementById('lblM').innerText = artSel.mat;
+           document.getElementById('lblP').innerText = mostrarValor(artSel.pres);
+document.getElementById('lblM').innerText = mostrarValor(artSel.mat);
             document.getElementById('imgArt').src = `imagenes/${artSel.art}.png`;
 
             const nomArt = (artSel.art || '').toUpperCase();
