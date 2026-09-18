@@ -18,7 +18,7 @@
     margin: 0;
     padding: 24px 16px 60px;
     color: #222;
-    display: block !important; /* evita que men-header quede al lado de la tarjeta */
+    display: block !important;
   }
 
   .container {
@@ -47,7 +47,6 @@
     margin: 0 0 22px;
   }
 
-  /* ---------- Layout ---------- */
   .layout {
     display: grid;
     grid-template-columns: 380px 1fr;
@@ -57,7 +56,6 @@
     .layout { grid-template-columns: 1fr; }
   }
 
-  /* ---------- Panel izquierdo ---------- */
   .panel {
     background: #f4f6f8;
     border: 1px solid var(--borde);
@@ -158,7 +156,6 @@
     display: block;
   }
 
-  /* ---------- Panel derecho ---------- */
   .resultado {
     background: #fff;
     border: 1px solid var(--borde);
@@ -248,7 +245,12 @@
     <section class="panel">
       <h2>Datos de entrada</h2>
 
-      <div class="esquema" id="esquemaEntrada"></div>
+      <!-- Imagen del esquema de entrada (desde carpeta img/) -->
+      <div class="esquema">
+          <img src="img/esquema-codo.png" alt="Esquema del codo" onerror="this.style.display='none'">
+      </div>
+      <!-- Div original que el JS puede necesitar (oculto) -->
+      <div id="esquemaEntrada" style="display:none;"></div>
 
       <label for="unidad">Unidad</label>
       <select id="unidad">
@@ -282,7 +284,14 @@
     <!-- ==================== PANEL DERECHO ==================== -->
     <section class="resultado">
       <h2>Resultados</h2>
-      <div id="imagenPatron" class="esquema"></div>
+
+      <!-- Imagen del patrón / resultado (desde carpeta img/) -->
+      <div class="esquema">
+          <img src="img/patron-degradado.png" alt="Patrón de degradado" onerror="this.style.display='none'">
+      </div>
+      <!-- Div original que el JS puede necesitar (oculto) -->
+      <div id="imagenPatron" style="display:none;"></div>
+
       <div id="resumenSalida"></div>
     </section>
 
