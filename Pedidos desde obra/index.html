@@ -27,6 +27,7 @@
         .btn-compartir { background: #16a34a; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-borrar-todo { background: #dc2626; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-borrar-todo:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; }
+        .btn-nueva-ot { background: #0284c7; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-borrar-linea { background: #ef4444; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .box-lista { background: #ffffff; padding: 20px; border-radius: 8px; margin-top: 25px; border: 1px solid #cbd5e1; }
         .item-lista { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 10px 0; gap: 10px; }
@@ -39,6 +40,7 @@
         .badge-cantidad { background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 12px; font-weight: bold; }
         .estado-msg { padding: 15px; text-align: center; color: #64748b; }
         .obligatorio { color: #dc2626; }
+        .texto-ayuda-ot { font-size: 0.85rem; color: #0284c7; font-weight: normal; margin-top: 4px; display: block; }
     </style>
 </head>
 <body>
@@ -50,7 +52,7 @@
 
         <div id="globoNorma" class="globo-info"></div>
 
-        <!-- OPERARIO Y OBRA -->
+        <!-- OPERARIO Y OT -->
         <div style="margin-bottom: 15px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
             <div>
                 <label><strong>Nombre del Operario:</strong></label>
@@ -58,8 +60,8 @@
                        style="padding: 8px; width: 220px; margin-left: 10px; border-radius: 4px; border: 1px solid #cbd5e1;">
             </div>
             <div>
-                <label><strong>Nº de Obra: <span class="obligatorio">*</span></strong></label>
-                <input type="text" id="obraUsuario" placeholder="Ej: OBR-2026/145" required
+                <label><strong>OT Activa: <span class="obligatorio">*</span></strong></label>
+                <input type="text" id="obraUsuario" placeholder="Ej: OT-2026/145" required
                        style="padding: 8px; width: 200px; margin-left: 10px; border-radius: 4px; border: 1px solid #cbd5e1;">
             </div>
         </div>
@@ -116,12 +118,17 @@
         <!-- MI LISTA INTEGRADA -->
         <div class="box-lista">
             <div class="acciones-lista">
-                <h3 style="margin: 0;">Mi Lista
-                    <span id="contadorLista" style="color:#0284c7; font-weight:bold;"></span>
-                    <span id="labelObra" style="color:#0284c7; font-weight:normal; font-size:0.9rem;"></span>
-                </h3>
+                <div>
+                    <h3 style="margin: 0;">Mi Lista
+                        <span id="contadorLista" style="color:#0284c7; font-weight:bold;"></span>
+                        <span id="labelObra" style="color:#0284c7; font-weight:normal; font-size:0.9rem;"></span>
+                    </h3>
+                    <span class="texto-ayuda-ot">Puedes introducir nuevas OT</span>
+                </div>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button id="btnBorrarTodo" class="btn-borrar-todo" onclick="borrarMiLista()" disabled>🗑️ Borrar Mi Lista</button>
+                    <button id="btnBorrarTodo" class="btn-borrar-todo" onclick="borrarMiLista()" disabled>🗑️ Borrar Toda Mi Lista</button>
+                    <button class="btn-borrar-todo" onclick="borrarObraActual()">🗑️ Borrar OT Actual</button>
+                    <button class="btn-nueva-ot" onclick="nuevaOT()">➕ Nueva OT</button>
                     <button class="btn-compartir" onclick="compartirLista()">📤 Compartir</button>
                 </div>
             </div>
@@ -137,7 +144,7 @@
                     <input type="text" id="nombreUsuarioInline" placeholder="Tu nombre..."
                            onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
                            style="flex:1; min-width:150px; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem;">
-                    <input type="text" id="obraUsuarioInline" placeholder="Nº de obra (obligatorio) *" required
+                    <input type="text" id="obraUsuarioInline" placeholder="Nº de OT (obligatorio) *" required
                            onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
                            style="flex:1; min-width:150px; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem;">
                     <button class="btn" onclick="guardarDatosInline()" style="background:#0284c7; padding:10px 20px;">
@@ -191,7 +198,7 @@
         let selCat="", selArt="", selDim="", selPres="", artSel=null;
         let temporizadorBusqueda = null;
 
-        // ============ OPERARIO / OBRA ============
+        // ============ OPERARIO / OT ============
         function obtenerOperarioActivo() {
             return (sessionStorage.getItem('operarioNombre') || '').trim();
         }
@@ -460,13 +467,13 @@
             return t;
         }
 
-        // ============ AÑADIR A MI LISTA (INSERT DIRECTO) ============
+        // ============ AÑADIR A MI LISTA ============
         async function agregarALista() {
             if (!artSel) return;
             const nombre = document.getElementById('nombreUsuario').value.trim();
             const obra = document.getElementById('obraUsuario').value.trim();
-            if (!nombre) { alert("Introduce tu nombre y obra antes de añadir."); return; }
-            if (!obra)   { alert("⚠️ El Nº de Obra es obligatorio. Rellénalo antes de añadir."); return; }
+            if (!nombre) { alert("Introduce tu nombre antes de añadir."); return; }
+            if (!obra)   { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de añadir."); return; }
             if (!_supabase) { alert("Error Supabase."); return; }
 
             const cant = parseInt(document.getElementById('cantInput').value) || 1;
@@ -496,14 +503,14 @@
             cargarMiLista();
         }
 
-        // ============ CARGAR MI LISTA ============
+        // ============ CARGAR MI LISTA (todas las OT del operario) ============
         async function cargarMiLista() {
             const div = document.getElementById('listaItems');
             const prompt = document.getElementById('promptNombre');
             const operario = obtenerOperarioActivo();
-            const obra = obtenerObraActiva();
+            const obraActual = obtenerObraActiva();
 
-            if (!operario || !obra) {
+            if (!operario) {
                 div.innerHTML = '';
                 prompt.style.display = 'block';
                 actualizarBotonBorrarTodo(0);
@@ -520,12 +527,13 @@
             }
 
             div.innerHTML = '<p class="estado-msg">Cargando...</p>';
-            document.getElementById('labelObra').innerText = `(Obra: ${obra})`;
+            document.getElementById('labelObra').innerText = obraActual ? `(OT activa: ${obraActual})` : '';
 
             const { data, error } = await _supabase
                 .from('pedidos')
                 .select('*')
                 .ilike('operario', operario)
+                .order('obra', { ascending: true })
                 .order('created_at', { ascending: false });
 
             if (error) {
@@ -542,22 +550,42 @@
                 return;
             }
 
-            let html = '';
+            // Agrupar por OT
+            const grupos = {};
             registrosLista.forEach(p => {
-                const fecha = p.created_at ? new Date(p.created_at).toLocaleString('es-ES') : '-';
-                html += `
-                    <div class="item-lista">
-                        <span>
-                            <strong style="color:#dc2626;">${p.referencia || '-'}</strong> — ${p.detalle_linea || '-'}
-                            <br><small style="color:#0284c7; font-weight:bold;">Obra: ${p.obra || '-'}</small>
-                            <br><small style="color:#64748b;">${fecha}</small>
-                        </span>
-                        <span class="badge-cantidad">x${p.cantidad || 1}</span>
-                        <button class="btn-borrar-linea" onclick="eliminarLinea(${p.id})" title="Eliminar línea">✕</button>
-                    </div>`;
+                const o = p.obra || '(sin OT)';
+                if (!grupos[o]) grupos[o] = [];
+                grupos[o].push(p);
             });
-            div.innerHTML = html;
 
+            let html = '';
+            Object.keys(grupos).sort().forEach(obraKey => {
+                const lineas = grupos[obraKey];
+                const esObraActual = obraKey.toLowerCase() === (obraActual || '').toLowerCase();
+                const estiloHeader = esObraActual
+                    ? 'background:#e0f2fe; color:#0369a1; border-left:4px solid #0284c7;'
+                    : 'background:#f1f5f9; color:#475569; border-left:4px solid #94a3b8;';
+
+                html += `
+                    <div style="margin-top:14px; padding:8px 12px; border-radius:6px; font-weight:bold; ${estiloHeader}">
+                        📋 OT: ${obraKey} ${esObraActual ? '(activa)' : ''} — ${lineas.length} línea(s)
+                    </div>`;
+
+                lineas.forEach(p => {
+                    const fecha = p.created_at ? new Date(p.created_at).toLocaleString('es-ES') : '-';
+                    html += `
+                        <div class="item-lista">
+                            <span>
+                                <strong style="color:#dc2626;">${p.referencia || '-'}</strong> — ${p.detalle_linea || '-'}
+                                <br><small style="color:#64748b;">${fecha}</small>
+                            </span>
+                            <span class="badge-cantidad">x${p.cantidad || 1}</span>
+                            <button class="btn-borrar-linea" onclick="eliminarLinea(${p.id})" title="Eliminar línea">✕</button>
+                        </div>`;
+                });
+            });
+
+            div.innerHTML = html;
             actualizarBotonBorrarTodo(registrosLista.length);
             document.getElementById('contadorLista').innerText = `(${registrosLista.length})`;
         }
@@ -566,10 +594,10 @@
             const btn = document.getElementById('btnBorrarTodo');
             if (cant > 0) {
                 btn.disabled = false;
-                btn.innerText = `🗑️ Borrar Mi Lista (${cant})`;
+                btn.innerText = `🗑️ Borrar Toda Mi Lista (${cant})`;
             } else {
                 btn.disabled = true;
-                btn.innerText = `🗑️ Borrar Mi Lista`;
+                btn.innerText = `🗑️ Borrar Toda Mi Lista`;
             }
         }
 		        // ============ GUARDAR DATOS INLINE ============
@@ -580,7 +608,7 @@
             const obra = inputO.value.trim();
 
             if (!nombre) { alert("Escribe un nombre."); inputN.focus(); return; }
-            if (!obra)   { alert("⚠️ El Nº de Obra es obligatorio."); inputO.focus(); return; }
+            if (!obra)   { alert("⚠️ El Nº de OT es obligatorio."); inputO.focus(); return; }
 
             document.getElementById('nombreUsuario').value = nombre;
             document.getElementById('obraUsuario').value = obra;
@@ -588,6 +616,19 @@
             sessionStorage.setItem('operarioObra', obra);
             inputN.value = '';
             inputO.value = '';
+            cargarMiLista();
+        }
+
+        // ============ NUEVA OT (pedir por prompt y actualizar) ============
+        function nuevaOT() {
+            const actual = obtenerObraActiva() || '';
+            const nueva = prompt(`Introduce el Nº de la nueva OT:\n\n(OT actual: ${actual || 'ninguna'})`, '');
+            if (nueva === null) return; // cancelado
+            const limpia = nueva.trim();
+            if (!limpia) { alert("No has introducido ninguna OT."); return; }
+
+            document.getElementById('obraUsuario').value = limpia;
+            sessionStorage.setItem('operarioObra', limpia);
             cargarMiLista();
         }
 
@@ -607,12 +648,12 @@
             else cargarMiLista();
         }
 
-        // ============ BORRAR MI LISTA COMPLETA ============
+        // ============ BORRAR TODA MI LISTA (todas las OT) ============
         async function borrarMiLista() {
             const operario = obtenerOperarioActivo();
             if (!operario) { alert("No hay operario activo."); return; }
             if (registrosLista.length === 0) { alert("No hay líneas para borrar."); return; }
-            if (!confirm(`¿Borrar las ${registrosLista.length} líneas de "${operario}"?\n\nEsta acción no se puede deshacer.`)) return;
+            if (!confirm(`¿Borrar TODAS las ${registrosLista.length} líneas de "${operario}" (todas las OT)?\n\nEsta acción no se puede deshacer.`)) return;
 
             const ids = registrosLista.map(r => r.id);
             const { error } = await _supabase.from('pedidos').delete().in('id', ids);
@@ -625,20 +666,51 @@
             }
         }
 
-        // ============ COMPARTIR LISTA ============
-        async function compartirLista() {
+        // ============ BORRAR SOLO LA OT ACTUAL ============
+        async function borrarObraActual() {
             const operario = obtenerOperarioActivo();
             const obra = obtenerObraActiva();
+            if (!operario || !obra) { alert("Falta operario u OT."); return; }
+
+            const deEstaObra = registrosLista.filter(r => (r.obra || '').toLowerCase() === obra.toLowerCase());
+            if (deEstaObra.length === 0) { alert(`No hay líneas de la OT "${obra}".`); return; }
+            if (!confirm(`¿Borrar solo las ${deEstaObra.length} líneas de la OT "${obra}"?\n\nEsta acción no se puede deshacer.`)) return;
+
+            const ids = deEstaObra.map(r => r.id);
+            const { error } = await _supabase.from('pedidos').delete().in('id', ids);
+
+            if (error) {
+                alert("Error: " + error.message);
+            } else {
+                alert(`✅ Borradas ${ids.length} líneas de la OT "${obra}".`);
+                cargarMiLista();
+            }
+        }
+
+        // ============ COMPARTIR LISTA (agrupada por OT) ============
+        async function compartirLista() {
+            const operario = obtenerOperarioActivo();
             if (!operario) { alert("No hay operario activo."); return; }
-            if (!obra) { alert("⚠️ Falta el Nº de Obra. Rellénalo antes de compartir."); return; }
             if (registrosLista.length === 0) { alert("No hay líneas para compartir."); return; }
 
-            let texto = `*LISTA DE PEDIDOS MEN - ${operario.toUpperCase()}*\n`;
-            texto += `*Obra:* ${obra}\n\n`;
-            registrosLista.forEach((p, i) => {
-                texto += `${i + 1}. ${p.detalle_linea} | CANT: ${p.cantidad}\n`;
+            // Agrupar por OT
+            const grupos = {};
+            registrosLista.forEach(p => {
+                const o = p.obra || '(sin OT)';
+                if (!grupos[o]) grupos[o] = [];
+                grupos[o].push(p);
             });
 
+            let texto = `*LISTA DE PEDIDOS MEN - ${operario.toUpperCase()}*\n`;
+
+            Object.keys(grupos).sort().forEach(obraKey => {
+                texto += `\n*📋 OT: ${obraKey}*\n`;
+                grupos[obraKey].forEach((p, i) => {
+                    texto += `${i + 1}. ${p.detalle_linea} | CANT: ${p.cantidad}\n`;
+                });
+            });
+
+            // Copiar siempre al portapapeles
             let copiado = false;
             try {
                 await navigator.clipboard.writeText(texto);
