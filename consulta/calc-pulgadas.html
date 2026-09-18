@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tubería pulgada a mm</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2; margin: 0;
+    padding: 24px 16px 60px; color: #222;
+  }
+  .container {
+    max-width: 640px; margin: 0 auto;
+    background: #fff; border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+  h1 {
+    text-align: center; font-size: 22px;
+    background: #111; color: #fff;
+    padding: 12px 16px; border-radius: 6px;
+    margin: 0 0 18px;
+  }
+  .img-wrap { text-align: center; margin-bottom: 20px; }
+  .img-wrap img {
+    max-width: 50%; max-height: 110px;
+    border: 2px solid #e0e3e6; border-radius: 6px;
+    background: #fafafa;
+  }
+  .img-fallback {
+    display: none; font-size: 13px;
+    color: #999; padding: 30px 10px;
+    border: 1px dashed #ccc; border-radius: 6px;
+    background: #fafafa;
+  }
+  .fields { display: flex; gap: 14px; flex-wrap: wrap; }
+  .field { flex: 1 1 45%; margin-bottom: 16px; }
+  .field.full { flex: 1 1 100%; }
+  .field label {
+    display: block; font-size: 13px;
+    font-weight: 600; color: #444;
+    margin-bottom: 5px;
+  }
+  .field select {
+    width: 100%; padding: 9px 10px;
+    font-size: 15px; border: 1px solid #c7ccd1;
+    border-radius: 6px; background: #fff;
+  }
+  .field select:focus {
+    outline: none; border-color: #4a90d9;
+  }
+  #results { margin-top: 22px; }
+  .result-card {
+    padding: 12px 14px; margin-bottom: 8px;
+    border-radius: 6px; background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+  }
+  .result-card .norma {
+    font-weight: 700; font-size: 15px;
+    color: #111; margin-bottom: 4px;
+  }
+  .result-card .angulo { font-size: 14px; color: #444; }
+  .result-card .angulo b { color: #4a90d9; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Equivalencia Tubería a mm</h1>
+
+  <div class="img-wrap">
+    <img src="img/tuberia-gas.png" alt="Esquema tubería"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <div class="img-fallback">Coloca la imagen en <b>img/tuberia-gas.png</b> junto a este archivo HTML.</div>
+  </div>
+
+  <div class="fields">
+    <div class="field full">
+      <label for="fracSelect">Designación</label>
+      <select id="fracSelect">
+        <option value="">Selecciona una designación...</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fields">
+    <div class="field full">
+      <label for="schSelect">Schedule (SCH)</label>
+      <select id="schSelect">
+        <option value="">Selecciona SCH...</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+// ============================================================
+// TABLA DE TUBERÍA DE ACERO (ASME B36.10M)
+// Formato: [designación, pulgadas, DN, Ø ext mm, {SCH: espesor mm}]
+// ============================================================
+const TUBERIA = [
+  ["1/8\"",   0.125, "DN 6",   10.3,  {"SCH 10":1.24, "SCH 40":1.73, "SCH 80":2.41}],
+  ["1/4\"",   0.250, "DN 8",   13.7,  {"SCH 10":1.65, "SCH 40":2.24, "SCH 80":3.02}],
+  ["3/8\"",   0.375, "DN 10",  17.1,  {"SCH 10":1.65, "SCH 40":2.31, "SCH 80":3.20}],
+  ["1/2\"",   0.500, "DN 15",  21.3,  {"SCH 10":2.11, "SCH 40":2.77, "SCH 80":3.73}],
+  ["3/4\"",   0.750, "DN 20",  26.7,  {"SCH 10":2.11, "SCH 40":2.87, "SCH 80":3.91}],
+  ["1\"",     1.000, "DN 25",  33.4,  {"SCH 10":2.77, "SCH 40":3.38, "SCH 80":4.55}],
+  ["1 1/4\"", 1.250, "DN 32",  42.2,  {"SCH 10":2.77, "SCH 40":3.56, "SCH 80":4.85}],
+  ["1 1/2\"", 1.500, "DN 40",  48.3,  {"SCH 10":2.77, "SCH 40":3.68, "SCH 80":5.08}],
+  ["2\"",     2.000, "DN 50",  60.3,  {"SCH 10":2.77, "SCH 40":3.91, "SCH 80":5.54}],
+  ["2 1/2\"", 2.500, "DN 65",  73.0,  {"SCH 10":3.05, "SCH 40":5.16, "SCH 80":7.01}],
+  ["3\"",     3.000, "DN 80",  88.9,  {"SCH 10":3.05, "SCH 40":5.49, "SCH 80":7.62}],
+  ["3 1/2\"", 3.500, "DN 90",  101.6, {"SCH 10":3.05, "SCH 40":5.74, "SCH 80":8.08}],
+  ["4\"",     4.000, "DN 100", 114.3, {"SCH 10":3.05, "SCH 40":6.02, "SCH 80":8.56}],
+  ["5\"",     5.000, "DN 125", 141.3, {"SCH 10":3.40, "SCH 40":6.55, "SCH 80":9.53}],
+  ["6\"",     6.000, "DN 150", 168.3, {"SCH 10":3.40, "SCH 40":7.11, "SCH 80":10.97}],
+  ["8\"",     8.000, "DN 200", 219.1, {"SCH 10":3.76, "SCH 20":6.35, "SCH 30":7.04, "SCH 40":8.18, "SCH 60":10.31, "SCH 80":12.70}],
+  ["10\"",   10.000, "DN 250", 273.1, {"SCH 10":4.19, "SCH 20":6.35, "SCH 30":7.80, "SCH 40":9.27, "SCH 60":12.70, "SCH 80":15.09}],
+  ["12\"",   12.000, "DN 300", 323.9, {"SCH 10":4.57, "SCH 20":6.35, "SCH 30":8.38, "SCH 40":10.31, "SCH 60":14.27, "SCH 80":17.48}],
+  ["14\"",   14.000, "DN 350", 355.6, {"SCH 10":6.35, "SCH 20":7.92, "SCH 30":9.53, "SCH 40":11.13, "SCH 60":15.09, "SCH 80":19.05}],
+  ["16\"",   16.000, "DN 400", 406.4, {"SCH 10":6.35, "SCH 20":7.92, "SCH 30":9.53, "SCH 40":12.70, "SCH 60":16.66, "SCH 80":21.44}],
+  ["18\"",   18.000, "DN 450", 457.2, {"SCH 10":6.35, "SCH 20":7.92, "SCH 30":11.13, "SCH 40":14.27, "SCH 60":19.05, "SCH 80":23.83}],
+  ["20\"",   20.000, "DN 500", 508.0, {"SCH 10":6.35, "SCH 20":9.53, "SCH 30":12.70, "SCH 40":15.09, "SCH 60":20.62, "SCH 80":26.19}],
+  ["24\"",   24.000, "DN 600", 610.0, {"SCH 10":6.35, "SCH 20":9.53, "SCH 30":14.27, "SCH 40":17.48, "SCH 60":24.61, "SCH 80":30.96}],
+  ["28\"",   28.000, "DN 700", 711.0, {"SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":27.79, "SCH 80":34.93}],
+  ["32\"",   32.000, "DN 800", 813.0, {"SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":30.96, "SCH 80":38.10}],
+  ["34\"",   34.000, "DN 850",  863.6, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":17.48, "SCH 60":19.05, "XS":12.70, "SCH 80":12.70}],
+["36\"",   36.000, "DN 900",  914.4, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+["40\"",   40.000, "DN 1000", 1016.0, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+["42\"",   42.000, "DN 1050", 1066.8, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+["48\"",   48.000, "DN 1200", 1219.2, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+["60\"",   60.000, "DN 1500", 1524.0, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}]
+];
+
+// ============================================================
+// SELECTS
+// ============================================================
+const fracSelect = document.getElementById('fracSelect');
+const schSelect  = document.getElementById('schSelect');
+const resultsDiv = document.getElementById('results');
+
+// Rellenar desplegable de designaciones
+TUBERIA.forEach((t, i) => {
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = `${t[0]}  —  ${t[2]}`;
+  fracSelect.appendChild(opt);
+});
+
+// ============================================================
+// ACTUALIZAR SCH AL CAMBIAR DESIGNACIÓN
+// ============================================================
+fracSelect.addEventListener('change', () => {
+  schSelect.innerHTML = '<option value="">Selecciona SCH...</option>';
+  const idx = fracSelect.value;
+  if (idx === "") { resultsDiv.innerHTML = ''; return; }
+
+  const t = TUBERIA[idx];
+  Object.keys(t[4]).forEach(sch => {
+    const opt = document.createElement('option');
+    opt.value = sch;
+    opt.textContent = sch;
+    schSelect.appendChild(opt);
+  });
+  // SCH por defecto
+  schSelect.value = t[4]["SCH 40"] ? "SCH 40" : Object.keys(t[4])[0];
+  calcular();
+});
+
+schSelect.addEventListener('change', calcular);
+
+// ============================================================
+// CÁLCULO
+// ============================================================
+function calcular() {
+  const idx = fracSelect.value;
+  if (idx === "") { resultsDiv.innerHTML = ''; return; }
+
+  const t = TUBERIA[idx];
+  const sch = schSelect.value;
+  if (!sch) { resultsDiv.innerHTML = ''; return; }
+
+  const Dext = t[3];
+  const esp  = t[4][sch];
+  const Dint = Dext - 2 * esp;
+
+  resultsDiv.innerHTML = `
+    <div class="result-card">
+      <div class="norma">Diámetro nominal</div>
+      <div class="angulo">Valor: <b>${t[2]}</b></div>
+    </div>
+    <div class="result-card">
+      <div class="norma">Diámetro exterior</div>
+      <div class="angulo">Valor: <b>${Dext} mm</b></div>
+    </div>
+    <div class="result-card">
+      <div class="norma">Espesor de pared (${sch})</div>
+      <div class="angulo">Valor: <b>${esp.toFixed(2)} mm</b></div>
+    </div>
+    <div class="result-card">
+      <div class="norma">Diámetro interior (${sch})</div>
+      <div class="angulo">Valor: <b>${Dint.toFixed(2)} mm</b></div>
+    </div>
+  `;
+}
+</script>
+
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
