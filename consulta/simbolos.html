@@ -72,7 +72,7 @@
     margin: 18px 0 6px;
   }
 
-  /* Galería de miniaturas */
+  /* GalerÃ­a de miniaturas */
   .galeria {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -125,7 +125,7 @@
     -webkit-box-orient: vertical;
   }
 
-  /* Cuando la galería se reduce a una única miniatura */
+  /* Cuando la galerÃ­a se reduce a una Ãºnica miniatura */
   .galeria.solo-una {
     grid-template-columns: minmax(160px, 240px);
     justify-content: center;
@@ -226,7 +226,7 @@ function parsearTXT(texto) {
 }
 
 // ============================================================
-// 3. Inicializar el desplegable de categorías
+// 3. Inicializar el desplegable de categorÃ­as
 // ============================================================
 function initCategorias() {
   const categorias = [...new Set(DATA.map(d => d[1]))].sort();
@@ -238,7 +238,7 @@ function initCategorias() {
 }
 
 // ============================================================
-// 4. Construir ruta de la imagen
+// 4.Construir ruta de la imagen
 // ============================================================
 function rutaImagen(descripcion) {
   const nombreLimpio = descripcion.replace(/[\\/:*?"<>|]/g, '_');
@@ -246,13 +246,13 @@ function rutaImagen(descripcion) {
 }
 
 // ============================================================
-// 5. Renderizar la galería
-//    - sin categoría            -> mensaje
-//    - categoría sola           -> todas las miniaturas
-//    - categoría + descripción  -> solo esa miniatura
+// 5. Renderizar la galerÃ­a
+//    - sin categorÃ­a            -> mensaje
+//    - categorÃ­a sola           -> todas las miniaturas
+//    - categorÃ­a + descripciÃ³n  -> solo esa miniatura
 // ============================================================
 function renderGaleria(categoria, descripcionFiltro) {
-  // Caso 1: sin categoría
+  // Caso 1: sin categorÃ­a
   if (!categoria) {
     galeria.classList.remove('solo-una');
     tituloGaleria.textContent = 'Selecciona un simbolo haciendo clic en su dibujo:';
@@ -260,7 +260,7 @@ function renderGaleria(categoria, descripcionFiltro) {
     return;
   }
 
-  // Caso 2: categoría + descripción concreta -> solo esa miniatura
+  // Caso 2: categorÃ­a + descripciÃ³n concreta -> solo esa miniatura
   if (descripcionFiltro) {
     galeria.classList.add('solo-una');
     tituloGaleria.textContent = 'Simbolo seleccionado:';
@@ -277,7 +277,7 @@ function renderGaleria(categoria, descripcionFiltro) {
     return;
   }
 
-  // Caso 3: solo categoría -> todas las miniaturas
+  // Caso 3: solo categorÃ­a -> todas las miniaturas
   const items = DATA
     .filter(d => d[1] === categoria)
     .map(d => d[0])
@@ -299,7 +299,7 @@ function renderGaleria(categoria, descripcionFiltro) {
     </div>
   `).join('');
 
-  // Click en una miniatura -> sincroniza el desplegable de descripción
+  // Click en una miniatura -> sincroniza el desplegable de descripciÃ³n
   galeria.querySelectorAll('.miniatura').forEach(el => {
     el.addEventListener('click', () => {
       const desc = el.dataset.desc;
@@ -312,7 +312,7 @@ function renderGaleria(categoria, descripcionFiltro) {
 }
 
 // ============================================================
-// 6. Evento: cambio de categoría
+// 6. Evento: cambio de categorÃ­a
 // ============================================================
 catSelect.addEventListener('change', function() {
   const cat = this.value;
@@ -333,7 +333,7 @@ catSelect.addEventListener('change', function() {
 });
 
 // ============================================================
-// 7. Evento: cambio de descripción
+// 7. Evento: cambio de descripciÃ³n
 // ============================================================
 descSelect.addEventListener('change', function() {
   const desc = this.value;
@@ -342,7 +342,7 @@ descSelect.addEventListener('change', function() {
 });
 
 // ============================================================
-// 8. Botón "Nueva consulta"
+// 8. BotÃ³n "Nueva consulta"
 // ============================================================
 btnLimpiar.addEventListener('click', function() {
   catSelect.value = '';
