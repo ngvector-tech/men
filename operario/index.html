@@ -104,13 +104,11 @@
     margin-bottom: 10px;
     min-height: 18px;
   }
-    /* Ajustes SOLO para esta página, sin tocar men-header.css */
+  /* Ajustes SOLO para esta página, sin tocar men-header.css */
   body { display: block !important; }
   .men-header { margin-bottom: 24px; }
 </style>
 </head>
-<body>
-
 <body>
 
   <!-- men-header.js insertará aquí la cabecera automáticamente -->
@@ -132,7 +130,6 @@
 
   <link rel="stylesheet" href="men-header.css">
   <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
-</body>
 
 <script>
 // ============================================================
@@ -141,11 +138,14 @@
 // ============================================================
 const OPERARIOS = {
   "Arturo":   "5248",
-  "Nahum":  "6724",
-  "Juanma":  "3249",
-  "Paco":    "5862",
-  "Ricardo": "7435"
+  "Nahum":    "6724",
+  "Juanma":   "3249",
+  "Paco":     "5862",
+  "Ricardo":  "7435"
 };
+
+// 🔑 Contraseña maestra de administrador (válida para cualquier operario)
+const PASS_MAESTRA = "2026men";
 
 const operariosBox = document.getElementById('operariosBox');
 const loginBox    = document.getElementById('loginBox');
@@ -184,11 +184,24 @@ function validar() {
   if (!operarioSeleccionado) return;
   const pass = passInput.value;
 
-  if (pass === OPERARIOS[operarioSeleccionado]) {
-    // Intentamos guardar en sessionStorage; si falla (file://),
-    // pasamos el operario por la URL como respaldo.
+  // 1) Contraseña maestra → entra como administrador
+  if (pass === PASS_MAESTRA) {
     try {
       sessionStorage.setItem('operario', operarioSeleccionado);
+      sessionStorage.setItem('admin', '1');
+      window.location.href = 'panel.html';
+    } catch (e) {
+      window.location.href = 'panel.html?op=' +
+        encodeURIComponent(operarioSeleccionado) + '&admin=1';
+    }
+    return;
+  }
+
+  // 2) Contraseña normal del operario
+  if (pass === OPERARIOS[operarioSeleccionado]) {
+    try {
+      sessionStorage.setItem('operario', operarioSeleccionado);
+      sessionStorage.removeItem('admin');
       window.location.href = 'panel.html';
     } catch (e) {
       window.location.href = 'panel.html?op=' + encodeURIComponent(operarioSeleccionado);
