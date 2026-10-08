@@ -94,8 +94,7 @@
                     <h2 id="lblArt" style="margin: 10px 0 5px 0;"></h2>
                     <div id="lblRef" style="color:#dc2626; font-family:monospace; font-size: 1.5em; font-weight: bold; margin-bottom: 15px;"></div>
                 </div>
-                
-                <!-- Bloque de información general modificado -->
+
                 <div class="box-info-azul">
                     <p id="filaCat" style="margin: 3px 0; display: none;"><strong>Categoría:</strong> <span id="lblCat"></span></p>
                     <p id="filaDim" style="margin: 3px 0; display: none;"><strong>Dimensión:</strong> <span id="lblD"></span></p>
@@ -103,11 +102,10 @@
                     <p id="filaMat" style="margin: 3px 0; display: none;"><strong>Material base:</strong> <span id="lblM"></span></p>
                 </div>
 
-                <!-- Bloque del esquema de dimensiones modificado -->
                 <div id="bloqueEsquema" class="esquema-pr" style="text-align:center; display:none;">
                     <img src="PR.png" alt="Esquema de dimensiones" style="max-width:100%; height:auto; display:block; margin:0 auto;">
                     <div style="margin-top: 8px; font-weight: bold; font-size: 0.85rem; color: #334155;">
-                        COTAS (mm): 
+                        COTAS (mm):
                         <span id="cotaA" style="display:none;">A: <span id="dimA">-</span></span>
                         <span id="cotaB" style="display:none;"> | B: <span id="dimB">-</span></span>
                         <span id="cotaC" style="display:none;"> | C: <span id="dimC">-</span></span>
@@ -146,7 +144,6 @@
             <div class="aviso-envio">⚠️ No olvides borrar la lista tras enviar</div>
             <div id="listaItems"><p class="estado-msg">Cargando tu lista...</p></div>
 
-            <!-- PROMPT DE DATOS INLINE -->
             <div id="promptNombre" style="display:none; padding: 15px; background: #fef9c3; border: 1px solid #facc15; border-radius: 6px; margin-top: 10px;">
                 <label style="display:block; font-weight:bold; margin-bottom:8px; color:#854d0e;">
                     Introduce tus datos para ver tu lista <span class="obligatorio">(* obligatorio)</span>
@@ -235,6 +232,18 @@
             await cargarBaseDatos();
             await cargarDatosTecnicos();
             iniciarCategorias();
+
+            // Leer parámetros de URL (viene desde bridas.html)
+            const params = new URLSearchParams(location.search);
+            if (params.get('operario')) sessionStorage.setItem('operarioNombre', params.get('operario'));
+            if (params.get('obra'))     sessionStorage.setItem('operarioObra',    params.get('obra'));
+
+            const busquedaURL = params.get('buscar');
+            if (busquedaURL) {
+                document.getElementById('inputBuscador').value = busquedaURL;
+                setTimeout(() => buscarArticulos(), 150);
+            }
+
             cargarMiLista();
         });
 
@@ -319,7 +328,7 @@
             else irInicio();
         }
 
-        // ============ UTILIDADES DE VALORES "SEGUIR" ============
+        // ============ UTILIDADES ============
         function esValorSeguir(v) {
             if (v === null || v === undefined) return true;
             const low = String(v).trim().toLowerCase();
@@ -405,7 +414,7 @@
             grid.innerHTML = html;
         }
 
-        // ============ PASO DIMENSIONES (con salto automático) ============
+        // ============ PASO DIMENSIONES ============
         function pasoDimensiones(art) {
             selArt = art;
             const dims = [...new Set(
@@ -442,7 +451,7 @@
             grid.innerHTML = html;
         }
 
-        // ============ PASO PRESIÓN (con salto automático) ============
+        // ============ PASO PRESIÓN ============
         function pasoPresion(dim) {
             selDim = dim;
             historialNavegacion.push(() => pasoDimensiones(selArt));
@@ -474,7 +483,7 @@
             grid.innerHTML = html;
         }
 
-        // ============ PASO MATERIAL (con salto automático a ficha) ============
+        // ============ PASO MATERIAL ============
         function pasoMaterial(pres) {
             selPres = pres;
             historialNavegacion.push(() => pasoPresion(selDim));
@@ -540,13 +549,12 @@
             if (!artSel) return;
 
             cambiarVista('v-ficha', 'Ficha Técnica de Producto');
-            
-            // Función auxiliar para mostrar u ocultar filas de la información general
+
             function mostrarFila(idFila, idValor, valor) {
                 const fila = document.getElementById(idFila);
                 const span = document.getElementById(idValor);
                 const texto = mostrarValor(valor);
-                
+
                 if (texto && texto !== '—' && texto.trim() !== '') {
                     span.innerText = texto;
                     fila.style.display = 'block';
@@ -559,29 +567,26 @@
             document.getElementById('lblRef').innerText = artSel.ref;
             document.getElementById('imgArt').src = `imagenes/${artSel.art}.png`;
 
-            // Mostrar u ocultar cada fila según si tiene datos
             mostrarFila('filaCat', 'lblCat', artSel.cat);
             mostrarFila('filaDim', 'lblD', artSel.dim);
             mostrarFila('filaPres', 'lblP', artSel.pres);
             mostrarFila('filaMat', 'lblM', artSel.mat);
 
-            // Lógica para el bloque de esquema (Codos / Clamps)
             const nomArt = (artSel.art || '').toUpperCase();
             const catArt = (artSel.cat || '').toUpperCase();
             const bloque = document.getElementById('bloqueEsquema');
             const esCodoOClamp = nomArt.includes('CODO') || nomArt.includes('ASIENTO CLAMP') || catArt.includes('CODO') || catArt.includes('ASIENTO CLAMP');
-            
+
             if (esCodoOClamp) {
                 bloque.style.display = 'block';
-                
+
                 const dt = dbTecnica[artSel.ref.toUpperCase()] || { a: '-', b: '-', c: '-' };
-                
-                // Función para mostrar u ocultar cada cota individualmente
+
                 function mostrarCota(idCota, idValor, valor) {
                     const spanCota = document.getElementById(idCota);
                     const spanValor = document.getElementById(idValor);
                     const texto = String(valor).trim();
-                    
+
                     if (texto && texto !== '-' && texto !== '') {
                         spanValor.innerText = texto;
                         spanCota.style.display = 'inline';
@@ -593,7 +598,7 @@
                 mostrarCota('cotaA', 'dimA', dt.a);
                 mostrarCota('cotaB', 'dimB', dt.b);
                 mostrarCota('cotaC', 'dimC', dt.c);
-                
+
             } else {
                 bloque.style.display = 'none';
             }
@@ -709,10 +714,14 @@
 
                 lineas.forEach(p => {
                     const fecha = p.created_at ? new Date(p.created_at).toLocaleString('es-ES') : '-';
+                    const refHTML = p.referencia
+                        ? `<strong style="color:#dc2626;">${p.referencia}</strong> — ${p.detalle_linea || '-'}`
+                        : `<span style="color:#dc2626; font-weight:bold;">${p.detalle_linea || '-'}</span>`;
+
                     html += `
                         <div class="item-lista">
                             <span>
-                                <strong style="color:#dc2626;">${p.referencia || '-'}</strong> — ${p.detalle_linea || '-'}
+                                ${refHTML}
                                 <br><small style="color:#64748b;">${fecha}</small>
                             </span>
                             <span class="badge-cantidad">x${p.cantidad || 1}</span>
@@ -893,6 +902,44 @@
         function escapeQuotes(str) {
             return str ? str.replace(/'/g, "\\'") : '';
         }
+
+        // =====================================================
+        // RECEPTOR DE MENSAJES DESDE bridas.html
+        // =====================================================
+        window.addEventListener('message', async (event) => {
+            if (!event.data || event.data.type !== 'INSERT_LINEAS') return;
+
+            const { operario, obra, lineas } = event.data;
+            if (!operario || !obra || !Array.isArray(lineas) || lineas.length === 0) {
+                console.warn('⚠️ Mensaje INSERT_LINEAS incompleto');
+                return;
+            }
+
+            if (!_supabase) {
+                console.error('❌ Supabase no está inicializado en el iframe');
+                return;
+            }
+
+            sessionStorage.setItem('operarioNombre', operario);
+            sessionStorage.setItem('operarioObra', obra);
+
+            const insertos = lineas.map(l => ({
+                operario: operario,
+                obra: obra,
+                referencia: l.referencia || null,
+                detalle_linea: l.detalle_linea,
+                cantidad: l.cantidad
+            }));
+
+            const { error } = await _supabase.from('pedidos').insert(insertos);
+            if (error) {
+                console.error('❌ Error insertando tornillería:', error.message);
+            } else {
+                console.log(`✓ ${insertos.length} líneas insertadas para ${operario} / ${obra}`);
+                if (typeof cargarMiLista === 'function') cargarMiLista();
+            }
+        });
     </script>
+
 </body>
 </html>
