@@ -1,4 +1,9 @@
-<!DOCTYPE html> <html lang="es"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Panel Principal - MEN</title>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Principal - MEN</title>
 <style>
     * {
         box-sizing: border-box;
@@ -49,7 +54,7 @@
         color: white;
         text-decoration: none;
         cursor: pointer;
-        transition: transform 0.1s, background-color 0.2s;
+        transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
@@ -61,31 +66,73 @@
         margin-bottom: 0;
     }
 
-    /* Colores */
-    .btn-material {
+    /* ============================================================
+       COLORES POR CATEGORÍA
+       ============================================================ */
+
+    /* --- Azul oscuro (piedra): Cálculos de materiales --- */
+    .btn-azul-oscuro {
         background-color: #34495e;
     }
-
-    .btn-material:hover {
+    .btn-azul-oscuro:hover {
         background-color: #2c3e50;
     }
 
-    .btn-partes {
+    /* --- Naranja (zanahoria): Partes y componentes --- */
+    .btn-naranja {
         background-color: #e67e22;
     }
-
-    .btn-partes:hover {
+    .btn-naranja:hover {
         background-color: #d35400;
     }
 
-    .btn-ot {
+    /* --- Azul brillante (río): Cálculos de tubería --- */
+    .btn-azul {
         background-color: #2980b9;
     }
-
-    .btn-ot:hover {
+    .btn-azul:hover {
         background-color: #1f6391;
     }
-	
+
+    /* --- Verde esmeralda: Compatibilidades --- */
+    .btn-verde {
+        background-color: #16a085;
+    }
+    .btn-verde:hover {
+        background-color: #12876f;
+    }
+
+    /* --- Morado: Soportes y separaciones --- */
+    .btn-morado {
+        background-color: #8e44ad;
+    }
+    .btn-morado:hover {
+        background-color: #71368a;
+    }
+
+    /* --- Rojo ladrillo: Dilatación y vapor --- */
+    .btn-rojo {
+        background-color: #c0392b;
+    }
+    .btn-rojo:hover {
+        background-color: #a93226;
+    }
+
+    /* --- Gris pizarra: Símbolos y colores --- */
+    .btn-gris {
+        background-color: #7f8c8d;
+    }
+    .btn-gris:hover {
+        background-color: #6b7778;
+    }
+
+    /* --- Turquesa: Tubería en pulgadas --- */
+    .btn-turquesa {
+        background-color: #17a2b8;
+    }
+    .btn-turquesa:hover {
+        background-color: #138496;
+    }
 
     @media (max-width: 480px) {
         .menu-container {
@@ -103,80 +150,76 @@
         }
     }
 </style>
+</head>
+<body>
 
-</head> <body>
 <div class="menu-container">
 
- <div class="logo-men">MEN</div>
+    <div class="logo-men">MEN</div>
 
-	 <a href="calc_perfil.html"
-       class="btn-menu btn-material">
+    <!-- ===== Cálculos de materiales ===== -->
+    <a href="calc_perfil.html" class="btn-menu btn-azul-oscuro">
         Peso perfil y chapa
     </a>
-	 <a href="calc-pulgadas.html"
-       class="btn-menu btn-material">
+    <a href="calc-pulgadas.html" class="btn-menu btn-turquesa">
         Tuberia pulgadas a mm
     </a>
 
-    <a href="valvulas.html"
-       class="btn-menu btn-material">
+    <!-- ===== Válvulas ===== -->
+    <a href="valvulas.html" class="btn-menu btn-naranja">
         Valvulas
     </a>
-
-    <a href="valvuladiafragma.html"
-       class="btn-menu btn-material">
+    <a href="valvuladiafragma.html" class="btn-menu btn-naranja">
         Valvulas diafragma
     </a>
-	    <a href="calculo_escalon.html"
-       class="btn-menu btn-material">
+
+    <!-- ===== Cálculos varios ===== -->
+    <a href="calculo_escalon.html" class="btn-menu btn-azul-oscuro">
         Calculo reparto escalones
     </a>
-	 <a href="bridas.html"
-       class="btn-menu btn-material">
+    <a href="bridas.html" class="btn-menu btn-azul-oscuro">
         Bridas
     </a>
 
-    <a href="compatibilidadjuntas.html"
-       class="btn-menu btn-material">
+    <!-- ===== Compatibilidades ===== -->
+    <a href="compatibilidadjuntas.html" class="btn-menu btn-verde">
         Compatibilidad de juntas
-    </a>  <a href="compatibilidpolipropileno.html"
-       class="btn-menu btn-material">
+    </a>
+    <a href="compatibilidpolipropileno.html" class="btn-menu btn-verde">
         Compatibilidad polipropileno
     </a>
-	  <a href="compatibilidad_recipiente.html"
-       class="btn-menu btn-material">
+    <a href="compatibilidad_recipiente.html" class="btn-menu btn-verde">
         Compatibilidad tuberia y recipiente
     </a>
-	 <a href="distancia_soportes_tuberia.html"
-       class="btn-menu btn-ot">
+
+    <!-- ===== Soportes y separaciones ===== -->
+    <a href="distancia_soportes_tuberia.html" class="btn-menu btn-morado">
         Distancia soporte tuberia
     </a>
-	 <a href="distancia_soportes_tuberia_no_metalica.html"
-       class="btn-menu btn-ot">
-       Distancia soporte tuberia no metalica
+    <a href="distancia_soportes_tuberia_no_metalica.html" class="btn-menu btn-morado">
+        Distancia soporte tuberia no metalica
     </a>
-	 <a href="separacion_tuberias.html"
-       class="btn-menu btn-ot">
+    <a href="separacion_tuberias.html" class="btn-menu btn-morado">
         Separacion de tuberia
     </a>
-	 <a href="dilatacion_termica.html"
-       class="btn-menu btn-ot">
+
+    <!-- ===== Dilatación y vapor ===== -->
+    <a href="dilatacion_termica.html" class="btn-menu btn-rojo">
         Dilatacion lineal de tuberia
     </a>
-	 </a>
-	 <a href="carac_vapor.html"
-       class="btn-menu btn-ot">
-       Caracteristica vapor segun presion
+    <a href="carac_vapor.html" class="btn-menu btn-rojo">
+        Caracteristica vapor segun presion
     </a>
-	 </a>
-	 <a href="simbolos.html"
-       class="btn-menu btn-ot">
-       Simbolos
-    </a>
-	
 
+    <!-- ===== Colores y símbolos ===== -->
+    <a href="color_tuberia.html" class="btn-menu btn-gris">
+        Codigo color de tuberia
+    </a>
+    <a href="simbolos.html" class="btn-menu btn-gris">
+        Simbolos
+    </a>
 
 </div>
 
-
-</body> </html>
+</body>
+</html>

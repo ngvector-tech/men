@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Código de Colores IS-2379</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+  }
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 22px;
+    background: #111;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 0 0 18px;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 5px;
+  }
+  select {
+    width: 100%;
+    padding: 9px 10px;
+    font-size: 14px;
+    border: 1px solid #c7ccd1;
+    border-radius: 6px;
+    background: #fff;
+  }
+  select:focus { outline: none; border-color: #4a90d9; }
+  #btnLimpiar {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  #btnLimpiar:hover { background: #333; }
+
+  #results { margin-top: 20px; }
+  .card-result {
+    background: #f8f9fa;
+    border: 1px solid #e0e3e6;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #4a90d9;
+    padding-bottom: 4px;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table th, .data-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .data-table th {
+    background: #edf2f7;
+    color: #4a5568;
+    font-weight: 600;
+    width: 40%;
+  }
+  .no-results {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    padding: 20px 0;
+  }
+
+  /* --- Barra de colores más estrecha --- */
+  .barra-colores {
+    display: flex;
+    height: 32px;
+    border: 1px solid #c7ccd1;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 320px;
+  }
+  .barra-colores .franja {
+    height: 100%;
+  }
+  .barra-colores .franja:first-child {
+    flex: 2;
+  }
+  .barra-colores .franja:not(:first-child) {
+    flex: 1;
+    max-width: 45px;
+  }
+
+  /* Anular cualquier flex del body que ponga la cabecera al lado de la tarjeta */
+  body { display: block !important; }
+</style>
+<link rel="stylesheet" href="men-header.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>Código de Colores IS-2379</h1>
+
+  <div class="field">
+    <label for="selectContenido">Contenido</label>
+    <select id="selectContenido">
+      <option value="">-- Selecciona un contenido --</option>
+    </select>
+  </div>
+
+  <button type="button" id="btnLimpiar">Nueva consulta</button>
+
+  <div id="results"></div>
+</div>
+
+<script>
+// ============================================================================
+// DATOS (pegados del archivo .txt)
+// ============================================================================
+const DATOS_RAW = `
+"Agua de refrigeración","Código de colores IS-2379 para servicios generales","Verde mar","Azul francés",""
+"Agua para alimentación de la caldera","Código de colores IS-2379 para servicios generales","Verde mar","Rojo golfo",""
+"Condensar","Código de colores IS-2379 para servicios generales","Verde mar","Marrón claro",""
+"Agua potable","Código de colores IS-2379 para servicios generales","Verde mar","Azul francés","Rojo señal"
+"Agua tratada","Código de colores IS-2379 para servicios generales","Verde spa","Naranja claro",""
+"Agua contra incendios","Código de colores IS-2379 para servicios generales","Rojo fuego","Rojo carmesí",""
+"Calefacción central por debajo de 60°C","Código de colores IS-2379 para servicios generales","Verde mar","Amarillo canario",""
+"Calefacción central 60°C a 100°C","Código de colores IS-2379 para servicios generales","Verde mar","Violeta oscuro",""
+"Calefacción central por encima de 100°C","Código de colores IS-2379 para servicios generales","Verde mar","Violeta oscuro","Rojo señal"
+"Servicio de bajada de agua fría desde tanques de almacenamiento.","Código de colores IS-2379 para servicios generales","Verde mar","Azul francés","Amarillo canario"
+"Agua caliente sanitaria","Código de colores IS-2379 para servicios generales","Verde mar","Gris claro",""
+"Energía hidráulica Agua","Código de colores IS-2379 para servicios generales","Verde mar","Negro",""
+"Agua de mar, río, agua no tratada","Código de colores IS-2379 para servicios generales","Verde mar","Blanco",""
+"Agua filtrada","Código de colores IS-2379 para servicios generales","Verde mar","Marrón claro",""
+"Agua suave","Código de colores IS-2379 para servicios generales","Verde mar","Marrón claro","Rojo señal"
+"Agua tibia","Código de colores IS-2379 para servicios generales","Verde mar","Gris claro","Amarillo canario"
+"agua helada","Código de colores IS-2379 para servicios generales","Verde mar","Negro","Amarillo canario"
+"Agua de riego y de hidrante","Código de colores IS-2379 para servicios generales","Verde mar","Blanco","Rojo señal"
+"Aguas residuales","Código de colores IS-2379 para servicios generales","Verde mar","Amarillo canario","Rojo señal"
+"Aire comprimido hasta 15 kg/cm inclusive.","Código de colores IS-2379 para servicios generales","Azul cielo","",""
+"Comprimido a más de 15 kg/cm'","Código de colores IS-2379 para servicios generales","Azul cielo","Rojo señal",""
+"Planta de aire","Código de colores IS-2379 para servicios generales","Azul cielo","Gris plateado",""
+"Instrumento de viento","Código de colores IS-2379 para servicios generales","Azul cielo","Azul francés",""
+"vacío seco","Código de colores IS-2379 para servicios generales","Blanco","",""
+"vacío húmedo","Código de colores IS-2379 para servicios generales","Blanco","Violeta oscuro",""
+"Vapor a muy alta presión","Código de colores IS-2379 para servicios generales","Aluminio según IS 2339","Rojo señal",""
+"Vapor a alta presión","Código de colores IS-2379 para servicios generales","Aluminio según IS 2339","Azul francés",""
+"Vapor de media presión","Código de colores IS-2379 para servicios generales","Aluminio según IS 2339","Rojo golfo",""
+"Vapor a baja presión","Código de colores IS-2379 para servicios generales","Aluminio según IS 2339","Amarillo canario",""
+"Drenaje","Código de colores IS-2379 para servicios generales","Negro","",""
+"Gas ciudad","Código de colores IS-2379 para servicios generales","Amarillo canario","",""
+"Combustible diésel ligero","Código de colores IS-2379 para servicios generales","Marrón claro","Verde brillante",""
+"Combustible diésel de alta velocidad,","Código de colores IS-2379 para servicios generales","Marrón claro","",""
+"Parafina","Código de colores IS-2379 para servicios generales","Marrón claro","Rojo señal",""
+"Aceite de enfriamiento","Código de colores IS-2379 para servicios generales","Marrón claro","Amarillo canario",""
+"Combustible de horno","Código de colores IS-2379 para servicios generales","Marrón claro","Azul francés",""
+"Aceite lubricante","Código de colores IS-2379 para servicios generales","Marrón claro","Gris claro",""
+"Poder hidráulico","Código de colores IS-2379 para servicios generales","Marrón claro","Violeta oscuro",""
+"Aceite del transformador","Código de colores IS-2379 para servicios generales","Marrón claro","Naranja claro",""
+"Aire","Código de colores IS-2379 para gases medicinales","Azul cielo","Blanco","Negro"
+"ciclopropano","Código de colores IS-2379 para gases medicinales","Amarillo canario","Naranja claro",""
+"Dióxido de carbono","Código de colores IS-2379 para gases medicinales","Amarillo canario","Gris claro",""
+"Etileno","Código de colores IS-2379 para gases medicinales","Amarillo canario","Amarillo oscuro","Rojo señal"
+"Helio","Código de colores IS-2379 para gases medicinales","Amarillo canario","Marrón claro",""
+"Oxígeno","Código de colores IS-2379 para gases medicinales","Amarillo canario","Blanco",""
+"Mezcla de oxígeno y dióxido de carbono","Código de colores IS-2379 para gases medicinales","Amarillo canario","Blanco","Gris claro"
+"Mezcla de oxígeno y helio","Código de colores IS-2379 para gases medicinales","Amarillo canario","Blanco","Marrón claro"
+"Óxido nitroso","Código de colores IS-2379 para gases medicinales","Amarillo canario","Azul francés","Rojo señal"
+"Nitrógeno","Código de colores IS-2379 para gases medicinales","Amarillo canario","Negro",""
+"Vacío","Código de colores IS-2379 para gases medicinales","Azul cielo","Negro",""
+"Propileno FP (líquido)","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Verde brillante",""
+"Propileno ( CG ) ( Líquido )","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Verde brillante","Gris humo"
+"Etilenglicol","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Verde brillante","Rojo golfo"
+"Dicloruro de etileno","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Rojo golfo",""
+"Benceno","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Amarillo canario",""
+"butadina","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Negro",""
+"Acetona","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Negro","Amarillo canario"
+"Metanol","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Deep buff",""
+"nafta","Código de colores IS-2379 para hidrocarburos y nafta","Gris almirante oscuro","Marrón claro","Negro"
+"Ácido fosfórico","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Gris plateado",""
+"ácido fluorhídrico","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Rojo señal","Azul francés"
+"Ácido sulfurico","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Verde brillante","Naranja claro"
+"Ácido nítrico","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Azul francés","Naranja claro"
+"Ácido clorhídrico","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Rojo señal","Naranja claro"
+"Ácido acético","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Gris plateado",""
+"Salmuera","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Blanco",""
+"Solución cáustica","Código de colores IS-2379 para hidrocarburos y nafta","Gris humo","Naranja claro",""
+"Clasificado","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Amarillo canario",""
+"Spinbath ácido sulfúrico concentrativo","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Verde brillante","Amarillo canario"
+"disolver","Código de colores IS-2379 para hidrocarburos y nafta","","Naranja claro","Blanco"
+"causado","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Naranja claro",""
+"Baño de centrifugado evaporado","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Amarillo canario","Verde brillante"
+"Solución floculante","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Verde brillante",""
+"Cal","Código de colores IS-2379 para hidrocarburos y nafta","Gris humo","Blanco","Amarillo canario"
+"Mercurio","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Blanco","Verde brillante"
+"Cáustico de ron","Código de colores IS-2379 para hidrocarburos y nafta","Gris humo","Blanco",""
+"Cáustico recuperado","Código de colores IS-2379 para hidrocarburos y nafta","Gris humo","Rojo señal","Blanco"
+"disulfuro de carbono","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Naranja claro",""
+"Cáustico fuerte","Código de colores IS-2379 para hidrocarburos y nafta","Gris humo","Azul francés","Blanco"
+"Cáustico empapado","Código de colores IS-2379 para hidrocarburos y nafta","Gris humo","Amarillo dorado",""
+"Sulfuro de sodio","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Verde brillante","Amarillo canario"
+"Solución de jabón","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Naranja claro","Blanco"
+"Suministro de spinbath","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Blanco","Amarillo canario"
+"regreso al baño giratorio","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Amarillo dorado",""
+"Solución de carbonato de sodio","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Amarillo jazmín",""
+"Residuos cáusticos","Código de colores IS-2379 para hidrocarburos y nafta","Violeta oscuro","Blanco","Amarillo canario"
+"Baño de centrifugado de residuos","Código de colores IS-2379 para hidrocarburos y nafta","Negro","Amarillo jazmín",""
+"Viscosa","Código de colores IS-2379 para hidrocarburos y nafta","Negro","amarillo dorado","Verde brillante"
+"Amoníaco","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro",""
+"Cloro","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro","Naranja claro"
+"ácido cianhídrico","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro","Rojo buzón"
+"fenol","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro","Gris humo"
+"Dióxido de azufre","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro","Marrón dorado"
+"Acetileno","Código de colores IS-2379 para gases industriales","Amarillo canario","Servicio marrón",""
+"Gases de quema","Código de colores IS-2379 para gases industriales","Amarillo canario","",""
+"Sulfuro de hidrógeno","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo golfo",""
+"Argón","Código de colores IS-2379 para gases industriales","Amarillo canario","Azul francés",""
+"Benzol","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro","Azul francés"
+"gas de alto horno","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal","Gris claro"
+"Butano","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal",""
+"Gas de carbón","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal","Verde brillante"
+"Dióxido de carbono (templado)","Código de colores IS-2379 para gases industriales","Amarillo canario","Gris claro",""
+"Monóxido de carbono","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal","Blanco"
+"gas para horno de coque","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal","Violeta oscuro"
+"Cloruro de etilo (inflamable)","Código de colores IS-2379 para gases industriales","Amarillo canario","Gris claro","Rojo señal"
+"Cloruro de etilo (no inflamable)","Código de colores IS-2379 para gases industriales","Amarillo canario","Gris claro","Blanco"
+"Etileno","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro","Rojo señal"
+"Óxido de etileno","Código de colores IS-2379 para gases industriales","Amarillo canario","Violeta oscuro","Verde brillante"
+"Freón (clorofluoroderivado de metano y etano)","Código de colores IS-2379 para gases industriales","Amarillo canario","Gris claro","Violeta oscuro"
+"Helio","Código de colores IS-2379 para gases industriales","Amarillo canario","Marrón claro",""
+"Hidrógeno","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal","Azul francés"
+"Metano","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal","Marrón claro"
+"Bromuro de metilo","Código de colores IS-2379 para gases industriales","Amarillo canario","Azul francés","Negro"
+"Cloruro de metilo (inflamable)","Código de colores IS-2379 para gases industriales","Amarillo canario","Verde brillante","Rojo señal"
+"Cloruro de metilo (no inflamable)","Código de colores IS-2379 para gases industriales","Amarillo canario","Verde brillante","Azul francés"
+"Neón","Código de colores IS-2379 para gases industriales","Amarillo canario","Marrón claro","Negro"
+"Nitrógeno","Código de colores IS-2379 para gases industriales","Amarillo canario","Negro",""
+"Oxígeno","Código de colores IS-2379 para gases industriales","Amarillo canario","Blanco",""
+"Propano","Código de colores IS-2379 para gases industriales","Amarillo canario","Rojo señal","Negro"
+"Fosgeno","Código de colores IS-2379 para gases industriales","Amarillo canario","Negro","Blanco"
+`;
+
+// ============================================================================
+// MAPA DE COLORES (nombre → CSS)
+// ============================================================================
+const COLORES_CSS = {
+  "verde mar": "#2e8b57",
+  "azul francés": "#0072bb",
+  "rojo golfo": "#8b0000",
+  "marrón claro": "#c4a484",
+  "rojo señal": "#cc0605",
+  "verde spa": "#00a86b",
+  "naranja claro": "#ffb347",
+  "rojo fuego": "#ce2029",
+  "rojo carmesí": "#960018",
+  "amarillo canario": "#ffff99",
+  "violeta oscuro": "#5d3fd3",
+  "gris claro": "#d3d3d3",
+  "negro": "#000000",
+  "blanco": "#ffffff",
+  "azul cielo": "#87ceeb",
+  "gris plateado": "#c0c0c0",
+  "aluminio según is 2339": "#d9d9d9",
+  "verde brillante": "#00ff00",
+  "marrón dorado": "#996515",
+  "amarillo oscuro": "#b8860b",
+  "gris humo": "#708090",
+  "gris almirante oscuro": "#4a4a4a",
+  "deep buff": "#e6c280",
+  "amarillo dorado": "#ffd700",
+  "amarillo jazmín": "#f8de7e",
+  "rojo buzón": "#b22222",
+  "servicio marrón": "#8b4513"
+};
+
+function colorCSS(nombre) {
+  if (!nombre) return "#f0f0f0";
+  const key = nombre.trim().toLowerCase();
+  return COLORES_CSS[key] || "#cccccc";
+}
+
+// ============================================================================
+// PARSEO
+// ============================================================================
+function parsearLinea(linea) {
+  const campos = [];
+  let actual = '';
+  let dentro = false;
+  for (let i = 0; i < linea.length; i++) {
+    const ch = linea[i];
+    if (ch === '"') {
+      if (dentro && linea[i+1] === '"') { actual += '"'; i++; }
+      else dentro = !dentro;
+    } else if (ch === ',' && !dentro) {
+      campos.push(actual.trim());
+      actual = '';
+    } else {
+      actual += ch;
+    }
+  }
+  campos.push(actual.trim());
+  return campos;
+}
+
+const DATOS = DATOS_RAW.trim().split(/\r?\n/).filter(l => l.trim()).map(parsearLinea);
+const DATOS_ORDENADOS = [...DATOS].sort((a, b) => a[0].localeCompare(b[0], 'es'));
+
+// ============================================================================
+// ELEMENTOS
+// ============================================================================
+const select = document.getElementById('selectContenido');
+const btnLimpiar = document.getElementById('btnLimpiar');
+const resultsDiv = document.getElementById('results');
+
+// Poblar select
+DATOS_ORDENADOS.forEach((fila, idx) => {
+  const opt = document.createElement('option');
+  opt.value = idx;
+  opt.textContent = fila[0];
+  select.appendChild(opt);
+});
+
+// ============================================================================
+// RENDERIZADO
+// ============================================================================
+function renderResultado() {
+  const idx = select.value;
+  if (idx === '') {
+    resultsDiv.innerHTML = '';
+    return;
+  }
+
+  const fila = DATOS_ORDENADOS[idx];
+  const contenido = fila[0] || '';
+  const codigo = fila[1] || '';
+  const fondo = fila[2] || '';
+  const banda1 = fila[3] || '';
+  const banda2 = fila[4] || '';
+
+  // Filas visibles solo si tienen datos
+  let filasHtml = '';
+
+  if (codigo) {
+    filasHtml += `<tr><th>Código</th><td>${codigo}</td></tr>`;
+  }
+  if (fondo) {
+    filasHtml += `<tr><th>Color de fondo</th><td>${fondo}</td></tr>`;
+  }
+  if (banda1) {
+    filasHtml += `<tr><th>Primera banda de color</th><td>${banda1}</td></tr>`;
+  }
+  if (banda2) {
+    filasHtml += `<tr><th>Segunda banda de color</th><td>${banda2}</td></tr>`;
+  }
+
+  // Construir franjas de la barra (solo las que tienen color)
+  let barraHtml = '';
+  const colores = [
+    { nombre: fondo, flex: 2 },
+    { nombre: banda1, flex: 1 },
+    { nombre: banda2, flex: 1 }
+  ];
+  colores.forEach(c => {
+    if (c.nombre && c.nombre.trim()) {
+      const estiloFlex = c.flex === 2 ? 'flex:2;' : 'flex:1;max-width:45px;';
+      barraHtml += `<div class="franja" style="background:${colorCSS(c.nombre)};${estiloFlex}" title="${c.nombre}"></div>`;
+    }
+  });
+
+  // Solo añadir la fila "Barra" si hay al menos una franja
+  if (barraHtml) {
+    filasHtml += `<tr><th>Tuberia</th><td><div class="barra-colores">${barraHtml}</div></td></tr>`;
+  }
+
+  // Si no hay ninguna fila, mostrar mensaje
+  if (!filasHtml) {
+    filasHtml = `<tr><td colspan="2" class="no-results">Sin datos disponibles para este contenido.</td></tr>`;
+  }
+
+  resultsDiv.innerHTML = `
+    <div class="card-result">
+      <div class="card-title">${contenido}</div>
+      <table class="data-table">
+        ${filasHtml}
+      </table>
+    </div>
+  `;
+}
+
+select.addEventListener('change', renderResultado);
+
+btnLimpiar.addEventListener('click', function() {
+  select.value = '';
+  resultsDiv.innerHTML = '';
+});
+</script>
+
+<!-- Logo + menú de cabecera (igual que en el HTML original) -->
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
