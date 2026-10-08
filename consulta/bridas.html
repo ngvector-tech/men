@@ -479,7 +479,7 @@ function renderResults() {
         <table class="data-table">
           <tr><th>Categoría</th><td>${m[0]}</td></tr>
           <tr><th>Norma Principal</th><td>${m[12]}</td></tr>
-          ${m[11] ? `<tr><th>Norma compatible</th><td>${m[11]}</td></tr>` : ''}
+          ${m[11] ? `<tr><th>Norma compatible</th><td style="color:#c0392b; font-weight:bold;">${m[11]}</td></tr>` : ''}
           <tr><th>Diametro Nominal (DN)</th><td>${m[1]}</td></tr>
           <tr><th>Presion (PN / Lbs)</th><td>${m[2]}</td></tr>
           ${m[3] ? `<tr><th>Otros (mm)</th><td>${m[3]}</td></tr>` : ''}
@@ -502,7 +502,7 @@ function renderResults() {
         padding:14px 24px; font-size:15px; font-weight:600;
         border-radius:8px; cursor:pointer; width:100%;
         box-shadow:0 2px 6px rgba(2,132,199,0.3);
-      ">🔩 Calcular tornillería para esta brida</button>
+      ">🔩 Pedir tornillos, tuercas y juntas para esta brida</button>
     </div>
   `;
 
