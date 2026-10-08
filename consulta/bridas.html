@@ -3,8 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Buscador de Bridas y Dimensiones</title>
 <style>
+* { box-sizing: border-box; }
+  body { ... }
+  /* ... resto de tus estilos ... */
+  body { display: block !important; }
+  
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -143,7 +149,10 @@
     padding: 14px;
     font-size: 14px;
   }
+    /* Anular cualquier flex del body que ponga la cabecera al lado de la tarjeta */
+  body { display: block !important; }
 </style>
+<link rel="stylesheet" href="men-header.css"> 
 </head>
 <body>
 
@@ -363,7 +372,8 @@ function updateImage(cat) {
     imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria para ver su esquema</span>';
     return;
   }
-  const imgPath = `../img/${encodeURIComponent(cat)}.png`;
+  // Las imágenes están en consulta/img/ y en minúscula
+  const imgPath = `img/${cat.toLowerCase()}.png`;
   imgBox.innerHTML = `<img src="${imgPath}" alt="Esquema ${cat}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>Imagen no encontrada: ${imgPath}</span>';">`;
 }
 
@@ -832,6 +842,9 @@ btnLimpiar.addEventListener('click', function() {
 // ARRANQUE
 // ============================================================================
 init();
+
 </script>
+
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>
