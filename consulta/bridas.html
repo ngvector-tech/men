@@ -3,14 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Buscador de Bridas y Dimensiones</title>
 <style>
-* { box-sizing: border-box; }
-  body { ... }
-  /* ... resto de tus estilos ... */
-  body { display: block !important; }
-  
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -18,6 +12,7 @@
     margin: 0;
     padding: 24px 16px 60px;
     color: #222;
+    display: block !important;
   }
   .container {
     max-width: 780px;
@@ -80,11 +75,33 @@
     border-radius: 6px;
     cursor: pointer;
     margin-top: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     width: 100%;
     transition: background 0.2s;
   }
   #btnLimpiar:hover { background: #333; }
+
+  #btnTornilleria {
+    background: #0284c7;
+    color: #fff;
+    border: none;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 6px rgba(2,132,199,0.3);
+    transition: background 0.2s;
+  }
+  #btnTornilleria:hover { background: #026aa0; }
+  #btnTornilleria:disabled {
+    background: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 
   .image-container {
     text-align: center;
@@ -104,7 +121,6 @@
     color: #888;
     font-style: italic;
   }
-
   #results { margin-top: 20px; }
   .card-result {
     background: #f8f9fa;
@@ -149,15 +165,27 @@
     padding: 14px;
     font-size: 14px;
   }
-    /* Anular cualquier flex del body que ponga la cabecera al lado de la tarjeta */
-  body { display: block !important; }
 </style>
-<link rel="stylesheet" href="men-header.css"> 
+<link rel="stylesheet" href="men-header.css">
 </head>
 <body>
 
 <div class="container">
   <h1>Consulta Tecnica de Bridas</h1>
+
+  <!-- ⬇️ AVISO DE LA OT ACTIVA ⬇️ -->
+  <div id="avisoOtActiva" style="
+    display: none;
+    background: #e0f2fe;
+    border-left: 4px solid #0284c7;
+    color: #0369a1;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+  "></div>
 
   <div id="loadingMsg">⏳ Cargando base de datos...</div>
 
@@ -201,6 +229,7 @@
     </div>
 
     <button type="button" id="btnLimpiar">Nueva consulta</button>
+    <button type="button" id="btnTornilleria" disabled>🔩 Pedir tornillos, tuercas y juntas para esta brida</button>
 
     <div class="image-container" id="imgBox">
       <span class="img-placeholder">Selecciona una categoria para ver su esquema (img/[CATEGORIA].png)</span>
@@ -219,8 +248,8 @@
 // ============================================================================
 // VARIABLES GLOBALES
 // ============================================================================
-let DATA = [];               // Bridas desde bridas.csv
-let lineasArticulos = [];    // Artículos (tornillos, tuercas, etc.)
+let DATA = [];
+let lineasArticulos = [];
 let iframeListo = false;
 
 const catSelect   = document.getElementById('catSelect');
@@ -228,15 +257,15 @@ const normaSelect = document.getElementById('normaSelect');
 const dnSelect    = document.getElementById('dnSelect');
 const pnSelect    = document.getElementById('pnSelect');
 const btnLimpiar  = document.getElementById('btnLimpiar');
+const btnTornilleria = document.getElementById('btnTornilleria');
 const imgBox      = document.getElementById('imgBox');
 const resultsDiv  = document.getElementById('results');
 
 // ============================================================================
-// PARSER CSV — delimitador ',' fuera de comillas, respeta comas decimales
+// PARSER CSV
 // ============================================================================
 function limpiarCampo(valor) {
   valor = String(valor == null ? '' : valor).trim();
-  // Quitar corchetes iniciales/finales que vienen del formato array
   valor = valor.replace(/^\[\s*/, '').replace(/\s*\]$/, '').trim();
   if (valor === '') return '';
   const match = valor.match(/^(-?\d+),(\d+)$/);
@@ -286,11 +315,9 @@ function parsearCSV(text) {
 
   return filas;
 }
-// Orden de normas: primero EN-1092 (con cualquier variante), luego el resto
 function ordenarNormas(normas) {
   const prioridad = (n) => {
     const t = String(n).toUpperCase().replace(/\s+/g, '');
-    // Coincide con EN-1092, EN1092, EN 1092, EN1092-1...
     if (t.includes('EN-1092') || t.includes('EN1092')) return 0;
     if (t.includes('DIN')) return 1;
     if (t.includes('ANSI') || t.includes('ASME')) return 2;
@@ -314,8 +341,6 @@ async function cargarBridas() {
     const text = await res.text();
     DATA = parsearCSV(text);
     console.log(`✓ ${DATA.length} filas cargadas desde bridas.csv`);
-    const cats = [...new Set(DATA.map(r => r[0]))].filter(Boolean);
-    console.log(`✓ ${cats.length} categorías:`, cats);
   } catch (e) {
     console.error('❌ Error cargando bridas.csv:', e);
     alert('No se pudo cargar bridas.csv. Verifica la ruta.');
@@ -334,7 +359,7 @@ async function cargarArticulos() {
       .map(l => l.trim())
       .filter(l => l.length > 0)
       .map(l => l.split(';').map(c => c.replace(/^"|"$/g, '').trim()));
-    console.log(`✓ ${lineasArticulos.length} líneas cargadas desde ../Pedidos desde obra/articulos.txt`);
+    console.log(`✓ ${lineasArticulos.length} líneas cargadas desde articulos.txt`);
   } catch (e) {
     console.error('❌ Error cargando articulos.txt:', e);
   }
@@ -357,6 +382,9 @@ async function init() {
   document.getElementById('loadingMsg').style.display = 'none';
   document.getElementById('formulario').style.display = 'block';
   initCategories();
+
+  // ⬇️ Actualizar el aviso de la OT activa
+  actualizarAvisoOtActiva();
 }
 
 function initCategories() {
@@ -372,9 +400,32 @@ function updateImage(cat) {
     imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria para ver su esquema</span>';
     return;
   }
-  // Las imágenes están en consulta/img/ y en minúscula
   const imgPath = `img/${cat.toLowerCase()}.png`;
   imgBox.innerHTML = `<img src="${imgPath}" alt="Esquema ${cat}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>Imagen no encontrada: ${imgPath}</span>';">`;
+}
+
+// ============================================================================
+// AVISO DE LA OT ACTIVA
+// ============================================================================
+function actualizarAvisoOtActiva() {
+  const div = document.getElementById('avisoOtActiva');
+  if (!div) return;
+  const operario = (sessionStorage.getItem('operarioNombre') || '').trim();
+  const obra = (sessionStorage.getItem('operarioObra') || '').trim();
+
+  if (operario || obra) {
+    div.innerHTML = `📋 Pedido a: <strong>${operario || '(sin operario)'}</strong> — OT: <strong>${obra || '(sin OT)'}</strong>`;
+    div.style.display = 'block';
+    div.style.background = '#e0f2fe';
+    div.style.borderLeftColor = '#0284c7';
+    div.style.color = '#0369a1';
+  } else {
+    div.innerHTML = `⚠️ <strong>Sin operario ni OT activos.</strong> Se pedirán al añadir a la lista.`;
+    div.style.display = 'block';
+    div.style.background = '#fef3c7';
+    div.style.borderLeftColor = '#f59e0b';
+    div.style.color = '#854d0e';
+  }
 }
 
 // ============================================================================
@@ -391,6 +442,7 @@ catSelect.addEventListener('change', function() {
   normaSelect.disabled = !cat;
   dnSelect.disabled = true;
   pnSelect.disabled = true;
+  btnTornilleria.disabled = true;
   resultsDiv.innerHTML = '';
 
   if (cat) {
@@ -411,6 +463,7 @@ normaSelect.addEventListener('change', function() {
 
   dnSelect.disabled = !norma;
   pnSelect.disabled = true;
+  btnTornilleria.disabled = true;
   resultsDiv.innerHTML = '';
 
   if (norma) {
@@ -429,6 +482,7 @@ dnSelect.addEventListener('change', function() {
 
   pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
   pnSelect.disabled = !dn;
+  btnTornilleria.disabled = true;
   resultsDiv.innerHTML = '';
 
   if (dn) {
@@ -440,7 +494,10 @@ dnSelect.addEventListener('change', function() {
   }
 });
 
-pnSelect.addEventListener('change', renderResults);
+pnSelect.addEventListener('change', function() {
+  renderResults();
+  btnTornilleria.disabled = !(catSelect.value && normaSelect.value && dnSelect.value && pnSelect.value);
+});
 
 // ============================================================================
 // RENDERIZADO DE RESULTADOS
@@ -467,7 +524,6 @@ function renderResults() {
 
   let html = '';
   matches.forEach(m => {
-    // Descripción: último campo no vacío
     let descripcion = '';
     for (let i = m.length - 1; i >= 0; i--) {
       if (m[i] && m[i].trim() !== '') { descripcion = m[i]; break; }
@@ -494,17 +550,6 @@ function renderResults() {
       </div>
     `;
   });
-
-  html += `
-    <div style="text-align:center; margin-top:18px;">
-      <button type="button" id="btnTornilleria" style="
-        background:#0284c7; color:#fff; border:none;
-        padding:14px 24px; font-size:15px; font-weight:600;
-        border-radius:8px; cursor:pointer; width:100%;
-        box-shadow:0 2px 6px rgba(2,132,199,0.3);
-      ">🔩 Pedir tornillos, tuercas y juntas para esta brida</button>
-    </div>
-  `;
 
   resultsDiv.innerHTML = html;
 }
@@ -561,47 +606,35 @@ function extraerReferencia(campos) {
   return null;
 }
 
-function buscarArticuloPorTokens(tokens, categoriaEsperada) {
-  const tokensUpper = tokens.map(t => normalizar(t));
-  const catUpper = normalizar(categoriaEsperada);
+function buscarArticulo(categoria, dimension, material) {
+  const catUpper = normalizar(categoria);
+  const dimUpper = normalizar(dimension);
+  const matUpper = normalizar(material);
 
   for (const linea of lineasArticulos) {
-    if (!linea || linea.length === 0) continue;
-
-    const cat = normalizar(linea[0]);
-    if (cat !== catUpper) continue;
-
-    const camposBusqueda = linea.slice(0, -1).map(c => normalizar(c));
-
-    const todosPresentes = tokensUpper.every(tok =>
-      camposBusqueda.some(campo => campo === tok || campo.includes(tok))
-    );
-
-    if (todosPresentes) {
-      const ref = extraerReferencia(linea);
-      return { campos: linea, ref };
-    }
+    if (!linea || linea.length < 6) continue;
+    if (normalizar(linea[0]) !== catUpper) continue;
+    if (normalizar(linea[2]) !== dimUpper) continue;
+    if (normalizar(linea[4]) !== matUpper) continue;
+    return { campos: linea, ref: extraerReferencia(linea) };
   }
   return null;
 }
 
 function buscarTornillo(metrico, longitud, material) {
-  const tokens = [`${metrico}X${longitud}`, material];
-  return buscarArticuloPorTokens(tokens, 'TORNILLOS');
+  return buscarArticulo('TORNILLOS', `${metrico}X${longitud}`, material);
 }
 
 function buscarTuerca(metrico, material) {
-  const tokens = [`M${metrico}`, material];
-  return buscarArticuloPorTokens(tokens, 'TUERCAS');
+  return buscarArticulo('TUERCAS', `M${metrico}`, material);
 }
 
-document.addEventListener('click', function (e) {
-  if (e.target && e.target.id === 'btnTornilleria') {
-    abrirModalTornilleria();
-  }
-});
+btnTornilleria.addEventListener('click', abrirModalTornilleria);
 
 function abrirModalTornilleria() {
+  // ⬇️ Refrescar aviso antes de abrir el modal
+  actualizarAvisoOtActiva();
+
   const cat = catSelect.value;
   const norma = normaSelect.value;
   const dn = dnSelect.value;
@@ -681,9 +714,9 @@ function abrirModalTornilleria() {
       resumenDiv.innerHTML = `
         <strong>Se añadirán:</strong><br>
         · <strong>${nTornillos}</strong> × TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} ${material}
-        ${torn ? `<span style="color:#16a34a;"> ✓ REF ${torn.ref}</span>` : ' <span style="color:#dc2626;">(no en base — solo descripción)</span>'}<br>
+        ${torn ? `<span style="color:#16a34a;"> ✓ REF ${torn.ref}</span>` : ' <span style="color:#dc2626;">(no en base → MENXXXXX)</span>'}<br>
         · <strong>${nTornillos}</strong> × TUERCA DIN934 M${metrico} ${material}
-        ${tuerca ? `<span style="color:#16a34a;"> ✓ REF ${tuerca.ref}</span>` : ' <span style="color:#dc2626;">(no en base — solo descripción)</span>'}
+        ${tuerca ? `<span style="color:#16a34a;"> ✓ REF ${tuerca.ref}</span>` : ' <span style="color:#dc2626;">(no en base → MENXXXXX)</span>'}
       `;
       resumenDiv.style.display = 'block';
       btnConfirmar.disabled = false;
@@ -743,34 +776,37 @@ function abrirModalTornilleria() {
     const torn = buscarTornillo(metrico, longitud, material);
     const tuerca = buscarTuerca(metrico, material);
 
-    const detalleTorn = torn
-      ? `TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} ${material}`
-      : `⚠️ NO EN BASE - TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} ${material}`;
+    const detalleTorn   = `TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} ${material}`;
+    const detalleTuerca = `TUERCA DIN934 M${metrico} ${material}`;
 
-    const detalleTuerca = tuerca
-      ? `TUERCA DIN934 M${metrico} ${material}`
-      : `⚠️ NO EN BASE - TUERCA DIN934 M${metrico} ${material}`;
+    // MENXXXXX literal si no existe la ref
+    const refTorn   = torn && torn.ref     ? torn.ref     : 'MENXXXXX';
+    const refTuerca = tuerca && tuerca.ref ? tuerca.ref   : 'MENXXXXX';
 
     const lineas = [
-      { referencia: torn ? torn.ref : null, detalle_linea: detalleTorn, cantidad: nTornillos },
-      { referencia: tuerca ? tuerca.ref : null, detalle_linea: detalleTuerca, cantidad: nTornillos }
+      { referencia: refTorn,   detalle_linea: detalleTorn,   cantidad: nTornillos },
+      { referencia: refTuerca, detalle_linea: detalleTuerca, cantidad: nTornillos }
     ];
 
-    let operario = localStorage.getItem('operarioNombre') || '';
-    let obra = localStorage.getItem('operarioObra') || '';
+    // ✅ Unificado: sessionStorage (mismo que index.html)
+    let operario = sessionStorage.getItem('operarioNombre') || '';
+    let obra = sessionStorage.getItem('operarioObra') || '';
 
     if (!operario) {
       operario = prompt('Tu nombre (operario):', '');
       if (!operario) return;
       operario = operario.trim();
-      localStorage.setItem('operarioNombre', operario);
+      sessionStorage.setItem('operarioNombre', operario);
     }
     if (!obra) {
       obra = prompt('Nº de OT:', '');
       if (!obra) return;
       obra = obra.trim();
-      localStorage.setItem('operarioObra', obra);
+      sessionStorage.setItem('operarioObra', obra);
     }
+
+    // ⬇️ Actualizar aviso tras rellenar operario/OT si procede
+    actualizarAvisoOtActiva();
 
     if (!iframeListo) {
       alert('La base de pedidos aún no está lista. Espera 2 segundos y reintenta.');
@@ -792,18 +828,30 @@ function abrirModalTornilleria() {
   });
 }
 
+// ============================================================================
+// MODAL FINAL: "Ir a la lista" como acción principal
+// ============================================================================
 function mostrarModalJuntas(operario, obra, nTornillos) {
   const modal = document.createElement('div');
   modal.id = 'modalJuntas';
   modal.style.cssText = `position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10001;`;
   modal.innerHTML = `
-    <div style="background:#fff; border-radius:12px; padding:26px 28px; max-width:420px; width:92%; box-shadow:0 10px 40px rgba(0,0,0,0.3); text-align:center;">
+    <div style="background:#fff; border-radius:12px; padding:26px 28px; max-width:440px; width:92%; box-shadow:0 10px 40px rgba(0,0,0,0.3); text-align:center;">
       <div style="font-size:42px; margin-bottom:6px;">✅</div>
       <h3 style="margin:0 0 10px 0; color:#16a34a;">Añadido a la lista</h3>
       <p style="color:#475569; margin:0 0 20px 0;">
-        Se han añadido <strong>${nTornillos} tuercas</strong> y <strong>${nTornillos} tornillos</strong> a la OT <strong>${obra}</strong>.
+        Se han añadido <strong>${nTornillos} tuercas</strong> y <strong>${nTornillos} tornillos</strong>
+        a la OT <strong>${obra}</strong>.
       </p>
-      <p style="color:#0f172a; font-weight:600; margin:0 0 16px 0;">¿Quieres ver las juntas compatibles?</p>
+
+      <button type="button" id="btnVerLista" style="
+        width:100%; padding:14px; background:#16a34a; color:#fff;
+        border:none; border-radius:6px; cursor:pointer; font-weight:bold;
+        box-shadow:0 2px 6px rgba(22,163,74,0.3); font-size:15px;
+        margin-bottom:14px;
+      ">📋 Ir a la lista de pedidos (OT ${obra})</button>
+
+      <p style="color:#0f172a; font-weight:600; margin:0 0 12px 0;">¿Quieres ver también las juntas compatibles?</p>
       <div style="display:flex; gap:10px;">
         <button type="button" id="btnNoJuntas" style="flex:1; padding:12px; background:#64748b; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">NO</button>
         <button type="button" id="btnSiJuntas" style="flex:1; padding:12px; background:#0284c7; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">SÍ, ver juntas</button>
@@ -817,6 +865,12 @@ function mostrarModalJuntas(operario, obra, nTornillos) {
   modal.querySelector('#btnSiJuntas').addEventListener('click', () => {
     modal.remove();
     const url = `../Pedidos desde obra/index.html?buscar=junta&operario=${encodeURIComponent(operario)}&obra=${encodeURIComponent(obra)}`;
+    window.location.href = url;
+  });
+
+  modal.querySelector('#btnVerLista').addEventListener('click', () => {
+    modal.remove();
+    const url = `../Pedidos desde obra/index.html?operario=${encodeURIComponent(operario)}&obra=${encodeURIComponent(obra)}&scrollToBottom=1`;
     window.location.href = url;
   });
 }
@@ -833,6 +887,7 @@ btnLimpiar.addEventListener('click', function() {
   normaSelect.disabled = true;
   dnSelect.disabled = true;
   pnSelect.disabled = true;
+  btnTornilleria.disabled = true;
 
   updateImage('');
   resultsDiv.innerHTML = '';
@@ -842,6 +897,12 @@ btnLimpiar.addEventListener('click', function() {
 // ARRANQUE
 // ============================================================================
 init();
+window.addEventListener('pageshow', function (event) {
+  if (event.persisted) {
+    // La página vino del "back-forward cache" del navegador
+    window.location.reload();
+  }
+});
 
 </script>
 

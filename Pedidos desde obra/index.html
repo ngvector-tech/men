@@ -45,14 +45,12 @@
 </head>
 <body>
     <div class="contenedor">
-        <!-- CABECERA -->
         <div class="cabecera">
             <h1 class="titulo-men">MEN</h1>
         </div>
 
         <div id="globoNorma" class="globo-info"></div>
 
-        <!-- OPERARIO Y OT -->
         <div style="margin-bottom: 15px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
             <div>
                 <label><strong>Nombre del Operario:</strong></label>
@@ -66,19 +64,16 @@
             </div>
         </div>
 
-        <!-- BUSCADOR -->
         <div class="caja-busqueda">
             <input type="text" id="inputBuscador" placeholder="🔍 Buscar únicamente por Nombre de Artículo..." oninput="buscarArticulos()">
         </div>
 
-        <!-- NAVEGACIÓN -->
         <div id="nav" style="display:none; margin-bottom: 15px;">
             <button class="btn btn-sec" onclick="atras()">⬅ Paso Atrás</button>
             <button class="btn" onclick="irInicio()">🏠 Inicio</button>
             <h3 id="breadcrumb" style="display:inline-block; margin-left: 15px;"></h3>
         </div>
 
-        <!-- VISTAS -->
         <div id="v-cat" class="vista activa"><h2>Categorías</h2><div id="grid-cat" class="grid"></div></div>
         <div id="v-art" class="vista"><div id="grid-art" class="grid"></div></div>
         <div id="v-dim" class="vista"><div id="grid-dim" class="grid"></div></div>
@@ -86,7 +81,6 @@
         <div id="v-mat" class="vista"><div id="grid-mat" class="grid"></div></div>
         <div id="v-busqueda" class="vista"><h2>Resultados de Búsqueda</h2><div id="grid-busqueda" class="grid"></div></div>
 
-        <!-- FICHA -->
         <div id="v-ficha" class="vista">
             <div class="ficha-box">
                 <div style="text-align:center;">
@@ -124,7 +118,6 @@
             </div>
         </div>
 
-        <!-- MI LISTA -->
         <div class="box-lista">
             <div class="acciones-lista">
                 <div>
@@ -174,7 +167,6 @@
 
         let registrosLista = [];
 
-        // ============ NORMAS ============
         const NORMAS_INFO = [
             { claves: ["DIN118", "DIN 118", "DIN-118"], texto: "Alimentario" },
             { claves: ["ASME BPE"], texto: "Alimentario" },
@@ -206,7 +198,6 @@
         let selCat="", selArt="", selDim="", selPres="", artSel=null;
         let temporizadorBusqueda = null;
 
-        // ============ OPERARIO / OT ============
         function obtenerOperarioActivo() {
             return (sessionStorage.getItem('operarioNombre') || '').trim();
         }
@@ -233,10 +224,13 @@
             await cargarDatosTecnicos();
             iniciarCategorias();
 
-            // Leer parámetros de URL (viene desde bridas.html)
             const params = new URLSearchParams(location.search);
             if (params.get('operario')) sessionStorage.setItem('operarioNombre', params.get('operario'));
             if (params.get('obra'))     sessionStorage.setItem('operarioObra',    params.get('obra'));
+
+            // Actualizar inputs si vienen por URL
+            if (params.get('operario')) document.getElementById('nombreUsuario').value = params.get('operario');
+            if (params.get('obra'))     document.getElementById('obraUsuario').value   = params.get('obra');
 
             const busquedaURL = params.get('buscar');
             if (busquedaURL) {
@@ -244,10 +238,26 @@
                 setTimeout(() => buscarArticulos(), 150);
             }
 
-            cargarMiLista();
+            await cargarMiLista();
+
+            // ------------------------------------------------------------
+            // SCROLL AL FINAL si venimos desde bridas.html con scrollToBottom=1
+            // ------------------------------------------------------------
+            if (params.get('scrollToBottom') === '1') {
+                let intentos = 0;
+                const maxIntentos = 15; // 15 × 300 ms = 4.5 s
+                const intervalo = setInterval(() => {
+                    intentos++;
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                    const y = window.scrollY + window.innerHeight;
+                    const total = document.documentElement.scrollHeight;
+                    if (y >= total - 5 || intentos >= maxIntentos) {
+                        clearInterval(intervalo);
+                    }
+                }, 300);
+            }
         });
 
-        // ============ NORMAS / BADGES / GLOBO ============
         function obtenerTextoNorma(texto) {
             if (!texto) return null;
             const t = texto.toUpperCase();
@@ -273,7 +283,6 @@
             setTimeout(() => { g.style.display = 'none'; }, 2000);
         }
 
-        // ============ CARGA DE DATOS ============
         async function cargarBaseDatos() {
             try {
                 const res = await fetch('articulos.txt');
@@ -308,7 +317,6 @@
             } catch (e) { console.warn("⚠️ Datos.txt no cargado"); }
         }
 
-        // ============ NAVEGACIÓN ============
         function cambiarVista(idVista, titulo) {
             document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
             const obj = document.getElementById(idVista);
@@ -328,7 +336,6 @@
             else irInicio();
         }
 
-        // ============ UTILIDADES ============
         function esValorSeguir(v) {
             if (v === null || v === undefined) return true;
             const low = String(v).trim().toLowerCase();
@@ -339,7 +346,6 @@
             return String(v).trim();
         }
 
-        // ============ BÚSQUEDA ============
         function buscarArticulos() {
             clearTimeout(temporizadorBusqueda);
             temporizadorBusqueda = setTimeout(() => {
@@ -385,7 +391,6 @@
             pasoDimensiones(art);
         }
 
-        // ============ CATEGORÍAS ============
         function iniciarCategorias() {
             cambiarVista('v-cat', 'Categorías');
             const cats = [...new Set(baseDatos.map(x => x.cat))];
@@ -414,7 +419,6 @@
             grid.innerHTML = html;
         }
 
-        // ============ PASO DIMENSIONES ============
         function pasoDimensiones(art) {
             selArt = art;
             const dims = [...new Set(
@@ -451,7 +455,6 @@
             grid.innerHTML = html;
         }
 
-        // ============ PASO PRESIÓN ============
         function pasoPresion(dim) {
             selDim = dim;
             historialNavegacion.push(() => pasoDimensiones(selArt));
@@ -483,7 +486,6 @@
             grid.innerHTML = html;
         }
 
-        // ============ PASO MATERIAL ============
         function pasoMaterial(pres) {
             selPres = pres;
             historialNavegacion.push(() => pasoPresion(selDim));
@@ -543,7 +545,6 @@
             fn();
         }
 
-        // ============ FICHA ============
         function cargarFicha(ref) {
             artSel = baseDatos.find(x => x.ref === ref);
             if (!artSel) return;
@@ -609,7 +610,6 @@
             return String(v).trim();
         }
 
-        // ============ AÑADIR A MI LISTA ============
         async function agregarALista() {
             if (!artSel) return;
             const nombre = document.getElementById('nombreUsuario').value.trim();
@@ -645,7 +645,6 @@
             cargarMiLista();
         }
 
-        // ============ CARGAR MI LISTA ============
         async function cargarMiLista() {
             const div = document.getElementById('listaItems');
             const prompt = document.getElementById('promptNombre');
@@ -746,7 +745,6 @@
             }
         }
 
-        // ============ GUARDAR DATOS INLINE ============
         function guardarDatosInline() {
             const inputN = document.getElementById('nombreUsuarioInline');
             const inputO = document.getElementById('obraUsuarioInline');
@@ -765,7 +763,11 @@
             cargarMiLista();
         }
 
-        // ============ NUEVA OT ============
+        // ============================================================
+        // NUEVA OT — CORREGIDO: dispara el evento 'input' para que
+        // el sessionStorage se actualice y los siguientes materiales
+        // se guarden en la OT nueva (no en la anterior)
+        // ============================================================
         function nuevaOT() {
             const actual = obtenerObraActiva() || '';
             const nueva = prompt(`Introduce el Nº de la nueva OT:\n\n(OT actual: ${actual || 'ninguna'})`, '');
@@ -773,12 +775,26 @@
             const limpia = nueva.trim();
             if (!limpia) { alert("No has introducido ninguna OT."); return; }
 
-            document.getElementById('obraUsuario').value = limpia;
-            sessionStorage.setItem('operarioObra', limpia);
-            cargarMiLista();
+            const inputObra = document.getElementById('obraUsuario');
+            inputObra.value = limpia;
+
+            // 🔑 Disparar 'input' para ejecutar el listener que actualiza
+            // sessionStorage y recarga la lista
+            inputObra.dispatchEvent(new Event('input', { bubbles: true }));
+
+            // Feedback visual
+            const msg = document.createElement('div');
+            msg.textContent = `✅ OT activa cambiada a: ${limpia}`;
+            msg.style.cssText = `
+                position:fixed; bottom:20px; right:20px; z-index:10000;
+                background:#16a34a; color:#fff; padding:10px 16px;
+                border-radius:6px; font-weight:bold;
+                box-shadow:0 4px 12px rgba(0,0,0,0.2);
+            `;
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 2500);
         }
 
-        // ============ BORRAR LÍNEA ============
         async function eliminarLinea(id) {
             const operario = obtenerOperarioActivo();
             if (!operario) return;
@@ -794,7 +810,6 @@
             else cargarMiLista();
         }
 
-        // ============ BORRAR TODA MI LISTA ============
         async function borrarMiLista() {
             const operario = obtenerOperarioActivo();
             if (!operario) { alert("No hay operario activo."); return; }
@@ -812,7 +827,6 @@
             }
         }
 
-        // ============ BORRAR SOLO LA OT ACTUAL ============
         async function borrarObraActual() {
             const operario = obtenerOperarioActivo();
             const obra = obtenerObraActiva();
@@ -833,7 +847,6 @@
             }
         }
 
-        // ============ COMPARTIR LISTA ============
         async function compartirLista() {
             const operario = obtenerOperarioActivo();
             if (!operario) { alert("No hay operario activo."); return; }
@@ -939,6 +952,12 @@
                 if (typeof cargarMiLista === 'function') cargarMiLista();
             }
         });
+		window.addEventListener('pageshow', function (event) {
+  if (event.persisted) {
+    // La página vino del "back-forward cache" del navegador
+    window.location.reload();
+  }
+});
     </script>
 
 </body>
