@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Operarios (Admin)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 24px 16px 60px;
+    color: #222;
+    display: block !important;
+  }
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px 28px 32px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    background: #111;
+    color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 0 0 8px;
+  }
+  .subtitulo {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 22px;
+  }
+  .operarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .operario-btn {
+    padding: 20px 14px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #c7ccd1;
+    border-radius: 10px;
+    background: #f8f9fa;
+    color: #222;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .operario-btn:hover {
+    background: #4a90d9;
+    color: #fff;
+    border-color: #4a90d9;
+    transform: translateY(-2px);
+  }
+  .cerrar {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 24px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .cerrar:hover { background: #333; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Lista de Operarios</h1>
+  <div class="subtitulo">Modo administrador — selecciona el operario cuyo panel quieres abrir</div>
+
+  <div class="operarios" id="operariosBox"></div>
+
+  <button class="cerrar" id="btnCerrar">Cerrar sesión</button>
+</div>
+
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
+<script>
+// Misma lista que en index.html
+const OPERARIOS = {
+  "Arturo":   "5248",
+  "Heribert": "4282",
+  "Juanma":   "3249",
+  "Manolo":   "9244",
+  "Nahum":    "6724",
+  "Paco":     "5862",
+  "Rabal":    "6565",
+  "Ricardo":  "7435"
+};
+
+// Verificación: solo admin puede ver esta página
+let esAdmin = false;
+try { esAdmin = sessionStorage.getItem('admin') === '1'; } catch (e) {}
+const params = new URLSearchParams(location.search);
+if (params.get('admin') === '1') esAdmin = true;
+
+if (!esAdmin) {
+  // No es admin ? volver al login
+  window.location.href = 'index.html';
+}
+
+// Render de botones
+const box = document.getElementById('operariosBox');
+Object.keys(OPERARIOS).forEach(nombre => {
+  const btn = document.createElement('button');
+  btn.className = 'operario-btn';
+  btn.textContent = nombre;
+  btn.addEventListener('click', () => {
+    // Guardar operario seleccionado y mantener admin
+    try {
+      sessionStorage.setItem('operario', nombre);
+      // No tocamos 'admin', sigue activo para volver aquí si se cierra sesión
+    } catch (e) {}
+    window.location.href = 'panel.html?op=' + encodeURIComponent(nombre) + '&admin=1';
+  });
+  box.appendChild(btn);
+});
+
+// Cerrar sesión
+document.getElementById('btnCerrar').addEventListener('click', () => {
+  try {
+    sessionStorage.removeItem('operario');
+    sessionStorage.removeItem('admin');
+  } catch (e) {}
+  window.location.href = 'index.html';
+});
+</script>
+</body>
+</html>

@@ -135,11 +135,9 @@ function dibujarResumen(r){
   const u = $('unidad').value === 'mm' ? 'mm' : 'in';
   let html = '';
 
-  html += '<div class="titulo" style="margin-top:14px">Generatrices por división';
-  if(!r.esRecto){
-    html += ' — α = ' + fmt1(r.alphaDeg) + '° (entre ejes)';
-  }
-  html += '</div>';
+html += '<div class="titulo" style="margin-top:14px">';
+html += 'Distancia entre generatrices — M = ' + fmt1(r.paso) + ' ' + u;
+html += '</div>';
 
   html += '<table class="tabla-gen"><thead><tr><th>Lᵢ</th><th>L (' + u + ')</th></tr></thead><tbody>';
   r.generatrices.forEach(g => {
