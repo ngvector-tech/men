@@ -5,42 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Principal - MEN</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { 
-            margin: 0; 
-            padding: 20px; 
-            background-color: #f4f7f6; 
-            color: #333; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        .menu-container, .login-container { 
-            background: white; 
-            padding: 40px 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            width: 100%; 
-            max-width: 400px; 
-            text-align: center; 
+        .menu-container, .login-container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
         }
 
-        /* Ocultar menú inicialmente */
         #menu-principal { display: none; }
 
-        /* Estilo para el Logo MEN */
-        .logo-men { 
-            color: #2980b9; 
-            font-size: 42px; 
-            font-weight: bold; 
-            margin-bottom: 30px; 
-            letter-spacing: 2px; 
+        .logo-men {
+            color: #2980b9;
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
         }
 
-        /* Estilos del login */
         .login-container h2 {
             color: #333;
             margin-bottom: 10px;
@@ -86,9 +84,8 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .btn-login:hover {
-            background-color: #1f6391;
-        }
+        .btn-login:hover { background-color: #1f6391; }
+        .btn-login:disabled { background-color: #9bb8d1; cursor: wait; }
         .error-msg {
             color: #e74c3c;
             font-size: 14px;
@@ -96,26 +93,23 @@
             display: none;
         }
 
-        /* Estilo para los botones del menú */
-        .btn-menu { 
-            display: block; 
-            width: 100%; 
-            padding: 18px; 
-            margin-bottom: 15px; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 18px; 
-            font-weight: bold; 
-            text-transform: uppercase; 
-            color: white; 
-            text-decoration: none; 
-            cursor: pointer; 
-            transition: transform 0.1s, background-color 0.2s; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        .btn-menu {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .btn-menu:active { 
-            transform: scale(0.98); 
-        }
+        .btn-menu:active { transform: scale(0.98); }
         .btn-menu:last-child { margin-bottom: 0; }
 
         .btn-material { background-color: #34495e; }
@@ -125,7 +119,6 @@
         .btn-ot { background-color: #2980b9; }
         .btn-ot:hover { background-color: #1f6391; }
 
-        /* Botón de cerrar sesión */
         .btn-logout {
             margin-top: 20px;
             padding: 10px;
@@ -143,7 +136,6 @@
             border-color: #999;
         }
 
-        /* Icono de candado en el login */
         .lock-icon {
             font-size: 48px;
             color: #2980b9;
@@ -171,60 +163,105 @@
             <label for="password-input">Contraseña</label>
             <input type="password" id="password-input" placeholder="Introduce la contraseña" autofocus>
         </div>
-        <button class="btn-login" onclick="verificarPassword()">Entrar</button>
-        <div id="error-msg" class="error-msg">? Contraseña incorrecta. Inténtalo de nuevo.</div>
+        <button class="btn-login" id="btn-login">Entrar</button>
+        <div id="error-msg" class="error-msg">Contraseña incorrecta. Inténtalo de nuevo.</div>
         <p style="margin-top: 20px; font-size: 12px; color: #aaa;">Sistema protegido • MEN</p>
     </div>
 
     <!-- MENÚ PRINCIPAL (oculto inicialmente) -->
     <div id="menu-principal" class="menu-container">
         <div class="logo-men">MEN</div>
-        
+
         <a href="Pedidos%20desde%20obra/index.html" class="btn-menu btn-material">Material</a>
         <a href="Pedidos%20desde%20obra/partes/index.html" class="btn-menu btn-partes">Partes</a>
         <a href="Pedidos%20desde%20obra/ot/index.html" class="btn-menu btn-ot">Lista OT</a>
-		  <a href="operario/index.html" class="btn-menu btn-ot">Documentos para operario</a>
+        <a href="operario/index.html" class="btn-menu btn-ot">Documentos para operario</a>
         <a href="trazados/index.html" class="btn-menu btn-ot">Trazados</a>
-		<a href="consulta/consulta.html" class="btn-menu btn-ot">Consulta y calculos</a>
-		
-		
-        
+        <a href="consulta/consulta.html" class="btn-menu btn-ot">Consulta y calculos</a>
+
         <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
     </div>
 
     <script>
-        // La contraseña es: nem (en minúsculas)
-        // Está ofuscada en base64 para no estar visible directamente
-        const CONTRASENA = atob("bmVt"); // "nem" en base64
+        // ============================================================
+        // CONFIG SUPABASE
+        // ============================================================
+        const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
 
-        function verificarPassword() {
+        let _supabase = null;
+        try { _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
+        catch (e) { console.error("Error Supabase:", e); }
+
+        // ============================================================
+        // VALIDACIÓN CONTRA SUPABASE (RPC validar_acceso)
+        // ============================================================
+        async function verificarPassword() {
             const input = document.getElementById('password-input');
             const error = document.getElementById('error-msg');
+            const btn   = document.getElementById('btn-login');
             const password = input.value.trim();
 
-            if (password === CONTRASENA) {
-                // Mostrar menú y ocultar login
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('menu-principal').style.display = 'block';
-                error.style.display = 'none';
-                input.value = '';
-                // Enfoque automático al primer botón del menú (opcional)
-                document.querySelector('.btn-menu')?.focus();
-            } else {
+            if (!password) {
+                error.textContent = 'Introduce la contraseña.';
                 error.style.display = 'block';
-                input.value = '';
                 input.focus();
-                // Efecto de sacudida para indicar error
-                input.style.borderColor = '#e74c3c';
-                setTimeout(() => { input.style.borderColor = '#ddd'; }, 500);
+                return;
+            }
+
+            if (!_supabase) {
+                error.textContent = 'Error de conexión. Revisa tu red.';
+                error.style.display = 'block';
+                return;
+            }
+
+            // Bloquear botón mientras se valida
+            btn.disabled = true;
+            btn.textContent = 'Comprobando...';
+            error.style.display = 'none';
+
+            try {
+                const { data, error: err } = await _supabase.rpc('validar_acceso', {
+                    p_pass: password
+                });
+
+                if (err) {
+                    console.error('Error Supabase:', err);
+                    error.textContent = 'Error de conexión. Inténtalo de nuevo.';
+                    error.style.display = 'block';
+                    return;
+                }
+
+                if (data === true) {
+                    // ✅ Contraseña correcta → mostrar menú
+                    document.getElementById('login-panel').style.display = 'none';
+                    document.getElementById('menu-principal').style.display = 'block';
+                    error.style.display = 'none';
+                    input.value = '';
+                    document.querySelector('.btn-menu')?.focus();
+                } else {
+                    // ❌ Contraseña incorrecta
+                    error.textContent = 'Contraseña incorrecta. Inténtalo de nuevo.';
+                    error.style.display = 'block';
+                    input.value = '';
+                    input.focus();
+                    input.style.borderColor = '#e74c3c';
+                    setTimeout(() => { input.style.borderColor = '#ddd'; }, 500);
+                }
+            } catch (e) {
+                console.error('Excepción al validar:', e);
+                error.textContent = 'Error inesperado. Inténtalo de nuevo.';
+                error.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Entrar';
             }
         }
 
-        // Permitir presionar Enter en el campo de contraseña
+        // Eventos
+        document.getElementById('btn-login').addEventListener('click', verificarPassword);
         document.getElementById('password-input').addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                verificarPassword();
-            }
+            if (event.key === 'Enter') verificarPassword();
         });
 
         function cerrarSesion() {
@@ -239,10 +276,7 @@
         window.onload = function() {
             document.getElementById('password-input').focus();
         };
-
     </script>
-
-<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
 
 </body>
 </html>
