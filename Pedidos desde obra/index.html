@@ -220,9 +220,14 @@
                 cargarMiLista();
             });
 
-            await cargarBaseDatos();
-            await cargarDatosTecnicos();
-            iniciarCategorias();
+           await cargarBaseDatos();
+await cargarDatosTecnicos();
+
+// Si viene ?ref=MENxxxxx, carga directo esa ficha; si no, muestra categorías
+const cargadoPorRef = cargarDesdeRefSiExiste();
+if (!cargadoPorRef) {
+    iniciarCategorias();
+}
 
             const params = new URLSearchParams(location.search);
             if (params.get('operario')) sessionStorage.setItem('operarioNombre', params.get('operario'));
@@ -316,7 +321,54 @@
                 }
             } catch (e) { console.warn("⚠️ Datos.txt no cargado"); }
         }
+// ============================================================
+// Si la URL trae ?ref=MENxxxxx, carga directamente esa ficha
+// (viene desde bridas.html al pulsar "Pedir tornillo/tuerca")
+// ============================================================
+function cargarDesdeRefSiExiste() {
+    const params = new URLSearchParams(location.search);
+    const ref = params.get('ref');
+    if (!ref) return false;  // sin ref → arranque normal
 
+    console.log('🔍 Buscando REF:', ref);
+
+    // Buscar en baseDatos por la REF exacta
+    const articulo = baseDatos.find(x => String(x.ref).trim() === String(ref).trim());
+
+    if (!articulo) {
+        console.warn('❌ REF no encontrada:', ref);
+        alert('No se encontró la referencia ' + ref + ' en la base de artículos.');
+        return false;
+    }
+
+    console.log('✓ Encontrado:', articulo);
+
+    // Sincronizar operario/OT
+    const op = params.get('operario');
+    const obra = params.get('obra');
+    if (op) {
+        sessionStorage.setItem('operarioNombre', op);
+        document.getElementById('nombreUsuario').value = op;
+    }
+    if (obra) {
+        sessionStorage.setItem('operarioObra', obra);
+        document.getElementById('obraUsuario').value = obra;
+    }
+
+    // Cargar la ficha
+    cargarFicha(articulo.ref);
+
+    // Aviso amarillo
+    const fichaBox = document.querySelector('#v-ficha .ficha-box');
+    if (fichaBox) {
+        const aviso = document.createElement('div');
+        aviso.style.cssText = 'background:#fef9c3; border:1px solid #facc15; color:#854d0e; padding:10px 14px; border-radius:6px; margin-bottom:14px; text-align:center; font-weight:bold; font-size:13px;';
+        aviso.innerHTML = '🔩 Este artículo se ha pedido desde la calculadora de bridas. Comprueba la cantidad y añádelo a tu lista.';
+        fichaBox.insertBefore(aviso, fichaBox.firstChild);
+    }
+
+    return true;
+}
         function cambiarVista(idVista, titulo) {
             document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
             const obj = document.getElementById(idVista);
