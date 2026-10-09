@@ -49,7 +49,6 @@
     border: 1px solid #e0e3e6;
     border-left: 4px solid #4a90d9;
     border-radius: 8px;
-    text-decoration: none;
     color: #222;
     transition: all 0.15s;
   }
@@ -138,17 +137,21 @@
   }
   .admin-bar button:hover { background: #ffca28; }
 
+  /* Botón de eliminar vínculo (solo admin) */
   .vinculo .borrar {
     background: #c0392b;
     color: #fff;
     border: none;
     border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 12px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
     margin-left: 10px;
+    line-height: 1;
   }
   .vinculo .borrar:hover { background: #e74c3c; }
+  .vinculo .borrar:disabled { opacity: 0.6; cursor: wait; }
 </style>
 </head>
 <body>
@@ -166,7 +169,7 @@
       <button type="button" id="btnAnadir">Añadir</button>
     </div>
     <div style="font-size:12px;color:#7a5b00;">
-      Se guardan en este navegador. Si borras datos del sitio, se pierden.
+      Como admin, puedes eliminar cualquier vínculo con el botón ✕. Los vínculos base se "ocultan" (no se borran del código, pero dejan de mostrarse).
     </div>
   </div>
 
@@ -177,8 +180,6 @@
 <script>
 // ============================================================
 // VÍNCULOS POR OPERARIO (base del código)
-// Cada operario tiene una lista de { titulo, url }
-// Estos NO se pueden borrar desde el panel; son los fijos.
 // ============================================================
 const VINCULOS_BASE = {
   "Arturo": [
@@ -190,49 +191,79 @@ const VINCULOS_BASE = {
   "Paco": [
     { titulo: "rack borges", url: "https://autode.sk/4ixtUL6" }
   ],
-  "Ricardo": []
+  "Ricardo": [],
+  "admin": []
 };
 
-// --- Clave de localStorage para vínculos añadidos por el admin ---
-const LS_KEY = 'vinculos_extra';
+["Heribert", "Manolo", "Rabal"].forEach(n => {
+  if (!VINCULOS_BASE[n]) VINCULOS_BASE[n] = [];
+});
+
+// --- Claves de localStorage ---
+const LS_KEY_EXTRAS  = 'vinculos_extra';   // vínculos añadidos por el admin
+const LS_KEY_OCULTOS = 'vinculos_ocultos'; // vínculos base que el admin ha "eliminado"
 
 function cargarExtras() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+  try { return JSON.parse(localStorage.getItem(LS_KEY_EXTRAS)) || {}; }
   catch (e) { return {}; }
 }
 function guardarExtras(obj) {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(obj)); } catch (e) {}
+  try { localStorage.setItem(LS_KEY_EXTRAS, JSON.stringify(obj)); } catch (e) {}
+}
+function cargarOcultos() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY_OCULTOS)) || {}; }
+  catch (e) { return {}; }
+}
+function guardarOcultos(obj) {
+  try { localStorage.setItem(LS_KEY_OCULTOS, JSON.stringify(obj)); } catch (e) {}
 }
 
-// --- Obtener operario y modo admin ---
+// --- Operario y modo admin ---
 let operario = null;
 let esAdmin = false;
-
 try {
   operario = sessionStorage.getItem('operario');
   esAdmin  = sessionStorage.getItem('admin') === '1';
-} catch (e) { /* sessionStorage bloqueado */ }
+} catch (e) {}
 
 const params = new URLSearchParams(window.location.search);
 if (!operario) operario = params.get('op');
-if (params.get('admin') === '1') esAdmin = true;
-
-// --- Protección: si no hay operario válido, volver al login ---
-if (!operario || !VINCULOS_BASE[operario]) {
-  window.location.href = 'index.html';
+if (params.get('admin') === '1') {
+  esAdmin = true;
+  try { sessionStorage.setItem('admin', '1'); } catch (e) {}
 }
+
+if (!operario) window.location.replace('index.html');
+if (!VINCULOS_BASE[operario]) VINCULOS_BASE[operario] = [];
 
 document.getElementById('nombreUser').textContent =
   operario + (esAdmin ? ' (admin)' : '');
 
-// --- Componer lista: base + extras guardados ---
+// ============================================================
+// LISTA ACTUAL = base (menos los ocultos) + extras
+// ============================================================
 function listaActual() {
-  const extras = cargarExtras();
-  const propios = extras[operario] || [];
-  return VINCULOS_BASE[operario].concat(propios);
+  const extras  = cargarExtras();
+  const ocultos = cargarOcultos();
+
+  const propiosExtras  = extras[operario]  || [];
+  const propiosOcultos = ocultos[operario] || [];
+
+  // Filtrar los base que están ocultos
+  const baseVisibles = VINCULOS_BASE[operario].filter(b =>
+    !propiosOcultos.some(o => o.titulo === b.titulo && o.url === b.url)
+  );
+
+  // Marcar cada elemento con su origen
+  const baseConFlag   = baseVisibles.map(v => ({ ...v, _tipo: 'base' }));
+  const extrasConFlag = propiosExtras.map(v => ({ ...v, _tipo: 'extra' }));
+
+  return baseConFlag.concat(extrasConFlag);
 }
 
-// --- Render ---
+// ============================================================
+// RENDER
+// ============================================================
 const box = document.getElementById('vinculosBox');
 
 function render() {
@@ -244,14 +275,18 @@ function render() {
     return;
   }
 
-  lista.forEach((v, idx) => {
+  lista.forEach((v) => {
+    const row = document.createElement('div');
+    row.className = 'vinculo';
+
     const a = document.createElement('a');
-    a.className = 'vinculo';
     a.href = v.url;
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
+    a.style.cssText = 'display:flex; align-items:center; flex:1; text-decoration:none; color:inherit; min-width:0;';
 
     const info = document.createElement('div');
+    info.style.cssText = 'flex:1; min-width:0;';
     info.innerHTML = `
       <div class="titulo">${v.titulo}</div>
       <div class="url">${v.url}</div>
@@ -263,33 +298,54 @@ function render() {
     flecha.textContent = '→';
     a.appendChild(flecha);
 
-    // Botón borrar SOLO si es admin y el vínculo es "extra" (no base)
-    if (esAdmin && idx >= VINCULOS_BASE[operario].length) {
+    row.appendChild(a);
+
+    // Botón eliminar SOLO admin
+    if (esAdmin) {
       const btnDel = document.createElement('button');
       btnDel.className = 'borrar';
       btnDel.textContent = '✕';
-      btnDel.title = 'Eliminar vínculo';
+      btnDel.title = v._tipo === 'base' ? 'Ocultar este vínculo base' : 'Eliminar este vínculo';
+      btnDel.style.cssText = 'margin-left:12px; flex-shrink:0;';
       btnDel.addEventListener('click', (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        if (!confirm(`¿Eliminar "${v.titulo}"?`)) return;
-        const extras = cargarExtras();
-        const propios = extras[operario] || [];
-        propios.splice(idx - VINCULOS_BASE[operario].length, 1);
-        extras[operario] = propios;
-        guardarExtras(extras);
+
+        const msg = v._tipo === 'base'
+          ? `¿Ocultar el vínculo base "${v.titulo}"? (Podrás restaurarlo borrando los datos del navegador)`
+          : `¿Eliminar el vínculo "${v.titulo}"?`;
+        if (!confirm(msg)) return;
+
+        if (v._tipo === 'base') {
+          // Marcar como oculto
+          const ocultos = cargarOcultos();
+          ocultos[operario] = ocultos[operario] || [];
+          ocultos[operario].push({ titulo: v.titulo, url: v.url });
+          guardarOcultos(ocultos);
+        } else {
+          // Eliminar de extras
+          const extras = cargarExtras();
+          const propios = extras[operario] || [];
+          const idx = propios.findIndex(e => e.titulo === v.titulo && e.url === v.url);
+          if (idx >= 0) propios.splice(idx, 1);
+          extras[operario] = propios;
+          guardarExtras(extras);
+        }
+
         render();
       });
-      a.appendChild(btnDel);
+      row.appendChild(btnDel);
     }
 
-    box.appendChild(a);
+    box.appendChild(row);
   });
 }
 
 render();
 
-// --- Panel admin ---
+// ============================================================
+// PANEL ADMIN: AÑADIR VÍNCULOS
+// ============================================================
 if (esAdmin) {
   const adminBar = document.getElementById('adminBar');
   adminBar.classList.add('visible');
@@ -319,13 +375,20 @@ if (esAdmin) {
   });
 }
 
-// --- Cerrar sesión ---
+// ============================================================
+// CERRAR SESIÓN
+// ============================================================
 document.getElementById('btnCerrar').addEventListener('click', () => {
+  const eraAdmin = (() => {
+    try { return sessionStorage.getItem('admin') === '1'; } catch (e) { return false; }
+  })();
+
   try {
     sessionStorage.removeItem('operario');
-    sessionStorage.removeItem('admin');
+    if (!eraAdmin) sessionStorage.removeItem('admin');
   } catch (e) {}
-  window.location.href = 'index.html';
+
+  window.location.href = eraAdmin ? 'lista.html' : 'index.html';
 });
 </script>
 <link rel="stylesheet" href="men-header.css">

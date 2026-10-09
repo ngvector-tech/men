@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Acceso Operarios</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -11,9 +12,6 @@
     background: #eef0f2;
     margin: 0;
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 24px;
     display: block !important;
   }
@@ -51,10 +49,7 @@
     margin-bottom: 14px;
     letter-spacing: 2px;
   }
-  input:focus {
-    outline: none;
-    border-color: #4a90d9;
-  }
+  input:focus { outline: none; border-color: #4a90d9; }
   button {
     width: 100%;
     padding: 12px;
@@ -67,6 +62,7 @@
     cursor: pointer;
   }
   button:hover { background: #333; }
+  button:disabled { background: #94a3b8; cursor: wait; }
   .error {
     color: #c0392b;
     font-size: 13px;
@@ -100,22 +96,14 @@
 
 <script>
 // ============================================================
-// OPERARIOS Y CONTRASEÑAS
-// Edita aquí: "Nombre visible": "contraseña"
+// CONFIG SUPABASE
 // ============================================================
-const OPERARIOS = {
-  "Arturo":   "5248",
-  "Heribert": "4282",
-  "Juanma":   "3249",
-  "Manolo":   "9244",
-  "Nahum":    "6724",
-  "Paco":     "5862",
-  "Rabal":    "6565",
-  "Ricardo":  "7435"
-};
+const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
 
-// Contraseña maestra → lleva a la LISTA de operarios
-const PASS_MAESTRA = "2026men";
+let _supabase = null;
+try { _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
+catch (e) { console.error("Error Supabase:", e); }
 
 const passInput = document.getElementById('passInput');
 const errorMsg  = document.getElementById('errorMsg');
@@ -124,43 +112,87 @@ const btnEntrar = document.getElementById('btnEntrar');
 btnEntrar.addEventListener('click', validar);
 passInput.addEventListener('keydown', e => { if (e.key === 'Enter') validar(); });
 
-function validar() {
+async function validar() {
   const pass = passInput.value.trim();
+  errorMsg.textContent = '';
+
   if (!pass) {
     errorMsg.textContent = 'Introduce la contraseña.';
     return;
   }
 
-  // 1) MAESTRA → lista de operarios
-  if (pass === PASS_MAESTRA) {
-    try {
-      sessionStorage.setItem('admin', '1');
-      sessionStorage.removeItem('operario');
-      window.location.href = 'lista.html';
-    } catch (e) {
-      window.location.href = 'lista.html?admin=1';
-    }
+  if (!_supabase) {
+    errorMsg.textContent = 'Error de conexión. Revisa tu red.';
     return;
   }
 
-  // 2) Contraseña de algún operario → panel directo de ese operario
-  const encontrado = Object.keys(OPERARIOS).find(nombre => OPERARIOS[nombre] === pass);
+  btnEntrar.disabled = true;
+  btnEntrar.textContent = 'Comprobando...';
 
-  if (encontrado) {
+  // Intentar hasta 3 veces si falla por red
+  let intentos = 0;
+  let data = null;
+  let ultimoError = null;
+
+  while (intentos < 3 && !data) {
+    intentos++;
     try {
-      sessionStorage.setItem('operario', encontrado);
-      sessionStorage.removeItem('admin');
-      window.location.href = 'panel.html';
+      const r = await _supabase.rpc('validar_operario', { p_pass: pass });
+      if (r.error) {
+        ultimoError = r.error;
+        // Si el error es de red, esperar y reintentar
+        if (String(r.error.message || '').includes('fetch')) {
+          await new Promise(res => setTimeout(res, 500 * intentos));
+          continue;
+        } else {
+          // Error real de la RPC (no de red)
+          break;
+        }
+      }
+      data = r.data;
+      break;
     } catch (e) {
-      window.location.href = 'panel.html?op=' + encodeURIComponent(encontrado);
+      ultimoError = e;
+      await new Promise(res => setTimeout(res, 500 * intentos));
     }
+  }
+
+  btnEntrar.disabled = false;
+  btnEntrar.textContent = 'Entrar';
+
+  if (ultimoError && !data) {
+    console.error('Error tras reintentos:', ultimoError);
+    errorMsg.textContent = 'Error de conexión. Inténtalo de nuevo.';
     return;
   }
 
-  // 3) Contraseña incorrecta
-  errorMsg.textContent = 'Contraseña incorrecta.';
-  passInput.value = '';
-  passInput.focus();
+  // data es unarray con una fila { nombre, es_admin } o vacío
+  if (data && data.length > 0) {
+    const { nombre, es_admin } = data[0];
+
+    try {
+      sessionStorage.setItem('operario', nombre);
+      if (es_admin) {
+        sessionStorage.setItem('admin', '1');
+        window.location.href = 'lista.html';
+      } else {
+        sessionStorage.removeItem('admin');
+        window.location.href = 'panel.html';
+      }
+    } catch (e) {
+      if (es_admin) {
+        window.location.href = 'lista.html?admin=1';
+      } else {
+        window.location.href = 'panel.html?op=' + encodeURIComponent(nombre);
+      }
+    }
+  } else {
+    errorMsg.textContent = 'Contraseña incorrecta.';
+    passInput.value = '';
+    passInput.focus();
+    passInput.style.borderColor = '#e74c3c';
+    setTimeout(() => { passInput.style.borderColor = '#c7ccd1'; }, 500);
+  }
 }
 </script>
 </body>
