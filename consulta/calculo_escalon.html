@@ -660,7 +660,6 @@ function calcular(altura, angulo, ancho, modo) {
     longitudHorizontal.toFixed(0) + ' mm (' +
     (longitudHorizontal / 1000).toFixed(2) + ' m)';
 
-  // Aquí mostramos el ancho introducido / mínimo exigido
   anchoMinValue.textContent = ancho + ' mm / ' + reglas.anchoMin + ' mm';
   pasamanosValue.textContent = pasamanos;
   barandillaValue.textContent = barandilla;
@@ -760,7 +759,7 @@ Resultado orientativo. La conformidad legal final requiere verificación por té
 ----------------------------`;
 
   resultBox.classList.add('show');
-  resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // (Se ha eliminado el scrollIntoView para que no haga scroll automático)
 }
 
 [alturaInput, anguloInput, anchoInput, descansilloInput].forEach(el =>

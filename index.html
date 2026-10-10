@@ -239,6 +239,9 @@
                     error.style.display = 'none';
                     input.value = '';
                     document.querySelector('.btn-menu')?.focus();
+
+                    // 👇 Reemplaza la entrada del login en el historial por la del menú
+                    history.replaceState({ logged: true }, '', location.href);
                 } else {
                     // ❌ Contraseña incorrecta
                     error.textContent = 'Contraseña incorrecta. Inténtalo de nuevo.';
