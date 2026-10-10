@@ -8,7 +8,20 @@
   * { box-sizing: border-box; }
   body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f2; margin: 0; padding: 24px 16px 60px; color: #222; display: block !important; }
   .container { max-width: 780px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 24px 28px 32px; }
-  h1 { text-align: center; font-size: 22px; background: #111; color: #fff; padding: 12px 16px; border-radius: 6px; margin: 0 0 18px; }
+  h1 { text-align: center; font-size: 22px; background: #111; color: #fff; padding: 12px 16px; border-radius: 6px; margin: 0 0 6px; }
+
+  /* Línea de resumen debajo del título */
+  .resumen-seleccion {
+    text-align: center;
+    color: #a03428;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 6px 0 18px;
+    min-height: 20px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
   .grid-2 { display: table; width: 100%; table-layout: fixed; margin-bottom: 12px; }
   .col { display: table-cell; width: 50%; padding-right: 8px; vertical-align: top; }
   .col:last-child { padding-right: 0; padding-left: 8px; }
@@ -17,6 +30,11 @@
   select { width: 100%; padding: 9px 10px; font-size: 14px; border: 1px solid #c7ccd1; border-radius: 6px; background: #fff; }
   select:focus { outline: none; border-color: #4a90d9; }
   select:disabled { background: #f4f6f8; color: #aaa; cursor: not-allowed; }
+
+  /* Colores de las opciones del desplegable de Norma */
+  select option.norma-actual { color: #256b2c; font-weight: 600; }
+  select option.norma-antigua { color: #a03428; font-weight: 600; }
+
   #btnLimpiar { background: #111; color: #fff; border: none; padding: 10px 18px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; margin-top: 10px; margin-bottom: 16px; width: 100%; transition: background 0.2s; }
   #btnLimpiar:hover { background: #333; }
   .image-container { text-align: center; margin: 20px 0; padding: 15px; background: #fafafa; border: 1px dashed #ccc; border-radius: 8px; }
@@ -37,12 +55,13 @@
   .bloque-tornilleria .btn-ir { display: block; width: 100%; margin-top: 14px; padding: 12px; background: #16a34a; color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
   .bloque-tornilleria .btn-ir-sec { display: block; width: 100%; margin-top: 8px; padding: 10px; background: #fff; color: #b42318; border: 1px solid #ea580c; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; }
 </style>
-<link rel="stylesheet" href="../men-header.css">
+<link rel="stylesheet" href="men-header.css">
 </head>
 <body>
 
 <div class="container">
   <h1>Consulta Tecnica de Bridas</h1>
+  <div class="resumen-seleccion" id="resumenSeleccion"></div>
 
   <div id="loadingMsg">⏳ Cargando base de datos...</div>
 
@@ -54,6 +73,18 @@
     <div class="grid-2">
       <div class="col"><div class="field"><label for="dnSelect">3. Diametro Nominal (DN)</label><select id="dnSelect" disabled><option value="">-- Selecciona DN --</option></select></div></div>
       <div class="col"><div class="field"><label for="pnSelect">4. Presion (PN / Lbs)</label><select id="pnSelect" disabled><option value="">-- Selecciona PN --</option></select></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="col">
+        <div class="field">
+          <label for="matSelect">5. Material de la tornillería</label>
+          <select id="matSelect">
+            <option value="ZINC">ZINC (acero galvanizado)</option>
+            <option value="304">304 (inoxidable A2)</option>
+          </select>
+        </div>
+      </div>
+      <div class="col"></div>
     </div>
 
     <button type="button" id="btnLimpiar">Nueva consulta</button>
@@ -74,10 +105,12 @@ const catSelect = document.getElementById('catSelect');
 const normaSelect = document.getElementById('normaSelect');
 const dnSelect = document.getElementById('dnSelect');
 const pnSelect = document.getElementById('pnSelect');
+const matSelect = document.getElementById('matSelect');
 const btnLimpiar = document.getElementById('btnLimpiar');
 const imgBox = document.getElementById('imgBox');
 const resultsDiv = document.getElementById('results');
 const panelTornilleria = document.getElementById('panelTornilleria');
+const resumenSeleccion = document.getElementById('resumenSeleccion');
 
 function limpiarCampo(valor) {
   valor = String(valor == null ? '' : valor).trim();
@@ -120,19 +153,71 @@ function parsearCSV(text) {
   return filas;
 }
 
+// ============================================================
+// COLOR DE LA NORMA
+// - contiene "antigua" → rojo
+// - contiene "actual"  → verde
+// - no contiene ninguna → verde (por defecto)
+// ============================================================
+function claseNorma(norma) {
+  const t = String(norma || '').toUpperCase();
+  if (t.includes('ANTIGUA')) return 'norma-antigua';
+  return 'norma-actual';
+}
+
+function colorNorma(norma) {
+  return claseNorma(norma) === 'norma-antigua' ? '#a03428' : '#256b2c';
+}
+
 function ordenarNormas(normas) {
   const prioridad = (n) => {
     const t = String(n).toUpperCase().replace(/\s+/g, '');
     if (t.includes('EN-1092') || t.includes('EN1092')) return 0;
     if (t.includes('DIN')) return 1;
     if (t.includes('ANSI') || t.includes('ASME')) return 2;
-    return 3;
+    if (t.includes('AWWA')) return 3;
+    if (t.includes('BS-3293') || t.includes('BS3293')) return 4;
+    if (t.includes('EEMUA')) return 5;
+    if (t.includes('JIS')) return 6;
+    return 7;
   };
   return normas.sort((a, b) => {
     const pa = prioridad(a), pb = prioridad(b);
     if (pa !== pb) return pa - pb;
     return String(a).localeCompare(String(b), 'es');
   });
+}
+
+function aplicarColorSeleccionNorma() {
+  const opt = normaSelect.options[normaSelect.selectedIndex];
+  const texto = opt ? opt.text : '';
+  if (!texto || texto.startsWith('--')) {
+    normaSelect.style.color = '';
+    normaSelect.style.fontWeight = '';
+    return;
+  }
+  normaSelect.style.color = colorNorma(texto);
+  normaSelect.style.fontWeight = '600';
+}
+
+// ============================================================
+// RESUMEN BAJO EL TÍTULO
+// ============================================================
+function actualizarResumen() {
+  const partes = ['BRIDA'];
+  const cat = catSelect.value;
+  const norma = normaSelect.value;
+  const dn = dnSelect.value;
+  const pn = pnSelect.value;
+  const mat = matSelect.value;
+
+  if (cat) partes.push(cat);
+  if (norma) partes.push(norma);
+  if (dn) partes.push(dn);
+  if (pn) partes.push(pn);
+  if (mat) partes.push(mat);
+
+  resumenSeleccion.textContent = partes.join(' · ');
 }
 
 async function cargarBridas() {
@@ -161,6 +246,7 @@ async function init() {
   document.getElementById('loadingMsg').style.display = 'none';
   document.getElementById('formulario').style.display = 'block';
   initCategories();
+  actualizarResumen();
 }
 
 function initCategories() {
@@ -175,65 +261,174 @@ function updateImage(cat) {
   imgBox.innerHTML = `<img src="${imgPath}" alt="${cat}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>Imagen no encontrada: ${imgPath}</span>';">`;
 }
 
+function rellenarSelect(select, opciones, placeholder, previo) {
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+  opciones.forEach(o => {
+    select.innerHTML += `<option value="${o.valor}" class="${o.clase || ''}">${o.etiqueta}</option>`;
+  });
+  if (previo && opciones.some(o => o.valor === previo)) {
+    select.value = previo;
+    return true;
+  }
+  return false;
+}
+
 catSelect.addEventListener('change', function() {
   const cat = this.value;
   updateImage(cat);
-  dnSelect.innerHTML = '<option value="">-- Selecciona DN --</option>';
-  pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
-  normaSelect.innerHTML = '<option value="">-- Selecciona Norma --</option>';
-  normaSelect.disabled = !cat; dnSelect.disabled = true; pnSelect.disabled = true;
-  resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
+  const previaNorma = normaSelect.value;
+  const previaDN = dnSelect.value;
+  const previaPN = pnSelect.value;
+
+  normaSelect.disabled = !cat;
   if (cat) {
-    const normas = [...new Set(DATA.filter(item => item[0] === cat).map(item => item[12]))].filter(Boolean);
-    ordenarNormas(normas).forEach(n => { normaSelect.innerHTML += `<option value="${n}">${n}</option>`; });
+    // ✅ CAMBIO 1: incluir tanto [12] como [11] en el desplegable de Norma
+    const normas = [...new Set(
+      DATA.filter(item => item[0] === cat)
+          .flatMap(item => [item[12], item[11]])
+    )].filter(Boolean);
+
+    const ordenadas = ordenarNormas(normas);
+    const opciones = ordenadas.map(n => ({
+      valor: n,
+      etiqueta: n,
+      clase: claseNorma(n)
+    }));
+    const ok = rellenarSelect(normaSelect, opciones, '-- Selecciona Norma --', previaNorma);
+    if (ok) normaSelect.dispatchEvent(new Event('change'));
+    else {
+      dnSelect.innerHTML = '<option value="">-- Selecciona DN --</option>';
+      pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+      dnSelect.disabled = true; pnSelect.disabled = true;
+      resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
+      aplicarColorSeleccionNorma();
+      actualizarResumen();
+    }
+  } else {
+    normaSelect.innerHTML = '<option value="">-- Selecciona Norma --</option>';
+    dnSelect.innerHTML = '<option value="">-- Selecciona DN --</option>';
+    pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+    dnSelect.disabled = true; pnSelect.disabled = true;
+    resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
+    aplicarColorSeleccionNorma();
+    actualizarResumen();
   }
 });
 
 normaSelect.addEventListener('change', function() {
   const cat = catSelect.value, norma = this.value;
-  dnSelect.innerHTML = '<option value="">-- Selecciona DN --</option>';
-  pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
-  dnSelect.disabled = !norma; pnSelect.disabled = true;
-  resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
+  const previaDN = dnSelect.value;
+
+  aplicarColorSeleccionNorma();
+  actualizarResumen();
+
+  dnSelect.disabled = !norma;
   if (norma) {
-    const dns = [...new Set(DATA.filter(item => item[0] === cat && item[12] === norma).map(item => item[1]))].filter(Boolean);
-    dns.forEach(dn => { dnSelect.innerHTML += `<option value="${dn}">${dn}</option>`; });
+    // ✅ CAMBIO 2: filtrar DN por [12] o [11]
+    const dns = [...new Set(
+      DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma))
+          .map(item => item[1])
+    )].filter(Boolean);
+
+    const opciones = dns.map(dn => ({ valor: dn, etiqueta: dn }));
+    const ok = rellenarSelect(dnSelect, opciones, '-- Selecciona DN --', previaDN);
+    if (ok) dnSelect.dispatchEvent(new Event('change'));
+    else {
+      pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+      pnSelect.disabled = true;
+      resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
+      actualizarResumen();
+    }
+  } else {
+    dnSelect.innerHTML = '<option value="">-- Selecciona DN --</option>';
+    pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+    pnSelect.disabled = true;
+    resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
+    actualizarResumen();
   }
 });
 
 dnSelect.addEventListener('change', function() {
   const cat = catSelect.value, norma = normaSelect.value, dn = this.value;
-  pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+  const previaPN = pnSelect.value;
+
+  actualizarResumen();
+
   pnSelect.disabled = !dn;
-  resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
   if (dn) {
-    const pns = [...new Set(DATA.filter(item => item[0] === cat && item[12] === norma && item[1] === dn).map(item => item[2]))].filter(Boolean);
-    pns.forEach(pn => { pnSelect.innerHTML += `<option value="${pn}">${pn}</option>`; });
+    // ✅ CAMBIO 3: filtrar PN por [12] o [11]
+    const pns = [...new Set(
+      DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn)
+          .map(item => item[2])
+    )].filter(Boolean);
+
+    const opciones = pns.map(pn => ({ valor: pn, etiqueta: pn }));
+    const ok = rellenarSelect(pnSelect, opciones, '-- Selecciona PN --', previaPN);
+    if (ok) pnSelect.dispatchEvent(new Event('change'));
+    else { resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = ''; actualizarResumen(); }
+  } else {
+    pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+    resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = '';
+    actualizarResumen();
   }
 });
 
-pnSelect.addEventListener('change', renderResults);
+pnSelect.addEventListener('change', function() {
+  renderResults();
+  actualizarResumen();
+});
+
+matSelect.addEventListener('change', function() {
+  actualizarResumen();
+  const cat = catSelect.value, norma = normaSelect.value, dn = dnSelect.value, pn = pnSelect.value;
+  if (!cat || !norma || !dn || !pn) return;
+  // ✅ CAMBIO 4a: filtrar por [12] o [11]
+  const matches = DATA.filter(item => 
+    item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn
+  );
+  if (matches.length > 0) {
+    panelTornilleria.innerHTML = generarPanelTornilleria(matches[0], matSelect.value);
+  }
+});
 
 function renderResults() {
   const cat = catSelect.value, norma = normaSelect.value, dn = dnSelect.value, pn = pnSelect.value;
   if (!cat || !norma || !dn || !pn) { resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = ''; return; }
-  const matches = DATA.filter(item => item[0] === cat && item[12] === norma && item[1] === dn && item[2] === pn);
+  // ✅ CAMBIO 4b: filtrar por [12] o [11]
+  const matches = DATA.filter(item => 
+    item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn
+  );
   if (matches.length === 0) { resultsDiv.innerHTML = '<div class="no-results">Sin datos.</div>'; panelTornilleria.innerHTML = ''; return; }
-  panelTornilleria.innerHTML = generarPanelTornilleria(matches[0]);
+  panelTornilleria.innerHTML = generarPanelTornilleria(matches[0], matSelect.value);
+
   let html = '';
   matches.forEach(m => {
     let descripcion = '';
     for (let i = m.length - 1; i >= 0; i--) { if (m[i] && m[i].trim()) { descripcion = m[i]; break; } }
+
+    const colorPrincipal = colorNorma(m[12]);
+
+    // ✅ NUEVO: concatenar DN y PN a la norma principal
+    const normaPrincipalConDP = `${m[12]} · DN${m[1]} · ${m[2]}`;
+
+    let filaCompatible = '';
+    if (m[11]) {
+      const colorComp = colorNorma(m[11]);
+      // ✅ NUEVO: concatenar DN y PN también a la norma compatible
+      const normaCompatibleConDP = `${m[11]} · DN${m[1]} · ${m[2]}`;
+      filaCompatible = `<tr><th>Norma compatible</th><td style="color:${colorComp}; font-weight:bold;">${normaCompatibleConDP}</td></tr>`;
+    }
+
     html += `
       <div class="card-result">
         <div class="card-title">${descripcion}</div>
         <table class="data-table">
           <tr><th>Categoría</th><td>${m[0]}</td></tr>
-          <tr><th>Norma Principal</th><td>${m[12]}</td></tr>
-          ${m[11] ? `<tr><th>Norma compatible</th><td style="color:#c0392b; font-weight:bold;">${m[11]}</td></tr>` : ''}
+          <tr><th>Norma Principal</th><td style="color:${colorPrincipal}; font-weight:bold;">${normaPrincipalConDP}</td></tr>
+          ${filaCompatible}
           <tr><th>DN</th><td>${m[1]}</td></tr>
-          <tr><th>PN</th><td>${m[2]}</td></tr>
           ${m[4] ? `<tr><th>Ø Exterior</th><td>${m[4]}</td></tr>` : ''}
+          ${m[5] ? `<tr><th>Ø Interior</th><td>${m[5]}</td></tr>` : ''}
           ${m[6] ? `<tr><th>Espesor</th><td>${m[6]}</td></tr>` : ''}
           ${m[8] ? `<tr><th>Nº Taladros</th><td>${m[8]}</td></tr>` : ''}
           ${m[9] ? `<tr><th>Ø Taladro</th><td>${m[9]}</td></tr>` : ''}
@@ -244,7 +439,7 @@ function renderResults() {
   resultsDiv.innerHTML = html;
 }
 
-function generarPanelTornilleria(fila) {
+function generarPanelTornilleria(fila, material) {
   const espesor = fila[6], nTaladros = parseInt(fila[8]) || 0, diamTaladro = fila[9];
 
   if (!nTaladros || !diamTaladro || !espesor) {
@@ -253,17 +448,15 @@ function generarPanelTornilleria(fila) {
 
   const metrico = diametroTornilloDesdeTaladro(diamTaladro);
   const longitud = calcularLongitudTornillo(espesor, metrico);
+  const matU = material || 'ZINC';
 
-  // ============================================================
-  // TORNILLO: intento exacto, si no existe → buscar al alza (5 en 5, hasta +60mm)
-  // ============================================================
-  let refTornillo = buscarReferenciaArticulo('TORNILLOS', `${metrico}X${longitud}`, 'ZINC', 'DIN931');
+  let refTornillo = buscarReferenciaArticulo('TORNILLOS', `${metrico}X${longitud}`, matU, 'DIN931');
   let longitudFinal = longitud;
   let esAlternativa = false;
 
   if (!refTornillo) {
     for (let L = longitud + 5; L <= longitud + 60; L += 5) {
-      const refAlt = buscarReferenciaArticulo('TORNILLOS', `${metrico}X${L}`, 'ZINC', 'DIN931');
+      const refAlt = buscarReferenciaArticulo('TORNILLOS', `${metrico}X${L}`, matU, 'DIN931');
       if (refAlt) {
         refTornillo = refAlt;
         longitudFinal = L;
@@ -273,14 +466,8 @@ function generarPanelTornilleria(fila) {
     }
   }
 
-  // ============================================================
-  // TUERCA
-  // ============================================================
-  const refTuerca = buscarReferenciaArticulo('TUERCAS', `M${metrico}`, 'ZINC', 'DIN934');
+  const refTuerca = buscarReferenciaArticulo('TUERCAS', `M${metrico}`, matU, 'DIN934');
 
-  // ============================================================
-  // Línea del TORNILLO
-  // ============================================================
   let lineaTornillo;
   if (refTornillo && !esAlternativa) {
     lineaTornillo = `
@@ -307,9 +494,6 @@ function generarPanelTornilleria(fila) {
       </div>`;
   }
 
-  // ============================================================
-  // Línea de la TUERCA
-  // ============================================================
   let lineaTuerca;
   if (refTuerca) {
     lineaTuerca = `
@@ -325,9 +509,6 @@ function generarPanelTornilleria(fila) {
       </div>`;
   }
 
-  // ============================================================
-  // AVISO DESTACADO antes del botón, si hay cambio por alternativa
-  // ============================================================
   const avisoCambio = esAlternativa ? `
     <div style="
       margin-top:16px;
@@ -356,9 +537,6 @@ function generarPanelTornilleria(fila) {
     </div>
   ` : '';
 
-  // ============================================================
-  // Botones (usan la REF real que se va a pedir)
-  // ============================================================
   const refPedirTornillo = refTornillo || '';
   const descPedirTornillo = esAlternativa
     ? `TORNILLO HEXAGONAL DIN931 ${metrico}X${longitudFinal}`
@@ -370,7 +548,7 @@ function generarPanelTornilleria(fila) {
       ${lineaTornillo}
       ${lineaTuerca}
       <div class="linea-nota">
-        Ø taladro ${diamTaladro}mm → M${metrico}. Espesor plato ${espesor}mm. Material: ZINC.
+        Ø taladro ${diamTaladro}mm → M${metrico}. Espesor plato ${espesor}mm. Material: <strong>${matU}</strong>.
       </div>
       ${avisoCambio}
       <button class="btn-ir" onclick="irATornillo('${refPedirTornillo}', '${descPedirTornillo}')">📋 Pedir el TORNILLO</button>
@@ -378,7 +556,6 @@ function generarPanelTornilleria(fila) {
     </div>`;
 }
 
-// Búsqueda por CATEGORÍA + DIMENSIÓN + MATERIAL + DIN (obligatorio)
 function buscarReferenciaArticulo(cat, dim, mat, din) {
   if (!lineasArticulos.length) return null;
   const catU = cat.toUpperCase();
@@ -406,7 +583,7 @@ function irATornillo(ref, descripcion) {
   params.set('tipo', 'tornillo');
   if (operario) params.set('operario', operario);
   if (obra) params.set('obra', obra);
-  window.location.href = `../Pedidos desde obra/index.html?${params.toString()}`;
+  window.location.assign(`../Pedidos desde obra/index.html?${params.toString()}`);
 }
 
 function irATuerca(ref, descripcion) {
@@ -418,18 +595,81 @@ function irATuerca(ref, descripcion) {
   params.set('tipo', 'tuerca');
   if (operario) params.set('operario', operario);
   if (obra) params.set('obra', obra);
-  window.location.href = `../Pedidos desde obra/index.html?${params.toString()}`;
+  window.location.assign(`../Pedidos desde obra/index.html?${params.toString()}`);
 }
 
+// ============================================================
+// DIÁMETRO DE TORNILLO A PARTIR DEL Ø DE TALADRO
+// - Tabla ampliada con taladros reales ASME B16.5 + AWWA C207
+// - Si no hay coincidencia exacta, AJUSTA A LA BAJA
+// ============================================================
 function diametroTornilloDesdeTaladro(taladro) {
   const t = parseFloat(String(taladro).replace(',', '.'));
-  const tabla = [[11,10],[12,10],[13.5,12],[14,12],[16,14],[18,16],[20,16],[22,20],[24,20],[26,24],[28,24],[30,27],[33,30],[36,33],[39,36],[42,39],[45,42],[48,45],[52,48],[56,52]];
-  for (const [d, m] of tabla) { if (Math.abs(t - d) < 0.6) return m; }
-  return Math.round(t * 0.9);
+  if (isNaN(t)) return 0;
+
+  const tabla = [
+    [11,     10],
+    [12,     10],
+    [13.5,   12],
+    [14,     12],
+    [15.9,   16],   // 5/8"
+    [16,     16],
+    [17.5,   20],   // 3/4"
+    [18,     16],
+    [19.1,   20],   // 3/4"
+    [20,     16],
+    [20.6,   22],   // 7/8"
+    [22.2,   22],   // 7/8"
+    [23.8,   24],   // 1"
+    [24,     20],
+    [25.4,   24],   // 1"
+    [26.9,   27],   // 1⅛"
+    [28.6,   27],   // 1⅛"
+    [30.2,   30],   // 1¼"
+    [31.8,   30],   // 1¼"
+    [34.9,   33],   // 1⅜"
+    [36.5,   36],   // 1½"
+    [38.1,   36],   // 1½"
+    [41.3,   39],   // 1⅝"
+    [44.5,   42],   // 1¾"
+    [47.6,   45],   // 1⅞"
+    [50.8,   48],   // 2"
+    [53.9,   52],   // 2⅛"
+    [57.2,   56],   // 2¼"
+    [60.3,   60],   // 2⅜"
+    [63.5,   64],   // 2½"
+    [66.7,   68],   // 2⅝"
+    [69.9,   72],   // 2¾"
+    [73.0,   76],   // 2⅞"
+    [76.2,   80]    // 3"
+  ];
+
+  for (const [d, m] of tabla) {
+    if (Math.abs(t - d) < 0.3) return m;
+  }
+
+  let mejor = null;
+  for (const [d, m] of tabla) {
+    if (d <= t) {
+      if (mejor === null || d > mejor[0]) mejor = [d, m];
+    }
+  }
+  if (mejor) return mejor[1];
+
+  return tabla[0][1];
 }
 
+// ============================================================
+// ALTURA DE TUERCA DIN 934
+// - Ampliada hasta M80
+// ============================================================
 function alturaTuercaDIN934(metrico) {
-  const tabla = {4:3.2,5:4,6:5,8:6.5,10:8,12:10,14:11,16:13,18:15,20:16,22:18,24:19,27:22,30:24,33:26,36:29,39:31,42:34,45:36,48:38,52:42};
+  const tabla = {
+    4:3.2, 5:4, 6:5, 8:6.5, 10:8, 12:10, 14:11, 16:13, 18:15,
+    20:16, 22:18, 24:19, 27:22, 30:24, 33:26, 36:29, 39:31,
+    42:34, 45:36, 48:38, 52:42, 56:46, 60:48, 64:52, 68:56,
+    72:60, 76:64, 80:68
+  };
   return tabla[metrico] || 13;
 }
 
@@ -448,12 +688,16 @@ btnLimpiar.addEventListener('click', function() {
   updateImage('');
   resultsDiv.innerHTML = '';
   panelTornilleria.innerHTML = '';
+  matSelect.value = 'ZINC';
+  normaSelect.style.color = '';
+  normaSelect.style.fontWeight = '';
+  actualizarResumen();
 });
 
 init();
 window.addEventListener('pageshow', function (event) { if (event.persisted) window.location.reload(); });
 </script>
 
-<script src="../men-header.js" data-autor="Creado por: J.N.G"></script>
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>
