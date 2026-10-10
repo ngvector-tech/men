@@ -14,22 +14,31 @@
     color: #222;
   }
   .container {
-    max-width: 560px;
+    max-width: 620px;
     margin: 0 auto;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     padding: 24px 28px 32px;
   }
-  h1 {
+
+  h1.titulo {
     text-align: center;
     font-size: 20px;
     background: #111;
     color: #fff;
-    padding: 12px 16px;
+    padding: 14px 16px;
     border-radius: 6px;
-    margin: 0 0 22px;
+    margin: 0 0 6px;
   }
+  p.subtitulo {
+    text-align: center;
+    font-size: 12px;
+    color: #777;
+    margin: 0 0 22px;
+    letter-spacing: 0.3px;
+  }
+
   .field { margin-bottom: 16px; }
   .field label {
     display: block;
@@ -38,7 +47,7 @@
     color: #444;
     margin-bottom: 5px;
   }
-  input[type="number"] {
+  input[type="number"], select {
     width: 100%;
     padding: 9px 10px;
     font-size: 15px;
@@ -46,23 +55,78 @@
     border-radius: 6px;
     background: #fff;
   }
-  input[type="number"]:focus { outline: none; border-color: #4a90d9; }
+  input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #444;
+  }
+  .checkbox-field input { width: auto; }
+
+  .selector-descansillos {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #fdf3d6;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .selector-descansillos label {
+    display: block;
+    font-weight: 600;
+    color: #8a6d1b;
+    margin-bottom: 8px;
+  }
+
   #resultBox {
     margin-top: 24px;
     padding: 18px;
     border-radius: 8px;
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
-    text-align: center;
     display: none;
   }
   #resultBox.show { display: block; }
+
+  .badge-estado {
+    display: block;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+  .badge-estado.ok { background: #256b2c; color: #fff; }
+  .badge-estado.fail { background: #a03428; color: #fff; }
+
+  .badge-motivos {
+    display: block;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+  .badge-motivos.ok { background: #256b2c; color: #fff; }
+  .badge-motivos.fail { background: #a03428; color: #fff; }
+  .badge-motivos:empty { display: none; }
+
   .result-item {
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    text-align: center;
   }
-  .result-item:last-child {
-    margin-bottom: 0;
-  }
+  .result-item:last-child { margin-bottom: 0; }
   .result-item .label {
     font-size: 12px;
     color: #777;
@@ -71,17 +135,63 @@
     margin-bottom: 4px;
   }
   .result-item .value {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: #111;
   }
-  #resultBox.warning .value {
-    font-size: 16px;
-    color: #b04a3f;
-    font-weight: 600;
+
+  .divider {
+    height: 1px;
+    background: #dde1e5;
+    margin: 16px 0;
   }
+
+  .section-title {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #a03428;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 4px 0 12px;
+  }
+
+  .pendiente {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+  .pendiente.ok { background: #e3f4e3; color: #256b2c; }
+  .pendiente.aviso { background: #fdf3d6; color: #8a6d1b; }
+  .pendiente.peligro { background: #fbe0dd; color: #a03428; }
+
+  .aviso-rellano {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8a6d1b;
+    background: #fdf3d6;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  .nota-legal {
+    text-align: center;
+    font-size: 11px;
+    color: #888;
+    margin-top: 14px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
   .btn-copy {
-    margin-top: 18px;
+    display: block;
+    margin: 18px auto 0;
     padding: 8px 16px;
     font-size: 13px;
     font-weight: 600;
@@ -91,123 +201,588 @@
     border-radius: 6px;
     cursor: pointer;
   }
-  .btn-copy:hover {
-    background: #333;
-  }
+  .btn-copy:hover { opacity: 0.85; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Calculadora de escalones</h1>
+
+  <h1 class="titulo">Calculadora de escalones</h1>
+  <p class="subtitulo">CTE DB-SUA · RD 486/1997 · ISO 14122-3 · Pública / Privada / Industrial</p>
 
   <div class="field">
-    <label for="alturaInput">Altura Total (mm)</label>
+    <label for="modoSelect">Tipo de uso</label>
+    <select id="modoSelect">
+      <option value="industrial">Industrial (entorno de trabajo)</option>
+      <option value="publica">Pública (uso general)</option>
+      <option value="privada">Privada (uso restringido / vivienda)</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="alturaInput">Altura total (mm)</label>
     <input type="number" id="alturaInput" placeholder="Ej: 2000" step="any" min="0">
   </div>
 
   <div class="field">
-    <label for="anguloInput">Angulo de suelo a entrada de brazo escalera, siempre mayor de 90 optimo 140 (por debajo escalera 40)</label>
-    <input type="number" id="anguloInput" placeholder="Ej: 45" step="any">
+    <label for="anguloInput">Ángulo de la escalera (grados)</label>
+    <input type="number" id="anguloInput" placeholder="Ej: 35" step="any">
+  </div>
+
+  <div class="field">
+    <label for="anchoInput">Anchura libre de la escalera (mm)</label>
+    <input type="number" id="anchoInput" placeholder="Ej: 1000" step="any" min="0">
+  </div>
+
+  <div class="field selector-descansillos" id="selectorDescansillos" style="display:none;">
+    <label for="descansillosSelect">Altura > 3.700 mm: ¿aplicar descansillos según RD 486/1997?</label>
+    <select id="descansillosSelect">
+      <option value="no">No (cálculo de un solo tramo)</option>
+      <option value="si">Sí (cálculo por tramos con descansillos)</option>
+    </select>
+  </div>
+
+  <div class="field" id="descansilloField" style="display:none;">
+    <label for="descansilloInput">Profundidad del descansillo (mm) — mínimo 1000 mm</label>
+    <input type="number" id="descansilloInput" placeholder="Ej: 1000" step="any" min="0">
+  </div>
+
+  <div class="checkbox-field">
+    <input type="checkbox" id="ascensorCheck">
+    <label for="ascensorCheck" style="margin:0;">Existe ascensor alternativo</label>
   </div>
 
   <div id="resultBox">
+
+    <div class="badge-estado" id="badgeEstado">-</div>
+    <div class="badge-motivos" id="badgeMotivos"></div>
+
+    <div class="pendiente" id="pendienteBox">-</div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Geometría</div>
+
     <div class="result-item">
-      <div class="label">N Escalones</div>
+      <div class="label" id="nPeldanoLabel">Nº de escalones</div>
       <div class="value" id="nPeldanoValue">-</div>
     </div>
     <div class="result-item">
-      <div class="label">Altura entre escalones</div>
+      <div class="label">Altura entre escalones (contrahuella)</div>
       <div class="value" id="alturaPeldanoValue">-</div>
     </div>
     <div class="result-item">
-      <div class="label">Longitud Diagonal entre escalones</div>
+      <div class="label">Huella estimada</div>
+      <div class="value" id="huellaValue">-</div>
+    </div>
+    <div class="result-item">
+      <div class="label">Longitud diagonal entre escalones</div>
       <div class="value" id="diagonalPeldanoValue">-</div>
     </div>
-    <button class="btn-copy" id="copyBtn">Copiar Resultados</button>
+    <div class="result-item">
+      <div class="label" id="longHorizontalLabel">Longitud horizontal (proyección en planta)</div>
+      <div class="value" id="longitudHorizontalValue">-</div>
+    </div>
+
+    <div class="divider" id="descansillosDivider" style="display:none;"></div>
+
+    <div id="descansillosBlock" style="display:none;">
+      <div class="section-title">Descansillos</div>
+      <div class="aviso-rellano" id="avisoRellano"></div>
+
+      <div class="result-item">
+        <div class="label">Nº de descansillos intermedios</div>
+        <div class="value" id="nDescansillosValue">-</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Nº de tramos</div>
+        <div class="value" id="nTramosValue">-</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Altura por tramo</div>
+        <div class="value" id="alturaTramoValue">-</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Profundidad del descansillo</div>
+        <div class="value" id="profDescansilloValue">-</div>
+      </div>
+
+      <div class="divider"></div>
+    </div>
+
+    <div class="section-title">Anchura escalera y nº pasamanos</div>
+
+    <div class="result-item">
+      <div class="label">Ancho de la escalera / mínimo exigido</div>
+      <div class="value" id="anchoMinValue">-</div>
+    </div>
+    <div class="result-item">
+      <div class="label">Pasamanos necesarios</div>
+      <div class="value" id="pasamanosValue">-</div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">Barandas</div>
+
+    <div class="result-item">
+      <div class="label">Altura de barandilla / pasamanos</div>
+      <div class="value" id="barandillaValue">-</div>
+    </div>
+
+    <div class="result-item" id="luzPerfilesRow">
+      <div class="label">Luz máxima entre perfiles</div>
+      <div class="value" id="luzPerfilesValue">-</div>
+    </div>
+
+    <div class="result-item" id="sepPasBarraRow" style="display:none;">
+      <div class="label">Max. separación pasamanos–barra intermedia</div>
+      <div class="value" id="sepPasBarraValue">-</div>
+    </div>
+    <div class="result-item" id="sepBarraRodapieRow" style="display:none;">
+      <div class="label">Max. separación barra intermedia–rodapié</div>
+      <div class="value" id="sepBarraRodapieValue">-</div>
+    </div>
+    <div class="result-item" id="distPostesRow" style="display:none;">
+      <div class="label">Max. distancia entre postes</div>
+      <div class="value" id="distPostesValue">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Rodapié mínimo</div>
+      <div class="value" id="rodapieValue">-</div>
+    </div>
+    <div class="result-item" id="antiescaladaRow">
+      <div class="label">Diseño anti-escalada</div>
+      <div class="value" id="antiescaladaValue" style="font-size:14px;">-</div>
+    </div>
+
+    <div class="nota-legal">
+      Resultado orientativo. La conformidad legal final requiere verificación por técnico competente.
+    </div>
+
+    <button class="btn-copy" id="copyBtn">Copiar resultados</button>
   </div>
 </div>
 
 <script>
+const modoSelect = document.getElementById('modoSelect');
 const alturaInput = document.getElementById('alturaInput');
 const anguloInput = document.getElementById('anguloInput');
-const resultBox = document.getElementById('resultBox');
+const anchoInput = document.getElementById('anchoInput');
+const descansilloInput = document.getElementById('descansilloInput');
+const descansilloField = document.getElementById('descansilloField');
+const selectorDescansillos = document.getElementById('selectorDescansillos');
+const descansillosSelect = document.getElementById('descansillosSelect');
+const ascensorCheck = document.getElementById('ascensorCheck');
 
+const resultBox = document.getElementById('resultBox');
+const badgeEstado = document.getElementById('badgeEstado');
+const badgeMotivos = document.getElementById('badgeMotivos');
+const pendienteBox = document.getElementById('pendienteBox');
+const nPeldanoLabel = document.getElementById('nPeldanoLabel');
 const nPeldanoValue = document.getElementById('nPeldanoValue');
 const alturaPeldanoValue = document.getElementById('alturaPeldanoValue');
+const huellaValue = document.getElementById('huellaValue');
 const diagonalPeldanoValue = document.getElementById('diagonalPeldanoValue');
+const longHorizontalLabel = document.getElementById('longHorizontalLabel');
+const longitudHorizontalValue = document.getElementById('longitudHorizontalValue');
+
+const descansillosDivider = document.getElementById('descansillosDivider');
+const descansillosBlock = document.getElementById('descansillosBlock');
+const avisoRellano = document.getElementById('avisoRellano');
+const nDescansillosValue = document.getElementById('nDescansillosValue');
+const nTramosValue = document.getElementById('nTramosValue');
+const alturaTramoValue = document.getElementById('alturaTramoValue');
+const profDescansilloValue = document.getElementById('profDescansilloValue');
+
+const anchoMinValue = document.getElementById('anchoMinValue');
+const pasamanosValue = document.getElementById('pasamanosValue');
+const barandillaValue = document.getElementById('barandillaValue');
+
+const luzPerfilesRow = document.getElementById('luzPerfilesRow');
+const luzPerfilesValue = document.getElementById('luzPerfilesValue');
+
+const sepPasBarraRow = document.getElementById('sepPasBarraRow');
+const sepPasBarraValue = document.getElementById('sepPasBarraValue');
+const sepBarraRodapieRow = document.getElementById('sepBarraRodapieRow');
+const sepBarraRodapieValue = document.getElementById('sepBarraRodapieValue');
+const distPostesRow = document.getElementById('distPostesRow');
+const distPostesValue = document.getElementById('distPostesValue');
+
+const rodapieValue = document.getElementById('rodapieValue');
+const antiescaladaValue = document.getElementById('antiescaladaValue');
 const copyBtn = document.getElementById('copyBtn');
 
-function calcular() {
+const ALTURA_MAX_TRAMO_INDUSTRIAL = 3700;
+
+let ultimoResumen = '';
+
+function evaluarAngulo(angulo) {
+  if (angulo <= 0) return { texto: 'Ángulo no válido', clase: 'peligro' };
+  if (angulo < 20) return { texto: 'Demasiado tendida (más propia de rampa)', clase: 'aviso' };
+  if (angulo < 30) return { texto: 'Muy cómoda', clase: 'ok' };
+  if (angulo <= 35) return { texto: 'Óptima', clase: 'ok' };
+  if (angulo <= 40) return { texto: 'Algo empinada', clase: 'aviso' };
+  if (angulo <= 50) return { texto: 'Muy empinada', clase: 'aviso' };
+  if (angulo <= 60) return { texto: 'Excesivamente empinada', clase: 'peligro' };
+  return { texto: 'Escala fija (no escalera)', clase: 'peligro' };
+}
+
+function obtenerReglas(modo) {
+  if (modo === 'publica') {
+    return {
+      anchoMin: 1000, huellaMin: 280, contrahuellaMin: 130,
+      contrahuellaMaxBase: 185, contrahuellaMaxSinAscensor: 175,
+      formulaMin: 540, formulaMax: 700,
+      normaCorta: 'CTE DB-SUA'
+    };
+  }
+  if (modo === 'privada') {
+    return {
+      anchoMin: 800, huellaMin: 220, contrahuellaMin: 130,
+      contrahuellaMaxBase: 200, contrahuellaMaxSinAscensor: 200,
+      formulaMin: 0, formulaMax: 9999,
+      normaCorta: 'CTE DB-SUA'
+    };
+  }
+  return {
+    anchoMin: 550, huellaMin: 150, contrahuellaMin: 0,
+    contrahuellaMaxBase: 250, contrahuellaMaxSinAscensor: 250,
+    formulaMin: 0, formulaMax: 9999,
+    normaCorta: 'RD 486/1997'
+  };
+}
+
+function validarYCalcular() {
   const altura = parseFloat(alturaInput.value);
   const angulo = parseFloat(anguloInput.value);
+  const ancho = parseFloat(anchoInput.value);
+  const modo = modoSelect.value;
 
-  // Validar entradas
-  if (isNaN(altura) || isNaN(angulo) || altura <= 0) {
-    resultBox.classList.remove('show', 'warning');
+  resultBox.classList.remove('show');
+
+  const superaTramo = (modo === 'industrial' && !isNaN(altura) && altura > ALTURA_MAX_TRAMO_INDUSTRIAL);
+
+  if (superaTramo) {
+    selectorDescansillos.style.display = 'block';
+    if (descansillosSelect.value === 'si') {
+      descansilloField.style.display = 'block';
+    } else {
+      descansilloField.style.display = 'none';
+    }
+  } else {
+    selectorDescansillos.style.display = 'none';
+    descansilloField.style.display = 'none';
+    descansilloInput.value = '';
+  }
+
+  let completo = true;
+  if (isNaN(altura) || altura <= 0) completo = false;
+  if (isNaN(angulo) || angulo <= 0) completo = false;
+  if (isNaN(ancho) || ancho <= 0) completo = false;
+  if (superaTramo && descansillosSelect.value === 'si') {
+    const prof = parseFloat(descansilloInput.value);
+    if (isNaN(prof) || prof <= 0) completo = false;
+  }
+
+  if (!completo) return;
+
+  calcular(altura, angulo, ancho, modo);
+}
+
+function calcular(altura, angulo, ancho, modo) {
+  const hayAscensor = ascensorCheck.checked;
+  const reglas = obtenerReglas(modo);
+  const evaluacion = evaluarAngulo(angulo);
+
+  const superaTramo = (modo === 'industrial' && altura > ALTURA_MAX_TRAMO_INDUSTRIAL);
+  const aplicaDescansillos = superaTramo && descansillosSelect.value === 'si';
+
+  let profDescansillo = parseFloat(descansilloInput.value);
+  if (aplicaDescansillos && (isNaN(profDescansillo) || profDescansillo <= 0)) {
     return;
   }
 
-  // --- LÓGICA DE LA REGLA ILOGIC ---
-  // Parameter("seno") = Math.Sin(Parameter("Angulo") * Math.PI / 180)
+  let nDescansillos = 0;
+  let nTramos = 1;
+  let alturaTramo = altura;
+
+  if (aplicaDescansillos) {
+    nTramos = Math.ceil(altura / ALTURA_MAX_TRAMO_INDUSTRIAL);
+    nDescansillos = nTramos - 1;
+    alturaTramo = altura / nTramos;
+  }
+
+  const nIdeal = Math.round(alturaTramo / 175);
+  const nPeldano = nIdeal > 0 ? nIdeal : 1;
+  const alturaPeldano = alturaTramo / nPeldano;
+
+  let huella = 630 - 2 * alturaPeldano;
+  if (huella < reglas.huellaMin) huella = reglas.huellaMin;
+  if (reglas.huellaMax && huella > reglas.huellaMax) huella = reglas.huellaMax;
+
+  const formula = 2 * alturaPeldano + huella;
   const seno = Math.sin(angulo * Math.PI / 180);
+  const diagonal = seno !== 0 ? alturaPeldano / seno : 0;
+  const longitudHorizontal = (nPeldano - 1) * huella;
 
-  // Parameter("N_peldaños") = Parameter("Altura") / 200
-  const nPeldanosFloat = altura / 200;
-
-  // Parameter("NPeldaño") = Math.Round(Parameter("N_peldaños"))
-  const nPeldano = Math.round(nPeldanosFloat);
-
-  // If Parameter("NPeldaño") > 0 Then ... Else ...
-  let alturaPeldano = 0;
-  if (nPeldano > 0) {
-    alturaPeldano = altura / nPeldano;
+  let pasamanos;
+  if (ancho > 4000) {
+    pasamanos = '2 laterales + intermedio';
+  } else if (ancho > 1200 || !hayAscensor) {
+    pasamanos = '2 lados';
+  } else {
+    pasamanos = '1 lado';
   }
 
-  // If Parameter("seno") <> 0 Then ... Else ...
-  let diagonalPeldano = 0;
-  if (seno !== 0) {
-    diagonalPeldano = alturaPeldano / seno;
+  let barandilla, rodapie, antiescaladaTexto;
+  let luzPerfiles = '';
+  let sepPasBarra = '';
+  let sepBarraRodapie = '';
+  let distPostes = '';
+
+  if (modo === 'publica') {
+    barandilla = '900–1100 mm';
+    luzPerfiles = 'máx. 100 mm';
+    rodapie = '100 mm';
+    antiescaladaTexto = 'Obligatorio (30–50 cm: sin salientes > 5 cm; 50–80 cm: sin salientes > 15 cm)';
+  } else if (modo === 'privada') {
+    barandilla = '900 mm mín.';
+    luzPerfiles = 'máx. 100 mm';
+    rodapie = '100 mm';
+    antiescaladaTexto = 'Obligatorio (vivienda y escuelas infantiles)';
+  } else {
+    barandilla = '900 mm mín.';
+    sepPasBarra = '500 mm';
+    sepBarraRodapie = '500 mm';
+    distPostes = '1.500 mm';
+    rodapie = '100 mm';
+    antiescaladaTexto = 'No exigido (personal autorizado)';
   }
 
-  // Mostrar resultados en la interfaz
+  const incumplimientos = [];
+
+  if (ancho < reglas.anchoMin) {
+    incumplimientos.push('Anchura ' + ancho + ' mm < mínimo ' + reglas.anchoMin +
+      ' mm (' + reglas.normaCorta + ')');
+  }
+
+  if (huella < reglas.huellaMin) {
+    incumplimientos.push('Huella ' + huella.toFixed(0) + ' mm < mínimo ' +
+      reglas.huellaMin + ' mm (' + reglas.normaCorta + ')');
+  }
+  if (reglas.huellaMax && huella > reglas.huellaMax) {
+    incumplimientos.push('Huella ' + huella.toFixed(0) + ' mm > máximo ' +
+      reglas.huellaMax + ' mm (' + reglas.normaCorta + ')');
+  }
+
+  const maxContra = (!hayAscensor && modo === 'publica')
+    ? reglas.contrahuellaMaxSinAscensor
+    : reglas.contrahuellaMaxBase;
+
+  if (alturaPeldano < reglas.contrahuellaMin || alturaPeldano > maxContra) {
+    incumplimientos.push('Contrahuella ' + alturaPeldano.toFixed(2) + ' mm fuera de rango (' +
+      reglas.contrahuellaMin + '–' + maxContra + ' mm, ' + reglas.normaCorta + ')');
+  }
+
+  if (modo === 'publica') {
+    if (formula < reglas.formulaMin || formula > reglas.formulaMax) {
+      incumplimientos.push('2C + H = ' + formula.toFixed(0) + ' mm fuera de 540–700 mm (CTE DB-SUA)');
+    }
+  }
+
+  if (superaTramo && !aplicaDescansillos) {
+    incumplimientos.push('Altura ' + altura + ' mm > 3.700 mm (máximo por tramo, RD 486/1997)');
+  }
+
+  if (aplicaDescansillos) {
+    if (profDescansillo < 1000) {
+      incumplimientos.push('Profundidad del descansillo ' + profDescansillo +
+        ' mm < mínimo 1000 mm (RD 486/1997)');
+    }
+    if (profDescansillo < ancho / 2) {
+      incumplimientos.push('Profundidad del descansillo ' + profDescansillo +
+        ' mm < mitad del ancho (' + (ancho / 2) + ' mm)');
+    }
+  }
+
+  if (angulo > 60) {
+    incumplimientos.push('Ángulo ' + angulo + '° > 60° (debe ser escala fija)');
+  }
+
+  const cumple = incumplimientos.length === 0;
+
+  pendienteBox.textContent = 'Pendiente: ' + evaluacion.texto;
+  pendienteBox.className = 'pendiente ' + evaluacion.clase;
+
+  // Badges
+  if (superaTramo && !aplicaDescansillos) {
+    badgeEstado.textContent = '❌ No cumple, necesita descansillo (' + reglas.normaCorta + ')';
+    badgeEstado.className = 'badge-estado fail';
+    badgeMotivos.textContent = incumplimientos.join(' · ');
+    badgeMotivos.className = 'badge-motivos fail';
+  } else if (cumple) {
+    badgeEstado.textContent = '✅ Cumple los mínimos legales en España (' + reglas.normaCorta + ')';
+    badgeEstado.className = 'badge-estado ok';
+    badgeMotivos.textContent = '';
+    badgeMotivos.className = 'badge-motivos ok';
+  } else {
+    badgeEstado.textContent = '❌ No cumple los mínimos legales en España (' + reglas.normaCorta + ')';
+    badgeEstado.className = 'badge-estado fail';
+    badgeMotivos.textContent = incumplimientos.join(' · ');
+    badgeMotivos.className = 'badge-motivos fail';
+  }
+
+  if (aplicaDescansillos) {
+    nPeldanoLabel.textContent = 'Nº de escalones (por tramo)';
+    longHorizontalLabel.textContent = 'Longitud horizontal (por tramo)';
+    descansillosDivider.style.display = 'block';
+    descansillosBlock.style.display = 'block';
+    avisoRellano.textContent =
+      'Altura total ' + altura + ' mm dividida en ' + nTramos + ' tramos.';
+    nDescansillosValue.textContent = nDescansillos;
+    nTramosValue.textContent = nTramos;
+    alturaTramoValue.textContent = alturaTramo.toFixed(2) + ' mm';
+    profDescansilloValue.textContent = profDescansillo.toFixed(0) + ' mm';
+  } else {
+    nPeldanoLabel.textContent = 'Nº de escalones';
+    longHorizontalLabel.textContent = 'Longitud horizontal (proyección en planta)';
+    descansillosDivider.style.display = 'none';
+    descansillosBlock.style.display = 'none';
+  }
+
   nPeldanoValue.textContent = nPeldano;
   alturaPeldanoValue.textContent = alturaPeldano.toFixed(2) + ' mm';
-  diagonalPeldanoValue.textContent = diagonalPeldano.toFixed(2) + ' mm';
+  huellaValue.textContent = huella.toFixed(2) + ' mm';
+  diagonalPeldanoValue.textContent = diagonal.toFixed(2) + ' mm';
+  longitudHorizontalValue.textContent =
+    longitudHorizontal.toFixed(0) + ' mm (' +
+    (longitudHorizontal / 1000).toFixed(2) + ' m)';
 
-  resultBox.classList.remove('warning');
-  resultBox.classList.add('show');
-}
+  // Aquí mostramos el ancho introducido / mínimo exigido
+  anchoMinValue.textContent = ancho + ' mm / ' + reglas.anchoMin + ' mm';
+  pasamanosValue.textContent = pasamanos;
+  barandillaValue.textContent = barandilla;
+  rodapieValue.textContent = rodapie;
+  antiescaladaValue.textContent = antiescaladaTexto;
 
-// Copiar al portapapeles con el formato exacto del iLogic
-copyBtn.addEventListener('click', () => {
-  const altura = parseFloat(alturaInput.value) || 0;
-  const angulo = parseFloat(anguloInput.value) || 0;
+  if (modo === 'industrial') {
+    luzPerfilesRow.style.display = 'none';
+    sepPasBarraRow.style.display = 'block';
+    sepBarraRodapieRow.style.display = 'block';
+    distPostesRow.style.display = 'block';
+    sepPasBarraValue.textContent = sepPasBarra;
+    sepBarraRodapieValue.textContent = sepBarraRodapie;
+    distPostesValue.textContent = distPostes;
+  } else {
+    luzPerfilesRow.style.display = 'block';
+    sepPasBarraRow.style.display = 'none';
+    sepBarraRodapieRow.style.display = 'none';
+    distPostesRow.style.display = 'none';
+    luzPerfilesValue.textContent = luzPerfiles;
+  }
 
-  const resumen = 
+  const modoTexto = modo === 'publica' ? 'Pública'
+    : modo === 'privada' ? 'Privada'
+    : 'Industrial (servicio)';
+
+  let bloqueProtecciones = '';
+  if (modo === 'industrial') {
+    bloqueProtecciones =
+`Altura de barandilla/pasamanos: ${barandilla}
+Separación pasamanos–barra intermedia: ${sepPasBarra}
+Separación barra intermedia–rodapié: ${sepBarraRodapie}
+Distancia máxima entre postes: ${distPostes}
+Rodapié mínimo: ${rodapie}
+Diseño anti-escalada: ${antiescaladaTexto}`;
+  } else {
+    bloqueProtecciones =
+`Altura de barandilla/pasamanos: ${barandilla}
+Luz máxima entre perfiles: ${luzPerfiles}
+Rodapié mínimo: ${rodapie}
+Diseño anti-escalada: ${antiescaladaTexto}`;
+  }
+
+  let bloqueDescansillos = '';
+  if (aplicaDescansillos) {
+    bloqueDescansillos =
+`\n--- DESCANSILLOS ---
+Nº de descansillos intermedios: ${nDescansillos}
+Nº de tramos: ${nTramos}
+Altura por tramo: ${alturaTramo.toFixed(2)} mm
+Profundidad del descansillo: ${profDescansillo.toFixed(0)} mm
+`;
+  } else if (superaTramo) {
+    bloqueDescansillos =
+`\n--- DESCANSILLOS ---
+No aplicados. Se requieren descansillos a partir de 3.700 mm según RD 486/1997.
+`;
+  }
+
+  let veredictoTexto;
+  if (superaTramo && !aplicaDescansillos) {
+    veredictoTexto = '❌ No cumple, necesita descansillo (' + reglas.normaCorta + ')';
+  } else if (cumple) {
+    veredictoTexto = '✅ Cumple los mínimos legales en España (' + reglas.normaCorta + ')';
+  } else {
+    veredictoTexto = '❌ No cumple los mínimos legales en España (' + reglas.normaCorta + ')';
+  }
+
+  ultimoResumen =
 `--- DATOS INTRODUCIDOS ---
-Altura Total: ${altura} mm
-Ángulo: ${angulo}
+Tipo de uso: ${modoTexto}
+Altura total: ${altura} mm
+Ángulo: ${angulo}°
+Anchura libre: ${ancho} mm
+Ascensor alternativo: ${hayAscensor ? 'Sí' : 'No'}
 
---- RESULTADOS CALCULADOS ---
-N  Escalones: ${nPeldanoValue.textContent}
-Altura entre escalon: ${alturaPeldanoValue.textContent}
-Longitud Diagonal: ${diagonalPeldanoValue.textContent}
+--- VEREDICTO LEGAL ---
+${veredictoTexto}
+${cumple ? '' : 'Motivos: ' + incumplimientos.join(' · ')}
+${bloqueDescansillos}
+--- GEOMETRÍA ${aplicaDescansillos ? '(por tramo)' : ''} ---
+Evaluación de pendiente: ${evaluacion.texto}
+Nº de escalones${aplicaDescansillos ? ' por tramo' : ''}: ${nPeldano}
+Contrahuella: ${alturaPeldano.toFixed(2)} mm
+Huella estimada: ${huella.toFixed(2)} mm
+Longitud diagonal: ${diagonal.toFixed(2)} mm
+Longitud horizontal${aplicaDescansillos ? ' por tramo' : ''}: ${longitudHorizontal.toFixed(0)} mm (${(longitudHorizontal / 1000).toFixed(2)} m)
+
+--- ANCHURA Y PASAMANOS ---
+Ancho de la escalera / mínimo exigido: ${ancho} mm / ${reglas.anchoMin} mm
+Pasamanos: ${pasamanos}
+
+--- PROTECCIONES ---
+${bloqueProtecciones}
+
+Resultado orientativo. La conformidad legal final requiere verificación por técnico competente.
 ----------------------------`;
 
-  navigator.clipboard.writeText(resumen).then(() => {
-    const originalText = copyBtn.textContent;
+  resultBox.classList.add('show');
+  resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+[alturaInput, anguloInput, anchoInput, descansilloInput].forEach(el =>
+  el.addEventListener('input', validarYCalcular)
+);
+modoSelect.addEventListener('change', validarYCalcular);
+descansillosSelect.addEventListener('change', validarYCalcular);
+ascensorCheck.addEventListener('change', validarYCalcular);
+
+copyBtn.addEventListener('click', () => {
+  if (!ultimoResumen) return;
+  navigator.clipboard.writeText(ultimoResumen).then(() => {
+    const original = copyBtn.textContent;
     copyBtn.textContent = '¡Copiado!';
-    setTimeout(() => {
-      copyBtn.textContent = originalText;
-    }, 1500);
+    setTimeout(() => { copyBtn.textContent = original; }, 1500);
   });
 });
 
-[alturaInput, anguloInput].forEach(input => input.addEventListener('input', calcular));
+validarYCalcular();
 </script>
+
 <link rel="stylesheet" href="men-header.css">
-...
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 
 </body>
