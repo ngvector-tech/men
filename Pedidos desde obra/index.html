@@ -81,19 +81,38 @@
         .obligatorio { color: #dc2626; }
         .texto-ayuda-ot { font-size: 0.85rem; color: #0284c7; font-weight: normal; margin-top: 4px; display: block; }
 
-        /* ============ LEYENDA ============ */
-        #leyenda-familias { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px 0; }
+        /* ============ LEYENDA (ahora son los botones principales) ============ */
+        #leyenda-familias {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 12px 0 20px 0;
+        }
         .chip-familia {
-            display: inline-flex; align-items: center;
-            padding: 3px 8px; border-radius: 12px;
-            font-size: 9px; font-weight: bold;
-            text-transform: uppercase; letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: #0f172a;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+            min-height: 50px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            word-break: break-word;
+            box-sizing: border-box;
+            width: 100%;
         }
         .chip-familia:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            filter: brightness(0.96);
         }
     </style>
 </head>
@@ -131,7 +150,7 @@
         <div id="v-cat" class="vista activa">
             <h2>Categorías</h2>
             <div id="leyenda-familias"></div>
-            <div id="grid-cat" class="grid"></div>
+            <div id="grid-cat" class="grid" style="display:none;"></div>
         </div>
         <div id="v-art" class="vista"><div id="grid-art" class="grid"></div></div>
         <div id="v-dim" class="vista"><div id="grid-dim" class="grid"></div></div>
@@ -250,15 +269,6 @@
             { claves: ["CONCENTRICA EN10253-1"], texto: "No apta presion/tempetratura" }
         ];
 
-        // ============================================================
-        // FAMILIAS: ahora se trabaja con "categorias" EXACTAS (las que
-        // aparecen en el primer campo de articulos.txt) + se mantiene
-        // "claves" como red de seguridad para categorías nuevas.
-        //
-        // Para asignar una categoría a una familia, se comprueba:
-        //   1) coincidencia EXACTA con alguno de los nombres de "categorias"
-        //   2) si no, coincidencia por palabra completa con "claves"
-        // ============================================================
         const FAMILIAS = [
             {
                 nombre: "Tornillería",
@@ -472,28 +482,19 @@
             }
         ];
 
-        // ============================================================
-        // Normalizar texto: mayúsculas, sin tildes, separadores → espacio
-        // ============================================================
         function normalizar(txt) {
             return String(txt || '')
                 .toUpperCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar tildes
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                 .replace(/[-_/,.]/g, ' ')
                 .replace(/\s+/g, ' ')
                 .trim();
         }
 
-        // ============================================================
-        // OBTENER FAMILIA
-        // 1) Primero coincidencia EXACTA con categorías declaradas
-        // 2) Si no, coincidencia por palabra completa con claves
-        // ============================================================
         function obtenerFamilia(texto) {
             if (!texto) return null;
             const t = normalizar(texto);
 
-            // PASO 1: coincidencia exacta con "categorias"
             for (const fam of FAMILIAS) {
                 if (!fam.categorias) continue;
                 for (const cat of fam.categorias) {
@@ -501,7 +502,6 @@
                 }
             }
 
-            // PASO 2: respaldo por claves (palabra completa, prioriza las más largas)
             const todasClaves = [];
             FAMILIAS.forEach(fam => {
                 (fam.claves || []).forEach(clave => {
@@ -517,28 +517,21 @@
             return null;
         }
 
-        // Devuelve el style inline de color
         function estiloFamilia(texto) {
             const fam = obtenerFamilia(texto);
             if (!fam) return '';
             return `style="background:${fam.fondo}; border-color:${fam.borde};"`;
         }
 
-        // ============================================================
-        // COMPROBAR SI UNA CATEGORÍA PERTENECE A UNA FAMILIA
-        // Misma lógica que obtenerFamilia, pero restringido a UNA familia
-        // ============================================================
         function categoriaPerteneceAFamilia(cat, fam) {
             const t = normalizar(cat);
 
-            // 1) Coincidencia exacta con las categorías declaradas
             if (fam.categorias) {
                 for (const c of fam.categorias) {
                     if (normalizar(c) === t) return true;
                 }
             }
 
-            // 2) Respaldo por claves (palabra completa)
             if (fam.claves) {
                 const claves = fam.claves
                     .map(c => ' ' + normalizar(c) + ' ')
@@ -790,22 +783,14 @@
 
         function iniciarCategorias() {
             cambiarVista('v-cat', 'Categorías');
-            const cats = [...new Set(baseDatos.map(x => x.cat))];
-            const grid = document.getElementById('grid-cat');
-            let html = '';
-            cats.forEach(c => {
-                html += `<div class="tarjeta" ${estiloFamilia(c)} onclick="gestionarClick(event, '${escapeQuotes(c)}', () => pasoArticulos('${escapeQuotes(c)}'))">
-                    ${crearBadgeHTML(c)}<div>${c}</div>
-                </div>`;
-            });
-            grid.innerHTML = html;
 
+            // Ya no generamos las tarjetas grandes, solo la leyenda de familias
             const leyenda = document.getElementById('leyenda-familias');
             if (leyenda) {
                 let lh = '';
                 FAMILIAS.forEach((f, i) => {
                     lh += `<span class="chip-familia"
-                        style="background:${f.fondo}; border:1px solid ${f.borde}; cursor:pointer;"
+                        style="background:${f.fondo}; border-color:${f.borde};"
                         onclick="filtrarPorFamilia(${i})"
                         title="Ver categorías de: ${f.nombre}">
                         ${f.nombre}
