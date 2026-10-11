@@ -23,32 +23,40 @@
 
     .menu-container {
         background: white;
-        padding: 40px 30px;
+        padding: 25px 20px;
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         width: 100%;
-        max-width: 400px;
+        max-width: 580px;   /* ? ajustado a 2 columnas con texto 12px */
         text-align: center;
     }
 
     /* Logo MEN */
     .logo-men {
         color: #2980b9;
-        font-size: 42px;
+        font-size: 32px;    /* ? reducido de 42px a 32px */
         font-weight: bold;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         letter-spacing: 2px;
+    }
+
+    /* Contenedor de los botones en 2 columnas */
+    .botones {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
     }
 
     /* Botones del menú */
     .btn-menu {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 100%;
-        padding: 18px;
-        margin-bottom: 15px;
+        padding: 10px 8px;
         border: none;
-        border-radius: 8px;
-        font-size: 18px;
+        border-radius: 6px;
+        font-size: 12px;         /* ? TEXTO A 12px */
         font-weight: bold;
         text-transform: uppercase;
         color: white;
@@ -56,14 +64,13 @@
         cursor: pointer;
         transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+        line-height: 1.25;
+        min-height: 50px;        /* ? ajustado a la nueva altura */
     }
 
     .btn-menu:active {
         transform: scale(0.98);
-    }
-
-    .btn-menu:last-child {
-        margin-bottom: 0;
     }
 
     /* ============================================================
@@ -134,19 +141,28 @@
         background-color: #138496;
     }
 
+    /* ============================================================
+       RESPONSIVE: en móvil, una sola columna
+       ============================================================ */
     @media (max-width: 480px) {
         .menu-container {
-            padding: 30px 20px;
+            padding: 20px 15px;
         }
 
         .logo-men {
-            font-size: 36px;
-            margin-bottom: 25px;
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        .botones {
+            grid-template-columns: 1fr;  /* ? 1 columna en móvil */
+            gap: 8px;
         }
 
         .btn-menu {
-            padding: 16px;
-            font-size: 16px;
+            padding: 12px 8px;
+            font-size: 13px;    /* ? un poco más grande en móvil para que sea legible */
+            min-height: 45px;
         }
     }
 </style>
@@ -157,67 +173,71 @@
 
     <div class="logo-men">MEN</div>
 
-    <!-- ===== Cálculos de materiales ===== -->
-    <a href="calc_perfil.html" class="btn-menu btn-azul-oscuro">
-        Peso perfil y chapa
-    </a>
-    <a href="calc-pulgadas.html" class="btn-menu btn-turquesa">
-        Tuberia pulgadas a mm
-    </a>
+    <div class="botones">
 
-    <!-- ===== Válvulas ===== -->
-    <a href="valvulas.html" class="btn-menu btn-naranja">
-        Valvulas
-    </a>
-    <a href="valvuladiafragma.html" class="btn-menu btn-naranja">
-        Valvulas diafragma
-    </a>
+        <!-- ===== Cálculos de materiales ===== -->
+        <a href="calc_perfil.html" class="btn-menu btn-azul-oscuro">
+            Peso perfil y chapa
+        </a>
+        <a href="calc-pulgadas.html" class="btn-menu btn-turquesa">
+            Tuberia pulgadas a mm
+        </a>
 
-    <!-- ===== Cálculos varios ===== -->
-    <a href="calculo_escalon.html" class="btn-menu btn-azul-oscuro">
-        Calculo reparto escalones
-    </a>
-    <a href="bridas.html" class="btn-menu btn-azul-oscuro">
-        Bridas
-    </a>
+        <!-- ===== Válvulas ===== -->
+        <a href="valvulas.html" class="btn-menu btn-naranja">
+            Valvulas-Entre caras
+        </a>
+        <a href="valvuladiafragma.html" class="btn-menu btn-naranja">
+            Valvulas diafragma-Inclinacion
+        </a>
 
-    <!-- ===== Compatibilidades ===== -->
-    <a href="compatibilidadjuntas.html" class="btn-menu btn-verde">
-        Compatibilidad de juntas
-    </a>
-    <a href="compatibilidpolipropileno.html" class="btn-menu btn-verde">
-        Compatibilidad polipropileno
-    </a>
-    <a href="compatibilidad_recipiente.html" class="btn-menu btn-verde">
-        Compatibilidad tuberia y recipiente
-    </a>
+        <!-- ===== Cálculos varios ===== -->
+        <a href="calculo_escalon.html" class="btn-menu btn-azul-oscuro">
+            Calculo escaleras
+        </a>
+        <a href="bridas.html" class="btn-menu btn-azul-oscuro">
+            Bridas datos y conf. Tornillos
+        </a>
 
-    <!-- ===== Soportes y separaciones ===== -->
-    <a href="distancia_soportes_tuberia.html" class="btn-menu btn-morado">
-        Distancia soporte tuberia
-    </a>
-    <a href="distancia_soportes_tuberia_no_metalica.html" class="btn-menu btn-morado">
-        Distancia soporte tuberia no metalica
-    </a>
-    <a href="separacion_tuberias.html" class="btn-menu btn-morado">
-        Separacion de tuberia
-    </a>
+        <!-- ===== Compatibilidades ===== -->
+        <a href="compatibilidadjuntas.html" class="btn-menu btn-verde">
+            Juntas-Compatibilidad
+        </a>
+        <a href="compatibilidpolipropileno.html" class="btn-menu btn-verde">
+            Polipropileno-Compatibilidad
+        </a>
+        <a href="compatibilidad_recipiente.html" class="btn-menu btn-verde">
+            Tuberias y recipientes--Compatibilidad
+        </a>
 
-    <!-- ===== Dilatación y vapor ===== -->
-    <a href="dilatacion_termica.html" class="btn-menu btn-rojo">
-        Dilatacion lineal de tuberia
-    </a>
-    <a href="carac_vapor.html" class="btn-menu btn-rojo">
-        Caracteristica vapor segun presion
-    </a>
+        <!-- ===== Soportes y separaciones ===== -->
+        <a href="distancia_soportes_tuberia.html" class="btn-menu btn-morado">
+            Distancia soporte tuberia
+        </a>
+        <a href="distancia_soportes_tuberia_no_metalica.html" class="btn-menu btn-morado">
+            Distancia soporte tuberia no metalica
+        </a>
+        <a href="separacion_tuberias.html" class="btn-menu btn-morado">
+            Separacion entre tuberias
+        </a>
 
-    <!-- ===== Colores y símbolos ===== -->
-    <a href="color_tuberia.html" class="btn-menu btn-gris">
-        Codigo color de tuberia
-    </a>
-    <a href="simbolos.html" class="btn-menu btn-gris">
-        Simbolos
-    </a>
+        <!-- ===== Dilatación y vapor ===== -->
+        <a href="dilatacion_termica.html" class="btn-menu btn-rojo">
+            Dilatacion lineal de tuberia
+        </a>
+        <a href="carac_vapor.html" class="btn-menu btn-rojo">
+            Caracteristica vapor segun presion
+        </a>
+
+        <!-- ===== Colores y símbolos ===== -->
+        <a href="color_tuberia.html" class="btn-menu btn-gris">
+            Codigo color de tuberia
+        </a>
+        <a href="simbolos.html" class="btn-menu btn-gris">
+            Simbolos
+        </a>
+
+    </div>
 
 </div>
 

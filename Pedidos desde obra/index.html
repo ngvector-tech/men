@@ -6,29 +6,68 @@
     <title>Gestión de Pedidos - MEN</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #0f172a; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #0f172a; font-size: 14px; }
         .contenedor { max-width: 900px; margin: 0 auto; }
         .cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
-        .titulo-men { font-size: 1.8rem; font-weight: bold; color: #0284c7; margin: 0; letter-spacing: 1px; }
+        .titulo-men { font-size: 1.4rem; font-weight: bold; color: #0284c7; margin: 0; letter-spacing: 1px; }
         .vista { display: none; }
         .vista.activa { display: block !important; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-        .tarjeta { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; padding: 25px 15px 15px 15px; text-align: center; cursor: pointer; font-weight: bold; color: #0f172a !important; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.1s ease, border-color 0.1s ease; position: relative; overflow: hidden; }
-        .tarjeta:hover { border-color: #3b82f6; transform: translateY(-2px); }
-        .tarjeta img { max-width: 100%; height: 90px; object-fit: contain; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
-        .badge-norma { position: absolute; top: 6px; right: 6px; background-color: #ff0000; color: #ffffff; font-size: 0.5rem; font-weight: bold; padding: 3px 8px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 12px; }
+
+        /* ============ TARJETA ============ */
+        .tarjeta {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 9px;
+            color: #0f172a !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease, border-color 0.1s ease, filter 0.1s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 50px;
+            line-height: 1.2;
+            word-break: break-word;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .tarjeta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            filter: brightness(0.96);
+        }
+        .tarjeta > * { text-align: center; width: 100%; }
+        .tarjeta img {
+            max-width: 100%;
+            height: 55px;
+            object-fit: contain;
+            margin-bottom: 6px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .badge-norma { position: absolute; top: 4px; right: 4px; background-color: #ff0000; color: #ffffff; font-size: 0.45rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
         .globo-info { position: fixed; background-color: #0f172a; color: #38bdf8; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; max-width: 250px; text-align: center; pointer-events: none; border: 1px solid #38bdf8; }
-        .ficha-box { background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; max-width: 500px; margin: 0 auto; }
+        .ficha-box { background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1; max-width: 450px; margin: 0 auto; }
         .box-info-azul { background: #f8fafc; padding: 12px; border-left: 4px solid #0284c7; margin: 15px 0; text-align: left; line-height: 1.6; }
         .esquema-pr { border: 1px dashed #cbd5e1; padding: 10px; margin: 15px 0; border-radius: 6px; background: #fff; }
-        .btn { background: #2563eb; color: #ffffff; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
+        .btn { background: #2563eb; color: #ffffff; border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; text-decoration: none; display: inline-block; }
         .btn-sec { background: #64748b; }
-        .btn-add { background: #16a34a; width: 100%; margin-top: 15px; padding: 12px; font-size: 16px; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; }
-        .btn-compartir { background: #16a34a; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-borrar-todo { background: #dc2626; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: #16a34a; width: 100%; margin-top: 15px; padding: 9px; font-size: 14px; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; }
+        .btn-compartir { background: #16a34a; color: white; border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .btn-borrar-todo { background: #dc2626; color: white; border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .btn-borrar-todo:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; }
-        .btn-nueva-ot { background: #0284c7; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-borrar-linea { background: #ef4444; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-nueva-ot { background: #0284c7; color: white; border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .btn-borrar-linea { background: #ef4444; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .box-lista { background: #ffffff; padding: 20px; border-radius: 8px; margin-top: 25px; border: 1px solid #cbd5e1; }
         .item-lista { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 10px 0; gap: 10px; }
         .item-lista span { flex: 1; }
@@ -41,6 +80,21 @@
         .estado-msg { padding: 15px; text-align: center; color: #64748b; }
         .obligatorio { color: #dc2626; }
         .texto-ayuda-ot { font-size: 0.85rem; color: #0284c7; font-weight: normal; margin-top: 4px; display: block; }
+
+        /* ============ LEYENDA ============ */
+        #leyenda-familias { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px 0; }
+        .chip-familia {
+            display: inline-flex; align-items: center;
+            padding: 3px 8px; border-radius: 12px;
+            font-size: 9px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 0.3px;
+            color: #0f172a;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .chip-familia:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
@@ -74,12 +128,16 @@
             <h3 id="breadcrumb" style="display:inline-block; margin-left: 15px;"></h3>
         </div>
 
-        <div id="v-cat" class="vista activa"><h2>Categorías</h2><div id="grid-cat" class="grid"></div></div>
+        <div id="v-cat" class="vista activa">
+            <h2>Categorías</h2>
+            <div id="leyenda-familias"></div>
+            <div id="grid-cat" class="grid"></div>
+        </div>
         <div id="v-art" class="vista"><div id="grid-art" class="grid"></div></div>
         <div id="v-dim" class="vista"><div id="grid-dim" class="grid"></div></div>
         <div id="v-pres" class="vista"><div id="grid-pres" class="grid"></div></div>
         <div id="v-mat" class="vista"><div id="grid-mat" class="grid"></div></div>
-        <div id="v-busqueda" class="vista"><h2>Resultados de Búsqueda</h2><div id="grid-busqueda" class="grid"></div></div>
+        <div id="v-busqueda" class="vista"><h2 id="tituloBusqueda">Resultados de Búsqueda</h2><div id="grid-busqueda" class="grid"></div></div>
 
         <div id="v-ficha" class="vista">
             <div class="ficha-box">
@@ -192,6 +250,307 @@
             { claves: ["CONCENTRICA EN10253-1"], texto: "No apta presion/tempetratura" }
         ];
 
+        // ============================================================
+        // FAMILIAS: ahora se trabaja con "categorias" EXACTAS (las que
+        // aparecen en el primer campo de articulos.txt) + se mantiene
+        // "claves" como red de seguridad para categorías nuevas.
+        //
+        // Para asignar una categoría a una familia, se comprueba:
+        //   1) coincidencia EXACTA con alguno de los nombres de "categorias"
+        //   2) si no, coincidencia por palabra completa con "claves"
+        // ============================================================
+        const FAMILIAS = [
+            {
+                nombre: "Tornillería",
+                categorias: [
+                    "TORNILLOS", "TUERCAS", "ARRANDELAS", "ARANDELAS",
+                    "ESPARRAGOS", "VARILLAS", "TIRAFONDOS", "ANCLAJES",
+                    "TACOS", "CLAVOS", "GRAPAS", "PASADORES", "REMACHES"
+                ],
+                claves: ["TORNILLO", "TUERCA", "ARRANDELA", "ARANDELA", "ESPARRAGO", "ESPÁRRAGO",
+                         "VARILLA", "TIRAFONDO", "TACO", "CLAVO", "GRAPA", "PASADOR", "REMACHE"],
+                fondo: "#fef3c7",
+                borde: "#f59e0b"
+            },
+            {
+                nombre: "Tubería y accesorios",
+                categorias: [
+                    "TUBERIA", "TUBERÍAS", "TUBOS", "CODOS", "TES", "REDUCCIONES",
+                    "BRIDAS", "CONTENEDORES", "MANGAS", "MANGUITOS", "ACOPLAMIENTOS",
+                    "UNIONES", "RACORES", "BOCAS DE HOMBRE", "CASQUILLOS", "TAPONES",
+                    "CONOS", "CURVAS", "PASAMUROS", "CONEXIONES TUBERIA",
+                    "CONEXIONES TUBERÍA",  "CRUCES", "CONTERAS",
+                    "JUNTAS", "ABRAZADERAS", "ABARCONES", "CAPS", "ELECTROSOLDABLES",
+                    "FIGURAS", "MANGUERAS", "PATINES", "POLIPROPILENO",
+                    "PRESSFITING", "PVC", "PVDF", "RAMIFICACIONES", "VALONAS", "LIRAS", "REDUCCIONES CONCENTRICAS", "REDUCCIONES EXCENTRICAS"
+                ],
+                claves: ["TUBERIA", "TUBERÍA", "TUBO", "CODO", "CODOS", "TE ", "TES",
+                         "REDUCCION", "REDUCCIÓN", "BRIDA", "BRIDAS", "CONTENER", "CONTENEDOR",
+                         "MANGA", "MANGUITO", "ACOPLAMIENTO", "UNION", "UNIÓN", "RACOR",
+                         "CASQUILLO", "TAPON", "TAPÓN", "CONO", "CURVA", "PASAMUROS",
+                         "CONEXIONES TUBERIA", "CONEXIONES TUBERÍA", 
+                         "CRUCES", "CONTERAS", "JUNTAS", "ABRAZADERA", "ABARCONES", "CAPS",
+                         "ELECTROSOLDABLES", "FIGURAS", "MANGUERAS", "PATINES",
+                         "POLIPROPILENO", "PRESSFITING", "PVC", "PVDF",
+                         "RAMIFICACIONES", "VALONAS", "LIRAS", "REDUCCIONES CONCENTRICAS", "REDUCCIONES EXCENTRICAS"],
+                fondo: "#dbeafe",
+                borde: "#3b82f6"
+            },
+            {
+                nombre: "Perfiles y chapa",
+                categorias: [
+                    "PERFILES", "PERFILES U", "PERFILES REDONDOS", "PERFILES ANGULARES", "PERFILES RECTANGULARES","PERFILES H","CHAPAS", "PLETINAS", "ANGULOS", "ÁNGULOS",
+                    "TUBO CUADRADO", "TUBO REDONDO", "TUBO RECTANGULAR","PERFILES CUADRADOS", "PERFILES MACIZOS CUADRADOS", "PERFILES MACIZOS REDONDOS",
+                    "REDONDOS", "CUADRADOS", "RECTANGULARES", "VIGAS",
+                    "IPN", "UPN", "HEB", "HEA"
+                ],
+                claves: ["PERFIL", "PERFILES U","PERFILES REDONDOS", "PERFILES RECTANGULARES", "CHAPA", "PLETINA", "ANGULO", "ÁNGULO","PERFILES H",
+                         "TUBO CUADRADO", "TUBO REDONDO", "TUBO RECTANGULAR", "PERFILES CUADRADOS","PERFILES MACIZOS CUADRADOS", "PERFILES MACIZOS REDONDOS",
+                         "REDONDO", "CUADRADO", "RECTANGULAR", "VIGA", "IPN", "UPN", "HEB", "HEA"],
+                fondo: "#dcfce7",
+                borde: "#22c55e"
+            },
+            {
+                nombre: "Válvulas y accesorios",
+                categorias: ["VALVULAS DE PURGA Y TRAMPAS", "VALVULAS SELENOIDES", "VALVULAS DE VACIO","VALVULAS DE MEMBRANA","VALVULAS DE GLOBO","VALVULAS DE BOLA","VALVULAS DE AGUJA", "VALVULAS DE ASIENTO", "RECAMBIO VALVULAS", 
+                    "VALVULAS", "VÁLVULAS", "BRIDAS VALVULA", "COMPENSADORES",
+                    "MIRILLAS", "BOLAS DE LIMPIEZA", "MARIPOSAS",
+                    "RETENCIONES", "DIAFRAGMAS",
+                    "VALVULAS DE SEGURIDAD", "VÁLVULAS DE SEGURIDAD",
+                    "VALVULA DE SEGURIDAD", "VÁLVULA DE SEGURIDAD",
+                    "REGULADORAS", "SOLENOIDES", "FILTROS"
+                ],
+                claves: ["VALVULAS DE PURGA Y TRAMPAS", "VALVULAS SELENOIDES", "VALVULAS DE VACIO","VALVULAS DE MEMBRANA","VALVULAS DE GLOBO","VALVULAS DE BOLA","VALVULAS DE AGUJA", "VALVULAS DE ASIENTO","RECAMBIO VALVULAS", "VALVULA", "VÁLVULA", "BRIDAS VALVULA", "COMPENSADORES",
+                         "MIRILLAS", "BOLAS DE LIMPIEZA", "MARIPOSA",
+                         "RETENCION", "RETENCIÓN", "DIAFRAGMA",
+                         "VALVULA DE SEGURIDAD", "VÁLVULA DE SEGURIDAD",
+                         "VALVULAS DE SEGURIDAD", "VÁLVULAS DE SEGURIDAD",
+                         "REGULADORA", "SOLENOIDE", "FILTRO", "FILTROS"],
+                fondo: "#ffe4e6",
+                borde: "#ef4444"
+            },
+            {
+                nombre: "Instrumentación",
+                categorias: [
+                    "MANOMETROS", "MANÓMETROS", "TERMOMETROS", "TERMÓMETROS",
+                    "PRESOSTATOS", "TERMOSTATOS", "CAUDALIMETROS", "CAUDALÍMETROS",
+                    "SENSORES", "SONDAS", "INSTRUMENTOS", "INSTRUMENTACION"
+                ],
+                claves: ["MANOMETRO", "MANÓMETRO", "TERMOMETRO", "TERMÓMETRO",
+                         "PRESOSTATO", "TERMOSTATO", "CAUDALIMETRO", "CAUDALÍMETRO",
+                         "SENSOR", "SONDA", "INSTRUMENT"],
+                fondo: "#f3e8ff",
+                borde: "#a855f7"
+            },
+            {
+                nombre: "Consumibles",
+                categorias: [
+                    "ELECTRODOS", "CORTE Y PULIDO", "SOLDADURA", "DISCOS",
+                    "CORTE", "PULIDO", "LIJAS", "ABRASIVOS", "BROCAS",
+                    "MACHOS", "TERRAJAS", "SIERRAS", "HOJAS", "PUNTAS",
+                    "BOCALES", "GAS", "GASES", "OXIGENO", "OXÍGENO",
+                    "ACETILENO", "ARGON", "ARGÓN", "CONSUMIBLES"
+                ],
+                claves: ["ELECTRODO", "CORTE Y PULIDO", "SOLDADURA", "DISCO",
+                         "CORTE", "PULIDO", "LIJA", "ABRASIVO", "BROCA", "MACHO",
+                         "TERRAJA", "SIERRA", "HOJA", "PUNTA", "BOCAL",
+                         "GAS", "GASES", "OXIGENO", "OXÍGENO", "ACETILENO",
+                         "ARGON", "ARGÓN", "ABRASIVOS", "CONSUMIBLES"],
+                fondo: "#ffedd5",
+                borde: "#f97316"
+            },
+            {
+                nombre: "Fijaciones y anclajes",
+                categorias: [
+                    "BISAGRAS", "POMOS Y MANETAS", "MUELLES",
+                    "ELEMENTOS DE CARGA Y NIVELACION", "CIERRES",
+                    "CABLES", "ESLINGAS", "CINCHAS", "GANCHOS",
+                    "MOSQUETONES", "MOSQUETON"
+                ],
+                claves: ["BISAGRA", "POMOS Y MANETAS", "MUELLE",
+                         "ELEMENTOS DE CARGA Y NIVELACION", "CIERRE",
+                         "CABLE", "ESLINGA", "CINCHA", "GANCHO",
+                         "MOSQUETON", "MOSQUETÓN"],
+                fondo: "#cffafe",
+                borde: "#06b6d4"
+            },
+            {
+                nombre: "Herramientas",
+                categorias: [
+                    "HERRAMIENTAS", "MAQUINAS", "LASER", "ESCALERAS",
+                    "EXTRACCION HUMOS", "LLAVES", "DESTORNILLADORES",
+                    "MARTILLOS", "ALICATES", "TENAZAS", "TALADROS",
+                    "AMOLADORAS", "RADIALES", "SOPLETES", "SOLDADORES"
+                ],
+                claves: ["HERRAMIENTA", "MAQUINA", "LASER", "ESCALERA",
+                         "EXTRACCION HUMOS", "LLAVE", "DESTORNILLADOR", "MARTILLO",
+                         "ALICATE", "TENAZA", "TALADRO", "AMOLADORA", "RADIAL",
+                         "SOPLETE", "SOLDADOR"],
+                fondo: "#e0e7ff",
+                borde: "#6366f1"
+            },
+            {
+                nombre: "EPIs y seguridad",
+                categorias: [
+                    "EPIS Y SEGURIDAD", "EPIS", "CASCOS", "GUANTES", "BOTAS",
+                    "GAFAS", "PANTALLAS", "MASCARILLAS", "ARNESES", "ARNÉS",
+                    "PROTECCION", "PROTECCIÓN"
+                ],
+                claves: ["EPIS Y SEGURIDAD", "EPI", "EPIS", "CASCO", "GUANTE",
+                         "BOTA", "GAFAS", "PANTALLA", "MASCARILLA", "ARNES",
+                         "ARNÉS", "PROTECCION", "PROTECCIÓN"],
+                fondo: "#fef9c3",
+                borde: "#eab308"
+            },
+            {
+                nombre: "Neumática",
+                categorias: [
+                    "NEUMATICA", "NEUMÁTICA", "PISTONES", "PISTONES",
+                    "CILINDROS", "ELECTROVALVULAS", "ELECTROVÁLVULAS"
+                ],
+                claves: ["NEUMATICA", "NEUMÁTICA", "PISTON", "PISTÓN", "CILINDRO",
+                         "ELECTROVALVULA", "ELECTROVÁLVULA"],
+                fondo: "#ccfbf1",
+                borde: "#14b8a6"
+            },
+            {
+                nombre: "Electricidad",
+                categorias: [
+                    "ELECTRICIDAD", "ELECTRICOS", "ELÉCTRICOS",
+                    "CABLE ELECTRICO", "CUADROS", "MAGNETOTERMICOS",
+                    "MAGNETOTÉRMICOS", "DIFERENCIALES", "CONTACTORES",
+                    "RELES", "RELÉS", "PULSADORES", "PILOTOS", "BORNERAS"
+                ],
+                claves: ["ELECTRICIDAD", "ELECTRICO", "ELÉCTRICO",
+                         "CABLE ELECTRICO", "CUADRO", "MAGNETOTERMICO",
+                         "MAGNETOTÉRMICO", "DIFERENCIAL", "CONTACTOR",
+                         "RELE", "RELÉ", "PULSADOR", "PILOTO", "BORNERA"],
+                fondo: "#EEC2F7",
+                borde: "#831599"
+            },
+            {
+                nombre: "Automóvil / taller",
+                categorias: [
+                    "AUTOMOVIL", "AUTOMÓVIL", "COCHE", "TALLER",
+                    "MOTOR", "ACEITE", "BUJIAS", "BUJÍAS"
+                ],
+                claves: ["AUTOMOVIL", "AUTOMÓVIL", "COCHE", "TALLER",
+                         "MOTOR", "ACEITE", "BUJIA", "BUJÍA"],
+                fondo: "#e2e8f0",
+                borde: "#64748b"
+            },
+            {
+                nombre: "Drogueria",
+                categorias: [
+                    "CINTAS Y ADHESIVOS", "MARCADORES", "DROGUERIA", "DROGUERÍA",
+                    "AEROSOLES"
+                ],
+                claves: ["CINTAS Y ADHESIVOS", "MARCADOR", "DROGUERIA", "DROGUERÍA",
+                         "AEROSOL"],
+                fondo: "#F1A99A",
+                borde: "#C0361A"
+            },
+            {
+                nombre: "Recambio maquina",
+                categorias: [
+                    "RECAMBIO SOLDADURA", "RECAMBIOS GASES", "RECAMBIOS SOLDADURA", "RECAMBIO MAQUINA", "RECAMBIOS PLASMA",
+                    "RECAMBIOS MAQUINA", "RECAMBIO PLASMA"
+                ],
+                claves: ["RECAMBIO SOLDADURA", "RECAMBIOS GASES", "RECAMBIOS SOLDADURA", "RECAMBIO MAQUINA", "RECAMBIOS PLASMA",
+                         "RECAMBIOS MAQUINA", "RECAMBIO PLASMA"],
+                fondo: "#C2F7F5",
+                borde: "#159995"
+            },
+			{
+                nombre: "Mecanizados",
+                categorias: [
+                    "MECANIZADOS"
+                ],
+                claves: ["MECANIZADOS"],
+                fondo: "#DFD7E0",
+                borde: "#A189A4"
+            }
+        ];
+
+        // ============================================================
+        // Normalizar texto: mayúsculas, sin tildes, separadores → espacio
+        // ============================================================
+        function normalizar(txt) {
+            return String(txt || '')
+                .toUpperCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar tildes
+                .replace(/[-_/,.]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        // ============================================================
+        // OBTENER FAMILIA
+        // 1) Primero coincidencia EXACTA con categorías declaradas
+        // 2) Si no, coincidencia por palabra completa con claves
+        // ============================================================
+        function obtenerFamilia(texto) {
+            if (!texto) return null;
+            const t = normalizar(texto);
+
+            // PASO 1: coincidencia exacta con "categorias"
+            for (const fam of FAMILIAS) {
+                if (!fam.categorias) continue;
+                for (const cat of fam.categorias) {
+                    if (normalizar(cat) === t) return fam;
+                }
+            }
+
+            // PASO 2: respaldo por claves (palabra completa, prioriza las más largas)
+            const todasClaves = [];
+            FAMILIAS.forEach(fam => {
+                (fam.claves || []).forEach(clave => {
+                    const k = ' ' + normalizar(clave) + ' ';
+                    todasClaves.push({ fam, clave: k });
+                });
+            });
+            todasClaves.sort((a, b) => b.clave.length - a.clave.length);
+            const tEsp = ' ' + t + ' ';
+            for (const item of todasClaves) {
+                if (tEsp.includes(item.clave)) return item.fam;
+            }
+            return null;
+        }
+
+        // Devuelve el style inline de color
+        function estiloFamilia(texto) {
+            const fam = obtenerFamilia(texto);
+            if (!fam) return '';
+            return `style="background:${fam.fondo}; border-color:${fam.borde};"`;
+        }
+
+        // ============================================================
+        // COMPROBAR SI UNA CATEGORÍA PERTENECE A UNA FAMILIA
+        // Misma lógica que obtenerFamilia, pero restringido a UNA familia
+        // ============================================================
+        function categoriaPerteneceAFamilia(cat, fam) {
+            const t = normalizar(cat);
+
+            // 1) Coincidencia exacta con las categorías declaradas
+            if (fam.categorias) {
+                for (const c of fam.categorias) {
+                    if (normalizar(c) === t) return true;
+                }
+            }
+
+            // 2) Respaldo por claves (palabra completa)
+            if (fam.claves) {
+                const claves = fam.claves
+                    .map(c => ' ' + normalizar(c) + ' ')
+                    .sort((a, b) => b.length - a.length);
+                const tEsp = ' ' + t + ' ';
+                for (const k of claves) {
+                    if (tEsp.includes(k)) return true;
+                }
+            }
+            return false;
+        }
+
         let baseDatos = [];
         let dbTecnica = {};
         let historialNavegacion = [];
@@ -220,20 +579,18 @@
                 cargarMiLista();
             });
 
-           await cargarBaseDatos();
-await cargarDatosTecnicos();
+            await cargarBaseDatos();
+            await cargarDatosTecnicos();
 
-// Si viene ?ref=MENxxxxx, carga directo esa ficha; si no, muestra categorías
-const cargadoPorRef = cargarDesdeRefSiExiste();
-if (!cargadoPorRef) {
-    iniciarCategorias();
-}
+            const cargadoPorRef = cargarDesdeRefSiExiste();
+            if (!cargadoPorRef) {
+                iniciarCategorias();
+            }
 
             const params = new URLSearchParams(location.search);
             if (params.get('operario')) sessionStorage.setItem('operarioNombre', params.get('operario'));
             if (params.get('obra'))     sessionStorage.setItem('operarioObra',    params.get('obra'));
 
-            // Actualizar inputs si vienen por URL
             if (params.get('operario')) document.getElementById('nombreUsuario').value = params.get('operario');
             if (params.get('obra'))     document.getElementById('obraUsuario').value   = params.get('obra');
 
@@ -245,12 +602,9 @@ if (!cargadoPorRef) {
 
             await cargarMiLista();
 
-            // ------------------------------------------------------------
-            // SCROLL AL FINAL si venimos desde bridas.html con scrollToBottom=1
-            // ------------------------------------------------------------
             if (params.get('scrollToBottom') === '1') {
                 let intentos = 0;
-                const maxIntentos = 15; // 15 × 300 ms = 4.5 s
+                const maxIntentos = 15;
                 const intervalo = setInterval(() => {
                     intentos++;
                     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
@@ -321,54 +675,43 @@ if (!cargadoPorRef) {
                 }
             } catch (e) { console.warn("⚠️ Datos.txt no cargado"); }
         }
-// ============================================================
-// Si la URL trae ?ref=MENxxxxx, carga directamente esa ficha
-// (viene desde bridas.html al pulsar "Pedir tornillo/tuerca")
-// ============================================================
-function cargarDesdeRefSiExiste() {
-    const params = new URLSearchParams(location.search);
-    const ref = params.get('ref');
-    if (!ref) return false;  // sin ref → arranque normal
 
-    console.log('🔍 Buscando REF:', ref);
+        function cargarDesdeRefSiExiste() {
+            const params = new URLSearchParams(location.search);
+            const ref = params.get('ref');
+            if (!ref) return false;
 
-    // Buscar en baseDatos por la REF exacta
-    const articulo = baseDatos.find(x => String(x.ref).trim() === String(ref).trim());
+            console.log('🔍 Buscando REF:', ref);
+            const articulo = baseDatos.find(x => String(x.ref).trim() === String(ref).trim());
+            if (!articulo) {
+                console.warn('❌ REF no encontrada:', ref);
+                alert('No se encontró la referencia ' + ref + ' en la base de artículos.');
+                return false;
+            }
 
-    if (!articulo) {
-        console.warn('❌ REF no encontrada:', ref);
-        alert('No se encontró la referencia ' + ref + ' en la base de artículos.');
-        return false;
-    }
+            console.log('✓ Encontrado:', articulo);
+            const op = params.get('operario');
+            const obra = params.get('obra');
+            if (op) {
+                sessionStorage.setItem('operarioNombre', op);
+                document.getElementById('nombreUsuario').value = op;
+            }
+            if (obra) {
+                sessionStorage.setItem('operarioObra', obra);
+                document.getElementById('obraUsuario').value = obra;
+            }
+            cargarFicha(articulo.ref);
 
-    console.log('✓ Encontrado:', articulo);
+            const fichaBox = document.querySelector('#v-ficha .ficha-box');
+            if (fichaBox) {
+                const aviso = document.createElement('div');
+                aviso.style.cssText = 'background:#fef9c3; border:1px solid #facc15; color:#854d0e; padding:10px 14px; border-radius:6px; margin-bottom:14px; text-align:center; font-weight:bold; font-size:13px;';
+                aviso.innerHTML = '🔩 Este artículo se ha pedido desde la calculadora de bridas. Comprueba la cantidad y añádelo a tu lista.';
+                fichaBox.insertBefore(aviso, fichaBox.firstChild);
+            }
+            return true;
+        }
 
-    // Sincronizar operario/OT
-    const op = params.get('operario');
-    const obra = params.get('obra');
-    if (op) {
-        sessionStorage.setItem('operarioNombre', op);
-        document.getElementById('nombreUsuario').value = op;
-    }
-    if (obra) {
-        sessionStorage.setItem('operarioObra', obra);
-        document.getElementById('obraUsuario').value = obra;
-    }
-
-    // Cargar la ficha
-    cargarFicha(articulo.ref);
-
-    // Aviso amarillo
-    const fichaBox = document.querySelector('#v-ficha .ficha-box');
-    if (fichaBox) {
-        const aviso = document.createElement('div');
-        aviso.style.cssText = 'background:#fef9c3; border:1px solid #facc15; color:#854d0e; padding:10px 14px; border-radius:6px; margin-bottom:14px; text-align:center; font-weight:bold; font-size:13px;';
-        aviso.innerHTML = '🔩 Este artículo se ha pedido desde la calculadora de bridas. Comprueba la cantidad y añádelo a tu lista.';
-        fichaBox.insertBefore(aviso, fichaBox.firstChild);
-    }
-
-    return true;
-}
         function cambiarVista(idVista, titulo) {
             document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
             const obj = document.getElementById(idVista);
@@ -420,6 +763,8 @@ function cargarDesdeRefSiExiste() {
                 }
 
                 cambiarVista('v-busqueda', `Búsqueda: "${query}" (${articulosUnicos.length} artículos)`);
+                document.getElementById('tituloBusqueda').innerText = `Búsqueda: "${query}" (${articulosUnicos.length} artículos)`;
+
                 if (articulosUnicos.length === 0) {
                     grid.innerHTML = '<p style="grid-column: 1/-1; color:#64748b;">No se encontraron artículos.</p>';
                     return;
@@ -449,7 +794,49 @@ function cargarDesdeRefSiExiste() {
             const grid = document.getElementById('grid-cat');
             let html = '';
             cats.forEach(c => {
-                html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(c)}', () => pasoArticulos('${escapeQuotes(c)}'))">
+                html += `<div class="tarjeta" ${estiloFamilia(c)} onclick="gestionarClick(event, '${escapeQuotes(c)}', () => pasoArticulos('${escapeQuotes(c)}'))">
+                    ${crearBadgeHTML(c)}<div>${c}</div>
+                </div>`;
+            });
+            grid.innerHTML = html;
+
+            const leyenda = document.getElementById('leyenda-familias');
+            if (leyenda) {
+                let lh = '';
+                FAMILIAS.forEach((f, i) => {
+                    lh += `<span class="chip-familia"
+                        style="background:${f.fondo}; border:1px solid ${f.borde}; cursor:pointer;"
+                        onclick="filtrarPorFamilia(${i})"
+                        title="Ver categorías de: ${f.nombre}">
+                        ${f.nombre}
+                    </span>`;
+                });
+                leyenda.innerHTML = lh;
+            }
+        }
+
+        function filtrarPorFamilia(indice) {
+            const fam = FAMILIAS[indice];
+            if (!fam) return;
+
+            const todasLasCats = [...new Set(baseDatos.map(x => x.cat))];
+            const catsFiltradas = todasLasCats.filter(cat => categoriaPerteneceAFamilia(cat, fam));
+
+            historialNavegacion.push(() => iniciarCategorias());
+
+            const titulo = `${fam.nombre} (${catsFiltradas.length} categorías)`;
+            cambiarVista('v-busqueda', titulo);
+            document.getElementById('tituloBusqueda').innerText = titulo;
+
+            const grid = document.getElementById('grid-busqueda');
+            if (catsFiltradas.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; color:#64748b;">No hay categorías en la familia "${fam.nombre}".</p>`;
+                return;
+            }
+
+            let html = '';
+            catsFiltradas.forEach(c => {
+                html += `<div class="tarjeta" ${estiloFamilia(c)} onclick="gestionarClick(event, '${escapeQuotes(c)}', () => pasoArticulos('${escapeQuotes(c)}'))">
                     ${crearBadgeHTML(c)}<div>${c}</div>
                 </div>`;
             });
@@ -815,11 +1202,6 @@ function cargarDesdeRefSiExiste() {
             cargarMiLista();
         }
 
-        // ============================================================
-        // NUEVA OT — CORREGIDO: dispara el evento 'input' para que
-        // el sessionStorage se actualice y los siguientes materiales
-        // se guarden en la OT nueva (no en la anterior)
-        // ============================================================
         function nuevaOT() {
             const actual = obtenerObraActiva() || '';
             const nueva = prompt(`Introduce el Nº de la nueva OT:\n\n(OT actual: ${actual || 'ninguna'})`, '');
@@ -830,11 +1212,8 @@ function cargarDesdeRefSiExiste() {
             const inputObra = document.getElementById('obraUsuario');
             inputObra.value = limpia;
 
-            // 🔑 Disparar 'input' para ejecutar el listener que actualiza
-            // sessionStorage y recarga la lista
             inputObra.dispatchEvent(new Event('input', { bubbles: true }));
 
-            // Feedback visual
             const msg = document.createElement('div');
             msg.textContent = `✅ OT activa cambiada a: ${limpia}`;
             msg.style.cssText = `
@@ -968,9 +1347,6 @@ function cargarDesdeRefSiExiste() {
             return str ? str.replace(/'/g, "\\'") : '';
         }
 
-        // =====================================================
-        // RECEPTOR DE MENSAJES DESDE bridas.html
-        // =====================================================
         window.addEventListener('message', async (event) => {
             if (!event.data || event.data.type !== 'INSERT_LINEAS') return;
 
@@ -1004,12 +1380,11 @@ function cargarDesdeRefSiExiste() {
                 if (typeof cargarMiLista === 'function') cargarMiLista();
             }
         });
-		window.addEventListener('pageshow', function (event) {
-  if (event.persisted) {
-    // La página vino del "back-forward cache" del navegador
-    window.location.reload();
-  }
-});
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
     </script>
 
 </body>
