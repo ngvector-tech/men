@@ -108,7 +108,7 @@
             text-transform: uppercase; letter-spacing: 0.5px;
         }
         .modal-caja .modal-sub {
-            font-size: 14px; color: EB2E13; margin-bottom: 10px;
+            font-size: 14px; color: #EB2E13; margin-bottom: 10px;
             padding-bottom: 6px; border-bottom: 1px solid #e2e8f0;
             word-break: break-word;
         }
@@ -180,21 +180,21 @@
         /* ============ BOTÓN NO LO ENCUENTRO (INTEGRADO) ============ */
         #btnNoEncuentro {
             background: #C3C6C6;
-            color: 27E7F5;
+            color: #27E7F5; /* Corregido: añadido # */
             border: none;
             border-radius: 6px;
             padding: 6px 12px;
             font-size: 12px;
             font-weight: bold;
             cursor: pointer;
-            /*box-shadow: 0 2px 6px rgba(220,38,38,0.3);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             gap: 6px;
             transition: transform 0.15s ease, background 0.15s ease;
             white-space: nowrap;
-        }
-        #btnNoEncuentro:hover { background: #b91c1c; transform: scale(1.03); }
+        } /* Corregido: añadida llave de cierre */
+        #btnNoEncuentro:hover { background: #a1a4a4; transform: scale(1.03); }
         #btnNoEncuentro:active { transform: scale(0.97); }
 
         /* ============ BARRA DE NAVEGACIÓN ============ */
@@ -423,11 +423,6 @@
             { valor: "Lata",       etiqueta: "Lata" },
             { valor: "Litros",      etiqueta: "Litros" },
             { valor: "Paquete",     etiqueta: "Paquete" }
-<<<<<<< HEAD
-=======
-            
-            
->>>>>>> 592137c5e14e19b0e5697f8b34fd67cdc14c03b6
         ];
 
         // Palabras que activan el bloque PLANCHA/CHAPA
