@@ -62,7 +62,7 @@
         .item-lista span { flex: 1; }
         .notif-flotante { display: none; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 6px 10px; border-radius: 5px; margin-top: 8px; font-weight: bold; text-align: center; font-size: 11px; }
 
-        .caja-cabecera { background: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px; max-width: 520px; margin-left: auto; margin-right: auto; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; }
+        .caja-cabecera { background: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px; max-width: 700px; margin-left: auto; margin-right: auto; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; }
         .caja-cabecera label { font-size: 12px; }
         .caja-cabecera input { padding: 5px 8px; margin-left: 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 12px; box-sizing: border-box; }
         .caja-cabecera input#nombreUsuario { width: 150px; }
@@ -108,7 +108,7 @@
             text-transform: uppercase; letter-spacing: 0.5px;
         }
         .modal-caja .modal-sub {
-            font-size: 10px; color: #64748b; margin-bottom: 10px;
+            font-size: 14px; color: EB2E13; margin-bottom: 10px;
             padding-bottom: 6px; border-bottom: 1px solid #e2e8f0;
             word-break: break-word;
         }
@@ -176,6 +176,44 @@
 
         /* Panel lista oculto */
         .box-lista.oculto { display: none; }
+
+        /* ============ BOTÓN NO LO ENCUENTRO (INTEGRADO) ============ */
+        #btnNoEncuentro {
+            background: #C3C6C6;
+            color: 27E7F5;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            /*box-shadow: 0 2px 6px rgba(220,38,38,0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.15s ease, background 0.15s ease;
+            white-space: nowrap;
+        }
+        #btnNoEncuentro:hover { background: #b91c1c; transform: scale(1.03); }
+        #btnNoEncuentro:active { transform: scale(0.97); }
+
+        /* ============ BARRA DE NAVEGACIÓN ============ */
+        #nav {
+            display: none;
+            margin-bottom: 12px;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        #nav.activa {
+            display: flex;
+        }
+        #nav h3 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0f172a;
+        }
     </style>
 </head>
 <body>
@@ -186,7 +224,11 @@
 
         <div id="globoNorma" class="globo-info"></div>
 
+        <!-- CAJA CABECERA MODIFICADA: Botón a la izquierda de los inputs -->
         <div class="caja-cabecera">
+            <button id="btnNoEncuentro" onclick="abrirModalNoEncuentro()">
+                No encuentro el articulo ❓ 
+            </button>
             <div>
                 <label><strong>Nombre del Operario:</strong></label>
                 <input type="text" id="nombreUsuario" placeholder="Introduce tu nombre...">
@@ -201,10 +243,10 @@
             <input type="text" id="inputBuscador" placeholder="🔍 Buscar por artículo, categoría o referencia..." oninput="buscarArticulos()">
         </div>
 
-        <div id="nav" style="display:none; margin-bottom: 12px;">
+        <div id="nav">
             <button class="btn btn-sec" onclick="atras()">⬅ Paso Atrás</button>
             <button class="btn" onclick="irInicio()">🏠 Inicio</button>
-            <h3 id="breadcrumb" style="display:inline-block; margin-left: 12px; font-size: 13px;"></h3>
+            <h3 id="breadcrumb"></h3>
         </div>
 
         <div id="v-cat" class="vista activa">
@@ -333,6 +375,28 @@
         </div>
     </div>
 
+    <!-- ================= MODAL NO LO ENCUENTRO ================= -->
+    <div id="modalNoEncuentro" class="modal-overlay">
+        <div class="modal-caja">
+            <h3>No encuentro el articulo❓</h3>
+            <div class="modal-sub">Descríbelo con la máxima precisión posible</div>
+
+            <label for="noEncDescripcion">Descripción:</label>
+            <input type="text" id="noEncDescripcion" placeholder="Ej: Codo inox 90º 2 pulgadas..." autocomplete="off">
+
+            <label for="noEncCantidad">Cantidad:</label>
+            <input type="number" id="noEncCantidad" value="1" min="1" step="1">
+
+            <label for="noEncTipo">Tipo / Unidad:</label>
+            <select id="noEncTipo"></select>
+
+            <div class="modal-botones">
+                <button class="modal-btn-cancelar" onclick="cerrarModalNoEncuentro()">Cancelar</button>
+                <button class="modal-btn-confirmar" id="noEncBtnConfirmar" onclick="confirmarNoEncuentro()">Añadir a Lista</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============ CONFIG SUPABASE ============
         const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
@@ -347,14 +411,18 @@
         // ⚙️ CONFIGURACIÓN DEL MODAL — EDITA AQUÍ TUS OPCIONES
         const OPCIONES_MODAL = [
             { valor: "",            etiqueta: "— Selecciona una opción —" },
+            { valor: "Unidades",    etiqueta: "Unidades" },
+            { valor: "mm",          etiqueta: "mm" },
             { valor: "Barra",       etiqueta: "Barra" },
             { valor: "Bolsa",       etiqueta: "Bolsa" },
+            { valor: "Bote",       etiqueta: "Bote" },
+            { valor: "Botella",       etiqueta: "Botella" },
             { valor: "Caja",        etiqueta: "Caja" },
+            { valor: "Garrafa",        etiqueta: "Garrafa" },
             { valor: "Kilos",       etiqueta: "Kilos" },
+            { valor: "Lata",       etiqueta: "Lata" },
             { valor: "Litros",      etiqueta: "Litros" },
-            { valor: "mm",          etiqueta: "mm" },
-            { valor: "Paquete",     etiqueta: "Paquete" },
-            { valor: "Unidades",    etiqueta: "Unidades" }
+            { valor: "Paquete",     etiqueta: "Paquete" }
         ];
 
         // Palabras que activan el bloque PLANCHA/CHAPA
@@ -527,6 +595,8 @@
                 if (ev.key === 'Escape') {
                     const m = document.getElementById('modalAnadir');
                     if (m && m.classList.contains('activo')) cerrarModalAnadir();
+                    const m2 = document.getElementById('modalNoEncuentro');
+                    if (m2 && m2.classList.contains('activo')) cerrarModalNoEncuentro();
                 }
             });
 
@@ -568,6 +638,17 @@
                 opt.textContent = o.etiqueta;
                 sel.appendChild(opt);
             });
+            const selNoEnc = document.getElementById('noEncTipo');
+            if (selNoEnc) {
+                selNoEnc.innerHTML = '';
+                OPCIONES_MODAL.forEach(o => {
+                    const opt = document.createElement('option');
+                    opt.value = o.valor;
+                    opt.textContent = o.etiqueta;
+                    selNoEnc.appendChild(opt);
+                });
+                selNoEnc.selectedIndex = 1; // seleccionar "Barra" o el primero útil
+            }
         }
 
         function esArticuloPlanchaOChapa(art) {
@@ -687,6 +768,57 @@
             cargarMiLista();
         }
 
+        // ====== MODAL NO LO ENCUENTRO ======
+        function abrirModalNoEncuentro() {
+            const nombre = document.getElementById('nombreUsuario').value.trim();
+            const obra = document.getElementById('obraUsuario').value.trim();
+            if (!nombre) { alert("Introduce tu nombre antes de continuar."); return; }
+            if (!obra) { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de continuar."); return; }
+
+            document.getElementById('noEncDescripcion').value = '';
+            document.getElementById('noEncCantidad').value = 1;
+            document.getElementById('noEncTipo').selectedIndex = 1; // por defecto Barra
+            document.getElementById('modalNoEncuentro').classList.add('activo');
+            setTimeout(() => document.getElementById('noEncDescripcion').focus(), 50);
+        }
+
+        function cerrarModalNoEncuentro() {
+            document.getElementById('modalNoEncuentro').classList.remove('activo');
+        }
+
+        async function confirmarNoEncuentro() {
+            const nombre = document.getElementById('nombreUsuario').value.trim();
+            const obra = document.getElementById('obraUsuario').value.trim();
+            const desc = document.getElementById('noEncDescripcion').value.trim();
+            const cant = parseInt(document.getElementById('noEncCantidad').value) || 1;
+            const tipo = document.getElementById('noEncTipo').value;
+            const etiquetaTipo = OPCIONES_MODAL.find(o => o.valor === tipo)?.etiqueta || tipo;
+
+            if (!nombre || !obra) { alert("Falta el nombre o la OT. Rellénalos primero."); cerrarModalNoEncuentro(); return; }
+            if (!desc) { alert("Escribe una descripción lo más precisa posible."); return; }
+            if (cant < 1) { alert("La cantidad debe ser 1 o más."); return; }
+            if (!tipo) { alert("Selecciona el tipo (Bolsa, Kilos, etc.)."); return; }
+
+            // Construir línea: [Solicitud] Descripción — Tipo
+            const linea = `[Solicitud] ${desc} — ${etiquetaTipo}`;
+
+            const { error } = await _supabase.from('pedidos').insert([{
+                operario: nombre,
+                obra: obra,
+                referencia: '', // <--- CORREGIDO: Enviar cadena vacía en lugar de null para evitar error NOT NULL
+                detalle_linea: linea,
+                cantidad: cant
+            }]);
+
+            if (error) {
+                alert("Error al añadir: " + error.message);
+                return;
+            }
+
+            cerrarModalNoEncuentro();
+            cargarMiLista();
+        }
+
         // ====== resto de la lógica ======
 
         function obtenerTextoNorma(texto) {
@@ -784,7 +916,13 @@
             const obj = document.getElementById(idVista);
             if (obj) obj.classList.add('activa');
             const nav = document.getElementById('nav');
-            if (nav) nav.style.display = idVista === 'v-cat' ? 'none' : 'block';
+            if (nav) {
+                if (idVista === 'v-cat') {
+                    nav.classList.remove('activa');
+                } else {
+                    nav.classList.add('activa');
+                }
+            }
             const bc = document.getElementById('breadcrumb');
             if (bc) bc.innerText = titulo || '';
         }
@@ -1249,7 +1387,8 @@
                     // Quitar los paréntesis del detalle
                     detalleSinUnidad = detalleSinUnidad.replace(/\s*\(([^)]*)\)/g, ' $1');
 
-                    const refHTML = p.referencia
+                    // CORREGIDO: Si la referencia está vacía, mostrar solo el detalle
+                    const refHTML = (p.referencia && p.referencia.trim() !== '')
                         ? `<strong style="color:#dc2626;">${p.referencia}</strong> — ${detalleSinUnidad}`
                         : `<span style="color:#dc2626; font-weight:bold;">${detalleSinUnidad}</span>`;
 
