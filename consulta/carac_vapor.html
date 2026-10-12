@@ -10,54 +10,54 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 24px 16px 60px;
+    padding: 16px 11px 40px;
     color: #222;
   }
   .container {
-    max-width: 720px;
+    max-width: 480px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
   }
   h1 {
     text-align: center;
-    font-size: 22px;
+    font-size: 15px;
     background: #111;
     color: #fff;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin: 0 0 18px;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 12px;
   }
   .legend {
-    font-size: 13px;
+    font-size: 9px;
     line-height: 1.5;
     color: #333;
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 20px;
+    border-radius: 4px;
+    padding: 7px 9px;
+    margin-bottom: 13px;
   }
   .legend b { color: #111; }
-  .field { margin-bottom: 16px; }
+  .field { margin-bottom: 11px; }
   .field label {
     display: block;
-    font-size: 13px;
+    font-size: 9px;
     font-weight: 600;
     color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
   }
-  select, input[type="text"] {
+  input[type="number"] {
     width: 100%;
-    padding: 9px 10px;
-    font-size: 15px;
+    padding: 6px 7px;
+    font-size: 10px;
     border: 1px solid #c7ccd1;
-    border-radius: 6px;
+    border-radius: 4px;
     background: #fff;
   }
-  select:focus, input:focus {
+  input[type="number"]:focus {
     outline: none;
     border-color: #4a90d9;
   }
@@ -65,68 +65,75 @@
     background: #111;
     color: #fff;
     border: none;
-    padding: 10px 18px;
-    font-size: 14px;
+    padding: 7px 12px;
+    font-size: 9px;
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-top: 12px;
+    margin-top: 8px;
     width: 100%;
     transition: background 0.2s;
   }
   #btnLimpiar:hover { background: #333; }
-  #results { margin-top: 22px; }
+  #results { margin-top: 15px; }
   .result-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 16px;
+    gap: 7px 11px;
     background: #f9fafb;
     border: 1px solid #e2e6ea;
-    border-radius: 8px;
-    padding: 16px 18px;
-    margin-top: 8px;
+    border-radius: 5px;
+    padding: 11px 12px;
+    margin-top: 5px;
   }
   .result-item {
     display: flex;
     flex-direction: column;
-    padding: 8px 10px;
+    padding: 5px 7px;
     background: #fff;
-    border-radius: 6px;
+    border-radius: 4px;
     border: 1px solid #eef0f2;
   }
   .result-item .label {
-    font-size: 11px;
+    font-size: 7px;
     text-transform: uppercase;
     letter-spacing: 0.4px;
     color: #888;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
   .result-item .value {
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 700;
     color: #111;
   }
   .result-item .unit {
-    font-size: 12px;
+    font-size: 8px;
     font-weight: 400;
     color: #666;
-    margin-left: 4px;
+    margin-left: 3px;
   }
   .no-results {
     text-align: center;
     color: #888;
-    font-size: 14px;
-    padding: 20px 0;
+    font-size: 9px;
+    padding: 13px 0;
   }
   .presion-destacada {
     background: #e8f0fe;
     border: 1px solid #c6d9f7;
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 12px;
-    font-size: 14px;
+    border-radius: 4px;
+    padding: 7px 9px;
+    margin-bottom: 8px;
+    font-size: 9px;
     font-weight: 600;
     color: #1a3b6e;
+  }
+  .presion-destacada .aviso {
+    display: block;
+    color: #6b7a99;
+    font-weight: 400;
+    font-size: 8px;
+    margin-top: 2px;
   }
   @media (max-width: 480px) {
     .result-card { grid-template-columns: 1fr; }
@@ -138,14 +145,12 @@
   <h1>Propiedades del Vapor por Presión</h1>
 
   <div class="legend">
-    <b>Instrucciones:</b> Seleccione una presión manométrica (bar) para consultar las propiedades termodinámicas del vapor saturado: temperatura, calor sensible, calor latente, calor total, volumen específico y densidad.
+    <b>Instrucciones:</b> Escribe una presión manométrica en bar. El sistema buscará el valor más cercano de la tabla y mostrará temperatura, calor sensible, calor latente, calor total, volumen específico y densidad del vapor saturado.
   </div>
 
   <div class="field">
-    <label for="presionSelect">Presión Manométrica (bar)</label>
-    <select id="presionSelect">
-      <option value="">— Seleccione una presión —</option>
-    </select>
+    <label for="presionInput">Presión Manométrica (bar)</label>
+    <input type="number" id="presionInput" placeholder="Ej: 3.5, 12, 30..." step="any" min="-1" max="50">
   </div>
 
   <button type="button" id="btnLimpiar">Nueva consulta</button>
@@ -154,17 +159,6 @@
 </div>
 
 <script>
-/* ============================================================
-   DATOS EXTRAÍDOS DEL XML (vapor.xml)
-   Columnas:
-   f1 = Presión Manométrica (bar)
-   f2 = Temperatura del vapor (ºC)
-   f3 = Calor Sensible (kcal/kg)
-   f4 = Calor Latente (kcal/kg)
-   f5 = Calor Total (kcal/kg)
-   f6 = Volumen Específico (m³/kg)
-   f7 = Densidad del vapor (kg/m³)
-   ============================================================ */
 const VAPOR_DATA = [
 ["-1","11,16","11,17","591,06","602,23","98,98","0,01"],
 ["-0,95","37,15","37,15","576,36","613,50","22,60","0,04"],
@@ -399,71 +393,98 @@ const VAPOR_DATA = [
 ["50","265,26","277,20","389,91","667,11","0,04","25,91"]
 ];
 
-// ============================================================
-// INICIALIZACIÓN
-// ============================================================
-const presionSelect = document.getElementById('presionSelect');
+const presionInput = document.getElementById('presionInput');
 const resultsDiv = document.getElementById('results');
 const btnLimpiar = document.getElementById('btnLimpiar');
 
-// Llenar el <select> con las presiones disponibles
-VAPOR_DATA.forEach((row, idx) => {
-  const opt = document.createElement('option');
-  opt.value = idx;
-  opt.textContent = row[0] + ' bar';
-  presionSelect.appendChild(opt);
-});
+// Convierte una cadena tipo "3,5" en número 3.5
+function aNumero(str) {
+  if (str === null || str === undefined) return NaN;
+  return parseFloat(String(str).replace(",", "."));
+}
 
-// Formatear número: reemplazar punto por coma y limitar decimales
+// Formatear número con coma decimal
 function formatear(valor, decimales = 2) {
-   if (valor === undefined || valor === null || valor === "") return "—";
+  if (valor === undefined || valor === null || valor === "") return "—";
   const num = parseFloat(String(valor).replace(",", "."));
   if (isNaN(num)) return valor;
   return num.toFixed(decimales).replace(".", ",");
 }
 
-// ============================================================
-// RENDERIZADO
-// ============================================================
-function renderResultados(idx) {
+// Busca la fila más cercana a la presión dada
+function buscarMasCercana(presion) {
+  let mejorFila = null;
+  let mejorDistancia = Infinity;
+  let mejorP = null;
+
+  VAPOR_DATA.forEach(row => {
+    const p = aNumero(row[0]);
+    if (isNaN(p)) return;
+    const dist = Math.abs(p - presion);
+    if (dist < mejorDistancia) {
+      mejorDistancia = dist;
+      mejorFila = row;
+      mejorP = p;
+    }
+  });
+
+  return { fila: mejorFila, presionTabla: mejorP, distancia: mejorDistancia };
+}
+
+function renderResultados(presionTexto) {
   resultsDiv.innerHTML = '';
 
-  if (idx === "" || idx === null || idx === undefined) {
-    resultsDiv.innerHTML = '<div class="no-results">Seleccione una presión para ver los datos.</div>';
+  if (presionTexto === '' || presionTexto === null) {
+    resultsDiv.innerHTML = '<div class="no-results">Escribe una presión para ver los datos.</div>';
     return;
   }
 
-  const row = VAPOR_DATA[parseInt(idx)];
-  if (!row) {
-    resultsDiv.innerHTML = '<div class="no-results">Sin datos para esta presión.</div>';
+  const presion = aNumero(presionTexto);
+  if (isNaN(presion)) {
+    resultsDiv.innerHTML = '<div class="no-results">Introduce un valor numérico válido.</div>';
     return;
   }
 
-  const presion   = row[0];
-  const temp      = row[1];
-  const calorSens = row[2];
-  const calorLat  = row[3];
-  const calorTot  = row[4];
-  const volEsp    = row[5];
-  const densidad  = row[6];
+  const { fila, presionTabla, distancia } = buscarMasCercana(presion);
+  if (!fila) {
+    resultsDiv.innerHTML = '<div class="no-results">Sin datos disponibles.</div>';
+    return;
+  }
+
+  const temp      = fila[1];
+  const calorSens = fila[2];
+  const calorLat  = fila[3];
+  const calorTot  = fila[4];
+  const volEsp    = fila[5];
+  const densidad  = fila[6];
+
+  // Texto de aviso
+  let nota;
+  if (distancia < 0.0001) {
+    nota = 'Valor exacto encontrado en la tabla';
+  } else {
+    nota = 'Más cercano en la tabla: ' + formatear(presionTabla, 2) + ' bar';
+  }
 
   const card = document.createElement('div');
 
   const destacado = document.createElement('div');
   destacado.className = 'presion-destacada';
-  destacado.textContent = 'Presión seleccionada: ' + presion + ' bar (manométrica)';
+  destacado.innerHTML =
+    'Presión introducida: ' + formatear(presion, 2) + ' bar (manométrica)' +
+    '<span class="aviso">' + nota + '</span>';
   card.appendChild(destacado);
 
   const grid = document.createElement('div');
   grid.className = 'result-card';
 
   const campos = [
-    { label: 'Temperatura del vapor',   value: formatear(temp, 2),      unit: 'ºC' },
-    { label: 'Calor Sensible',          value: formatear(calorSens, 2), unit: 'kcal/kg' },
-    { label: 'Calor Latente',           value: formatear(calorLat, 2),  unit: 'kcal/kg' },
-    { label: 'Calor Total',             value: formatear(calorTot, 2),  unit: 'kcal/kg' },
-    { label: 'Volumen Específico',      value: formatear(volEsp, 4),    unit: 'm³/kg' },
-    { label: 'Densidad del vapor',      value: formatear(densidad, 4),  unit: 'kg/m³' }
+    { label: 'Temperatura del vapor', value: formatear(temp, 2),      unit: 'ºC' },
+    { label: 'Calor Sensible',        value: formatear(calorSens, 2), unit: 'kcal/kg' },
+    { label: 'Calor Latente',         value: formatear(calorLat, 2),  unit: 'kcal/kg' },
+    { label: 'Calor Total',           value: formatear(calorTot, 2),  unit: 'kcal/kg' },
+    { label: 'Volumen Específico',    value: formatear(volEsp, 4),    unit: 'm³/kg' },
+    { label: 'Densidad del vapor',    value: formatear(densidad, 4),  unit: 'kg/m³' }
   ];
 
   campos.forEach(c => {
@@ -480,21 +501,17 @@ function renderResultados(idx) {
   resultsDiv.appendChild(card);
 }
 
-// ============================================================
-// EVENTOS
-// ============================================================
-presionSelect.addEventListener('change', () => {
-  renderResultados(presionSelect.value);
+presionInput.addEventListener('input', () => {
+  renderResultados(presionInput.value);
 });
 
 btnLimpiar.addEventListener('click', () => {
-  presionSelect.value = '';
+  presionInput.value = '';
   resultsDiv.innerHTML = '';
-  presionSelect.focus();
+  presionInput.focus();
 });
 </script>
 <link rel="stylesheet" href="men-header.css">
-...
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

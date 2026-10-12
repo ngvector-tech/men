@@ -3,148 +3,189 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadoras de Fabricación</title>
+<title>Calculadoras de Fabricación - MEN</title>
 <style>
-  :root{
-    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
-    --borde:#e0e3e6; --texto:#1f2937;
-  }
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
 
-  * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f7f6;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
 
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #eef0f2;
-    margin: 0;
-    padding: 24px 16px 60px;
-    color: #222;
-    display: block !important; /* la cabecera MEN queda arriba, no al lado */
-  }
+    .menu-container {
+        background: white;
+        padding: 25px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 580px;
+        text-align: center;
+    }
 
-  .container {
-    max-width: 1000px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
-  }
+    /* Título superior (antes era h1 negro, ahora igual al logo MEN pero más pequeño) */
+    .logo-men {
+        color: #2980b9;
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        letter-spacing: 2px;
+    }
 
-  h1 {
-    text-align: center;
-    font-size: 20px;
-    background: #111;
-    color: #fff;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin: 0 0 8px;
-  }
+    .subtitulo {
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        margin: 0 0 20px;
+    }
 
-  .subtitulo {
-    text-align: center;
-    font-size: 13px;
-    color: #666;
-    margin: 0 0 22px;
-  }
+    /* Contenedor de los botones en 2 columnas */
+    .botones {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
 
-  h2 {
-    font-size: 14px;
-    color: #111;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 20px 0 12px;
-  }
+    /* Botones del menú (idénticos al primero) */
+    .btn-menu {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 8px 4px;
+        border: none;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+        line-height: 1.25;
+        min-height: 30px;
+    }
 
-  /* ---------- Rejilla de botones ---------- */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 14px;
-  }
+    .btn-menu:active {
+        transform: scale(0.98);
+    }
 
-  a.boton {
-    display: block;
-    text-decoration: none;
-    color: #fff;
-    background: #111;
-    border-radius: 8px;
-    padding: 18px 20px;
-    font-weight: 600;
-    font-size: 15px;
-    transition: background .15s, transform .05s;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08);
-  }
-  a.boton:hover { background: #333; }
-  a.boton:active { transform: scale(.98); }
+    /* Subtítulo pequeño dentro del botón (equivalente a .sub del segundo HTML) */
+    .btn-menu .sub {
+        display: block;
+        font-weight: 400;
+        font-size: 9px;
+        opacity: .85;
+        margin-top: 2px;
+        text-transform: none;
+        letter-spacing: 0;
+    }
 
-  a.boton .sub {
-    display: block;
-    font-weight: 400;
-    font-size: 12px;
-    opacity: .85;
-    margin-top: 4px;
-  }
+    /* ============================================================
+       COLORES POR CATEGORÍA
+       ============================================================ */
+    .btn-azul-oscuro { background-color: #34495e; }
+    .btn-azul-oscuro:hover { background-color: #2c3e50; }
 
-  /* ---------- Pie ---------- */
-  .footer {
-    text-align: center;
-    font-size: 12px;
-    color: #667085;
-    margin-top: 32px;
-    padding-top: 16px;
-    border-top: 1px solid var(--borde);
-  }
+    .btn-naranja { background-color: #e67e22; }
+    .btn-naranja:hover { background-color: #d35400; }
+
+    .btn-azul { background-color: #2980b9; }
+    .btn-azul:hover { background-color: #1f6391; }
+
+    .btn-verde { background-color: #16a085; }
+    .btn-verde:hover { background-color: #12876f; }
+
+    .btn-morado { background-color: #8e44ad; }
+    .btn-morado:hover { background-color: #71368a; }
+
+    .btn-rojo { background-color: #c0392b; }
+    .btn-rojo:hover { background-color: #a93226; }
+
+    .btn-gris { background-color: #7f8c8d; }
+    .btn-gris:hover { background-color: #6b7778; }
+
+    .btn-turquesa { background-color: #17a2b8; }
+    .btn-turquesa:hover { background-color: #138496; }
+
+    /* ============================================================
+       RESPONSIVE: en móvil, una sola columna
+       ============================================================ */
+    @media (max-width: 480px) {
+        .menu-container {
+            padding: 20px 15px;
+        }
+
+        .logo-men {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .subtitulo {
+            font-size: 11px;
+            margin-bottom: 16px;
+        }
+
+        .botones {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .btn-menu {
+            padding: 12px 8px;
+            font-size: 13px;
+            min-height: 45px;
+        }
+
+        .btn-menu .sub {
+            font-size: 11px;
+        }
+    }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Calculadoras de Fabricación</h1>
-  <p class="subtitulo">Herramientas de desarrollo y trazado para taller</p>
+<div class="menu-container">
 
-  <h2>Calculadoras disponibles</h2>
+    <div class="logo-men">MEN</div>
+    <p class="subtitulo">Calculadoras de Fabricación — Herramientas de taller</p>
 
-  <div class="grid">
+    <div class="botones">
 
-    <a class="boton" href="bayoneta.html">
-      Bayoneta de tubería
-      <span class="sub">Cálculo de carrete y corte de codo</span>
-    </a>
+        <a href="bayoneta.html" class="btn-menu btn-azul-oscuro">
+            Bayoneta de tubería
+        </a>
+        <a href="codoDegradado.html" class="btn-menu btn-azul-oscuro">
+            Codo degradado
+        </a>
 
-    <a class="boton" href="codoDegradado.html">
-      Codo degradado
-      <span class="sub">Codo degradado a ángulo</span>
-    </a>
+        <a href="codo.html" class="btn-menu btn-naranja">
+            Offset de codo
+        </a>
+        <a href="Cono.html" class="btn-menu btn-naranja">
+            Desarrollo de conos
+        </a>
 
-    <a class="boton" href="codo.html">
-      Offset de codo
-      <span class="sub">Doble codo enfrentado</span>
-    </a>
+        <a href="injerto.html" class="btn-menu btn-azul">
+            Injertos
+        </a>
+        <a href="Taladroencirculo.html" class="btn-menu btn-azul">
+            Taladro en círculo
+        </a>
 
-    <a class="boton" href="Cono.html">
-      Desarrollo de conos
-      <span class="sub">Cono completo, truncado y excéntrico</span>
-    </a>
+    </div>
 
-    <a class="boton" href="injerto.html">
-      Injertos
-      <span class="sub">Injertos de 0º a 90º</span>
-    </a>
-
-    <a class="boton" href="Taladroencirculo.html">
-      Taladro en círculo
-      <span class="sub">Taladros distribuidos en un círculo</span>
-    </a>
-
-  </div>
-
-  <div class="footer">
-    Creado por: J.N.G
-  </div>
 </div>
 
-<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

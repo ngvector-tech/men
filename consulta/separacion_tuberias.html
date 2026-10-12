@@ -10,76 +10,76 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 24px 16px 60px;
+    padding: 16px 11px 40px;             /* ⬅️ antes 24 16 60 */
     color: #222;
   }
   .container {
-    max-width: 620px;
+    max-width: 413px;                   /* ⬅️ antes 620 (≈ 2/3) */
     margin: 0 auto;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
+    border-radius: 7px;                 /* ⬅️ antes 10 */
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;            /* ⬅️ antes 24 28 32 */
   }
   h1 {
     text-align: center;
-    font-size: 20px;
+    font-size: 13px;                    /* ⬅️ antes 20 */
     background: #111;
     color: #fff;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin: 0 0 22px;
+    padding: 8px 11px;                  /* ⬅️ antes 12 16 */
+    border-radius: 4px;                 /* ⬅️ antes 6 */
+    margin: 0 0 15px;                   /* ⬅️ antes 22 */
   }
   .tubo-block {
     background: #f9fafb;
     border: 1px solid #e6e9eb;
-    border-radius: 8px;
-    padding: 16px 18px;
-    margin-bottom: 16px;
+    border-radius: 5px;                 /* ⬅️ antes 8 */
+    padding: 11px 12px;                 /* ⬅️ antes 16 18 */
+    margin-bottom: 11px;                /* ⬅️ antes 16 */
   }
   .tubo-block h2 {
-    font-size: 14px;
-    margin: 0 0 12px;
+    font-size: 9px;                     /* ⬅️ antes 14 */
+    margin: 0 0 8px;                    /* ⬅️ antes 12 */
     color: #444;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  .fields-row { display: flex; gap: 14px; flex-wrap: wrap; }
-  .field { flex: 1; margin-bottom: 14px; min-width: 140px; }
+  .fields-row { display: flex; gap: 9px; flex-wrap: wrap; }  /* ⬅️ antes 14 */
+  .field { flex: 1; margin-bottom: 9px; min-width: 93px; }    /* ⬅️ antes 14 / 140 */
   .field label {
     display: block;
-    font-size: 13px;
+    font-size: 9px;                     /* ⬅️ antes 13 */
     font-weight: 600;
     color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 3px;                 /* ⬅️ antes 5 */
   }
   select, input[type="number"] {
     width: 100%;
-    padding: 9px 10px;
-    font-size: 15px;
+    padding: 6px 7px;                   /* ⬅️ antes 9 10 */
+    font-size: 10px;                    /* ⬅️ antes 15 */
     border: 1px solid #c7ccd1;
-    border-radius: 6px;
+    border-radius: 4px;                 /* ⬅️ antes 6 */
     background: #fff;
   }
   select:focus, input:focus { outline: none; border-color: #4a90d9; }
 
   .radio-group {
     display: flex;
-    gap: 10px;
+    gap: 7px;                           /* ⬅️ antes 10 */
   }
   .radio-group label {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 9px 10px;
+    gap: 4px;                           /* ⬅️ antes 6 */
+    padding: 6px 7px;                   /* ⬅️ antes 9 10 */
     background: #fff;
     border: 2px solid #cbd5e1;
-    border-radius: 6px;
+    border-radius: 4px;                 /* ⬅️ antes 6 */
     cursor: pointer;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 9px;                     /* ⬅️ antes 14 */
     color: #0f172a;
     transition: all 0.15s;
   }
@@ -91,34 +91,34 @@
   }
 
   .sub-bloque {
-    padding-left: 12px;
+    padding-left: 8px;                  /* ⬅️ antes 12 */
     border-left: 3px solid #e2e8f0;
-    margin-top: 8px;
+    margin-top: 5px;                    /* ⬅️ antes 8 */
   }
 
   #resultBox {
-    margin-top: 22px;
-    padding: 18px;
-    border-radius: 8px;
+    margin-top: 15px;                   /* ⬅️ antes 22 */
+    padding: 12px;                      /* ⬅️ antes 18 */
+    border-radius: 5px;                 /* ⬅️ antes 8 */
     background: #eef7ee;
     border: 1px solid #cfe8cf;
     text-align: center;
   }
   #resultBox .label {
-    font-size: 13px;
+    font-size: 9px;                     /* ⬅️ antes 13 */
     color: #5a8a5a;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;                 /* ⬅️ antes 6 */
   }
   #resultBox .value {
-    font-size: 30px;
+    font-size: 20px;                    /* ⬅️ antes 30 */
     font-weight: 700;
     color: #1c5c1c;
   }
   #notaCalculo {
-    margin-top: 10px;
-    font-size: 12px;
+    margin-top: 7px;                    /* ⬅️ antes 10 */
+    font-size: 8px;                     /* ⬅️ antes 12 */
     color: #64748b;
   }
 </style>
@@ -151,7 +151,6 @@
       </div>
     </div>
 
-    <!-- Sub-bloque aislante T1 (solo visible si NO tiene brida) -->
     <div class="sub-bloque" id="subAislante1">
       <div class="field">
         <label>¿Tiene aislante?</label>
@@ -232,9 +231,6 @@
 </div>
 
 <script>
-// ============================================================================
-// TABLA ASME B16.5 clase 150 (OD = tubo, FOD = diámetro exterior brida)
-// ============================================================================
 const TABLA_ASME = {
   "DN15":  {"od": 21.3,  "fod": 90.0},
   "DN20":  {"od": 26.7,  "fod": 100.0},
@@ -264,9 +260,6 @@ const DNS_ORDEN = [
   "DN350", "DN400", "DN450", "DN500", "DN600"
 ];
 
-// ============================================================================
-// REFERENCIAS DOM
-// ============================================================================
 const dn1Select      = document.getElementById('dn1');
 const dn2Select      = document.getElementById('dn2');
 const subAislante1   = document.getElementById('subAislante1');
@@ -279,9 +272,6 @@ const clearanceInput = document.getElementById('clearance');
 const resultValue    = document.getElementById('resultValue');
 const notaCalculo    = document.getElementById('notaCalculo');
 
-// ============================================================================
-// RELLENAR SELECTS DE DN
-// ============================================================================
 DNS_ORDEN.forEach(dn => {
   const o1 = document.createElement('option');
   o1.value = dn; o1.textContent = dn;
@@ -295,14 +285,10 @@ DNS_ORDEN.forEach(dn => {
 dn1Select.value = 'DN100';
 dn2Select.value = 'DN150';
 
-// ============================================================================
-// LEER ESTADO DE UN TUBO (si tiene brida, aislante ignorado por completo)
-// ============================================================================
 function leerTubo(numero) {
   const dn = document.getElementById('dn' + numero).value;
   const tieneBrida = document.getElementById('brida' + numero + '_si').checked;
 
-  // PROTECCIÓN: si tiene brida, se ignora TODO lo relacionado con aislante
   if (tieneBrida) {
     return { dn, tieneBrida: true, tieneAislante: false, espesor: 0 };
   }
@@ -317,11 +303,6 @@ function leerTubo(numero) {
   return { dn, tieneBrida: false, tieneAislante, espesor };
 }
 
-// ============================================================================
-// RADIO DE UN TUBO
-//  - Con brida → FOD/2 (aislante siempre ignorado)
-//  - Sin brida → OD/2 + espesor aislante (0 si no tiene)
-// ============================================================================
 function radioEfectivo(t, tubo) {
   if (tubo.tieneBrida) {
     return t.fod / 2.0;
@@ -329,9 +310,6 @@ function radioEfectivo(t, tubo) {
   return t.od / 2.0 + (tubo.tieneAislante ? tubo.espesor : 0);
 }
 
-// ============================================================================
-// CÁLCULO
-// ============================================================================
 function calcular() {
   const tubo1 = leerTubo(1);
   const tubo2 = leerTubo(2);
@@ -352,7 +330,6 @@ function calcular() {
   const total = radio1 + radio2 + clearance;
   resultValue.textContent = total.toFixed(1) + ' mm';
 
-  // Nota desglosada
   const desc1 = tubo1.tieneBrida
     ? `T1: brida Ø${t1.fod} → R=${radio1.toFixed(1)}`
     : (tubo1.tieneAislante
@@ -368,9 +345,6 @@ function calcular() {
   notaCalculo.textContent = `${desc1}  ·  ${desc2}  ·  Holgura ${clearance} mm`;
 }
 
-// ============================================================================
-// CAMBIO DE BRIDA → resetear aislante y ajustar visibilidad
-// ============================================================================
 function alCambiarBrida(numero) {
   const tieneBrida   = document.getElementById('brida' + numero + '_si').checked;
   const subAislante  = document.getElementById('subAislante' + numero);
@@ -380,14 +354,12 @@ function alCambiarBrida(numero) {
   const aislaSiRadio = document.getElementById('aisla' + numero + '_si');
 
   if (tieneBrida) {
-    // Al marcar brida=Sí, reseteamos y ocultamos todo lo del aislante
     aislaNoRadio.checked = true;
     aislaSiRadio.checked = false;
     aislaMMInput.value = '';
     subAislante.style.display = 'none';
     aislaMMWrap.style.display = 'none';
   } else {
-    // Sin brida: mostrar pregunta aislante con el estado actual
     subAislante.style.display = 'block';
     const tieneAislante = aislaSiRadio.checked;
     aislaMMWrap.style.display = tieneAislante ? 'block' : 'none';
@@ -399,9 +371,6 @@ function alCambiarBrida(numero) {
   calcular();
 }
 
-// ============================================================================
-// CAMBIO DE AISLANTE (Sí/No)
-// ============================================================================
 function alCambiarAislante(numero) {
   const aislaSiRadio = document.getElementById('aisla' + numero + '_si');
   const aislaMMWrap  = document.getElementById('aisla' + numero + '_mm_wrap');
@@ -418,27 +387,19 @@ function alCambiarAislante(numero) {
   calcular();
 }
 
-// ============================================================================
-// EVENTOS
-// ============================================================================
-
-// Cambio de brida T1/T2
 document.getElementById('brida1_si').addEventListener('change', () => alCambiarBrida(1));
 document.getElementById('brida1_no').addEventListener('change', () => alCambiarBrida(1));
 document.getElementById('brida2_si').addEventListener('change', () => alCambiarBrida(2));
 document.getElementById('brida2_no').addEventListener('change', () => alCambiarBrida(2));
 
-// Cambio de aislante T1/T2
 document.getElementById('aisla1_si').addEventListener('change', () => alCambiarAislante(1));
 document.getElementById('aisla1_no').addEventListener('change', () => alCambiarAislante(1));
 document.getElementById('aisla2_si').addEventListener('change', () => alCambiarAislante(2));
 document.getElementById('aisla2_no').addEventListener('change', () => alCambiarAislante(2));
 
-// Cambio de DN, espesor o holgura → recálculo inmediato
 [dn1Select, dn2Select, aisla1MMInput, aisla2MMInput, clearanceInput]
   .forEach(el => el.addEventListener('input', calcular));
 
-// Arranque
 alCambiarBrida(1);
 alCambiarBrida(2);
 calcular();

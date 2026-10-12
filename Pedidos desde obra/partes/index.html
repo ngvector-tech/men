@@ -4,30 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Introducción de Trabajos</title>
-    <!-- Cargamos la librería oficial desde un servidor de alta compatibilidad -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding: 15px; padding-bottom: 80px; }
-        .header-logo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 5px 10px; }
-        .logo-men { font-size: 1.5rem; font-weight: 800; color: #2563eb; letter-spacing: 1px; }
-        h1 { font-size: 1.2rem; color: #1e293b; text-align: right; }
-        .container { max-width: 100%; margin: 0 auto; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .actions-top { display: flex; gap: 10px; margin-bottom: 15px; }
-        button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; -webkit-tap-highlight-color: transparent; }
-        .btn-add { background-color: #2563eb; color: white; flex: 1; }
+        body { background-color: #f4f6f9; color: #333; padding: 8px; }
+        .header-logo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding: 3px 5px; }
+        .logo-men { font-size: 0.75rem; font-weight: 800; color: #2563eb; letter-spacing: 1px; }
+        h1 { font-size: 0.6rem; color: #1e293b; text-align: right; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 8px; border-radius: 6px; box-shadow: 0 2px 3px rgba(0,0,0,0.05); }
+
+        /* ====== BARRA DE ACCIONES CON 3 BOTONES ====== */
+        .actions-top { display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; }
+        button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 8px; border: none; border-radius: 4px; font-size: 0.48rem; font-weight: 600; cursor: pointer; transition: background 0.2s; -webkit-tap-highlight-color: transparent; }
+
+        .btn-add { background-color: #2563eb; color: white; flex: 2; }
         .btn-add:active { background-color: #1d4ed8; }
-        .btn-view { background-color: #64748b; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; padding: 12px 16px; }
-        .table-wrapper { width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 750px; }
-        th { background-color: #f8fafc; color: #64748b; font-size: 0.85rem; text-transform: uppercase; padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 8px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-        table input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; outline: none; }
+
+        .btn-view { background-color: #64748b; color: white; border: none; border-radius: 4px; font-size: 0.42rem; font-weight: 600; cursor: pointer; padding: 6px 6px; flex: 1.2; }
+        .btn-view:active { background-color: #475569; }
+
+        .btn-send { background-color: #22c55e; color: white; flex: 1.8; }
+        .btn-send:active { background-color: #16a34a; }
+
+        .table-wrapper { width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 4px; margin-bottom: 10px; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 375px; table-layout: fixed; }
+        th { background-color: #f8fafc; color: #64748b; font-size: 0.42rem; text-transform: uppercase; padding: 5px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 4px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        table input { width: 100%; padding: 3px 4px; border: 1px solid #cbd5e1; border-radius: 3px; font-size: 0.45rem; outline: none; box-sizing: border-box; }
         table input:focus { border-color: #2563eb; background-color: #f8fafc; }
-        .col-fecha { width: 155px; } .col-operario { width: 160px; } .col-ot { width: 100px; } .col-desc { width: 220px; } .col-horas { width: 85px; } .col-accion { width: 50px; text-align: center; }
-        .btn-delete { background-color: #ef4444; color: white; padding: 8px; border-radius: 6px; width: 36px; height: 36px; }
-        .footer-actions { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 12px 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); display: flex; gap: 10px; z-index: 100; }
-        .btn-send { background-color: #22c55e; color: white; flex: 1; font-size: 1.1rem; }
+
+        /* ====== ANCHOS DE COLUMNAS ====== */
+        .col-fecha      { width: 85px; }
+        .col-operario   { width: 75px; }
+        .col-ot         { width: 45px; }
+        .col-desc       { width: auto; }   /* absorbe el espacio sobrante */
+        .col-horas      { width: 45px; }
+        .col-accion     { width: 25px; text-align: center; }
+
+        .btn-delete { background-color: #ef4444; color: white; padding: 4px; border-radius: 3px; width: 18px; height: 18px; font-size: 0.5rem; }
     </style>
 </head>
 <body>
@@ -37,10 +51,11 @@
             <div class="logo-men">MEN</div>
             <h1>Nueva Entrada</h1>
         </div>
-        
+
         <div class="actions-top">
             <button class="btn-add" onclick="agregarLinea()">➕ Añadir Línea</button>
-            <button class="btn-view" onclick="accederAlHistorico()">📊 Ver lista (Solo administrador)</button>
+            <button class="btn-view" onclick="accederAlHistorico()">📊 Ver lista (Admin)</button>
+            <button class="btn-send" onclick="enviarDatos()">📥 Enviar Datos</button>
         </div>
 
         <div class="table-wrapper">
@@ -60,15 +75,10 @@
         </div>
     </div>
 
-    <div class="footer-actions">
-        <button class="btn-send" onclick="enviarDatos()">📥 Enviar Datos al Histórico</button>
-    </div>
-
    <script>
-    // CONFIGURACIÓN DE TU ENLACE TÉCNICO REAL A LA BASE DE DATOS
     const SUPABASE_URL = "https://qjyyvobhzybugiqlmdyp.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
-    
+
     let supabaseClient = null;
 
     function obtenerFechaActual() {
@@ -113,7 +123,6 @@
 
         let nuevosRegistros = [];
 
-        // REVISIÓN Y VALIDACIÓN DE FILAS MÚLTIPLES
         for (let i = 0; i < filas.length; i++) {
             const fila = filas[i];
             const inputFecha = fila.querySelector('.input-fecha');
@@ -122,9 +131,9 @@
             const inputDesc = fila.querySelector('.input-desc');
             const inputHoras = fila.querySelector('.input-horas');
 
-            const fechaOriginal = inputFecha ? inputFecha.value : ""; 
+            const fechaOriginal = inputFecha ? inputFecha.value : "";
             let fechaFormateada = "No asignada";
-            
+
             if (fechaOriginal) {
                 const partes = fechaOriginal.split("-");
                 if (partes.length === 3) {
@@ -143,7 +152,6 @@
         }
 
         try {
-            // Inserción masiva directa en tu tabla remota
             const { data, error } = await supabaseClient
                 .from('historico_trabajos')
                 .insert(nuevosRegistros);
@@ -168,7 +176,6 @@
         }
     }
 
-    // Inicialización corregida para CDN v2
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof supabase !== 'undefined' && supabase.createClient) {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

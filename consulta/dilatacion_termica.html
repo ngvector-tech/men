@@ -3,54 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculo de Dilatacion Termica en Tuberias</title>
+<title>Cálculo de Dilatación Térmica en Tuberías</title>
 <style>
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 24px 16px 60px;
+    padding: 16px 11px 40px;             /* ⬅️ antes 24 16 60 */
     color: #222;
   }
   .container {
-    max-width: 560px;
+    max-width: 373px;                   /* ⬅️ antes 560 (≈ 2/3) */
     margin: 0 auto;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
+    border-radius: 7px;                 /* ⬅️ antes 10 */
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;            /* ⬅️ antes 24 28 32 */
   }
   h1 {
     text-align: center;
-    font-size: 20px;
+    font-size: 13px;                    /* ⬅️ antes 20 */
     background: #111;
     color: #fff;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin: 0 0 22px;
+    padding: 8px 11px;                  /* ⬅️ antes 12 16 */
+    border-radius: 4px;                 /* ⬅️ antes 6 */
+    margin: 0 0 15px;                   /* ⬅️ antes 22 */
   }
-  .field { margin-bottom: 16px; }
+  .field { margin-bottom: 11px; }       /* ⬅️ antes 16 */
   .field label {
     display: block;
-    font-size: 13px;
+    font-size: 9px;                     /* ⬅️ antes 13 */
     font-weight: 600;
     color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 3px;                 /* ⬅️ antes 5 */
   }
   select, input[type="number"] {
     width: 100%;
-    padding: 9px 10px;
-    font-size: 15px;
+    padding: 6px 7px;                   /* ⬅️ antes 9 10 */
+    font-size: 10px;                    /* ⬅️ antes 15 */
     border: 1px solid #c7ccd1;
-    border-radius: 6px;
+    border-radius: 4px;                 /* ⬅️ antes 6 */
     background: #fff;
   }
   select:focus, input[type="number"]:focus { outline: none; border-color: #4a90d9; }
   #resultBox {
-    margin-top: 24px;
-    padding: 18px;
-    border-radius: 8px;
+    margin-top: 16px;                   /* ⬅️ antes 24 */
+    padding: 12px;                      /* ⬅️ antes 18 */
+    border-radius: 5px;                 /* ⬅️ antes 8 */
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
     text-align: center;
@@ -58,42 +58,42 @@
   }
   #resultBox.show { display: block; }
   .result-item {
-    margin-bottom: 14px;
+    margin-bottom: 9px;                 /* ⬅️ antes 14 */
   }
   .result-item:last-child {
     margin-bottom: 0;
   }
   .result-item .label {
-    font-size: 12px;
+    font-size: 8px;                     /* ⬅️ antes 12 */
     color: #777;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;                 /* ⬅️ antes 4 */
   }
   .result-item .value {
-    font-size: 24px;
+    font-size: 16px;                    /* ⬅️ antes 24 */
     font-weight: 700;
     color: #111;
   }
   .result-item .sub-value {
-    font-size: 14px;
+    font-size: 9px;                     /* ⬅️ antes 14 */
     color: #555;
-    margin-top: 2px;
+    margin-top: 1px;                    /* ⬅️ antes 2 */
   }
   #resultBox.warning .value {
-    font-size: 16px;
+    font-size: 11px;                    /* ⬅️ antes 16 */
     color: #b04a3f;
     font-weight: 600;
   }
   .btn-copy {
-    margin-top: 18px;
-    padding: 8px 16px;
-    font-size: 13px;
+    margin-top: 12px;                   /* ⬅️ antes 18 */
+    padding: 5px 11px;                  /* ⬅️ antes 8 16 */
+    font-size: 9px;                     /* ⬅️ antes 13 */
     font-weight: 600;
     background: #111;
     color: #fff;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;                 /* ⬅️ antes 6 */
     cursor: pointer;
   }
   .btn-copy:hover {
@@ -104,10 +104,10 @@
 <body>
 
 <div class="container">
-  <h1>Dilatacion Termica en Tuberias</h1>
+  <h1>Dilatación Térmica en Tuberías</h1>
 
   <div class="field">
-    <label for="materialSelect">Material de Tuberia</label>
+    <label for="materialSelect">Material de Tubería</label>
     <select id="materialSelect">
       <option value="">-</option>
       <option value="carbono">Acero al Carbono (ASME/ASTM)</option>
@@ -116,31 +116,31 @@
   </div>
 
   <div class="field">
-    <label for="tempMinInput">Temperatura MÍNIMA de operacion (°C)</label>
+    <label for="tempMinInput">Temperatura MÍNIMA de operación (°C)</label>
     <input type="number" id="tempMinInput" placeholder="Ej: 20" step="any" value="20">
   </div>
 
   <div class="field">
-    <label for="tempMaxInput">Temperatura MÁXIMA de operacion (°C)</label>
+    <label for="tempMaxInput">Temperatura MÁXIMA de operación (°C)</label>
     <input type="number" id="tempMaxInput" placeholder="Ej: 150" step="any" value="150">
   </div>
 
   <div class="field">
-    <label for="longitudInput">Longitud de la Tuberia (mm)</label>
+    <label for="longitudInput">Longitud de la Tubería (mm)</label>
     <input type="number" id="longitudInput" placeholder="Ej: 6000" step="any" min="0" value="6000">
   </div>
 
   <div id="resultBox">
     <div class="result-item">
-      <div class="label">Dilatacion Total Inherente</div>
+      <div class="label">Dilatación Total Inherente</div>
       <div class="value" id="dilatacionValue">-</div>
     </div>
     <div class="result-item">
-      <div class="label">Variacion de Temperatura (?T)</div>
+      <div class="label">Variación de Temperatura (ΔT)</div>
       <div class="sub-value" id="deltaTempValue">-</div>
     </div>
     <div class="result-item">
-      <div class="label">Coeficiente Alfa (a)</div>
+      <div class="label">Coeficiente Alfa (α)</div>
       <div class="sub-value" id="alfaValue">-</div>
     </div>
     <button class="btn-copy" id="copyBtn">Copiar Resultados</button>
@@ -170,7 +170,6 @@ function calcular() {
   const tempMax = parseFloat(tempMaxInput.value);
   const longitud = parseFloat(longitudInput.value);
 
-  // Validaciones
   if (!matKey || isNaN(tempMin) || isNaN(tempMax) || isNaN(longitud) || longitud <= 0) {
     resultBox.classList.remove('show', 'warning');
     return;
@@ -179,11 +178,9 @@ function calcular() {
   const matData = ALFA_MAP[matKey];
   const alfa = matData.alfa;
 
-  // --- LÓGICA DE CÁLCULO ---
   const deltaTemp = tempMax - tempMin;
   const dilatacionTotal = alfa * longitud * deltaTemp;
 
-  // Mostrar resultados en la interfaz
   dilatacionValue.textContent = dilatacionTotal.toFixed(0) + ' mm';
   deltaTempValue.textContent = deltaTemp.toFixed(0) + ' °C';
   alfaValue.textContent = alfa.toExponential(2) + ' 1/°C';
@@ -192,13 +189,12 @@ function calcular() {
   resultBox.classList.add('show');
 }
 
-// Copiar al portapapeles en el formato exacto del iLogic
 copyBtn.addEventListener('click', () => {
   const matKey = materialSelect.value;
   const tempMin = parseFloat(tempMinInput.value);
   const tempMax = parseFloat(tempMaxInput.value);
   const longitud = parseFloat(longitudInput.value);
-  
+
   if (!matKey) return;
 
   const matData = ALFA_MAP[matKey];
@@ -211,7 +207,7 @@ copyBtn.addEventListener('click', () => {
 Material: ${matData.nombre}
 Coeficiente alfa: ${matData.alfa.toExponential(6)} 1/°C
 Longitud Inicial: ${longitud.toFixed(2)} mm
-Rango de Temperatura: ${tempMin}°C a ${tempMax}°C (?T = ${deltaTemp}°C)
+Rango de Temperatura: ${tempMin}°C a ${tempMax}°C (ΔT = ${deltaTemp}°C)
 
 DILATACIÓN TOTAL INHERENTE: ${dilatacionTotal.toFixed(3)} mm`;
 
@@ -230,7 +226,6 @@ DILATACIÓN TOTAL INHERENTE: ${dilatacionTotal.toFixed(3)} mm`;
 });
 </script>
 <link rel="stylesheet" href="men-header.css">
-...
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 
 </body>

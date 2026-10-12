@@ -9,59 +9,62 @@
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2; margin: 0;
-    padding: 24px 16px 60px; color: #222;
+    padding: 16px 11px 40px; color: #222;    /* ⬅️ antes 24 16 60 */
   }
   .container {
-    max-width: 640px; margin: 0 auto;
-    background: #fff; border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
+    max-width: 427px;                        /* ⬅️ antes 640 (≈ 2/3) */
+    margin: 0 auto;
+    background: #fff; border-radius: 7px;    /* ⬅️ antes 10 */
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;                 /* ⬅️ antes 24 28 32 */
   }
   h1 {
-    text-align: center; font-size: 22px;
+    text-align: center; font-size: 15px;    /* ⬅️ antes 22 */
     background: #111; color: #fff;
-    padding: 12px 16px; border-radius: 6px;
-    margin: 0 0 18px;
+    padding: 8px 11px; border-radius: 4px;   /* ⬅️ antes 12 16 6 */
+    margin: 0 0 12px;                        /* ⬅️ antes 18 */
   }
-  .img-wrap { text-align: center; margin-bottom: 20px; }
+  .img-wrap { text-align: center; margin-bottom: 13px; }  /* ⬅️ antes 20 */
   .img-wrap img {
-    max-width: 50%; max-height: 110px;
-    border: 2px solid #e0e3e6; border-radius: 6px;
+    max-width: 50%; max-height: 73px;        /* ⬅️ antes 110 */
+    border: 2px solid #e0e3e6; border-radius: 4px;  /* ⬅️ antes 6 */
     background: #fafafa;
   }
   .img-fallback {
-    display: none; font-size: 13px;
-    color: #999; padding: 30px 10px;
-    border: 1px dashed #ccc; border-radius: 6px;
+    display: none; font-size: 9px;           /* ⬅️ antes 13 */
+    color: #999; padding: 20px 7px;          /* ⬅️ antes 30 10 */
+    border: 1px dashed #ccc; border-radius: 4px;  /* ⬅️ antes 6 */
     background: #fafafa;
   }
-  .fields { display: flex; gap: 14px; flex-wrap: wrap; }
-  .field { flex: 1 1 45%; margin-bottom: 16px; }
+  .fields { display: flex; gap: 9px; flex-wrap: wrap; }   /* ⬅️ antes 14 */
+  .field { flex: 1 1 45%; margin-bottom: 11px; }          /* ⬅️ antes 16 */
   .field.full { flex: 1 1 100%; }
   .field label {
-    display: block; font-size: 13px;
+    display: block; font-size: 9px;          /* ⬅️ antes 13 */
     font-weight: 600; color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 3px;                      /* ⬅️ antes 5 */
   }
   .field select {
-    width: 100%; padding: 9px 10px;
-    font-size: 15px; border: 1px solid #c7ccd1;
-    border-radius: 6px; background: #fff;
+    width: 100%; padding: 6px 7px;           /* ⬅️ antes 9 10 */
+    font-size: 10px;                         /* ⬅️ antes 15 */
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;                      /* ⬅️ antes 6 */
+    background: #fff;
   }
   .field select:focus {
     outline: none; border-color: #4a90d9;
   }
-  #results { margin-top: 22px; }
+  #results { margin-top: 15px; }             /* ⬅️ antes 22 */
   .result-card {
-    padding: 12px 14px; margin-bottom: 8px;
-    border-radius: 6px; background: #f4f6f8;
+    padding: 8px 9px; margin-bottom: 5px;    /* ⬅️ antes 12 14 / 8 */
+    border-radius: 4px; background: #f4f6f8; /* ⬅️ antes 6 */
     border: 1px solid #e0e3e6;
   }
   .result-card .norma {
-    font-weight: 700; font-size: 15px;
-    color: #111; margin-bottom: 4px;
+    font-weight: 700; font-size: 10px;       /* ⬅️ antes 15 */
+    color: #111; margin-bottom: 3px;         /* ⬅️ antes 4 */
   }
-  .result-card .angulo { font-size: 14px; color: #444; }
+  .result-card .angulo { font-size: 9px; color: #444; }   /* ⬅️ antes 14 */
   .result-card .angulo b { color: #4a90d9; }
 </style>
 </head>
@@ -98,10 +101,6 @@
 </div>
 
 <script>
-// ============================================================
-// TABLA DE TUBERÍA DE ACERO (ASME B36.10M)
-// Formato: [designación, pulgadas, DN, Ø ext mm, {SCH: espesor mm}]
-// ============================================================
 const TUBERIA = [
   ["1/8\"",   0.125, "DN 6",   10.3,  {"SCH 10":1.24, "SCH 40":1.73, "SCH 80":2.41}],
   ["1/4\"",   0.250, "DN 8",   13.7,  {"SCH 10":1.65, "SCH 40":2.24, "SCH 80":3.02}],
@@ -129,21 +128,17 @@ const TUBERIA = [
   ["28\"",   28.000, "DN 700", 711.0, {"SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":27.79, "SCH 80":34.93}],
   ["32\"",   32.000, "DN 800", 813.0, {"SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":30.96, "SCH 80":38.10}],
   ["34\"",   34.000, "DN 850",  863.6, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":17.48, "SCH 60":19.05, "XS":12.70, "SCH 80":12.70}],
-["36\"",   36.000, "DN 900",  914.4, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
-["40\"",   40.000, "DN 1000", 1016.0, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
-["42\"",   42.000, "DN 1050", 1066.8, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
-["48\"",   48.000, "DN 1200", 1219.2, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
-["60\"",   60.000, "DN 1500", 1524.0, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}]
+  ["36\"",   36.000, "DN 900",  914.4, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+  ["40\"",   40.000, "DN 1000", 1016.0, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+  ["42\"",   42.000, "DN 1050", 1066.8, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+  ["48\"",   48.000, "DN 1200", 1219.2, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}],
+  ["60\"",   60.000, "DN 1500", 1524.0, {"STD":9.53, "SCH 10":7.92, "SCH 20":12.70, "SCH 30":15.88, "SCH 40":19.05, "SCH 60":12.70, "XS":12.70, "SCH 80":12.70}]
 ];
 
-// ============================================================
-// SELECTS
-// ============================================================
 const fracSelect = document.getElementById('fracSelect');
 const schSelect  = document.getElementById('schSelect');
 const resultsDiv = document.getElementById('results');
 
-// Rellenar desplegable de designaciones
 TUBERIA.forEach((t, i) => {
   const opt = document.createElement('option');
   opt.value = i;
@@ -151,9 +146,6 @@ TUBERIA.forEach((t, i) => {
   fracSelect.appendChild(opt);
 });
 
-// ============================================================
-// ACTUALIZAR SCH AL CAMBIAR DESIGNACIÓN
-// ============================================================
 fracSelect.addEventListener('change', () => {
   schSelect.innerHTML = '<option value="">Selecciona SCH...</option>';
   const idx = fracSelect.value;
@@ -166,16 +158,12 @@ fracSelect.addEventListener('change', () => {
     opt.textContent = sch;
     schSelect.appendChild(opt);
   });
-  // SCH por defecto
   schSelect.value = t[4]["SCH 40"] ? "SCH 40" : Object.keys(t[4])[0];
   calcular();
 });
 
 schSelect.addEventListener('change', calcular);
 
-// ============================================================
-// CÁLCULO
-// ============================================================
 function calcular() {
   const idx = fracSelect.value;
   if (idx === "") { resultsDiv.innerHTML = ''; return; }

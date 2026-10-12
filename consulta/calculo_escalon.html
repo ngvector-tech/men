@@ -10,49 +10,49 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 24px 16px 60px;
+    padding: 16px 11px 40px;              /* ⬅️ antes 24 16 60 */
     color: #222;
   }
   .container {
-    max-width: 620px;
+    max-width: 413px;                    /* ⬅️ antes 620 (≈ 2/3) */
     margin: 0 auto;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
+    border-radius: 7px;                  /* ⬅️ antes 10 */
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;             /* ⬅️ antes 24 28 32 */
   }
 
   h1.titulo {
     text-align: center;
-    font-size: 20px;
+    font-size: 13px;                     /* ⬅️ antes 20 */
     background: #111;
     color: #fff;
-    padding: 14px 16px;
-    border-radius: 6px;
-    margin: 0 0 6px;
+    padding: 9px 11px;                   /* ⬅️ antes 14 16 */
+    border-radius: 4px;                  /* ⬅️ antes 6 */
+    margin: 0 0 4px;                     /* ⬅️ antes 6 */
   }
   p.subtitulo {
     text-align: center;
-    font-size: 12px;
+    font-size: 8px;                      /* ⬅️ antes 12 */
     color: #777;
-    margin: 0 0 22px;
+    margin: 0 0 15px;                    /* ⬅️ antes 22 */
     letter-spacing: 0.3px;
   }
 
-  .field { margin-bottom: 16px; }
+  .field { margin-bottom: 11px; }        /* ⬅️ antes 16 */
   .field label {
     display: block;
-    font-size: 13px;
+    font-size: 9px;                      /* ⬅️ antes 13 */
     font-weight: 600;
     color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 3px;                  /* ⬅️ antes 5 */
   }
   input[type="number"], select {
     width: 100%;
-    padding: 9px 10px;
-    font-size: 15px;
+    padding: 6px 7px;                    /* ⬅️ antes 9 10 */
+    font-size: 10px;                     /* ⬅️ antes 15 */
     border: 1px solid #c7ccd1;
-    border-radius: 6px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
     background: #fff;
   }
   input[type="number"]:focus, select:focus {
@@ -62,31 +62,31 @@
   .checkbox-field {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 13px;
+    gap: 5px;                            /* ⬅️ antes 8 */
+    margin-bottom: 8px;                  /* ⬅️ antes 12 */
+    font-size: 9px;                      /* ⬅️ antes 13 */
     color: #444;
   }
   .checkbox-field input { width: auto; }
 
   .selector-descansillos {
-    margin-bottom: 16px;
-    padding: 12px;
+    margin-bottom: 11px;                 /* ⬅️ antes 16 */
+    padding: 8px;                        /* ⬅️ antes 12 */
     background: #fdf3d6;
-    border-radius: 6px;
-    font-size: 13px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
+    font-size: 9px;                      /* ⬅️ antes 13 */
   }
   .selector-descansillos label {
     display: block;
     font-weight: 600;
     color: #8a6d1b;
-    margin-bottom: 8px;
+    margin-bottom: 5px;                  /* ⬅️ antes 8 */
   }
 
   #resultBox {
-    margin-top: 24px;
-    padding: 18px;
-    border-radius: 8px;
+    margin-top: 16px;                    /* ⬅️ antes 24 */
+    padding: 12px;                       /* ⬅️ antes 18 */
+    border-radius: 5px;                  /* ⬅️ antes 8 */
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
     display: none;
@@ -96,11 +96,11 @@
   .badge-estado {
     display: block;
     text-align: center;
-    font-size: 15px;
+    font-size: 10px;                     /* ⬅️ antes 15 */
     font-weight: 700;
-    padding: 14px 18px;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    padding: 9px 12px;                   /* ⬅️ antes 14 18 */
+    border-radius: 5px;                  /* ⬅️ antes 8 */
+    margin-bottom: 7px;                  /* ⬅️ antes 10 */
     line-height: 1.4;
     box-shadow: 0 2px 4px rgba(0,0,0,0.06);
   }
@@ -110,11 +110,11 @@
   .badge-motivos {
     display: block;
     text-align: center;
-    font-size: 15px;
+    font-size: 10px;                     /* ⬅️ antes 15 */
     font-weight: 700;
-    padding: 14px 18px;
-    border-radius: 8px;
-    margin-bottom: 16px;
+    padding: 9px 12px;                   /* ⬅️ antes 14 18 */
+    border-radius: 5px;                  /* ⬅️ antes 8 */
+    margin-bottom: 11px;                 /* ⬅️ antes 16 */
     line-height: 1.4;
     box-shadow: 0 2px 4px rgba(0,0,0,0.06);
   }
@@ -123,19 +123,19 @@
   .badge-motivos:empty { display: none; }
 
   .result-item {
-    margin-bottom: 12px;
+    margin-bottom: 8px;                  /* ⬅️ antes 12 */
     text-align: center;
   }
   .result-item:last-child { margin-bottom: 0; }
   .result-item .label {
-    font-size: 12px;
+    font-size: 8px;                      /* ⬅️ antes 12 */
     color: #777;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;                  /* ⬅️ antes 4 */
   }
   .result-item .value {
-    font-size: 20px;
+    font-size: 13px;                     /* ⬅️ antes 20 */
     font-weight: 700;
     color: #111;
   }
@@ -143,26 +143,26 @@
   .divider {
     height: 1px;
     background: #dde1e5;
-    margin: 16px 0;
+    margin: 11px 0;                      /* ⬅️ antes 16 */
   }
 
   .section-title {
     text-align: center;
-    font-size: 12px;
+    font-size: 8px;                      /* ⬅️ antes 12 */
     font-weight: 700;
     color: #a03428;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin: 4px 0 12px;
+    margin: 3px 0 8px;                   /* ⬅️ antes 4 0 12 */
   }
 
   .pendiente {
     text-align: center;
-    font-size: 15px;
+    font-size: 10px;                     /* ⬅️ antes 15 */
     font-weight: 600;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 14px;
+    padding: 7px;                        /* ⬅️ antes 10 */
+    border-radius: 4px;                  /* ⬅️ antes 6 */
+    margin-bottom: 9px;                  /* ⬅️ antes 14 */
   }
   .pendiente.ok { background: #e3f4e3; color: #256b2c; }
   .pendiente.aviso { background: #fdf3d6; color: #8a6d1b; }
@@ -170,35 +170,35 @@
 
   .aviso-rellano {
     text-align: center;
-    font-size: 13px;
+    font-size: 9px;                      /* ⬅️ antes 13 */
     font-weight: 600;
     color: #8a6d1b;
     background: #fdf3d6;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 14px;
+    padding: 8px;                        /* ⬅️ antes 12 */
+    border-radius: 4px;                  /* ⬅️ antes 6 */
+    margin-bottom: 9px;                  /* ⬅️ antes 14 */
     line-height: 1.5;
   }
 
   .nota-legal {
     text-align: center;
-    font-size: 11px;
+    font-size: 7px;                      /* ⬅️ antes 11 */
     color: #888;
-    margin-top: 14px;
+    margin-top: 9px;                     /* ⬅️ antes 14 */
     font-style: italic;
     line-height: 1.5;
   }
 
   .btn-copy {
     display: block;
-    margin: 18px auto 0;
-    padding: 8px 16px;
-    font-size: 13px;
+    margin: 12px auto 0;                 /* ⬅️ antes 18 */
+    padding: 5px 11px;                   /* ⬅️ antes 8 16 */
+    font-size: 9px;                      /* ⬅️ antes 13 */
     font-weight: 600;
     background: #111;
     color: #fff;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
     cursor: pointer;
   }
   .btn-copy:hover { opacity: 0.85; }
@@ -354,7 +354,7 @@
     </div>
     <div class="result-item" id="antiescaladaRow">
       <div class="label">Diseño anti-escalada</div>
-      <div class="value" id="antiescaladaValue" style="font-size:14px;">-</div>
+      <div class="value" id="antiescaladaValue" style="font-size:9px;">-</div>
     </div>
 
     <div class="nota-legal">
@@ -616,7 +616,6 @@ function calcular(altura, angulo, ancho, modo) {
   pendienteBox.textContent = 'Pendiente: ' + evaluacion.texto;
   pendienteBox.className = 'pendiente ' + evaluacion.clase;
 
-  // Badges
   if (superaTramo && !aplicaDescansillos) {
     badgeEstado.textContent = '❌ No cumple, necesita descansillo (' + reglas.normaCorta + ')';
     badgeEstado.className = 'badge-estado fail';
@@ -759,7 +758,6 @@ Resultado orientativo. La conformidad legal final requiere verificación por té
 ----------------------------`;
 
   resultBox.classList.add('show');
-  // (Se ha eliminado el scrollIntoView para que no haga scroll automático)
 }
 
 [alturaInput, anguloInput, anchoInput, descansilloInput].forEach(el =>

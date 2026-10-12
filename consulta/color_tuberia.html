@@ -10,40 +10,40 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 24px 16px 60px;
+    padding: 16px 11px 40px;              /* ⬅️ antes 24 16 60 */
     color: #222;
   }
   .container {
-    max-width: 780px;
+    max-width: 520px;                    /* ⬅️ antes 780 (≈ 2/3) */
     margin: 0 auto;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
+    border-radius: 7px;                  /* ⬅️ antes 10 */
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;             /* ⬅️ antes 24 28 32 */
   }
   h1 {
     text-align: center;
-    font-size: 22px;
+    font-size: 15px;                     /* ⬅️ antes 22 */
     background: #111;
     color: #fff;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin: 0 0 18px;
+    padding: 8px 11px;                   /* ⬅️ antes 12 16 */
+    border-radius: 4px;                  /* ⬅️ antes 6 */
+    margin: 0 0 12px;                    /* ⬅️ antes 18 */
   }
-  .field { margin-bottom: 14px; }
+  .field { margin-bottom: 9px; }         /* ⬅️ antes 14 */
   .field label {
     display: block;
-    font-size: 13px;
+    font-size: 9px;                      /* ⬅️ antes 13 */
     font-weight: 600;
     color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 3px;                  /* ⬅️ antes 5 */
   }
   select {
     width: 100%;
-    padding: 9px 10px;
-    font-size: 14px;
+    padding: 6px 7px;                    /* ⬅️ antes 9 10 */
+    font-size: 9px;                      /* ⬅️ antes 14 */
     border: 1px solid #c7ccd1;
-    border-radius: 6px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
     background: #fff;
   }
   select:focus { outline: none; border-color: #4a90d9; }
@@ -51,41 +51,41 @@
     background: #111;
     color: #fff;
     border: none;
-    padding: 10px 18px;
-    font-size: 14px;
+    padding: 7px 12px;                   /* ⬅️ antes 10 18 */
+    font-size: 9px;                      /* ⬅️ antes 14 */
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
     cursor: pointer;
-    margin-top: 10px;
-    margin-bottom: 16px;
+    margin-top: 7px;                     /* ⬅️ antes 10 */
+    margin-bottom: 11px;                 /* ⬅️ antes 16 */
     width: 100%;
     transition: background 0.2s;
   }
   #btnLimpiar:hover { background: #333; }
 
-  #results { margin-top: 20px; }
+  #results { margin-top: 13px; }         /* ⬅️ antes 20 */
   .card-result {
     background: #f8f9fa;
     border: 1px solid #e0e3e6;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 12px;
+    border-radius: 5px;                  /* ⬅️ antes 8 */
+    padding: 11px;                       /* ⬅️ antes 16 */
+    margin-bottom: 8px;                  /* ⬅️ antes 12 */
   }
   .card-title {
-    font-size: 15px;
+    font-size: 10px;                     /* ⬅️ antes 15 */
     font-weight: bold;
     color: #111;
-    margin-bottom: 12px;
+    margin-bottom: 8px;                  /* ⬅️ antes 12 */
     border-bottom: 2px solid #4a90d9;
-    padding-bottom: 4px;
+    padding-bottom: 3px;                 /* ⬅️ antes 4 */
   }
   .data-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 9px;                      /* ⬅️ antes 13 */
   }
   .data-table th, .data-table td {
-    padding: 7px 10px;
+    padding: 5px 7px;                    /* ⬅️ antes 7 10 */
     border-bottom: 1px solid #e2e8f0;
     text-align: left;
     vertical-align: middle;
@@ -99,19 +99,19 @@
   .no-results {
     text-align: center;
     color: #888;
-    font-size: 14px;
-    padding: 20px 0;
+    font-size: 9px;                      /* ⬅️ antes 14 */
+    padding: 13px 0;                     /* ⬅️ antes 20 */
   }
 
   /* --- Barra de colores más estrecha --- */
   .barra-colores {
     display: flex;
-    height: 32px;
+    height: 21px;                        /* ⬅️ antes 32 */
     border: 1px solid #c7ccd1;
-    border-radius: 5px;
+    border-radius: 3px;                  /* ⬅️ antes 5 */
     overflow: hidden;
     width: 100%;
-    max-width: 320px;
+    max-width: 213px;                    /* ⬅️ antes 320 */
   }
   .barra-colores .franja {
     height: 100%;
@@ -121,7 +121,7 @@
   }
   .barra-colores .franja:not(:first-child) {
     flex: 1;
-    max-width: 45px;
+    max-width: 30px;                     /* ⬅️ antes 45 */
   }
 
   /* Anular cualquier flex del body que ponga la cabecera al lado de la tarjeta */
@@ -147,9 +147,6 @@
 </div>
 
 <script>
-// ============================================================================
-// DATOS (pegados del archivo .txt)
-// ============================================================================
 const DATOS_RAW = `
 "Agua de refrigeración","Código de colores IS-2379 para servicios generales","Verde mar","Azul francés",""
 "Agua para alimentación de la caldera","Código de colores IS-2379 para servicios generales","Verde mar","Rojo golfo",""
@@ -273,9 +270,6 @@ const DATOS_RAW = `
 "Fosgeno","Código de colores IS-2379 para gases industriales","Amarillo canario","Negro","Blanco"
 `;
 
-// ============================================================================
-// MAPA DE COLORES (nombre → CSS)
-// ============================================================================
 const COLORES_CSS = {
   "verde mar": "#2e8b57",
   "azul francés": "#0072bb",
@@ -312,9 +306,6 @@ function colorCSS(nombre) {
   return COLORES_CSS[key] || "#cccccc";
 }
 
-// ============================================================================
-// PARSEO
-// ============================================================================
 function parsearLinea(linea) {
   const campos = [];
   let actual = '';
@@ -338,14 +329,10 @@ function parsearLinea(linea) {
 const DATOS = DATOS_RAW.trim().split(/\r?\n/).filter(l => l.trim()).map(parsearLinea);
 const DATOS_ORDENADOS = [...DATOS].sort((a, b) => a[0].localeCompare(b[0], 'es'));
 
-// ============================================================================
-// ELEMENTOS
-// ============================================================================
 const select = document.getElementById('selectContenido');
 const btnLimpiar = document.getElementById('btnLimpiar');
 const resultsDiv = document.getElementById('results');
 
-// Poblar select
 DATOS_ORDENADOS.forEach((fila, idx) => {
   const opt = document.createElement('option');
   opt.value = idx;
@@ -353,9 +340,6 @@ DATOS_ORDENADOS.forEach((fila, idx) => {
   select.appendChild(opt);
 });
 
-// ============================================================================
-// RENDERIZADO
-// ============================================================================
 function renderResultado() {
   const idx = select.value;
   if (idx === '') {
@@ -370,7 +354,6 @@ function renderResultado() {
   const banda1 = fila[3] || '';
   const banda2 = fila[4] || '';
 
-  // Filas visibles solo si tienen datos
   let filasHtml = '';
 
   if (codigo) {
@@ -386,7 +369,6 @@ function renderResultado() {
     filasHtml += `<tr><th>Segunda banda de color</th><td>${banda2}</td></tr>`;
   }
 
-  // Construir franjas de la barra (solo las que tienen color)
   let barraHtml = '';
   const colores = [
     { nombre: fondo, flex: 2 },
@@ -395,17 +377,15 @@ function renderResultado() {
   ];
   colores.forEach(c => {
     if (c.nombre && c.nombre.trim()) {
-      const estiloFlex = c.flex === 2 ? 'flex:2;' : 'flex:1;max-width:45px;';
+      const estiloFlex = c.flex === 2 ? 'flex:2;' : 'flex:1;max-width:30px;';
       barraHtml += `<div class="franja" style="background:${colorCSS(c.nombre)};${estiloFlex}" title="${c.nombre}"></div>`;
     }
   });
 
-  // Solo añadir la fila "Barra" si hay al menos una franja
   if (barraHtml) {
     filasHtml += `<tr><th>Tuberia</th><td><div class="barra-colores">${barraHtml}</div></td></tr>`;
   }
 
-  // Si no hay ninguna fila, mostrar mensaje
   if (!filasHtml) {
     filasHtml = `<tr><td colspan="2" class="no-results">Sin datos disponibles para este contenido.</td></tr>`;
   }
@@ -428,7 +408,6 @@ btnLimpiar.addEventListener('click', function() {
 });
 </script>
 
-<!-- Logo + menú de cabecera (igual que en el HTML original) -->
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

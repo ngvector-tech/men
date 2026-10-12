@@ -10,67 +10,67 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 24px 16px 60px;
+    padding: 16px 11px 40px;              /* ⬅️ antes 24 16 60 */
     color: #222;
   }
   .container {
-    max-width: 640px;
+    max-width: 427px;                    /* ⬅️ antes 640 (≈ 2/3) */
     margin: 0 auto;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px 28px 32px;
+    border-radius: 7px;                  /* ⬅️ antes 10 */
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;             /* ⬅️ antes 24 28 32 */
   }
   h1 {
     text-align: center;
-    font-size: 22px;
+    font-size: 15px;                     /* ⬅️ antes 22 */
     background: #111;
     color: #fff;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin: 0 0 18px;
+    padding: 8px 11px;                   /* ⬅️ antes 12 16 */
+    border-radius: 4px;                  /* ⬅️ antes 6 */
+    margin: 0 0 12px;                    /* ⬅️ antes 18 */
   }
   .legend {
-    font-size: 13px;
+    font-size: 9px;                      /* ⬅️ antes 13 */
     line-height: 1.5;
     color: #333;
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 20px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
+    padding: 7px 9px;                    /* ⬅️ antes 10 14 */
+    margin-bottom: 13px;                 /* ⬅️ antes 20 */
   }
   .legend b { color: #111; }
-  .field { margin-bottom: 16px; }
+  .field { margin-bottom: 11px; }        /* ⬅️ antes 16 */
   .field label {
     display: block;
-    font-size: 13px;
+    font-size: 9px;                      /* ⬅️ antes 13 */
     font-weight: 600;
     color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 3px;                  /* ⬅️ antes 5 */
   }
   input[type="text"] {
     width: 100%;
-    padding: 9px 10px;
-    font-size: 15px;
+    padding: 6px 7px;                    /* ⬅️ antes 9 10 */
+    font-size: 10px;                     /* ⬅️ antes 15 */
     border: 1px solid #c7ccd1;
-    border-radius: 6px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
     background: #fff;
   }
   input:focus { outline: none; border-color: #4a90d9; }
-  #results { margin-top: 22px; }
+  #results { margin-top: 15px; }         /* ⬅️ antes 22 */
   .result-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 14px;
-    margin-bottom: 6px;
-    border-radius: 6px;
+    padding: 7px 9px;                    /* ⬅️ antes 10 14 */
+    margin-bottom: 4px;                  /* ⬅️ antes 6 */
+    border-radius: 4px;                  /* ⬅️ antes 6 */
     font-weight: 600;
-    font-size: 15px;
+    font-size: 10px;                     /* ⬅️ antes 15 */
   }
   .result-row .mat-name { font-weight: 700; }
-  .result-row .mat-desc { font-weight: 500; font-size: 13px; }
+  .result-row .mat-desc { font-weight: 500; font-size: 9px; }  /* ⬅️ antes 13 */
   .nivel-excelente { background: #2e7d32; color: #fff; }
   .nivel-bueno     { background: #a5d6a7; color: #1b5e20; }
   .nivel-pobre     { background: #ffb74d; color: #7a3e00; }
@@ -84,26 +84,26 @@
   .no-results {
     text-align: center;
     color: #888;
-    font-size: 14px;
-    padding: 20px 0;
+    font-size: 9px;                      /* ⬅️ antes 14 */
+    padding: 13px 0;                     /* ⬅️ antes 20 */
   }
   .section-label {
-    font-size: 12px;
+    font-size: 8px;                      /* ⬅️ antes 12 */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: #999;
-    margin: 18px 0 8px;
+    margin: 12px 0 5px;                  /* ⬅️ antes 18 0 8 */
   }
   #btnLimpiar {
     background: #111;
     color: #fff;
     border: none;
-    padding: 10px 18px;
-    font-size: 14px;
+    padding: 7px 12px;                   /* ⬅️ antes 10 18 */
+    font-size: 9px;                      /* ⬅️ antes 14 */
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 4px;                  /* ⬅️ antes 6 */
     cursor: pointer;
-    margin-bottom: 16px;
+    margin-bottom: 11px;                 /* ⬅️ antes 16 */
     width: 100%;
     transition: background 0.2s;
   }
@@ -124,7 +124,6 @@
     <label for="ingredienteInput">Ingrediente</label>
     <input list="ingredienteList" id="ingredienteInput" type="text" placeholder="Escribe o selecciona un ingrediente..." autocomplete="off">
     <datalist id="ingredienteList"></datalist>
-	<!-- BOTÓN NUEVO -->
   <button type="button" id="btnLimpiar">Nueva consulta</button>
   </div>
 
@@ -688,7 +687,7 @@ const DATA = [
 ["Wisky y Vinos","No usar","","Excelente","Excelente","Excelente","No usar","Bueno","Excelente","Excelente","Excelente"],
 ["Xileno, seco","Bueno","","Excelente","Excelente","Excelente","Bueno","Excelente","Excelente","Excelente","Excelente"]
 ];
-// Construir lista única de ingredientes ordenada alfabéticamente
+
 const ingredientesUnicos = [...new Set(DATA.map(r => r[0]))].sort((a,b) => a.localeCompare(b, 'es'));
 
 const ingredienteInput = document.getElementById('ingredienteInput');
@@ -757,19 +756,13 @@ function onIngredienteChange() {
 ingredienteInput.addEventListener('input', onIngredienteChange);
 ingredienteInput.addEventListener('change', onIngredienteChange);
 document.getElementById('btnLimpiar').addEventListener('click', function() {
-  // Limpiar la selección del ingrediente
   const ingredienteInput = document.getElementById('ingredienteInput');
   ingredienteInput.value = '';
-
-  // Vaciar el contenedor de resultados
   document.getElementById('results').innerHTML = '';
-
-  // Dejar el foco nuevamente en el input
   ingredienteInput.focus();
 });
 </script>
 <link rel="stylesheet" href="men-header.css">
-...
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

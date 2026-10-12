@@ -6,28 +6,28 @@
 <title>Buscador de Bridas y Dimensiones</title>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f2; margin: 0; padding: 24px 16px 60px; color: #222; display: block !important; }
-  .container { max-width: 780px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 24px 28px 32px; }
-  h1 { text-align: center; font-size: 22px; background: #111; color: #fff; padding: 12px 16px; border-radius: 6px; margin: 0 0 6px; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f2; margin: 0; padding: 16px 11px 40px; color: #222; display: block !important; }
+  .container { max-width: 520px; margin: 0 auto; background: #fff; border-radius: 7px; box-shadow: 0 2px 7px rgba(0,0,0,0.08); padding: 16px 19px 21px; }
+  h1 { text-align: center; font-size: 15px; background: #111; color: #fff; padding: 8px 11px; border-radius: 4px; margin: 0 0 4px; }
 
   /* Línea de resumen debajo del título */
   .resumen-seleccion {
     text-align: center;
     color: #a03428;
     font-weight: bold;
-    font-size: 14px;
-    margin: 6px 0 18px;
-    min-height: 20px;
+    font-size: 9px;
+    margin: 4px 0 12px;
+    min-height: 13px;
     letter-spacing: 0.3px;
     text-transform: uppercase;
   }
 
-  .grid-2 { display: table; width: 100%; table-layout: fixed; margin-bottom: 12px; }
-  .col { display: table-cell; width: 50%; padding-right: 8px; vertical-align: top; }
-  .col:last-child { padding-right: 0; padding-left: 8px; }
-  .field { margin-bottom: 14px; }
-  .field label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 5px; }
-  select { width: 100%; padding: 9px 10px; font-size: 14px; border: 1px solid #c7ccd1; border-radius: 6px; background: #fff; }
+  .grid-2 { display: table; width: 100%; table-layout: fixed; margin-bottom: 8px; }
+  .col { display: table-cell; width: 50%; padding-right: 5px; vertical-align: top; }
+  .col:last-child { padding-right: 0; padding-left: 5px; }
+  .field { margin-bottom: 9px; }
+  .field label { display: block; font-size: 9px; font-weight: 600; color: #444; margin-bottom: 3px; }
+  select { width: 100%; padding: 6px 7px; font-size: 9px; border: 1px solid #c7ccd1; border-radius: 4px; background: #fff; }
   select:focus { outline: none; border-color: #4a90d9; }
   select:disabled { background: #f4f6f8; color: #aaa; cursor: not-allowed; }
 
@@ -35,25 +35,25 @@
   select option.norma-actual { color: #256b2c; font-weight: 600; }
   select option.norma-antigua { color: #a03428; font-weight: 600; }
 
-  #btnLimpiar { background: #111; color: #fff; border: none; padding: 10px 18px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; margin-top: 10px; margin-bottom: 16px; width: 100%; transition: background 0.2s; }
+  #btnLimpiar { background: #111; color: #fff; border: none; padding: 7px 12px; font-size: 9px; font-weight: 600; border-radius: 4px; cursor: pointer; margin-top: 7px; margin-bottom: 11px; width: 100%; transition: background 0.2s; }
   #btnLimpiar:hover { background: #333; }
-  .image-container { text-align: center; margin: 20px 0; padding: 15px; background: #fafafa; border: 1px dashed #ccc; border-radius: 8px; }
-  .image-container img { max-width: 100%; max-height: 180px; object-fit: contain; }
-  .img-placeholder { font-size: 13px; color: #888; font-style: italic; }
-  #results { margin-top: 20px; }
-  .card-result { background: #f8f9fa; border: 1px solid #e0e3e6; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-  .card-title { font-size: 15px; font-weight: bold; color: #111; margin-bottom: 12px; border-bottom: 2px solid #4a90d9; padding-bottom: 4px; }
-  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .data-table th, .data-table td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+  .image-container { text-align: center; margin: 13px 0; padding: 10px; background: #fafafa; border: 1px dashed #ccc; border-radius: 5px; }
+  .image-container img { max-width: 100%; max-height: 120px; object-fit: contain; }
+  .img-placeholder { font-size: 9px; color: #888; font-style: italic; }
+  #results { margin-top: 13px; }
+  .card-result { background: #f8f9fa; border: 1px solid #e0e3e6; border-radius: 5px; padding: 11px; margin-bottom: 8px; }
+  .card-title { font-size: 10px; font-weight: bold; color: #111; margin-bottom: 8px; border-bottom: 2px solid #4a90d9; padding-bottom: 3px; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 9px; }
+  .data-table th, .data-table td { padding: 5px 7px; border-bottom: 1px solid #e2e8f0; text-align: left; }
   .data-table th { background: #edf2f7; color: #4a5568; font-weight: 600; }
-  .no-results { text-align: center; color: #888; font-size: 14px; padding: 20px 0; }
-  #loadingMsg { text-align: center; color: #0284c7; font-weight: bold; padding: 14px; font-size: 14px; }
-  .bloque-tornilleria { margin-bottom: 18px; padding: 16px 18px; background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; border-radius: 8px; }
-  .bloque-tornilleria h3 { margin: 0 0 12px; font-size: 14px; color: #9a3412; text-transform: uppercase; letter-spacing: 0.5px; }
-  .bloque-tornilleria .linea-calc { font-size: 15px; font-weight: bold; color: #b42318; margin: 6px 0; }
-  .bloque-tornilleria .linea-nota { font-size: 12px; color: #78716c; margin-top: 10px; }
-  .bloque-tornilleria .btn-ir { display: block; width: 100%; margin-top: 14px; padding: 12px; background: #16a34a; color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
-  .bloque-tornilleria .btn-ir-sec { display: block; width: 100%; margin-top: 8px; padding: 10px; background: #fff; color: #b42318; border: 1px solid #ea580c; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; }
+  .no-results { text-align: center; color: #888; font-size: 9px; padding: 13px 0; }
+  #loadingMsg { text-align: center; color: #0284c7; font-weight: bold; padding: 9px; font-size: 9px; }
+  .bloque-tornilleria { margin-bottom: 12px; padding: 11px 12px; background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; border-radius: 5px; }
+  .bloque-tornilleria h3 { margin: 0 0 8px; font-size: 9px; color: #9a3412; text-transform: uppercase; letter-spacing: 0.5px; }
+  .bloque-tornilleria .linea-calc { font-size: 10px; font-weight: bold; color: #b42318; margin: 4px 0; }
+  .bloque-tornilleria .linea-nota { font-size: 8px; color: #78716c; margin-top: 7px; }
+  .bloque-tornilleria .btn-ir { display: block; width: 100%; margin-top: 9px; padding: 8px; background: #16a34a; color: #fff; border: none; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; }
+  .bloque-tornilleria .btn-ir-sec { display: block; width: 100%; margin-top: 5px; padding: 7px; background: #fff; color: #b42318; border: 1px solid #ea580c; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; }
 </style>
 <link rel="stylesheet" href="men-header.css">
 </head>
@@ -153,12 +153,6 @@ function parsearCSV(text) {
   return filas;
 }
 
-// ============================================================
-// COLOR DE LA NORMA
-// - contiene "antigua" → rojo
-// - contiene "actual"  → verde
-// - no contiene ninguna → verde (por defecto)
-// ============================================================
 function claseNorma(norma) {
   const t = String(norma || '').toUpperCase();
   if (t.includes('ANTIGUA')) return 'norma-antigua';
@@ -200,9 +194,6 @@ function aplicarColorSeleccionNorma() {
   normaSelect.style.fontWeight = '600';
 }
 
-// ============================================================
-// RESUMEN BAJO EL TÍTULO
-// ============================================================
 function actualizarResumen() {
   const partes = ['BRIDA'];
   const cat = catSelect.value;
@@ -282,7 +273,6 @@ catSelect.addEventListener('change', function() {
 
   normaSelect.disabled = !cat;
   if (cat) {
-    // ✅ CAMBIO 1: incluir tanto [12] como [11] en el desplegable de Norma
     const normas = [...new Set(
       DATA.filter(item => item[0] === cat)
           .flatMap(item => [item[12], item[11]])
@@ -324,7 +314,6 @@ normaSelect.addEventListener('change', function() {
 
   dnSelect.disabled = !norma;
   if (norma) {
-    // ✅ CAMBIO 2: filtrar DN por [12] o [11]
     const dns = [...new Set(
       DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma))
           .map(item => item[1])
@@ -356,7 +345,6 @@ dnSelect.addEventListener('change', function() {
 
   pnSelect.disabled = !dn;
   if (dn) {
-    // ✅ CAMBIO 3: filtrar PN por [12] o [11]
     const pns = [...new Set(
       DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn)
           .map(item => item[2])
@@ -382,7 +370,6 @@ matSelect.addEventListener('change', function() {
   actualizarResumen();
   const cat = catSelect.value, norma = normaSelect.value, dn = dnSelect.value, pn = pnSelect.value;
   if (!cat || !norma || !dn || !pn) return;
-  // ✅ CAMBIO 4a: filtrar por [12] o [11]
   const matches = DATA.filter(item => 
     item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn
   );
@@ -394,7 +381,6 @@ matSelect.addEventListener('change', function() {
 function renderResults() {
   const cat = catSelect.value, norma = normaSelect.value, dn = dnSelect.value, pn = pnSelect.value;
   if (!cat || !norma || !dn || !pn) { resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = ''; return; }
-  // ✅ CAMBIO 4b: filtrar por [12] o [11]
   const matches = DATA.filter(item => 
     item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn
   );
@@ -408,13 +394,11 @@ function renderResults() {
 
     const colorPrincipal = colorNorma(m[12]);
 
-    // ✅ NUEVO: concatenar DN y PN a la norma principal
     const normaPrincipalConDP = `${m[12]} · DN${m[1]} · ${m[2]}`;
 
     let filaCompatible = '';
     if (m[11]) {
       const colorComp = colorNorma(m[11]);
-      // ✅ NUEVO: concatenar DN y PN también a la norma compatible
       const normaCompatibleConDP = `${m[11]} · DN${m[1]} · ${m[2]}`;
       filaCompatible = `<tr><th>Norma compatible</th><td style="color:${colorComp}; font-weight:bold;">${normaCompatibleConDP}</td></tr>`;
     }
@@ -598,11 +582,6 @@ function irATuerca(ref, descripcion) {
   window.location.assign(`../Pedidos desde obra/index.html?${params.toString()}`);
 }
 
-// ============================================================
-// DIÁMETRO DE TORNILLO A PARTIR DEL Ø DE TALADRO
-// - Tabla ampliada con taladros reales ASME B16.5 + AWWA C207
-// - Si no hay coincidencia exacta, AJUSTA A LA BAJA
-// ============================================================
 function diametroTornilloDesdeTaladro(taladro) {
   const t = parseFloat(String(taladro).replace(',', '.'));
   if (isNaN(t)) return 0;
@@ -612,36 +591,36 @@ function diametroTornilloDesdeTaladro(taladro) {
     [12,     10],
     [13.5,   12],
     [14,     12],
-    [15.9,   16],   // 5/8"
+    [15.9,   16],
     [16,     16],
-    [17.5,   20],   // 3/4"
+    [17.5,   20],
     [18,     16],
-    [19.1,   20],   // 3/4"
+    [19.1,   20],
     [20,     16],
-    [20.6,   22],   // 7/8"
-    [22.2,   22],   // 7/8"
-    [23.8,   24],   // 1"
+    [20.6,   22],
+    [22.2,   22],
+    [23.8,   24],
     [24,     20],
-    [25.4,   24],   // 1"
-    [26.9,   27],   // 1⅛"
-    [28.6,   27],   // 1⅛"
-    [30.2,   30],   // 1¼"
-    [31.8,   30],   // 1¼"
-    [34.9,   33],   // 1⅜"
-    [36.5,   36],   // 1½"
-    [38.1,   36],   // 1½"
-    [41.3,   39],   // 1⅝"
-    [44.5,   42],   // 1¾"
-    [47.6,   45],   // 1⅞"
-    [50.8,   48],   // 2"
-    [53.9,   52],   // 2⅛"
-    [57.2,   56],   // 2¼"
-    [60.3,   60],   // 2⅜"
-    [63.5,   64],   // 2½"
-    [66.7,   68],   // 2⅝"
-    [69.9,   72],   // 2¾"
-    [73.0,   76],   // 2⅞"
-    [76.2,   80]    // 3"
+    [25.4,   24],
+    [26.9,   27],
+    [28.6,   27],
+    [30.2,   30],
+    [31.8,   30],
+    [34.9,   33],
+    [36.5,   36],
+    [38.1,   36],
+    [41.3,   39],
+    [44.5,   42],
+    [47.6,   45],
+    [50.8,   48],
+    [53.9,   52],
+    [57.2,   56],
+    [60.3,   60],
+    [63.5,   64],
+    [66.7,   68],
+    [69.9,   72],
+    [73.0,   76],
+    [76.2,   80]
   ];
 
   for (const [d, m] of tabla) {
@@ -659,10 +638,6 @@ function diametroTornilloDesdeTaladro(taladro) {
   return tabla[0][1];
 }
 
-// ============================================================
-// ALTURA DE TUERCA DIN 934
-// - Ampliada hasta M80
-// ============================================================
 function alturaTuercaDIN934(metrico) {
   const tabla = {
     4:3.2, 5:4, 6:5, 8:6.5, 10:8, 12:10, 14:11, 16:13, 18:15,
