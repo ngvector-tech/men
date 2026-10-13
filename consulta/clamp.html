@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selector de Clamp - Medidas</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+  }
+  .container {
+    max-width: 373px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 15px;
+  }
+  .field { margin-bottom: 11px; }
+  .field label {
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 3px;
+  }
+  select {
+    width: 100%;
+    padding: 6px 7px;
+    font-size: 10px;
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;
+    background: #fff;
+  }
+  select:focus { outline: none; border-color: #4a90d9; }
+  
+  #resultBox {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 5px;
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    text-align: center;
+    display: none;
+  }
+  #resultBox.show { display: block; }
+  .result-item {
+    margin-bottom: 9px;
+  }
+  .result-item:last-child {
+    margin-bottom: 0;
+  }
+  .result-item .label {
+    font-size: 8px;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .result-item .value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+  }
+  .result-item .sub-value {
+    font-size: 9px;
+    color: #555;
+    margin-top: 1px;
+  }
+  .btn-copy {
+    margin-top: 12px;
+    padding: 5px 11px;
+    font-size: 9px;
+    font-weight: 600;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-copy:hover { background: #333; }
+  .btn-buscar {
+    margin-top: 6px;
+    padding: 6px 11px;
+    font-size: 9px;
+    font-weight: 600;
+    background: #0284c7;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+  }
+  .btn-buscar:hover { background: #0369a1; }
+  .error-msg {
+    color: #b04a3f;
+    font-size: 10px;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Selector de Clamp</h1>
+
+  <div class="field">
+    <label for="selectDiametroTubo">Diámetro Tubo</label>
+    <select id="selectDiametroTubo">
+      <option value="">Cargando datos...</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="selectDiametroAsiento">Diámetro Asiento</label>
+    <select id="selectDiametroAsiento">
+      <option value="">Selecciona primero un diámetro de tubo</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="selectAltura">Altura</label>
+    <select id="selectAltura">
+      <option value="">Selecciona primero un diámetro de asiento</option>
+    </select>
+  </div>
+
+  <div id="resultBox">
+    <div class="result-item">
+      <div class="label">Norma / Referencia</div>
+      <div class="value" id="normaValue">-</div>
+    </div>
+    <div class="result-item">
+      <div class="label">Medidas Seleccionadas</div>
+      <div class="sub-value" id="medidasValue">-</div>
+    </div>
+    <button class="btn-copy" id="copyBtn">Copiar Resultados</button>
+    <button class="btn-buscar" id="btnIrArticulo">🔍 Buscar en Artículos</button>
+  </div>
+
+  <div id="errorMsg" class="error-msg"></div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN DE LA RUTA AL INDEX PRINCIPAL
+// ============================================================
+// Ajusta esta ruta según donde esté tu index.html respecto a este clamp.html
+// Ejemplos:
+//   - Si clamp.html y index.html están en la MISMA carpeta: 'index.html'
+//   - Si clamp.html está en una subcarpeta (ej: consulta/) e index.html en la raíz: '../index.html'
+//   - Si clamp.html está en consulta/calculos/ e index.html en 'Pedidos desde obra/': '../../Pedidos%20desde%20obra/index.html'
+// ============================================================
+const URL_INDEX_ARTICULOS = '../Pedidos%20desde%20obra/index.html';
+
+// Variables globales para almacenar los datos del CSV
+let datosClamp = [];
+
+// Elementos del DOM
+const selectTubo = document.getElementById('selectDiametroTubo');
+const selectAsiento = document.getElementById('selectDiametroAsiento');
+const selectAltura = document.getElementById('selectAltura');
+const resultBox = document.getElementById('resultBox');
+const normaValue = document.getElementById('normaValue');
+const medidasValue = document.getElementById('medidasValue');
+const copyBtn = document.getElementById('copyBtn');
+const btnIrArticulo = document.getElementById('btnIrArticulo');
+const errorMsg = document.getElementById('errorMsg');
+
+// Función para parsear una línea del CSV (maneja comillas y separadores)
+function parsearLineaCSV(linea) {
+    const separador = (linea.split(';').length > linea.split(',').length) ? ';' : ',';
+    
+    const resultado = [];
+    let valorActual = '';
+    let dentroComillas = false;
+    
+    for (let i = 0; i < linea.length; i++) {
+        const char = linea[i];
+        
+        if (char === '"') {
+            if (dentroComillas && linea[i+1] === '"') {
+                valorActual += '"';
+                i++;
+            } else {
+                dentroComillas = !dentroComillas;
+            }
+        } else if (char === separador && !dentroComillas) {
+            resultado.push(valorActual.trim());
+            valorActual = '';
+        } else {
+            valorActual += char;
+        }
+    }
+    resultado.push(valorActual.trim());
+    
+    return resultado;
+}
+
+// Función para cargar y procesar el archivo CSV
+async function cargarCSV() {
+    try {
+        const respuesta = await fetch('clamp.csv');
+        if (!respuesta.ok) throw new Error('No se encontró clamp.csv');
+        
+        const texto = await respuesta.text();
+        const lineas = texto.split(/\r?\n/);
+        
+        datosClamp = [];
+        
+        lineas.forEach(linea => {
+            const limpia = linea.trim();
+            if (!limpia) return;
+            
+            const campos = parsearLineaCSV(limpia);
+            
+            if (campos.length >= 4) {
+                const norma = campos[0].replace(/^"|"$/g, '').trim();
+                const diametroTubo = campos[campos.length - 3].replace(/^"|"$/g, '').trim();
+                const diametroAsiento = campos[campos.length - 2].replace(/^"|"$/g, '').trim();
+                const altura = campos[campos.length - 1].replace(/^"|"$/g, '').trim();
+                
+                if (norma && diametroTubo) {
+                    datosClamp.push({
+                        norma: norma,
+                        tubo: diametroTubo,
+                        asiento: diametroAsiento,
+                        altura: altura
+                    });
+                }
+            }
+        });
+        
+        if (datosClamp.length === 0) {
+            throw new Error('El archivo CSV está vacío o tiene un formato incorrecto.');
+        }
+        
+        inicializarSelectores();
+        
+    } catch (error) {
+        console.error(error);
+        errorMsg.textContent = 'Error al cargar clamp.csv: ' + error.message;
+        errorMsg.style.display = 'block';
+        selectTubo.innerHTML = '<option value="">Error al cargar datos</option>';
+    }
+}
+
+// Función para inicializar las casillas desplegables
+function inicializarSelectores() {
+    const tubosUnicos = [...new Set(datosClamp.map(d => d.tubo))].sort((a, b) => {
+        const numA = parseFloat(a.replace(',', '.'));
+        const numB = parseFloat(b.replace(',', '.'));
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        return a.localeCompare(b);
+    });
+    
+    selectTubo.innerHTML = '<option value="">— Selecciona —</option>';
+    tubosUnicos.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        selectTubo.appendChild(opt);
+    });
+    
+    selectAsiento.innerHTML = '<option value="">Selecciona primero un diámetro de tubo</option>';
+    selectAltura.innerHTML = '<option value="">Selecciona primero un diámetro de asiento</option>';
+    
+    resultBox.classList.remove('show');
+    errorMsg.style.display = 'none';
+}
+
+// Función que se ejecuta al cambiar el Diámetro de Tubo
+function onTuboChange() {
+    const tuboSeleccionado = selectTubo.value;
+    
+    if (!tuboSeleccionado) {
+        selectAsiento.innerHTML = '<option value="">Selecciona primero un diámetro de tubo</option>';
+        selectAltura.innerHTML = '<option value="">Selecciona primero un diámetro de asiento</option>';
+        resultBox.classList.remove('show');
+        return;
+    }
+    
+    const filtradosPorTubo = datosClamp.filter(d => d.tubo === tuboSeleccionado);
+    
+    const asientosUnicos = [...new Set(filtradosPorTubo.map(d => d.asiento))].sort((a, b) => {
+        const numA = parseFloat(a.replace(',', '.'));
+        const numB = parseFloat(b.replace(',', '.'));
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        return a.localeCompare(b);
+    });
+    
+    selectAsiento.innerHTML = '<option value="">— Selecciona —</option>';
+    asientosUnicos.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        selectAsiento.appendChild(opt);
+    });
+    
+    selectAltura.innerHTML = '<option value="">Selecciona primero un diámetro de asiento</option>';
+    resultBox.classList.remove('show');
+}
+
+// Función que se ejecuta al cambiar el Diámetro de Asiento
+function onAsientoChange() {
+    const tuboSeleccionado = selectTubo.value;
+    const asientoSeleccionado = selectAsiento.value;
+    
+    if (!tuboSeleccionado || !asientoSeleccionado) {
+        selectAltura.innerHTML = '<option value="">Selecciona primero un diámetro de asiento</option>';
+        resultBox.classList.remove('show');
+        return;
+    }
+    
+    const filtrados = datosClamp.filter(d => d.tubo === tuboSeleccionado && d.asiento === asientoSeleccionado);
+    
+    const alturasUnicas = [...new Set(filtrados.map(d => d.altura))].sort((a, b) => {
+        const numA = parseFloat(a.replace(',', '.'));
+        const numB = parseFloat(b.replace(',', '.'));
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        return a.localeCompare(b);
+    });
+    
+    selectAltura.innerHTML = '<option value="">— Selecciona —</option>';
+    alturasUnicas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        selectAltura.appendChild(opt);
+    });
+    
+    resultBox.classList.remove('show');
+}
+
+// Función que se ejecuta al cambiar la Altura
+function onAlturaChange() {
+    const tuboSeleccionado = selectTubo.value;
+    const asientoSeleccionado = selectAsiento.value;
+    const alturaSeleccionada = selectAltura.value;
+    
+    if (!tuboSeleccionado || !asientoSeleccionado || !alturaSeleccionada) {
+        resultBox.classList.remove('show');
+        return;
+    }
+    
+    const registro = datosClamp.find(d => 
+        d.tubo === tuboSeleccionado && 
+        d.asiento === asientoSeleccionado && 
+        d.altura === alturaSeleccionada
+    );
+    
+    if (registro) {
+        normaValue.textContent = registro.norma;
+        medidasValue.textContent = `Tubo: ${registro.tubo} | Asiento: ${registro.asiento} | Altura: ${registro.altura}`;
+        resultBox.classList.add('show');
+    } else {
+        resultBox.classList.remove('show');
+    }
+}
+
+// ============================================================
+// FUNCIÓN PARA EXTRAER EL NOMBRE DE LA NORMA
+// ============================================================
+// Corta en el primer carácter que NO sea letra, número, espacio, guion, barra o punto.
+// Esto elimina el emoji ✅ (o cualquier versión corrupta como âś…) y lo que venga después.
+function extraerNombreNorma(normaCompleta) {
+    if (!normaCompleta) return '';
+    const match = normaCompleta.match(/^[\w\s\-\/\.]+/);
+    return match ? match[0].trim() : '';
+}
+
+// ============================================================
+// FUNCIÓN PARA IR A BUSCAR EL ARTÍCULO EN EL INDEX PRINCIPAL
+// ============================================================
+function irABuscarArticulo() {
+    const tubo = selectTubo.value;
+    const asiento = selectAsiento.value;
+    const altura = selectAltura.value;
+    const norma = normaValue.textContent;
+    
+    if (!tubo || !asiento || !altura || norma === '-') {
+        alert('Selecciona todas las medidas primero.');
+        return;
+    }
+    
+    const nombreNorma = extraerNombreNorma(norma);
+    
+    if (!nombreNorma) {
+        alert('No se pudo extraer el nombre de la norma.');
+        return;
+    }
+    
+    // Construir la URL con el parámetro de búsqueda
+    const url = `${URL_INDEX_ARTICULOS}?buscar=${encodeURIComponent(nombreNorma)}`;
+    
+    // Redirigir en la misma pestaña
+    window.location.href = url;
+}
+
+// Función para copiar los resultados al portapapeles
+copyBtn.addEventListener('click', () => {
+    const tubo = selectTubo.value;
+    const asiento = selectAsiento.value;
+    const altura = selectAltura.value;
+    const norma = normaValue.textContent;
+    
+    if (!tubo || !asiento || !altura || norma === '-') return;
+    
+    const resumen = `--- RESULTADO DEL SELECTOR DE CLAMP ---
+
+Norma / Referencia: ${norma}
+Diámetro Tubo: ${tubo}
+Diámetro Asiento: ${asiento}
+Altura: ${altura}`;
+    
+    navigator.clipboard.writeText(resumen).then(() => {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '¡Copiado!';
+        setTimeout(() => {
+            copyBtn.textContent = originalText;
+        }, 1500);
+    });
+});
+
+// Asignar eventos a los selectores
+selectTubo.addEventListener('change', onTuboChange);
+selectAsiento.addEventListener('change', onAsientoChange);
+selectAltura.addEventListener('change', onAlturaChange);
+
+// Asignar evento al botón de buscar artículo
+btnIrArticulo.addEventListener('click', irABuscarArticulo);
+
+// Cargar el CSV al iniciar la página
+window.addEventListener('DOMContentLoaded', cargarCSV);
+</script>
+
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>

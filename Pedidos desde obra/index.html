@@ -180,7 +180,7 @@
         /* ============ BOTÓN NO LO ENCUENTRO (INTEGRADO) ============ */
         #btnNoEncuentro {
             background: #C3C6C6;
-            color: #27E7F5; /* Corregido: añadido # */
+            color: #F54927; /* Corregido: añadido # */
             border: none;
             border-radius: 6px;
             padding: 6px 12px;
@@ -193,7 +193,7 @@
             gap: 6px;
             transition: transform 0.15s ease, background 0.15s ease;
             white-space: nowrap;
-        } /* Corregido: añadida llave de cierre */
+        }
         #btnNoEncuentro:hover { background: #a1a4a4; transform: scale(1.03); }
         #btnNoEncuentro:active { transform: scale(0.97); }
 
@@ -264,11 +264,11 @@
             <div class="ficha-box">
                 <div class="ficha-top">
                     <div class="col-img">
-                        <img id="imgArt" src="" onerror="this.src='PR.png'" alt="Artículo">
+                        <img id="imgArt" src="" onerror="this.src='pr.png'" alt="Artículo">
                     </div>
                     <div class="col-esquema">
                         <div id="bloqueEsquema" class="esquema-pr" style="display:none;">
-                            <img src="PR.png" alt="Esquema de dimensiones">
+                            <img id="imgEsquema" src="pr.png" alt="Esquema de dimensiones">
                             <div class="cotas">
                                 COTAS:
                                 <span id="cotaA" style="display:none;">A: <span id="dimA">-</span></span>
@@ -478,6 +478,24 @@
                 .replace(/\s+/g, ' ')
                 .trim();
         }
+
+        // ============ NUEVA FUNCIÓN PARA DECIDIR LA IMAGEN DEL ESQUEMA ============
+        function obtenerImagenEsquema(nombreArticulo) {
+            if (!nombreArticulo) return 'pr.png';
+            const art = normalizar(nombreArticulo);
+            
+            // Si contiene CLAMP, mostrar clamp.png
+            if (art.includes('CLAMP')) {
+                return 'clamp.png';
+            }
+            // Si contiene CODO, mostrar codo.png
+            if (art.includes('CODO')) {
+                return 'codo.png';
+            }
+            // Por defecto, mostrar pr.png
+            return 'pr.png';
+        }
+        // =========================================================================
 
         function obtenerFamilia(texto) {
             if (!texto) return null;
@@ -1041,8 +1059,9 @@
             const grid = document.getElementById('grid-art');
             let html = '';
             arts.forEach(a => {
+                // MODIFICADO: Ahora usa obtenerImagenEsquema(a) como respaldo
                 html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(a)}', () => pasoDimensiones('${escapeQuotes(a)}'))">
-                    ${crearBadgeHTML(a)}<img src="imagenes/${a}.png" onerror="this.src='PR.png'"><div>${a}</div>
+                    ${crearBadgeHTML(a)}<img src="imagenes/${a}.png" onerror="this.src='${obtenerImagenEsquema(a)}'"><div>${a}</div>
                 </div>`;
             });
             grid.innerHTML = html;
@@ -1208,9 +1227,10 @@
                 if (articulosUnicos.length > 0) {
                     html += `<div style="grid-column: 1/-1; margin-top: 10px; margin-bottom: 2px; font-size: 11px; font-weight: bold; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px;">🔧 Artículos (${articulosUnicos.length})</div>`;
                     articulosUnicos.forEach(item => {
+                        // MODIFICADO: Ahora usa obtenerImagenEsquema(item.art) como respaldo
                         html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(item.art)}', () => seleccionarDesdeBusqueda('${escapeQuotes(item.cat)}', '${escapeQuotes(item.art)}'))">
                             ${crearBadgeHTML(item.art)}
-                            <img src="imagenes/${item.art}.png" onerror="this.src='PR.png'">
+                            <img src="imagenes/${item.art}.png" onerror="this.src='${obtenerImagenEsquema(item.art)}'">
                             <div>${item.art}</div>
                             <small style="color:#0284c7; display:block; margin-top: 4px;">Categoría: ${item.cat}</small>
                         </div>`;
@@ -1268,6 +1288,14 @@
 
             if (esCodoOClamp) {
                 bloque.style.display = 'block';
+                
+                // --- NUEVA LÍNEA: Asignar la imagen correcta dinámicamente ---
+                const imgEsquema = document.getElementById('imgEsquema');
+                if (imgEsquema) {
+                    imgEsquema.src = obtenerImagenEsquema(artSel.art);
+                }
+                // -------------------------------------------------------------
+
                 const dt = dbTecnica[artSel.ref.toUpperCase()] || { a: '-', b: '-', c: '-' };
                 function mostrarCota(idCota, idValor, valor) {
                     const spanCota = document.getElementById(idCota);
