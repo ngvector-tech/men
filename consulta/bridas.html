@@ -54,6 +54,63 @@
   .bloque-tornilleria .linea-nota { font-size: 8px; color: #78716c; margin-top: 7px; }
   .bloque-tornilleria .btn-ir { display: block; width: 100%; margin-top: 9px; padding: 8px; background: #16a34a; color: #fff; border: none; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; }
   .bloque-tornilleria .btn-ir-sec { display: block; width: 100%; margin-top: 5px; padding: 7px; background: #fff; color: #b42318; border: 1px solid #ea580c; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; }
+
+  /* ============ DESPLEGABLE DE TIPOS DE CARAS ============ */
+  #tipoSelect { width: 100%; padding: 6px 7px; font-size: 9px; border: 1px solid #c7ccd1; border-radius: 4px; background: #fff; }
+  #tipoSelect:focus { outline: none; border-color: #4a90d9; }
+
+  /* ============ VENTANA FLOTANTE PARA IMAGEN DE TIPO ============ */
+#imgTipoFlotante {
+    position: fixed;
+    background: #fff;
+    border: 2px solid #0284c7;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    padding: 6px;               /* ← Reducido de 10px a 6px */
+    z-index: 99999;
+    display: none;
+    max-width: 320px;           /* ← Ancho máximo fijo (antes 90vw) */
+    max-height: 200vh;           /* ← Alto máximo reducido */
+    overflow: visible;
+}
+
+#imgTipoFlotante img {
+    max-width: 100%;
+    max-height: 60vh;           /* ← Imagen más pequeña (antes 60vh) */
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+    #imgTipoFlotante.activa { display: block; }
+  #imgTipoFlotante .titulo {
+    font-size: 10px;
+    font-weight: bold;
+    color: #0284c7;
+    text-align: center;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  #imgTipoFlotante .cerrar {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #dc2626;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  #imgTipoFlotante .cerrar:hover { background: #b91c1c; }
 </style>
 <link rel="stylesheet" href="men-header.css">
 </head>
@@ -84,7 +141,19 @@
           </select>
         </div>
       </div>
-      <div class="col"></div>
+      <div class="col">
+        <div class="field">
+          <label for="tipoSelect">6. Tipos de caras</label>
+          <select id="tipoSelect">
+            <option value="">-- Selecciona tipo de cara --</option>
+            <option value="tipo A">tipo A</option>
+            <option value="tipo B">tipo B</option>
+            <option value="tipo C D">tipo C D</option>
+            <option value="tipo E F">tipo E F</option>
+            <option value="tipo G H">tipo G H</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <button type="button" id="btnLimpiar">Nueva consulta</button>
@@ -97,6 +166,13 @@
 
     <div id="results"></div>
   </div>
+</div>
+
+<!-- VENTANA FLOTANTE PARA IMAGEN DE TIPO DE CARA -->
+<div id="imgTipoFlotante">
+    <button class="cerrar" onclick="cerrarImgTipo(event)" title="Cerrar">✕</button>
+    <div class="titulo" id="imgTipoTitulo">Tipo</div>
+    <img id="imgTipoSrc" src="" alt="Tipo de cara">
 </div>
 
 <script>
@@ -666,9 +742,93 @@ btnLimpiar.addEventListener('click', function() {
   matSelect.value = 'ZINC';
   normaSelect.style.color = '';
   normaSelect.style.fontWeight = '';
+  // Resetear también el selector de tipos de caras
+  if (typeof tipoSelect !== 'undefined' && tipoSelect) tipoSelect.value = '';
+  if (typeof cerrarImgTipo === 'function') cerrarImgTipo();
   actualizarResumen();
 });
 
+// ============================================================
+// DESPLEGABLE DE TIPOS DE CARAS + VENTANA FLOTANTE DE IMAGEN
+// ============================================================
+
+// Prefijo de la carpeta donde están las imágenes de tipos de cara
+const RUTA_IMG_TIPOS = 'img/';
+
+const tipoSelect = document.getElementById('tipoSelect');
+const imgTipoFlotante = document.getElementById('imgTipoFlotante');
+const imgTipoTitulo = document.getElementById('imgTipoTitulo');
+const imgTipoSrc = document.getElementById('imgTipoSrc');
+
+function mostrarImagenTipo(nombreTipo) {
+    if (!nombreTipo) return;
+
+    // Nombre del archivo: "tipo A.png" (coincide con las opciones del select)
+    const nombreArchivo = `${nombreTipo}.png`;
+    const rutaCompleta = RUTA_IMG_TIPOS + nombreArchivo;
+
+    imgTipoTitulo.textContent = nombreTipo.toUpperCase();
+    imgTipoSrc.src = rutaCompleta;
+    imgTipoSrc.onerror = function() {
+        this.onerror = null;
+        imgTipoSrc.alt = 'Imagen no encontrada: ' + rutaCompleta;
+        imgTipoSrc.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80"><rect width="100%" height="100%" fill="%23f1f5f9" stroke="%23cbd5e1"/><text x="50%" y="50%" font-family="Arial" font-size="11" fill="%2364748b" text-anchor="middle" dy=".3em">Imagen no encontrada</text></svg>';
+    };
+
+    // Posicionar encima del #imgBox (panel con la imagen de la brida)
+    const rect = imgBox.getBoundingClientRect();
+    imgTipoFlotante.classList.add('activa');
+
+    requestAnimationFrame(() => {
+        const ancho = imgTipoFlotante.offsetWidth;
+        const alto = imgTipoFlotante.offsetHeight;
+
+        let left = rect.left + (rect.width - ancho) / 2;
+        let top  = rect.top - alto - 10;
+
+        if (top < 10) top = rect.bottom + 10;
+        if (left < 10) left = 10;
+        if (left + ancho > window.innerWidth - 10) left = window.innerWidth - ancho - 10;
+        if (top + alto > window.innerHeight - 10) top = window.innerHeight - alto - 10;
+
+        imgTipoFlotante.style.left = left + 'px';
+        imgTipoFlotante.style.top  = top + 'px';
+    });
+}
+
+function cerrarImgTipo(event) {
+    if (event) event.stopPropagation();
+    imgTipoFlotante.classList.remove('activa');
+    imgTipoSrc.src = '';
+    if (tipoSelect) tipoSelect.value = '';
+}
+
+if (tipoSelect) {
+    tipoSelect.addEventListener('change', function() {
+        if (this.value) {
+            mostrarImagenTipo(this.value);
+        } else {
+            cerrarImgTipo();
+        }
+    });
+}
+
+document.addEventListener('click', function(event) {
+    if (!imgTipoFlotante.classList.contains('activa')) return;
+    if (!imgTipoFlotante.contains(event.target) && event.target !== tipoSelect) {
+        cerrarImgTipo();
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && imgTipoFlotante.classList.contains('activa')) {
+        cerrarImgTipo();
+    }
+});
+
+// ============================================================
+// INICIO
+// ============================================================
 init();
 window.addEventListener('pageshow', function (event) { if (event.persisted) window.location.reload(); });
 </script>
