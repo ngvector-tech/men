@@ -29,8 +29,11 @@
         .tarjeta > * { text-align: center; width: 100%; }
         .tarjeta img { max-width: 100%; max-height: 50px; height: auto; object-fit: contain; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
 
-        .badge-norma { position: absolute; top: 4px; right: 4px; background-color: #ff0000; color: #ffffff; font-size: 0.45rem; font-weight: bold; padding: 4px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
-        .globo-info { position: fixed; background-color: #0f172a; color: #38bdf8; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; max-width: 250px; text-align: center; pointer-events: none; border: 1px solid #38bdf8; }
+        .badge-norma { position: absolute; top: 4px; right: 4px; background-color: #ff0000; color: F5F7F7; font-size: 0.45rem; font-weight: bold; padding: 4px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
+        .globo-info { position: fixed; background-color: F5F7F7; color: #3858F8; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; max-width: 250px; text-align: center; pointer-events: none; border: 1px solid #38bdf8; }
+		
+		.badge-norma { position: absolute; top: 4px; right: 4px; background-color: #0077FF; color: #FCFCFC; font-size: 0.45rem; font-weight: bold; padding: 4px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
+.badge-norma.badge-azul { background-color: #F57927; }  /* ← NUEVA LÍNEA: badge azul */
 
         .ficha-box { background: #ffffff; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; max-width: 300px; margin: 0 auto; }
         .ficha-top { display: flex; gap: 6px; align-items: flex-start; justify-content: center; flex-wrap: wrap; margin-bottom: 5px; }
@@ -432,6 +435,9 @@
             { claves: ["DIN118", "DIN 118", "DIN-118"], texto: "Alimentaria" },
             { claves: ["ASME BPE"], texto: "Alimentaria" },
             { claves: ["CODO SMS 3008_3017"], texto: "Alimentaria" },
+			{ claves: ["ASME B16.21"], texto: "Uso comun" },
+			{ claves: ["R EN 1092-1"], texto: "Uso comun" },
+			{ claves: ["CC DIN"], texto: "Uso comun" },
             { claves: ["ASME B36.10M", "ASME B36.10","ASME B16-9"], texto: "Actual fuera de uso" },
             { claves: ["ASTM A312","ASTM 403","ASTM A403"], texto: "Schedule (inox)" },
             { claves: ["DIN EN 10357"], texto: "Alimentaria actual" },
@@ -849,10 +855,13 @@
             }
             return null;
         }
-        function crearBadgeHTML(texto) {
-            const n = obtenerTextoNorma(texto);
-            return n ? `<div class="badge-norma">${n}</div>` : '';
-        }
+       function crearBadgeHTML(texto) {
+    const n = obtenerTextoNorma(texto);
+    if (!n) return '';
+    // Si el texto es "Uso comun", usamos la clase azul; si no, la roja (por defecto)
+    const claseExtra = (n.toLowerCase() === 'uso comun') ? ' badge-azul' : '';
+    return `<div class="badge-norma${claseExtra}">${n}</div>`;
+}
         function mostrarGlobo(e, texto) {
             const g = document.getElementById('globoNorma');
             g.innerText = "ℹ️ " + texto;
