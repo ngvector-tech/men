@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cálculos Avanzados de Dilatación Térmica</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+  }
+
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 5px;
+  }
+  .subtitulo {
+    text-align: center;
+    font-size: 9px;
+    color: #666;
+    margin: 0 0 15px;
+  }
+
+  .field { margin-bottom: 11px; }
+  .field label {
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 3px;
+  }
+  select, input[type="number"] {
+    width: 100%;
+    padding: 6px 7px;
+    font-size: 10px;
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;
+    background: #fff;
+  }
+  select:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+
+  .fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  button.calc {
+    width: 100%;
+    padding: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: #1e5fa8;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.15s;
+  }
+  button.calc:hover { background: #174a85; }
+
+  #resultBox {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 5px;
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    display: none;
+  }
+  #resultBox.show { display: block; }
+
+  .result-item {
+    margin-bottom: 9px;
+    border-bottom: 1px solid #e0e3e6;
+    padding-bottom: 8px;
+  }
+  .result-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .result-item .label {
+    font-size: 8px;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .result-item .value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+  }
+  .result-item .sub-value {
+    font-size: 9px;
+    color: #555;
+    margin-top: 2px;
+  }
+    .btn-volver:hover { background: #f4f6f8; }
+  .btn-avanzado {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  background: #F5D627;
+  color: #050505;
+  font-size: 11px;
+  font-weight: 700;
+  
+  letter-spacing: 0.5px;
+  padding: 9px 12px;
+  border-radius: 5px;
+  margin: 0 0 14px;
+  box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.btn-avanzado:hover {
+  background: #174a85;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(30, 95, 168, 0.45);
+}
+
+  .btn-volver {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    background: #4DF527;
+    color: #111;
+    border: 1px solid #c7ccd1;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Cálculos Avanzados de Dilatación</h1>
+  <p class="subtitulo">Fuerza térmica, tensión axial y lazo de dilatación</p>
+
+  <!-- Material -->
+  <div class="field">
+    <label for="materialSelect">Material de Tubería</label>
+    <select id="materialSelect">
+      <option value="">-</option>
+      <option value="carbono">Acero al Carbono (ASME/ASTM)</option>
+      <option value="inox">Acero Inoxidable (ASME/ASTM)</option>
+    </select>
+  </div>
+
+  <!-- ?T y Longitud -->
+  <div class="fila">
+    <div class="field">
+      <label for="tempMinInput">T. mínima (°C)</label>
+      <input type="number" id="tempMinInput" value="20" step="any">
+    </div>
+    <div class="field">
+      <label for="tempMaxInput">T. máxima (°C)</label>
+      <input type="number" id="tempMaxInput" value="150" step="any">
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="longitudInput">Longitud de la Tubería (mm)</label>
+    <input type="number" id="longitudInput" value="6000" step="any" min="0">
+  </div>
+
+  <!-- Geometría -->
+  <div class="fila">
+    <div class="field">
+      <label for="diametroInput">Diámetro exterior (mm)</label>
+      <input type="number" id="diametroInput" value="168.3" step="any" min="0">
+    </div>
+    <div class="field">
+      <label for="espesorInput">Espesor de pared (mm)</label>
+      <input type="number" id="espesorInput" value="7.11" step="any" min="0">
+    </div>
+  </div>
+
+  <button class="calc" id="btnCalcular">Calcular</button>
+
+  <div id="resultBox">
+    <div class="result-item">
+      <div class="label">Dilatación lineal ?L</div>
+      <div class="value" id="outDL">-</div>
+    </div>
+    <div class="result-item">
+      <div class="label">Tensión térmica axial (extremos fijos)</div>
+      <div class="value" id="outSigma">-</div>
+      <div class="sub-value" id="outSigmaSub">-</div>
+    </div>
+    <div class="result-item">
+      <div class="label">Fuerza térmica axial</div>
+      <div class="value" id="outFuerza">-</div>
+      <div class="sub-value" id="outFuerzaSub">-</div>
+    </div>
+    <div class="result-item">
+      <div class="label">Longitud mínima del lazo de dilatación</div>
+      <div class="value" id="outLazo">-</div>
+      <div class="sub-value" id="outLazoSub">-</div>
+    </div>
+  </div>
+  <a href="lazo_dilatacion.html" class="btn-avanzado">🧩 Cálculo detallado del lazo de dilatación</a>
+  <a href="dilatacion.html" class="btn-volver">Volver a la calculadora básica</a>
+
+</div>
+
+<script>
+/* ============ Datos de materiales ============ */
+// alfa en 1/°C · E en MPa (módulo de Young a temperatura ambiente aprox.)
+// sigma_adm en MPa (tensión admisible orientativa según ASME B31.3 a temp. de diseño)
+const MATERIALES = {
+  carbono: {
+    nombre: "Acero al Carbono",
+    alfa: 0.0000115,
+    E: 200000,
+    sigma_adm: 137   // ~20 ksi (orientativo ASME B31.3)
+  },
+  inox: {
+    nombre: "Acero Inoxidable",
+    alfa: 0.0000165,
+    E: 193000,
+    sigma_adm: 137
+  }
+};
+
+/* ============ Referencias DOM ============ */
+const materialSelect = document.getElementById('materialSelect');
+const tempMinInput   = document.getElementById('tempMinInput');
+const tempMaxInput   = document.getElementById('tempMaxInput');
+const longitudInput  = document.getElementById('longitudInput');
+const diametroInput  = document.getElementById('diametroInput');
+const espesorInput   = document.getElementById('espesorInput');
+const resultBox      = document.getElementById('resultBox');
+
+const outDL          = document.getElementById('outDL');
+const outSigma       = document.getElementById('outSigma');
+const outSigmaSub    = document.getElementById('outSigmaSub');
+const outFuerza      = document.getElementById('outFuerza');
+const outFuerzaSub   = document.getElementById('outFuerzaSub');
+const outLazo        = document.getElementById('outLazo');
+const outLazoSub     = document.getElementById('outLazoSub');
+
+const btnCalcular    = document.getElementById('btnCalcular');
+
+/* ============ Formato ============ */
+function fmt(n, dec = 2) {
+  if (!isFinite(n)) return '-';
+  return Number(n.toFixed(dec)).toLocaleString('es-ES');
+}
+
+/* ============ Cálculo ============ */
+function calcular() {
+  const matKey  = materialSelect.value;
+  const tMin    = parseFloat(tempMinInput.value);
+  const tMax    = parseFloat(tempMaxInput.value);
+  const L       = parseFloat(longitudInput.value);
+  const D       = parseFloat(diametroInput.value);
+  const e       = parseFloat(espesorInput.value);
+
+  if (!matKey || isNaN(tMin) || isNaN(tMax) || isNaN(L) || L <= 0 ||
+      isNaN(D) || D <= 0 || isNaN(e) || e <= 0) {
+    resultBox.classList.remove('show');
+    return;
+  }
+
+  const mat = MATERIALES[matKey];
+  const dT  = tMax - tMin;
+
+  // --- 1) Dilatación lineal ---
+  const dL = mat.alfa * L * dT;
+
+  // --- 2) Tensión térmica (extremos fijos) ---
+  const sigma = mat.E * mat.alfa * dT;   // MPa
+
+  // --- 3) Fuerza térmica axial ---
+  // Área de la sección transversal del tubo (mm²)
+  const area = Math.PI / 4 * (D * D - Math.pow(D - 2 * e, 2)); // mm²
+  const fuerzaN = sigma * area;          // N (MPa · mm² = N)
+  const fuerzaKgf = fuerzaN / 9.80665;
+
+  // --- 4) Longitud mínima del lazo de dilatación ---
+  //  Fórmula empírica (tipo MSS SP-58 / Guidel):
+  // L_lazo = sqrt( 3 · E · D_ext · ?L / (2 · s_adm) )
+  // Con E en MPa, D en mm, ?L en mm, s_adm en MPa ? resultado en mm
+  const Llazo = Math.sqrt(
+    (3 * mat.E * D * Math.abs(dL)) / (2 * mat.sigma_adm)
+  );
+
+  // --- 5) Mostrar ---
+  outDL.textContent = fmt(dL, 2) + ' mm';
+
+  outSigma.textContent = fmt(sigma, 1) + ' MPa';
+  outSigmaSub.textContent =
+    'Tensión admisible orientativa: ' + fmt(mat.sigma_adm, 0) + ' MPa';
+
+  outFuerza.textContent = fmt(fuerzaN / 1000, 2) + ' kN';
+  outFuerzaSub.textContent =
+    fmt(fuerzaKgf, 0) + ' kgf · Área: ' + fmt(area, 1) + ' mm²';
+
+  outLazo.textContent = fmt(Llazo, 0) + ' mm';
+  outLazoSub.textContent =
+    'Lazo tipo U (ida y vuelta). Fórmula MSS SP-58 orientativa.';
+
+  resultBox.classList.add('show');
+}
+
+/* ============ Eventos ============ */
+[ materialSelect, tempMinInput, tempMaxInput, longitudInput,
+  diametroInput, espesorInput ].forEach(el => {
+  el.addEventListener('input', calcular);
+  el.addEventListener('change', calcular);
+});
+
+btnCalcular.addEventListener('click', calcular);
+
+// Cálculo inicial
+calcular();
+</script>
+
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
+</body>
+</html>

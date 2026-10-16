@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lazo de Dilatación — Cálculo y Esquema</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 5px;
+  }
+  .subtitulo {
+    text-align: center;
+    font-size: 9px;
+    color: #666;
+    margin: 0 0 15px;
+  }
+
+  .field { margin-bottom: 11px; }
+  .field label {
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 3px;
+  }
+  select, input[type="number"] {
+    width: 100%;
+    padding: 6px 7px;
+    font-size: 10px;
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;
+    background: #fff;
+  }
+  select:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+
+  .fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  /* Modo de entrada */
+  .modo-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+  }
+  .modo-toggle button {
+    flex: 1;
+    padding: 6px;
+    font-size: 9px;
+    font-weight: 600;
+    border: 1px solid #c7ccd1;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .modo-toggle button:first-child { border-radius: 4px 0 0 4px; }
+  .modo-toggle button:last-child  { border-radius: 0 4px 4px 0; }
+  .modo-toggle button.active {
+    background: #0284c7;
+    border-color: #0284c7;
+    color: #fff;
+  }
+
+  .oculto { display: none !important; }
+
+  button.calc {
+    width: 100%;
+    padding: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: #137a3f;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.15s;
+  }
+  button.calc:hover { background: #0e5c2f; }
+
+  /* ====== ESQUEMA SVG ====== */
+  #esquemaWrap {
+    margin-top: 16px;
+    padding: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    text-align: center;
+  }
+  #esquemaWrap svg {
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    transition: transform 0.15s ease;
+  }
+  #esquemaWrap svg:hover { transform: scale(1.02); }
+  .esquema-note {
+    font-size: 8px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+
+  /* ====== RESULTADOS ====== */
+  #resultBox {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 5px;
+    background: #f4f6f8;
+    border: 1px solid #e0e3e6;
+    display: none;
+  }
+  #resultBox.show { display: block; }
+
+  .result-item {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0e3e6;
+    padding-bottom: 8px;
+  }
+  .result-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .result-item .label {
+    font-size: 8px;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .result-item .value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+  }
+  .result-item .sub-value {
+    font-size: 9px;
+    color: #555;
+    margin-top: 2px;
+  }
+  .result-item .aviso {
+    font-size: 9px;
+    color: #b42318;
+    margin-top: 3px;
+    font-weight: 600;
+  }
+  .result-item .ok {
+    font-size: 9px;
+    color: #137a3f;
+    margin-top: 3px;
+    font-weight: 600;
+  }
+   .btn-volver:hover { background: #f4f6f8; }
+  .btn-avanzado {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  background: #F5D627;
+  color: #050505;
+  font-size: 11px;
+  font-weight: 700;
+  
+  letter-spacing: 0.5px;
+  padding: 9px 12px;
+  border-radius: 5px;
+  margin: 0 0 14px;
+  box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  cursor: pointer;
+}
+   .btn-volver {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    background: #4DF527;
+    color: #111;
+    border: 1px solid #c7ccd1;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-volver:hover { background: #f4f6f8; }
+
+  /* ====== LIGHTBOX ====== */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: zoom-out;
+  }
+  .lightbox.activo { display: flex; }
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 6px;
+    background: #fff;
+    padding: 10px;
+    cursor: default;
+  }
+  .lightbox .cerrar {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Cálculo y Esquema del Lazo de Dilatación</h1>
+  <p class="subtitulo">Lazo en U · uno o varios lazos según el espacio disponible</p>
+
+  <!-- Modo de entrada -->
+  <div class="modo-toggle" id="modoToggle">
+    <button type="button" data-modo="directo" class="active">Introducir ΔL directamente (Dilatacion)</button>
+    <button type="button" data-modo="calc">Calcular ΔL (T y L) (Dilatacion)</button>
+  </div>
+
+  <!-- Material -->
+  <div class="field">
+    <label for="materialSelect">Material de Tubería</label>
+    <select id="materialSelect">
+      <option value="carbono" selected>Acero al Carbono (ASME/ASTM)</option>
+      <option value="inox">Acero Inoxidable (ASME/ASTM)</option>
+    </select>
+  </div>
+
+  <!-- MODO DIRECTO: solo pide ΔL -->
+  <div id="bloqueDirecto">
+    <div class="field">
+      <label for="dLInput">Dilatación a absorber ΔL (mm)</label>
+      <input type="number" id="dLInput" value="45" step="any" min="0">
+    </div>
+  </div>
+
+  <!-- MODO CALCULADO: pide T_min, T_max, L -->
+  <div id="bloqueCalc" class="oculto">
+    <div class="fila">
+      <div class="field">
+        <label for="tempMinInput">T. mínima (°C)</label>
+        <input type="number" id="tempMinInput" value="20" step="any">
+      </div>
+      <div class="field">
+        <label for="tempMaxInput">T. máxima (°C)</label>
+        <input type="number" id="tempMaxInput" value="150" step="any">
+      </div>
+    </div>
+    <div class="field">
+      <label for="longitudInput">Longitud total tuberia (mm)</label>
+      <input type="number" id="longitudInput" value="30000" step="any" min="0">
+    </div>
+  </div>
+
+  <!-- Geometría de tubería -->
+  <div class="fila">
+    <div class="field">
+      <label for="diametroInput">Diámetro exterior D (mm)</label>
+      <input type="number" id="diametroInput" value="168.3" step="any" min="0">
+    </div>
+    <div class="field">
+      <label for="espesorInput">Espesor de pared e (mm)</label>
+      <input type="number" id="espesorInput" value="7.11" step="any" min="0">
+    </div>
+  </div>
+
+  <!-- Selector de nº de lazos -->
+  <div class="field">
+    <label for="nLazosSelect">Nº de lazos</label>
+    <select id="nLazosSelect">
+      <option value="auto" selected>Automático (el mínimo necesario)</option>
+      <option value="1">1 lazo</option>
+      <option value="2">2 lazos</option>
+      <option value="3">3 lazos</option>
+      <option value="4">4 lazos</option>
+      <option value="5">5 lazos</option>
+      <option value="6">6 lazos</option>
+    </select>
+  </div>
+
+  <!-- Longitud disponible (opcional, para repartir) -->
+  <div class="field">
+    <label for="LdispInput">Longitud disponible para el lazo (mm) — opcional</label>
+    <input type="number" id="LdispInput" value="10000" step="any" min="0">
+  </div>
+
+  <button class="calc" id="btnCalcular">Calcular lazo</button>
+
+  <!-- ESQUEMA -->
+  <div id="esquemaWrap">
+    <svg id="esquemaSvg" viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+      <text x="300" y="110" text-anchor="middle" font-size="11" fill="#94a3b8" font-family="Segoe UI, Arial">Introduce los datos para ver el esquema</text>
+    </svg>
+    <div class="esquema-note">Clic en el esquema para ampliarlo</div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div id="resultBox">
+    <div class="result-item">
+      <div class="label">Dilatación total a absorber (ΔL)</div>
+      <div class="value" id="outDL">-</div>
+      <div class="sub-value" id="outDLSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Nº de lazos utilizados</div>
+      <div class="value" id="outN">-</div>
+      <div class="sub-value" id="outNSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Dilatación por lazo (ΔL / n)</div>
+      <div class="value" id="outDLn">-</div>
+      <div class="sub-value" id="outDLnSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Longitud mínima de cada lazo (L_lazo)</div>
+      <div class="value" id="outLlazo">-</div>
+      <div class="sub-value" id="outLlazoSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Ancho del lazo (W)</div>
+      <div class="value" id="outW">-</div>
+      <div class="sub-value" id="outWSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Altura del lazo (H, por rama)</div>
+      <div class="value" id="outH">-</div>
+      <div class="sub-value" id="outHSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Longitud total ocupada por los lazos</div>
+      <div class="value" id="outLtot">-</div>
+      <div class="sub-value" id="outLtotSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Tramo recto entre lazos</div>
+      <div class="value" id="outLtramo">-</div>
+      <div class="sub-value" id="outLtramoSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Tensión axial estimada</div>
+      <div class="value" id="outSigma">-</div>
+      <div class="sub-value" id="outSigmaSub">-</div>
+    </div>
+
+    <div class="result-item">
+      <div class="label">Comprobación</div>
+      <div class="value" id="outCheck">-</div>
+      <div class="sub-value" id="outCheckSub">-</div>
+    </div>
+  </div>
+
+  <a href="dilatacion_avanzada.html" class="btn-avanzado">← Volver a cálculos avanzados</a>
+  <a href="dilatacion_termica.html" class="btn-volver">Volver a la calculadora básica</a>
+  
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <img id="imgLightbox" alt="Esquema ampliado">
+</div>
+
+<script>
+/* ============ Datos de materiales ============ */
+const MATERIALES = {
+  carbono: { nombre: "Acero al Carbono",  alfa: 0.0000115, E: 200000, sigma_adm: 137 },
+  inox:    { nombre: "Acero Inoxidable",  alfa: 0.0000165, E: 193000, sigma_adm: 137 }
+};
+
+/* ============ DOM ============ */
+const modoToggle    = document.getElementById('modoToggle');
+const bloqueDirecto = document.getElementById('bloqueDirecto');
+const bloqueCalc    = document.getElementById('bloqueCalc');
+
+const materialSelect = document.getElementById('materialSelect');
+const dLInput        = document.getElementById('dLInput');
+const tempMinInput   = document.getElementById('tempMinInput');
+const tempMaxInput   = document.getElementById('tempMaxInput');
+const longitudInput  = document.getElementById('longitudInput');
+const diametroInput  = document.getElementById('diametroInput');
+const espesorInput   = document.getElementById('espesorInput');
+const nLazosSelect   = document.getElementById('nLazosSelect');
+const LdispInput     = document.getElementById('LdispInput');
+
+const resultBox      = document.getElementById('resultBox');
+const outDL          = document.getElementById('outDL');
+const outDLSub       = document.getElementById('outDLSub');
+const outN           = document.getElementById('outN');
+const outNSub        = document.getElementById('outNSub');
+const outDLn         = document.getElementById('outDLn');
+const outDLnSub      = document.getElementById('outDLnSub');
+const outLlazo       = document.getElementById('outLlazo');
+const outLlazoSub    = document.getElementById('outLlazoSub');
+const outW           = document.getElementById('outW');
+const outWSub        = document.getElementById('outWSub');
+const outH           = document.getElementById('outH');
+const outHSub        = document.getElementById('outHSub');
+const outLtot        = document.getElementById('outLtot');
+const outLtotSub     = document.getElementById('outLtotSub');
+const outLtramo      = document.getElementById('outLtramo');
+const outLtramoSub   = document.getElementById('outLtramoSub');
+const outSigma       = document.getElementById('outSigma');
+const outSigmaSub    = document.getElementById('outSigmaSub');
+const outCheck       = document.getElementById('outCheck');
+const outCheckSub    = document.getElementById('outCheckSub');
+
+const esquemaSvg     = document.getElementById('esquemaSvg');
+const btnCalcular    = document.getElementById('btnCalcular');
+
+/* ============ Estado ============ */
+let modo = 'directo'; // 'directo' | 'calc'
+
+/* ============ Utilidades ============ */
+function fmt(n, dec = 2) {
+  if (!isFinite(n)) return '-';
+  return Number(n.toFixed(dec)).toLocaleString('es-ES');
+}
+
+/* ============ Cambio de modo ============ */
+modoToggle.addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  modo = btn.dataset.modo;
+  modoToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+  bloqueDirecto.classList.toggle('oculto', modo !== 'directo');
+  bloqueCalc.classList.toggle('oculto', modo !== 'calc');
+  calcular();
+});
+
+/* ============ Calcular L_lazo mínimo para una ΔL dada ============ */
+function calcularLlazoMin(dL, mat, D) {
+  if (dL <= 0) return 0;
+  return Math.sqrt( (3 * mat.E * D * dL) / (2 * mat.sigma_adm) );
+}
+
+/* ============ Dibujar el esquema ============ */
+function dibujarEsquema(dL, n, Llazo, W, H, Ltramo, Ltotal, Ldisp) {
+  const VB_W = 600, VB_H = 240;
+  const padX = 30;
+  const baseY = 160;
+  const usableW = VB_W - padX * 2;
+
+  // Escala: usamos la longitud real total del tramo (Ldisp si existe, si no Ltotal)
+  const Lref = Ldisp && Ldisp > 0 ? Ldisp : (Ltotal > 0 ? Ltotal : 1);
+  const escala = usableW / Lref;
+
+  // Ancho real del lazo en píxeles
+  const Wpx = Math.max(W * escala, 4);
+  const Hpx = Math.max(H * escala, 20);
+  const LtramoPx = Math.max(Ltramo * escala, 4);
+
+  // Comprobar si el conjunto cabe; si no, reducimos la escala
+  const anchoTotal = n * (2 * Wpx) + (n + 1) * LtramoPx;
+  const factorAjuste = anchoTotal > usableW ? usableW / anchoTotal : 1;
+
+  const Wf = Wpx * factorAjuste;
+  const Hf = Hpx * factorAjuste;
+  const Lf = LtramoPx * factorAjuste;
+
+  // Trazado
+  let x = padX;
+  let path = `M ${x} ${baseY}`;
+  x += Lf;
+  path += ` L ${x} ${baseY}`;
+
+  for (let i = 0; i < n; i++) {
+    path += ` L ${x} ${baseY - Hf}`;
+    x += Wf;
+    path += ` L ${x} ${baseY - Hf}`;
+    path += ` L ${x} ${baseY}`;
+    x += Wf;
+    path += ` L ${x} ${baseY}`;
+    x += Lf;
+    path += ` L ${x} ${baseY}`;
+  }
+
+  const xIni = padX;
+  const xFin = x;
+
+  let svg = '';
+  svg += `<rect x="0" y="0" width="${VB_W}" height="${VB_H}" fill="#f8fafc"/>`;
+  svg += `<path d="${path}" fill="none" stroke="#1e5fa8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // Anclajes
+  svg += `<rect x="${xIni - 6}" y="${baseY - 12}" width="6" height="24" fill="#b42318"/>`;
+  svg += `<rect x="${xFin}"     y="${baseY - 12}" width="6" height="24" fill="#b42318"/>`;
+
+  // Cota ancho W (solo primer lazo)
+  if (n > 0) {
+    const xLazoIni = padX + Lf;
+    const xLazoFin = xLazoIni + 2 * Wf;
+    const yCotaW = baseY - Hf - 12;
+    svg += `<line x1="${xLazoIni}" y1="${yCotaW}" x2="${xLazoFin}" y2="${yCotaW}" stroke="#0ea5e9" stroke-width="1"/>`;
+    svg += `<line x1="${xLazoIni}" y1="${yCotaW - 4}" x2="${xLazoIni}" y2="${yCotaW + 4}" stroke="#0ea5e9"/>`;
+    svg += `<line x1="${xLazoFin}" y1="${yCotaW - 4}" x2="${xLazoFin}" y2="${yCotaW + 4}" stroke="#0ea5e9"/>`;
+    svg += `<text x="${(xLazoIni + xLazoFin)/2}" y="${yCotaW - 6}" text-anchor="middle" font-size="9" fill="#0ea5e9" font-family="Segoe UI, Arial">2·W = ${fmt(2*W, 0)} mm</text>`;
+
+    // Cota altura H
+    const xCotaH = xLazoFin + 8;
+    svg += `<line x1="${xCotaH}" y1="${baseY}" x2="${xCotaH}" y2="${baseY - Hf}" stroke="#0ea5e9" stroke-width="1"/>`;
+    svg += `<line x1="${xCotaH - 4}" y1="${baseY}" x2="${xCotaH + 4}" y2="${baseY}" stroke="#0ea5e9"/>`;
+    svg += `<line x1="${xCotaH - 4}" y1="${baseY - Hf}" x2="${xCotaH + 4}" y2="${baseY - Hf}" stroke="#0ea5e9"/>`;
+    svg += `<text x="${xCotaH + 6}" y="${baseY - Hf/2}" font-size="9" fill="#0ea5e9" font-family="Segoe UI, Arial">H = ${fmt(H, 0)}</text>`;
+  }
+
+  // Etiqueta global
+  svg += `<text x="${VB_W/2}" y="20" text-anchor="middle" font-size="11" fill="#111" font-family="Segoe UI, Arial" font-weight="700">Nº de lazos: ${n}</text>`;
+  svg += `<text x="${VB_W/2}" y="35" text-anchor="middle" font-size="9" fill="#64748b" font-family="Segoe UI, Arial">Esquema orientativo en planta</text>`;
+  svg += `<text x="${VB_W/2}" y="${baseY + 35}" text-anchor="middle" font-size="10" fill="#334155" font-family="Segoe UI, Arial">L total disponible = ${fmt(Lref, 0)} mm · ΔL total = ${fmt(dL, 1)} mm</text>`;
+
+  // Etiqueta de anclajes
+  svg += `<text x="${xIni - 4}" y="${baseY - 18}" text-anchor="middle" font-size="8" fill="#b42318" font-family="Segoe UI, Arial">Anclaje</text>`;
+  svg += `<text x="${xFin + 6}" y="${baseY - 18}" text-anchor="middle" font-size="8" fill="#b42318" font-family="Segoe UI, Arial">Anclaje</text>`;
+
+  esquemaSvg.innerHTML = svg;
+}
+
+/* ============ Cálculo principal ============ */
+function calcular() {
+  const matKey = materialSelect.value;
+  const D      = parseFloat(diametroInput.value);
+  const e      = parseFloat(espesorInput.value);
+  const Ldisp  = parseFloat(LdispInput.value) || 0;
+  const nSel   = nLazosSelect.value;
+
+  if (!matKey || isNaN(D) || D <= 0 || isNaN(e) || e <= 0) {
+    resultBox.classList.remove('show');
+    esquemaSvg.innerHTML = '<text x="300" y="120" text-anchor="middle" font-size="11" fill="#94a3b8" font-family="Segoe UI, Arial">Introduce los datos para ver el esquema</text>';
+    return;
+  }
+
+  const mat = MATERIALES[matKey];
+
+  /* 1) Determinar ΔL total según el modo */
+  let dL = null;
+  let Ltot = Ldisp;
+
+  if (modo === 'directo') {
+    dL = parseFloat(dLInput.value);
+    if (isNaN(dL) || dL <= 0) { resultBox.classList.remove('show'); return; }
+    if (Ltot <= 0) Ltot = dL * 100; // fallback visual
+  } else {
+    const tMin = parseFloat(tempMinInput.value);
+    const tMax = parseFloat(tempMaxInput.value);
+    Ltot = parseFloat(longitudInput.value);
+    if (isNaN(tMin) || isNaN(tMax) || isNaN(Ltot) || Ltot <= 0) {
+      resultBox.classList.remove('show');
+      return;
+    }
+    const dT = tMax - tMin;
+    dL = mat.alfa * Ltot * dT;
+    if (Ldisp <= 0) LdispFallback = Ltot; // usamos el tramo como disponible
+  }
+
+  /* 2) L_lazo mínimo para absorber TODA la ΔL con 1 solo lazo */
+  const LlazoMin1 = calcularLlazoMin(dL, mat, D);
+
+  /* 3) Determinar nº de lazos */
+  let n;
+  if (nSel === 'auto') {
+    if (Ldisp > 0 && LlazoMin1 > Ldisp) {
+      // No cabe 1 lazo → repartimos
+      n = Math.ceil(LlazoMin1 / Ldisp);
+    } else {
+      n = 1;
+    }
+  } else {
+    n = parseInt(nSel, 10);
+  }
+  if (n < 1) n = 1;
+
+  /* 4) Dilatación por lazo y L_lazo de cada lazo */
+  const dLn = dL / n;
+  const Llazo = calcularLlazoMin(dLn, mat, D);
+  const W = Llazo / 2;
+  const H = Llazo / 2;
+
+  /* 5) Ocupación y tramos rectos */
+  const LtotalLazos = n * Llazo;
+  let Ltramo = 0;
+  let Lref = Ldisp > 0 ? Ldisp : (Ltot > 0 ? Ltot : LtotalLazos * 1.5);
+  if (Lref > LtotalLazos) {
+    Ltramo = (Lref - LtotalLazos) / (n + 1);
+  } else {
+    Ltramo = 0;
+  }
+
+  /* 6) Tensión axial estimada
+        σ ≈ E·α·ΔT · (L_lazo_ref / L_lazo_min)
+        Aquí, por construcción cada lazo tiene su L_lazo = mínimo → σ = σ_adm
+        Si el usuario fuerza MENOS lazos que los mínimos, σ > σ_adm */
+  let sigma;
+  if (LlazoMin1 > 0) {
+    sigma = mat.sigma_adm * (LlazoMin1 / (n * Llazo));
+  } else {
+    sigma = 0;
+  }
+
+  const cumple = sigma <= mat.sigma_adm * 1.001;
+
+  /* 7) Mostrar resultados */
+  outDL.textContent     = fmt(dL, 2) + ' mm';
+  outDLSub.textContent  = modo === 'calc'
+    ? `α·L·ΔT con α = ${mat.alfa.toExponential(2)} 1/°C`
+    : 'Introducido directamente.';
+
+  outN.textContent      = n + (n === 1 ? ' lazo' : ' lazos');
+  outNSub.textContent   = (nSel === 'auto')
+    ? 'Calculado automáticamente por el espacio disponible.'
+    : 'Forzado por el usuario.';
+
+  outDLn.textContent    = fmt(dLn, 2) + ' mm';
+  outDLnSub.textContent = 'ΔL repartida entre n lazos.';
+
+  outLlazo.textContent  = fmt(Llazo, 0) + ' mm';
+  outLlazoSub.textContent = '√(3·E·D·(ΔL/n) / (2·σ_adm))';
+
+  outW.textContent      = fmt(W, 0) + ' mm';
+  outWSub.textContent   = 'L_lazo / 2.';
+
+  outH.textContent      = fmt(H, 0) + ' mm';
+  outHSub.textContent   = 'L_lazo / 2.';
+
+  outLtot.textContent   = fmt(LtotalLazos, 0) + ' mm';
+  outLtotSub.textContent = `${n} × ${fmt(Llazo, 0)} mm`;
+
+  outLtramo.textContent = fmt(Ltramo, 0) + ' mm';
+  outLtramoSub.textContent = (n + 1) + ' tramos rectos (anclajes + entre lazos).';
+
+  outSigma.textContent  = fmt(sigma, 1) + ' MPa';
+  outSigmaSub.textContent = 'Tensión admisible orientativa: ' + fmt(mat.sigma_adm, 0) + ' MPa.';
+
+  outCheck.textContent  = cumple ? '✔ OK' : '✖ Revisar';
+  outCheck.className    = 'value ' + (cumple ? 'ok' : 'aviso');
+  outCheckSub.textContent = cumple
+    ? 'El conjunto cumple con la tensión admisible.'
+    : 'Aumentar el nº de lazos o el tramo recto disponible.';
+
+  resultBox.classList.add('show');
+
+  /* 8) Esquema */
+  dibujarEsquema(dL, n, Llazo, W, H, Ltramo, Ltot, Lref);
+}
+
+/* ============ Eventos ============ */
+[ materialSelect, dLInput, tempMinInput, tempMaxInput, longitudInput,
+  diametroInput, espesorInput, nLazosSelect, LdispInput ].forEach(el => {
+  el.addEventListener('input', calcular);
+  el.addEventListener('change', calcular);
+});
+
+btnCalcular.addEventListener('click', calcular);
+
+/* ============ LIGHTBOX ============ */
+const lightbox       = document.getElementById('lightbox');
+const cerrarLightbox = document.getElementById('cerrarLightbox');
+const imgLightbox    = document.getElementById('imgLightbox');
+
+document.getElementById('esquemaWrap').addEventListener('click', function(e){
+  if (e.target.tagName === 'svg' || e.target.closest('svg')) {
+    try {
+      const clone = esquemaSvg.cloneNode(true);
+      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      const xml  = new XMLSerializer().serializeToString(clone);
+      const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+      imgLightbox.src = URL.createObjectURL(blob);
+      lightbox.classList.add('activo');
+      document.body.style.overflow = 'hidden';
+    } catch(err) { console.warn(err); }
+  }
+});
+function cerrarLightboxFn(){
+  if (imgLightbox.src && imgLightbox.src.startsWith('blob:')) {
+    try { URL.revokeObjectURL(imgLightbox.src); } catch(err) {}
+  }
+  lightbox.classList.remove('activo');
+  document.body.style.overflow = '';
+}
+cerrarLightbox.addEventListener('click', cerrarLightboxFn);
+lightbox.addEventListener('click', e => { if (e.target === lightbox) cerrarLightboxFn(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && lightbox.classList.contains('activo')) cerrarLightboxFn();
+});
+
+/* ============ Inicializar ============ */
+calcular();
+</script>
+
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
+</body>
+</html>
