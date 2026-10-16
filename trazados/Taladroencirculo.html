@@ -16,41 +16,41 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 16px 11px 40px;      /* ⬅️ antes 24 16 60 */
+    padding: 16px 11px 40px;
     color: #222;
     display: block !important;
   }
 
   .container {
-    max-width: 800px;            /* ⬅️ antes 1200 (≈ 2/3) */
+    max-width: 800px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 7px;          /* ⬅️ antes 10 */
+    border-radius: 7px;
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-    padding: 16px 19px 21px;     /* ⬅️ antes 24 28 32 */
+    padding: 16px 19px 21px;
   }
 
   h1 {
     text-align: center;
-    font-size: 13px;             /* ⬅️ antes 20 */
+    font-size: 13px;
     background: #111;
     color: #fff;
-    padding: 8px 11px;           /* ⬅️ antes 12 16 */
-    border-radius: 4px;          /* ⬅️ antes 6 */
+    padding: 8px 11px;
+    border-radius: 4px;
     margin: 0 0 5px;
   }
 
   .subtitulo {
     text-align: center;
-    font-size: 9px;              /* ⬅️ antes 13 */
+    font-size: 9px;
     color: #666;
-    margin: 0 0 15px;            /* ⬅️ antes 22 */
+    margin: 0 0 15px;
   }
 
   .layout {
     display: grid;
-    grid-template-columns: 253px 1fr;   /* ⬅️ antes 380px 1fr */
-    gap: 13px;                          /* ⬅️ antes 20 */
+    grid-template-columns: 253px 1fr;
+    gap: 13px;
   }
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
@@ -60,23 +60,23 @@
   .panel {
     background: #f4f6f8;
     border: 1px solid var(--borde);
-    border-radius: 5px;          /* ⬅️ antes 8 */
-    padding: 11px;               /* ⬅️ antes 16 */
+    border-radius: 5px;
+    padding: 11px;
   }
   .panel h2 {
-    font-size: 9px;              /* ⬅️ antes 14 */
-    margin: 0 0 8px;             /* ⬅️ antes 12 */
+    font-size: 9px;
+    margin: 0 0 8px;
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .esquema {
-    margin-bottom: 9px;          /* ⬅️ antes 14 */
+    margin-bottom: 9px;
     background: #e8f0fa;
-    border-radius: 4px;          /* ⬅️ antes 6 */
-    padding: 7px;                /* ⬅️ antes 10 */
-    min-height: 27px;            /* ⬅️ antes 40 */
+    border-radius: 4px;
+    padding: 7px;
+    min-height: 27px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -86,23 +86,28 @@
     margin: 0 auto;
     max-width: 100%;
     height: auto;
+    cursor: zoom-in;
+    transition: transform 0.15s ease;
+  }
+  .esquema img:hover {
+    transform: scale(1.03);
   }
   .esquema:empty { display: none; }
 
   label {
     display: block;
-    font-size: 9px;              /* ⬅️ antes 13 */
-    margin: 7px 0 3px;           /* ⬅️ antes 10 0 4 */
+    font-size: 9px;
+    margin: 7px 0 3px;
     font-weight: 600;
     color: #444;
   }
 
   input, select {
     width: 100%;
-    padding: 6px 7px;            /* ⬅️ antes 9 10 */
+    padding: 6px 7px;
     border: 1px solid #c7ccd1;
-    border-radius: 4px;          /* ⬅️ antes 6 */
-    font-size: 10px;             /* ⬅️ antes 15 */
+    border-radius: 4px;
+    font-size: 10px;
     background: #fff;
     color: #222;
   }
@@ -114,18 +119,18 @@
   .fila {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 7px;                    /* ⬅️ antes 10 */
+    gap: 7px;
   }
 
   button {
     width: 100%;
-    padding: 7px;                /* ⬅️ antes 10 */
-    margin-top: 9px;             /* ⬅️ antes 14 */
+    padding: 7px;
+    margin-top: 9px;
     border: none;
-    border-radius: 4px;          /* ⬅️ antes 6 */
+    border-radius: 4px;
     background: #111;
     color: #fff;
-    font-size: 9px;              /* ⬅️ antes 14 */
+    font-size: 9px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
@@ -140,10 +145,10 @@
   button.sec:hover { background: #f4f6f8; }
 
   .aviso {
-    margin-top: 7px;             /* ⬅️ antes 10 */
-    padding: 5px 7px;            /* ⬅️ antes 8 10 */
-    border-radius: 4px;          /* ⬅️ antes 6 */
-    font-size: 9px;              /* ⬅️ antes 13 */
+    margin-top: 7px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    font-size: 9px;
     display: none;
   }
   .aviso.error {
@@ -161,52 +166,37 @@
   .resultado {
     background: #fff;
     border: 1px solid var(--borde);
-    border-radius: 5px;          /* ⬅️ antes 8 */
-    padding: 11px;               /* ⬅️ antes 16 */
-    min-height: 133px;           /* ⬅️ antes 200 */
+    border-radius: 5px;
+    padding: 11px;
+    min-height: 133px;
   }
   .resultado h2 {
-    font-size: 9px;              /* ⬅️ antes 14 */
-    margin: 0 0 8px;             /* ⬅️ antes 12 */
+    font-size: 9px;
+    margin: 0 0 8px;
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
-  #svgPatron {
-    margin-bottom: 11px;         /* ⬅️ antes 16 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f4f6f8;
-    border: 1px solid var(--borde);
-    border-radius: 4px;          /* ⬅️ antes 6 */
-    padding: 8px;                /* ⬅️ antes 12 */
-  }
-  #svgPatron svg {
-    max-width: 100%;
-    height: auto;
-  }
-
   /* Tabla que genera brida.js */
   .tabla-gen {
     width: 50%;
-    max-width: 347px;            /* ⬅️ antes 520 (≈ 2/3) */
+    max-width: 347px;
     border-collapse: collapse;
-    margin-top: 7px;             /* ⬅️ antes 10 */
-    font-size: 10px;             /* ⬅️ antes 14 */
+    margin-top: 7px;
+    font-size: 10px;
   }
   .tabla-gen th {
     background: #f4f6f8;
     color: #111;
-    padding: 5px;                /* ⬅️ antes 8 */
+    padding: 5px;
     text-align: left;
     border: 1px solid var(--borde);
     font-weight: 600;
   }
   .tabla-gen td {
     border: 1px solid var(--borde);
-    padding: 4px 5px;            /* ⬅️ antes 6 8 */
+    padding: 4px 5px;
   }
   .tabla-gen tr:nth-child(even) { background: #f4f6f8; }
 
@@ -214,7 +204,7 @@
   .tabla-gen td:first-child {
     width: 1%;
     white-space: nowrap;
-    padding-right: 12px;         /* ⬅️ antes 18 */
+    padding-right: 12px;
   }
   .tabla-gen th:last-child,
   .tabla-gen td:last-child {
@@ -224,22 +214,63 @@
   .titulo {
     font-weight: 700;
     color: #111;
-    padding: 4px 0 1px;          /* ⬅️ antes 6 0 2 */
+    padding: 4px 0 1px;
   }
 
   .nota {
-    font-size: 8px;              /* ⬅️ antes 12 */
+    font-size: 8px;
     color: #667085;
-    margin-top: 7px;             /* ⬅️ antes 10 */
+    margin-top: 7px;
     line-height: 1.5;
   }
+
+  /* ============ LIGHTBOX ============ */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+  }
+  .lightbox.activo { display: flex; }
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    background: #fff;
+    padding: 10px;
+    cursor: default;
+    animation: zoomIn 0.25s ease;
+  }
+  .lightbox .cerrar {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease;
+  }
+  .lightbox .cerrar:hover { transform: scale(1.2); }
+
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes zoomIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
 </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Calculadora de cuerda entre orificios</h1>
-  <p class="subtitulo">Cuerda, paso angular y cotas auxiliares de la brida</p>
+  <p class="subtitulo">Cuerda, paso angular y cotas auxiliares de la brida — medidas en mm</p>
 
   <div class="layout">
 
@@ -249,15 +280,14 @@
 
       <div class="esquema" id="esquemaEntrada"></div>
 
-      <label for="unidad">Unidad</label>
-      <select id="unidad">
+      <!-- Selector de unidad oculto: mantiene compatibilidad con brida.js -->
+      <select id="unidad" hidden>
         <option value="mm" selected>Milímetros (mm)</option>
-        <option value="pulg">Pulgadas (in)</option>
       </select>
 
       <div class="fila">
         <div>
-          <label for="in_K">Radio K (centro orificios)</label>
+          <label for="in_K">Radio K (mm) — centro orificios</label>
           <input type="number" id="in_K" value="300" step="any" min="0">
         </div>
         <div>
@@ -275,20 +305,105 @@
         K es el radio de la circunferencia sobre la que están los centros de los orificios.
         El programa calcula la cuerda entre dos orificios consecutivos, el paso angular
         y las cotas auxiliares (perímetro y diámetro).
+        Todas las medidas en <strong>mm</strong>.
       </p>
     </section>
 
     <!-- ==================== PANEL DERECHO ==================== -->
     <section class="resultado">
       <h2>Resultados</h2>
-      <div id="svgPatron"></div>
+      <!-- Sin imagen duplicada: solo lista/tabla de resultados -->
       <div id="resumenSalida"></div>
     </section>
 
   </div>
 </div>
 
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <img id="imgLightbox" alt="Vista ampliada">
+</div>
+
 <script src="brida.js"></script>
+
+<script>
+/* ============ LIGHTBOX (delegación robusta, imágenes y SVG) ============ */
+(function(){
+  "use strict";
+
+  const lightbox       = document.getElementById('lightbox');
+  const cerrarLightbox = document.getElementById('cerrarLightbox');
+  const imgLightbox    = document.getElementById('imgLightbox');
+
+  if (!lightbox) return;
+
+  function abrirLightbox(srcImagen){
+    if (!srcImagen) return;
+    imgLightbox.src = srcImagen;
+    lightbox.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrarLightboxFn(){
+    lightbox.classList.remove('activo');
+    document.body.style.overflow = '';
+  }
+
+  function svgADataURL(svgEl){
+    try {
+      const clone = svgEl.cloneNode(true);
+      if (!clone.getAttribute('xmlns')) {
+        clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      }
+      if (!clone.getAttribute('width')) {
+        const vb = (clone.getAttribute('viewBox') || '').split(/\s+/);
+        if (vb.length === 4) {
+          clone.setAttribute('width',  vb[2]);
+          clone.setAttribute('height', vb[3]);
+        }
+      }
+      const xml  = new XMLSerializer().serializeToString(clone);
+      const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+      return URL.createObjectURL(blob);
+    } catch(err) {
+      console.warn('No se pudo serializar el SVG:', err);
+      return null;
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    // Imagen dentro del esquema (panel izquierdo)
+    const img = e.target.closest('.esquema img');
+    if (img) {
+      e.preventDefault();
+      abrirLightbox(img.src);
+      return;
+    }
+    // Si en algún momento apareciera un SVG dentro de un .esquema
+    const svg = e.target.closest('.esquema svg');
+    if (svg) {
+      e.preventDefault();
+      const url = svgADataURL(svg);
+      if (url) abrirLightbox(url);
+    }
+  });
+
+  function cerrarYLiberar(){
+    if (imgLightbox.src && imgLightbox.src.startsWith('blob:')) {
+      try { URL.revokeObjectURL(imgLightbox.src); } catch(err) {}
+    }
+    cerrarLightboxFn();
+  }
+
+  cerrarLightbox.addEventListener('click', cerrarYLiberar);
+  lightbox.addEventListener('click', function(e){
+    if (e.target === lightbox) cerrarYLiberar();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && lightbox.classList.contains('activo')) cerrarYLiberar();
+  });
+})();
+</script>
 
 <!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
 <link rel="stylesheet" href="men-header.css">

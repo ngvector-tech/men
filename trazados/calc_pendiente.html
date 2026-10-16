@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Pendientes (mm)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+  }
+  .container {
+    max-width: 413px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 15px;
+  }
+  h2 {
+    font-size: 11px;
+    margin: 0 0 8px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .block {
+    background: #f9fafb;
+    border: 1px solid #e6e9eb;
+    border-radius: 5px;
+    padding: 11px 12px;
+    margin-bottom: 11px;
+  }
+  .fields-row { display: flex; gap: 9px; flex-wrap: wrap; }
+  .field { flex: 1; margin-bottom: 9px; min-width: 93px; }
+  .field label {
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 3px;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 6px 7px;
+    font-size: 10px;
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;
+    background: #fff;
+  }
+  input:focus { outline: none; border-color: #4a90d9; }
+
+  .btn-calc {
+    width: 100%;
+    padding: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: #0284c7;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: background 0.15s;
+  }
+  .btn-calc:hover { background: #026aa0; }
+
+  .btn-reset {
+    width: 100%;
+    padding: 7px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #444;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  .btn-reset:hover { background: #e2e8f0; }
+
+  #graphContainer {
+    margin: 12px 0;
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 8px;
+  }
+  #graphContainer canvas {
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+  }
+  #graphContainer img.esquema {
+    display: block;
+    margin: 0 auto 6px;
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    border-radius: 4px;
+    transition: transform 0.15s ease;
+  }
+  #graphContainer img.esquema:hover {
+    transform: scale(1.03);
+  }
+  .graph-note {
+    font-size: 8px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+
+  #resultBox {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 5px;
+    background: #eef7ee;
+    border: 1px solid #cfe8cf;
+  }
+  #resultBox h2 {
+    text-align: center;
+    color: #5a8a5a;
+    margin-bottom: 8px;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 10px;
+    border-bottom: 1px solid #d4e8d4;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: #5a8a5a; font-weight: 600; }
+  .result-row .value { font-weight: 700; color: #1c5c1c; font-size: 11px; }
+
+  .error-msg {
+    text-align: center;
+    font-size: 9px;
+    color: #b91c1c;
+    margin-top: 6px;
+    min-height: 14px;
+  }
+  .info-box {
+    font-size: 10px;
+    color: #F22E07;
+    margin-top: 7px;
+    line-height: 1.4;
+  }
+  .info-box strong { color: #475569; }
+
+  /* ============ LIGHTBOX ============ */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+  }
+  .lightbox.activo { display: flex; }
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    background: #fff;
+    padding: 10px;
+    cursor: default;
+    animation: zoomIn 0.25s ease;
+  }
+  .lightbox .cerrar {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease;
+  }
+  .lightbox .cerrar:hover { transform: scale(1.2); }
+
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes zoomIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora de Pendientes (mm)</h1>
+
+  <!-- ====== ENTRADA ====== -->
+  <div class="block">
+    <h2>Datos de entrada</h2>
+
+    <div class="fields-row">
+      <div class="field">
+        <label for="longitud">Longitud horizontal (mm)</label>
+        <input type="number" id="longitud" placeholder="mm" step="any" min="0">
+      </div>
+      <div class="field">
+        <label for="altura">Altura vertical (mm)</label>
+        <input type="number" id="altura" placeholder="mm" step="any">
+      </div>
+    </div>
+
+    <div class="fields-row">
+      <div class="field">
+        <label for="grados">Pendiente en grados (°)</label>
+        <input type="number" id="grados" placeholder="°" step="any">
+      </div>
+      <div class="field">
+        <label for="porcentaje">Pendiente en porcentaje (%)</label>
+        <input type="number" id="porcentaje" placeholder="%" step="any">
+      </div>
+    </div>
+
+    <div class="fields-row">
+      <div class="field">
+        <label for="distTotal">Distancia total (hipotenusa, mm)</label>
+        <input type="number" id="distTotal" placeholder="mm" step="any" min="0">
+      </div>
+    </div>
+
+    <button type="button" class="btn-calc" id="btnCalcular">Calcular pendiente</button>
+    <button type="button" class="btn-reset" id="btnLimpiar">Limpiar</button>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="info-box">
+      <strong>Ingrese al menos dos valores</strong> (una distancia + un ángulo, o las dos distancias).
+      Una altura negativa indica descenso. Todas las distancias en <strong>mm</strong>.
+    </div>
+  </div>
+
+  <!-- ====== GRÁFICO ====== -->
+  <div id="graphContainer">
+    <!-- Imagen esquema ampliable (opcional). Cámbiala por la tuya si quieres. -->
+    <img src="img/pendiente.png" alt="Esquema de pendiente" class="esquema" id="imgEsquema"
+         onerror="this.style.display='none'">
+    <canvas id="graphCanvas" width="360" height="200"></canvas>
+    <div class="graph-note">Haz clic en la imagen o el gráfico para ampliarlos</div>
+  </div>
+
+  <!-- ====== RESULTADOS ====== -->
+  <div id="resultBox">
+    <h2>Resultados del cálculo</h2>
+    <div class="result-row">
+      <span class="label">Longitud horizontal</span>
+      <span class="value" id="resLongitud">—</span>
+    </div>
+    <div class="result-row">
+      <span class="label">Altura vertical</span>
+      <span class="value" id="resAltura">—</span>
+    </div>
+    <div class="result-row">
+      <span class="label">Pendiente en grados</span>
+      <span class="value" id="resGrados">—</span>
+    </div>
+    <div class="result-row">
+      <span class="label">Pendiente en porcentaje</span>
+      <span class="value" id="resPorcentaje">—</span>
+    </div>
+    <div class="result-row">
+      <span class="label">Distancia total (hipotenusa)</span>
+      <span class="value" id="resDistTotal">—</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <img id="imgLightbox" alt="Vista ampliada">
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // --- Elementos ---
+  var inputLongitud   = document.getElementById('longitud');
+  var inputAltura     = document.getElementById('altura');
+  var inputGrados     = document.getElementById('grados');
+  var inputPorcentaje = document.getElementById('porcentaje');
+  var inputDistTotal  = document.getElementById('distTotal');
+
+  var resLongitud   = document.getElementById('resLongitud');
+  var resAltura     = document.getElementById('resAltura');
+  var resGrados     = document.getElementById('resGrados');
+  var resPorcentaje = document.getElementById('resPorcentaje');
+  var resDistTotal  = document.getElementById('resDistTotal');
+  var errorMsg      = document.getElementById('errorMsg');
+
+  var btnCalcular = document.getElementById('btnCalcular');
+  var btnLimpiar  = document.getElementById('btnLimpiar');
+
+  var canvas = document.getElementById('graphCanvas');
+  var ctx    = canvas.getContext('2d');
+
+  // Unidad fija en milímetros
+  var simboloUnidad = 'mm';
+
+  // --- Utilidades ---
+  function toRad(deg) { return deg * Math.PI / 180; }
+  function toDeg(rad) { return rad * 180 / Math.PI; }
+
+  function formatNum(n, dec) {
+    if (n === undefined || n === null || isNaN(n) || !isFinite(n)) return '—';
+    dec = (dec === undefined) ? 2 : dec;
+    return n.toFixed(dec).replace(/\.?0+$/, '');
+  }
+  function formatPct(n) {
+    if (n === undefined || n === null || isNaN(n) || !isFinite(n)) return '—';
+    return n.toFixed(2).replace(/\.?0+$/, '') + ' %';
+  }
+  function formatDeg(n) {
+    if (n === undefined || n === null || isNaN(n) || !isFinite(n)) return '—';
+    return n.toFixed(2).replace(/\.?0+$/, '') + ' °';
+  }
+  function formatDist(n) {
+    if (n === undefined || n === null || isNaN(n) || !isFinite(n)) return '—';
+    return n.toFixed(2).replace(/\.?0+$/, '') + ' ' + simboloUnidad;
+  }
+
+  // --- Obtener valor numérico (en mm) ---
+  function getValorMm(input) {
+    var v = parseFloat(input.value);
+    if (isNaN(v)) return NaN;
+    return v; // todo en mm
+  }
+
+  // --- Limpiar campos ---
+  function limpiarCampos() {
+    inputLongitud.value = '';
+    inputAltura.value = '';
+    inputGrados.value = '';
+    inputPorcentaje.value = '';
+    inputDistTotal.value = '';
+    errorMsg.textContent = '';
+    limpiarResultados();
+    dibujarGrafico(null, null);
+  }
+
+  function limpiarResultados() {
+    resLongitud.textContent = '—';
+    resAltura.textContent = '—';
+    resGrados.textContent = '—';
+    resPorcentaje.textContent = '—';
+    resDistTotal.textContent = '—';
+  }
+
+  // --- Mostrar resultados ---
+  function mostrarResultados(l, h, grados, pct, dist) {
+    resLongitud.textContent   = formatDist(l);
+    resAltura.textContent     = formatDist(h);
+    resGrados.textContent     = formatDeg(grados);
+    resPorcentaje.textContent = formatPct(pct);
+    resDistTotal.textContent  = formatDist(dist);
+  }
+
+  // --- Lógica principal de cálculo ---
+  function calcular() {
+    errorMsg.textContent = '';
+
+    var L = getValorMm(inputLongitud);
+    var H = getValorMm(inputAltura);
+    var G = parseFloat(inputGrados.value);
+    var P = parseFloat(inputPorcentaje.value);
+    var D = getValorMm(inputDistTotal);
+
+    var tieneL = !isNaN(L);
+    var tieneH = !isNaN(H);
+    var tieneG = !isNaN(G);
+    var tieneP = !isNaN(P);
+    var tieneD = !isNaN(D);
+
+    if (tieneL && L < 0) { errorMsg.textContent = 'La longitud no puede ser negativa.'; return; }
+    if (tieneD && D < 0) { errorMsg.textContent = 'La distancia total no puede ser negativa.'; return; }
+    if (tieneD && tieneL && D < Math.abs(L)) {
+      errorMsg.textContent = 'La distancia total no puede ser menor que la longitud horizontal.';
+      return;
+    }
+
+    var grados = null, pct = null, long = null, alt = null, dist = null;
+
+    if (tieneG && tieneP) {
+      grados = G;
+      var calcPct = 100 * Math.tan(toRad(G));
+      if (Math.abs(calcPct - P) > 0.01) {
+        errorMsg.textContent = 'Advertencia: ° y % no coinciden exactamente. Se usarán los grados.';
+      }
+      pct = calcPct;
+    }
+    else if (tieneG) {
+      grados = G;
+      pct = 100 * Math.tan(toRad(G));
+    }
+    else if (tieneP) {
+      pct = P;
+      grados = toDeg(Math.atan(P / 100));
+    }
+
+    if (tieneL && tieneH) {
+      long = L;
+      alt = H;
+      grados = toDeg(Math.atan2(H, L));
+      pct = 100 * (H / L);
+      dist = Math.sqrt(L * L + H * H);
+    }
+    else if (tieneL && grados !== null) {
+      long = L;
+      alt = L * Math.tan(toRad(grados));
+      pct = 100 * Math.tan(toRad(grados));
+      dist = Math.sqrt(L * L + alt * alt);
+    }
+    else if (tieneH && grados !== null) {
+      alt = H;
+      long = H / Math.tan(toRad(grados));
+      pct = 100 * Math.tan(toRad(grados));
+      dist = Math.sqrt(long * long + H * H);
+    }
+    else if (tieneL && tieneD) {
+      long = L;
+      dist = D;
+      if (D < L) { errorMsg.textContent = 'La distancia total debe ser ≥ longitud.'; return; }
+      alt = Math.sqrt(D * D - L * L);
+      grados = toDeg(Math.atan2(alt, L));
+      pct = 100 * (alt / L);
+    }
+    else if (tieneH && tieneD) {
+      alt = H;
+      dist = D;
+      if (D < Math.abs(H)) { errorMsg.textContent = 'La distancia total debe ser ≥ |altura|.'; return; }
+      long = Math.sqrt(D * D - H * H);
+      grados = toDeg(Math.atan2(H, long));
+      pct = 100 * (H / long);
+    }
+    else if (tieneL || tieneH || tieneG || tieneP || tieneD) {
+      if (!tieneG && !tieneP) {
+        errorMsg.textContent = 'Ingrese al menos dos valores para calcular.';
+        limpiarResultados();
+        dibujarGrafico(null, null);
+        return;
+      }
+    }
+    else {
+      errorMsg.textContent = 'Ingrese al menos dos valores para calcular.';
+      limpiarResultados();
+      dibujarGrafico(null, null);
+      return;
+    }
+
+    if (long === null || alt === null || grados === null || pct === null || dist === null) {
+      errorMsg.textContent = 'No se pudo completar el cálculo. Verifique los datos.';
+      limpiarResultados();
+      dibujarGrafico(null, null);
+      return;
+    }
+
+    mostrarResultados(long, alt, grados, pct, dist);
+    dibujarGrafico(long, alt);
+  }
+
+  // --- Gráfico ---
+  function dibujarGrafico(long, alt) {
+    var w = canvas.width;
+    var h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(0, 0, w, h);
+
+    if (long === null || alt === null || isNaN(long) || isNaN(alt) || long === 0) {
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px Segoe UI, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Ingrese datos para ver el gráfico', w / 2, h / 2);
+      return;
+    }
+
+    var pad = 30;
+    var drawW = w - pad * 2;
+    var drawH = h - pad * 2;
+
+    var maxL = Math.abs(long);
+    var maxH = Math.abs(alt);
+    if (maxL === 0 && maxH === 0) return;
+
+    var escala = Math.min(drawW / (maxL || 1), drawH / (maxH || 1));
+    escala = Math.min(escala, 60);
+
+    var lPx = maxL * escala;
+    var hPx = maxH * escala;
+
+    var ox = pad;
+    var oy = h - pad;
+    var direccion = alt >= 0 ? -1 : 1;
+
+    var px = ox + lPx;
+    var py = oy + direccion * hPx;
+
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(px, oy);
+    ctx.lineTo(px, py);
+    ctx.closePath();
+
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.15)';
+    ctx.fill();
+
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(px, oy);
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(px, oy);
+    ctx.lineTo(px, py);
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.font = 'bold 9px Segoe UI, Arial';
+    ctx.fillStyle = '#0284c7';
+    ctx.textAlign = 'center';
+    ctx.fillText('L', ox + lPx / 2, oy + 14);
+
+    ctx.fillStyle = '#dc2626';
+    ctx.textAlign = 'left';
+    ctx.fillText('H', px + 4, oy + direccion * hPx / 2 + 3);
+
+    if (lPx > 20) {
+      ctx.beginPath();
+      var radioAng = Math.min(20, lPx * 0.3);
+      var ang = Math.atan2(direccion * hPx, lPx);
+      ctx.arc(ox, oy, radioAng, direccion < 0 ? -ang : 0, direccion < 0 ? 0 : -ang, direccion > 0);
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = 'bold 8px Segoe UI, Arial';
+      ctx.textAlign = 'left';
+      var etiquetaAng = (toDeg(Math.abs(ang))).toFixed(1) + '°';
+      ctx.fillText(etiquetaAng, ox + radioAng + 4, oy - 6);
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(px, py);
+    ctx.strokeStyle = '#7c3aed';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#7c3aed';
+    ctx.font = 'bold 8px Segoe UI, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('D', (ox + px) / 2 - 10, (oy + py) / 2 + 10);
+  }
+
+  // --- Eventos ---
+  btnCalcular.addEventListener('click', calcular);
+  btnLimpiar.addEventListener('click', limpiarCampos);
+
+  [inputLongitud, inputAltura, inputGrados, inputPorcentaje, inputDistTotal].forEach(function(inp) {
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') calcular();
+    });
+  });
+
+  // ============ LIGHTBOX ============
+  var lightbox       = document.getElementById('lightbox');
+  var cerrarLightbox = document.getElementById('cerrarLightbox');
+  var imgLightbox    = document.getElementById('imgLightbox');
+
+  function abrirLightbox(src){
+    if (!src) return;
+    imgLightbox.src = src;
+    lightbox.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrarLightboxFn(){
+    lightbox.classList.remove('activo');
+    document.body.style.overflow = '';
+  }
+
+  // Delegación: cualquier clic sobre img.esquema o canvas dentro de #graphContainer
+  document.getElementById('graphContainer').addEventListener('click', function(e){
+    if (e.target.tagName === 'IMG' && e.target.classList.contains('esquema')) {
+      abrirLightbox(e.target.src);
+    } else if (e.target.tagName === 'CANVAS') {
+      // Convertir el canvas a imagen para mostrarlo ampliado
+      try {
+        abrirLightbox(e.target.toDataURL('image/png'));
+      } catch(err) {
+        // Si falla (por CORS), ignorar
+      }
+    }
+  });
+
+  cerrarLightbox.addEventListener('click', cerrarLightboxFn);
+  lightbox.addEventListener('click', function(e){
+    if (e.target === lightbox) cerrarLightboxFn();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && lightbox.classList.contains('activo')) cerrarLightboxFn();
+  });
+
+  // Inicializar
+  limpiarCampos();
+  dibujarGrafico(null, null);
+
+})();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>

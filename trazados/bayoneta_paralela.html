@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora peine</title>
+<style>
+  :root{
+    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
+    --borde:#e0e3e6; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+    display: block !important;
+  }
+
+  .container {
+    max-width: 733px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 5px;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 9px;
+    color: #666;
+    margin: 0 0 12px;
+  }
+
+  /* ============ BOTÓN ============ */
+  .btn-bayoneta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    background: var(--azul);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    border-radius: 5px;
+    margin: 0 0 14px;
+    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .btn-bayoneta:hover {
+    background: #174a85;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(30, 95, 168, 0.45);
+  }
+  .btn-bayoneta:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 253px 1fr;
+    gap: 13px;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: #f4f6f8;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    padding: 11px;
+  }
+  .panel h2 {
+    font-size: 9px;
+    margin: 0 0 8px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .esquema {
+    margin-bottom: 9px;
+    background: #e8f0fa;
+    border-radius: 4px;
+    padding: 7px;
+    min-height: 27px;
+    text-align: center;
+  }
+  .esquema img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    transition: transform 0.15s ease;
+  }
+  .esquema img:hover {
+    transform: scale(1.03);
+  }
+
+  label {
+    display: block;
+    font-size: 9px;
+    margin: 7px 0 3px;
+    font-weight: 600;
+    color: #444;
+  }
+
+  input {
+    width: 100%;
+    padding: 6px 7px;
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;
+    font-size: 10px;
+    background: #fff;
+    color: #222;
+  }
+  input:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+
+  .fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  button {
+    width: 100%;
+    padding: 7px;
+    margin-top: 9px;
+    border: none;
+    border-radius: 4px;
+    background: #111;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #333; }
+
+  button.sec {
+    background: #fff;
+    color: #111;
+    border: 1px solid #c7ccd1;
+  }
+  button.sec:hover { background: #f4f6f8; }
+
+  .aviso {
+    margin-top: 7px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    display: none;
+  }
+  .aviso.error {
+    background: #fdecea;
+    color: var(--error);
+    display: block;
+  }
+  .aviso.ok {
+    background: #e7f5ec;
+    color: var(--ok);
+    display: block;
+  }
+
+  .resultado {
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    padding: 11px;
+    min-height: 133px;
+  }
+  .resultado h2 {
+    font-size: 9px;
+    margin: 0 0 8px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .resumen {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 8px 0 5px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .resumen .dato {
+    background: #f4f6f8;
+    border: 1px solid var(--borde);
+    padding: 7px 9px;
+    border-radius: 4px;
+    color: #111;
+  }
+  .resumen .titulo {
+    background: transparent;
+    color: #444;
+    font-weight: 700;
+    padding: 4px 0 1px;
+    border: none;
+  }
+  .resumen .dato.destacado {
+    background: #e7f5ec;
+    border-color: #137a3f;
+    color: #137a3f;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .nota {
+    font-size: 8px;
+    color: #667085;
+    margin-top: 7px;
+  }
+
+  .formula {
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: #111;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-align: center;
+    margin: 10px 0 5px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ============ LIGHTBOX (ventana flotante) ============ */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+  }
+  .lightbox.activo {
+    display: flex;
+  }
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    background: #fff;
+    padding: 10px;
+    cursor: default;
+    animation: zoomIn 0.25s ease;
+  }
+  .lightbox .cerrar {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease;
+  }
+  .lightbox .cerrar:hover {
+    transform: scale(1.2);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes zoomIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora peine</h1>
+  <p class="subtitulo">Cálculo de la distancia B a partir de separacion A y el ángulo α del peine</p>
+
+  <!-- Botón único: Calcular bayoneta -->
+  <a href="bayoneta.html" class="btn-bayoneta">🔧 Calcular bayoneta</a>
+
+  <div class="layout">
+
+    <!-- PANEL DE ENTRADA -->
+    <section class="panel">
+      <h2>Datos de entrada</h2>
+
+      <div class="esquema" id="esquemaEntrada">
+        <!-- Imagen del peine (clic para ampliar) -->
+        <img src="img/peine.png" alt="Esquema del peine de tuberías" id="imgPeine">
+      </div>
+
+      <div class="fila">
+        <div>
+          <label for="in_A">Separacion A (mm)</label>
+          <input type="number" id="in_A" value="100" step="any" min="0">
+        </div>
+        <div>
+          <label for="in_alpha">Ángulo α (°)</label>
+          <input type="number" id="in_alpha" value="45" step="any" min="0" max="180">
+        </div>
+      </div>
+
+      <button id="btnCalcular">Calcular B</button>
+      <button id="btnCSV" class="sec">Exportar CSV</button>
+      <div class="aviso" id="aviso"></div>
+
+      <p class="nota">
+       <strong></strong>.
+      </p>
+    </section>
+
+    <!-- PANEL DE RESULTADOS -->
+    <section class="resultado">
+      <h2>Resultados</h2>
+
+      <div class="formula"></div>
+
+      <div id="resumenSalida">
+        <div class="resumen">
+          <div class="dato titulo">Datos introducidos</div>
+          <div class="dato" id="out_A">A = —</div>
+          <div class="dato" id="out_alpha">α = —</div>
+          <div class="dato titulo">Resultado</div>
+          <div class="dato destacado" id="out_B">B = —</div>
+        </div>
+      </div>
+
+      <p class="nota">
+      </p>
+    </section>
+
+  </div>
+</div>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <img src="img/peine.png" alt="Esquema del peine ampliado" id="imgLightbox">
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Referencias DOM
+  const inA       = document.getElementById('in_A');
+  const inAlpha   = document.getElementById('in_alpha');
+  const btnCalcular = document.getElementById('btnCalcular');
+  const btnCSV    = document.getElementById('btnCSV');
+  const aviso     = document.getElementById('aviso');
+
+  const outA      = document.getElementById('out_A');
+  const outAlpha  = document.getElementById('out_alpha');
+  const outB      = document.getElementById('out_B');
+
+  // Lightbox
+  const imgPeine       = document.getElementById('imgPeine');
+  const lightbox       = document.getElementById('lightbox');
+  const cerrarLightbox = document.getElementById('cerrarLightbox');
+
+  // Estado del último cálculo (para CSV)
+  let ultimoCalculo = null;
+
+  // Utilidades
+  function deg2rad(deg){ return deg * Math.PI / 180; }
+
+  function formatear(valor, decimales = 2){
+    if (!isFinite(valor)) return '—';
+    return Number(valor.toFixed(decimales)).toString();
+  }
+
+  function mostrarAviso(mensaje, tipo){
+    aviso.textContent = mensaje;
+    aviso.className = 'aviso ' + tipo;
+  }
+
+  function ocultarAviso(){
+    aviso.className = 'aviso';
+    aviso.textContent = '';
+  }
+
+  // Cálculo principal
+  function calcular(){
+    ocultarAviso();
+
+    const A     = parseFloat(inA.value);
+    const alpha = parseFloat(inAlpha.value);
+
+    // Validaciones
+    if (isNaN(A) || isNaN(alpha)) {
+      mostrarAviso('Introduce valores numéricos válidos para A y α.', 'error');
+      return null;
+    }
+    if (A < 0) {
+      mostrarAviso('El avance A no puede ser negativo.', 'error');
+      return null;
+    }
+    if (alpha <= 0 || alpha >= 180) {
+      mostrarAviso('El ángulo α debe estar entre 0° y 180° (exclusivo).', 'error');
+      return null;
+    }
+
+    // Fórmula: B = A * tan(alpha/2)
+    const mitadRad = deg2rad(alpha / 2);
+    const B = A * Math.tan(mitadRad);
+
+    // Mostrar resultados (2 decimales)
+    outA.textContent     = `A = ${formatear(A, 2)} mm`;
+    outAlpha.textContent = `α = ${formatear(alpha, 2)}°`;
+    outB.textContent     = `B = ${formatear(B, 2)} mm`;
+
+    ultimoCalculo = { A: A, alpha: alpha, B: B };
+
+    mostrarAviso('Cálculo realizado correctamente.', 'ok');
+    return ultimoCalculo;
+  }
+
+  // Exportar CSV
+  function exportarCSV(){
+    if (!ultimoCalculo) {
+      mostrarAviso('Primero realiza un cálculo antes de exportar.', 'error');
+      return;
+    }
+
+    const c = ultimoCalculo;
+    const sep = ';';
+    const filas = [
+      ['Concepto', 'Valor', 'Unidad'],
+      ['Avance A', formatear(c.A, 2), 'mm'],
+      ['Ángulo α', formatear(c.alpha, 2), '°'],
+      ['Resultado B', formatear(c.B, 2), 'mm'],
+      ['Fórmula', 'B = A * tan(alpha/2)', '']
+    ];
+
+    const contenido = filas.map(f => f.join(sep)).join('\n');
+    const blob = new Blob(['\uFEFF' + contenido], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = 'calculos_peine.csv';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+    URL.revokeObjectURL(url);
+  }
+
+  // ====== LIGHTBOX: abrir / cerrar ======
+  function abrirLightbox(){
+    lightbox.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrarLightboxFn(){
+    lightbox.classList.remove('activo');
+    document.body.style.overflow = '';
+  }
+
+  imgPeine.addEventListener('click', abrirLightbox);
+  cerrarLightbox.addEventListener('click', cerrarLightboxFn);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) cerrarLightboxFn();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('activo')) {
+      cerrarLightboxFn();
+    }
+  });
+
+  // Eventos
+  btnCalcular.addEventListener('click', calcular);
+  btnCSV.addEventListener('click', exportarCSV);
+
+  [inA, inAlpha].forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') calcular();
+    });
+  });
+
+  // Cálculo inicial al cargar
+  calcular();
+})();
+</script>
+
+<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Schedule de Tuberías</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+  }
+  .container {
+    max-width: 413px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 15px;
+  }
+  h2 {
+    font-size: 11px;
+    margin: 0 0 8px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .block {
+    background: #f9fafb;
+    border: 1px solid #e6e9eb;
+    border-radius: 5px;
+    padding: 11px 12px;
+    margin-bottom: 11px;
+  }
+  .field { margin-bottom: 9px; }
+  .field label {
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 3px;
+  }
+  select {
+    width: 100%;
+    padding: 6px 7px;
+    font-size: 10px;
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;
+    background: #fff;
+  }
+  select:focus { outline: none; border-color: #4a90d9; }
+
+  #resultBox {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 5px;
+    background: #eef7ee;
+    border: 1px solid #cfe8cf;
+  }
+  #resultBox h2 {
+    text-align: center;
+    color: #F54927;
+    margin-bottom: 8px;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 10px;
+    border-bottom: 1px solid #d4e8d4;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: #F54927; font-weight: 600; }
+  .result-row .value {
+    font-weight: 700;
+    color: #F54927;
+    font-size: 12px;
+    font-family: 'Consolas', 'Courier New', monospace;
+  }
+
+  .info-box {
+    font-size: 8px;
+    color: #64748b;
+    margin-top: 10px;
+    line-height: 1.5;
+    padding: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+  }
+  .info-box strong { color: #475569; }
+  .info-box ul { margin: 4px 0 0 16px; padding: 0; }
+  .info-box li { margin-bottom: 2px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora de Schedule de Tuberías</h1>
+
+  <!-- ====== ENTRADA ====== -->
+  <div class="block">
+    <h2>Seleccione especificaciones</h2>
+
+    <div class="field">
+      <label for="npsSelect">NPS / DN (Tamaño nominal)</label>
+      <select id="npsSelect"></select>
+    </div>
+
+    <div class="field">
+      <label for="schSelect">SCH (Schedule / Cédula)</label>
+      <select id="schSelect"></select>
+    </div>
+  </div>
+
+  <!-- ====== RESULTADOS ====== -->
+  <div id="resultBox">
+    <h2>Especificaciones Técnicas</h2>
+    <div class="result-row">
+      <span class="label">Diámetro Exterior (OD)</span>
+      <span class="value" id="resOD">—</span>
+    </div>
+    <div class="result-row">
+      <span class="label">Espesor de Pared (THK)</span>
+      <span class="value" id="resTHK">—</span>
+    </div>
+    <div class="result-row">
+      <span class="label">Diámetro Interior (ID)</span>
+      <span class="value" id="resID">—</span>
+    </div>
+    <div class="result-row">
+      <span class="label">Norma de referencia</span>
+      <span class="value" id="resStd" style="font-size:9px;">ASME B36.10M</span>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>Respuesta rápida</strong>
+    <ul>
+      <li><strong>NPS</strong> → Designación de tamaño estándar (pulgadas)</li>
+      <li><strong>DN</strong> → Equivalente métrico aproximado (mm)</li>
+      <li><strong>SCH</strong> → Nivel de espesor de pared</li>
+      <li><strong>Salida</strong> = OD + Espesor de Pared</li>
+    </ul>
+    <p style="margin-top:6px;"><strong>Normas:</strong> ASME B36.10M (acero al carbono) · ASME B36.19M (acero inoxidable)(ASTM)</p>
+   
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ============================================================
+  // TABLAS DE DATOS — ASME B36.10M / B36.19M
+  // ============================================================
+
+  var PIPE_SIZES = [
+    { nps: "1/8",  dn: "6",   od: 10.3  },
+    { nps: "1/4",  dn: "8",   od: 13.7  },
+    { nps: "3/8",  dn: "10",  od: 17.1  },
+    { nps: "1/2",  dn: "15",  od: 21.3  },
+    { nps: "3/4",  dn: "20",  od: 26.7  },
+    { nps: "1",    dn: "25",  od: 33.4  },
+    { nps: "1-1/4",dn: "32",  od: 42.2  },
+    { nps: "1-1/2",dn: "40",  od: 48.3  },
+    { nps: "2",    dn: "50",  od: 60.3  },
+    { nps: "2-1/2",dn: "65",  od: 73.0  },
+    { nps: "3",    dn: "80",  od: 88.9  },
+    { nps: "3-1/2",dn: "90",  od: 101.6 },
+    { nps: "4",    dn: "100", od: 114.3 },
+    { nps: "5",    dn: "125", od: 141.3 },
+    { nps: "6",    dn: "150", od: 168.3 },
+    { nps: "8",    dn: "200", od: 219.1 },
+    { nps: "10",   dn: "250", od: 273.0 },
+    { nps: "12",   dn: "300", od: 323.8 },
+    { nps: "14",   dn: "350", od: 355.6 },
+    { nps: "16",   dn: "400", od: 406.4 },
+    { nps: "18",   dn: "450", od: 457.0 },
+    { nps: "20",   dn: "500", od: 508.0 },
+    { nps: "24",   dn: "600", od: 610.0 }
+  ];
+
+  var SCHEDULE_DATA = {
+    "1/8":   { "5": null, "10": 1.24, "20": null, "30": 1.45, "40": 1.73, "STD": 1.73, "60": null, "80": 2.41, "XS": 2.41, "100": null, "120": null, "140": null, "160": null, "XXS": null, "5S": null, "10S": 1.25, "40S": 1.73, "80S": 2.42 },
+    "1/4":   { "5": null, "10": 1.65, "20": null, "30": 1.85, "40": 2.24, "STD": 2.24, "60": null, "80": 3.02, "XS": 3.02, "100": null, "120": null, "140": null, "160": null, "XXS": null, "5S": null, "10S": 1.66, "40S": 2.24, "80S": 3.03 },
+    "3/8":   { "5": null, "10": 1.65, "20": null, "30": 1.85, "40": 2.31, "STD": 2.31, "60": null, "80": 3.20, "XS": 3.20, "100": null, "120": null, "140": null, "160": null, "XXS": null, "5S": null, "10S": 1.66, "40S": 2.32, "80S": 3.20 },
+    "1/2":   { "5": 1.65, "10": 2.11, "20": null, "30": null, "40": 2.77, "STD": 2.77, "60": null, "80": 3.73, "XS": 3.73, "100": null, "120": null, "140": null, "160": 4.78, "XXS": 7.47, "5S": 1.65, "10S": 2.11, "40S": 2.77, "80S": 3.74 },
+    "3/4":   { "5": 1.65, "10": 2.11, "20": null, "30": null, "40": 2.87, "STD": 2.87, "60": null, "80": 3.91, "XS": 3.91, "100": null, "120": null, "140": null, "160": 5.56, "XXS": 7.82, "5S": 1.65, "10S": 2.11, "40S": 2.87, "80S": 3.92 },
+    "1":     { "5": 1.65, "10": 2.77, "20": null, "30": null, "40": 3.38, "STD": 3.38, "60": null, "80": 4.55, "XS": 4.55, "100": null, "120": null, "140": null, "160": 6.35, "XXS": 9.09, "5S": 1.65, "10S": 2.77, "40S": 3.38, "80S": 4.55 },
+    "1-1/4": { "5": 1.65, "10": 2.77, "20": null, "30": null, "40": 3.56, "STD": 3.56, "60": null, "80": 4.85, "XS": 4.85, "100": null, "120": null, "140": null, "160": 6.35, "XXS": 9.70, "5S": 1.65, "10S": 2.77, "40S": 3.56, "80S": 4.86 },
+    "1-1/2": { "5": 1.65, "10": 2.77, "20": null, "30": null, "40": 3.68, "STD": 3.68, "60": null, "80": 5.08, "XS": 5.08, "100": null, "120": null, "140": null, "160": 7.14, "XXS": 10.15, "5S": 1.65, "10S": 2.77, "40S": 3.69, "80S": 5.08 },
+    "2":     { "5": 2.11, "10": 2.77, "20": null, "30": null, "40": 3.91, "STD": 3.91, "60": null, "80": 5.54, "XS": 5.54, "100": null, "120": null, "140": null, "160": 8.74, "XXS": 11.07, "5S": 1.65, "10S": 2.77, "40S": 3.92, "80S": 5.54 },
+    "2-1/2": { "5": 2.77, "10": 3.05, "20": null, "30": null, "40": 5.16, "STD": 5.16, "60": null, "80": 7.01, "XS": 7.01, "100": null, "120": null, "140": null, "160": 9.53, "XXS": 14.02, "5S": 2.11, "10S": 3.05, "40S": 5.16, "80S": 7.01 },
+    "3":     { "5": 2.77, "10": 3.05, "20": null, "30": null, "40": 5.49, "STD": 5.49, "60": null, "80": 7.62, "XS": 7.62, "100": null, "120": null, "140": null, "160": 11.13, "XXS": 15.24, "5S": 2.11, "10S": 3.05, "40S": 5.49, "80S": 7.62 },
+    "3-1/2": { "5": null, "10": 3.05, "20": null, "30": null, "40": 5.74, "STD": 5.74, "60": null, "80": 8.08, "XS": 8.08, "100": null, "120": null, "140": null, "160": null, "XXS": null, "5S": 2.11, "10S": 3.05, "40S": 5.74, "80S": 8.08 },
+    "4":     { "5": null, "10": 3.05, "20": null, "30": null, "40": 6.02, "STD": 6.02, "60": null, "80": 8.56, "XS": 8.56, "100": null, "120": 11.13, "140": null, "160": 13.49, "XXS": 17.12, "5S": 2.11, "10S": 3.05, "40S": 6.02, "80S": 8.56 },
+    "5":     { "5": null, "10": 3.41, "20": null, "30": null, "40": 6.56, "STD": 6.56, "60": null, "80": 9.53, "XS": 9.53, "100": null, "120": 12.70, "140": 15.09, "160": null, "XXS": null, "5S": 2.77, "10S": 3.41, "40S": 6.56, "80S": 9.53 },
+    "6":     { "5": null, "10": 3.41, "20": null, "30": null, "40": 7.12, "STD": 7.12, "60": null, "80": 10.98, "XS": 10.98, "100": null, "120": 14.27, "140": 18.26, "160": null, "XXS": null, "5S": 2.77, "10S": 3.41, "40S": 7.12, "80S": 10.98 },
+    "8":     { "5": null, "10": 3.76, "20": 6.35, "30": 7.04, "40": 8.18, "STD": 8.18, "60": 10.31, "80": 12.70, "XS": 12.70, "100": 15.09, "120": 18.26, "140": 20.62, "160": null, "XXS": null, "5S": 2.77, "10S": 3.76, "40S": 8.18, "80S": 12.70 },
+    "10":    { "5": null, "10": 4.19, "20": 6.35, "30": 7.80, "40": 9.27, "STD": 9.27, "60": 12.70, "80": 15.09, "XS": 15.09, "100": 18.26, "120": 21.44, "140": 25.40, "160": null, "XXS": null, "5S": 3.41, "10S": 4.20, "40S": 9.28, "80S": 12.70 },
+    "12":    { "5": null, "10": 4.57, "20": 6.35, "30": 8.38, "40": 10.31, "STD": 9.53, "60": 14.27, "80": 17.48, "XS": 17.48, "100": 21.44, "120": 25.40, "140": 28.58, "160": null, "XXS": null, "5S": 3.97, "10S": 4.58, "40S": 9.53, "80S": 12.70 },
+    "14":    { "5": null, "10": 6.35, "20": 7.92, "30": 9.53, "40": 11.13, "STD": 9.53, "60": 15.09, "80": 19.05, "XS": 12.70, "100": 23.83, "120": 27.79, "140": 31.75, "160": null, "XXS": null, "5S": null, "10S": null, "40S": null, "80S": null },
+    "16":    { "5": null, "10": 6.35, "20": 7.92, "30": 9.53, "40": 12.70, "STD": 9.53, "60": 16.66, "80": 21.44, "XS": 12.70, "100": 26.19, "120": 30.96, "140": 36.53, "160": null, "XXS": null, "5S": null, "10S": null, "40S": null, "80S": null },
+    "18":    { "5": null, "10": 6.35, "20": 7.92, "30": 11.13, "40": 14.27, "STD": 9.53, "60": 19.05, "80": 23.83, "XS": 12.70, "100": 29.36, "120": 34.93, "140": 39.67, "160": null, "XXS": null, "5S": null, "10S": null, "40S": null, "80S": null },
+    "20":    { "5": null, "10": 6.35, "20": 9.53, "30": 12.70, "40": 15.09, "STD": 9.53, "60": 20.62, "80": 26.19, "XS": 12.70, "100": 32.54, "120": 38.10, "140": 44.45, "160": null, "XXS": null, "5S": null, "10S": null, "40S": null, "80S": null },
+    "24":    { "5": null, "10": 6.35, "20": 9.53, "30": 14.27, "40": 17.48, "STD": 9.53, "60": 24.61, "80": 30.96, "XS": 12.70, "100": 38.10, "120": 44.45, "140": 50.80, "160": null, "XXS": null, "5S": null, "10S": null, "40S": null, "80S": null }
+  };
+
+  // ============================================================
+  // REFERENCIAS DOM
+  // ============================================================
+  var npsSelect = document.getElementById('npsSelect');
+  var schSelect = document.getElementById('schSelect');
+  var resOD     = document.getElementById('resOD');
+  var resTHK    = document.getElementById('resTHK');
+  var resID     = document.getElementById('resID');
+  var resStd    = document.getElementById('resStd');
+
+  // ============================================================
+  // POBLAR SELECTOR NPS / DN
+  // ============================================================
+  PIPE_SIZES.forEach(function(ps) {
+    var opt = document.createElement('option');
+    opt.value = ps.nps;
+    opt.textContent = 'NPS ' + ps.nps + '  (DN ' + ps.dn + ')';
+    npsSelect.appendChild(opt);
+  });
+
+  // ============================================================
+  // FUNCIONES
+  // ============================================================
+
+  function getOD(nps) {
+    for (var i = 0; i < PIPE_SIZES.length; i++) {
+      if (PIPE_SIZES[i].nps === nps) return PIPE_SIZES[i].od;
+    }
+    return null;
+  }
+
+  function getAvailableSchedules(nps) {
+    var data = SCHEDULE_DATA[nps];
+    if (!data) return [];
+    var list = [];
+    var order = ["5","10","20","30","40","STD","60","80","XS","100","120","140","160","XXS","5S","10S","40S","80S"];
+    order.forEach(function(sch) {
+      if (data[sch] !== undefined && data[sch] !== null) {
+        list.push(sch);
+      }
+    });
+    return list;
+  }
+
+  function getThickness(nps, sch) {
+    var data = SCHEDULE_DATA[nps];
+    if (!data) return null;
+    return data[sch] !== undefined ? data[sch] : null;
+  }
+
+  function getStandardForSchedule(sch) {
+    if (sch && sch.indexOf('S') !== -1) return 'ASME B36.19M';
+    return 'ASME B36.10M';
+  }
+
+  // ============================================================
+  // ACTUALIZACIÓN
+  // ============================================================
+
+  function updateScheduleOptions(nps) {
+    var schedules = getAvailableSchedules(nps);
+    schSelect.innerHTML = '';
+    schedules.forEach(function(sch) {
+      var opt = document.createElement('option');
+      opt.value = sch;
+      opt.textContent = 'SCH ' + sch;
+      schSelect.appendChild(opt);
+    });
+    // SCH 40 por defecto si existe
+    for (var i = 0; i < schSelect.options.length; i++) {
+      if (schSelect.options[i].value === '40') {
+        schSelect.selectedIndex = i;
+        break;
+      }
+    }
+    if (schSelect.options.length === 0 && schedules.length > 0) {
+      schSelect.selectedIndex = 0;
+    }
+  }
+
+  function calcular() {
+    var nps = npsSelect.value;
+    var sch = schSelect.value;
+
+    if (!nps || !sch) {
+      resOD.textContent = '—';
+      resTHK.textContent = '—';
+      resID.textContent = '—';
+      resStd.textContent = '—';
+      return;
+    }
+
+    var od = getOD(nps);
+    var thk = getThickness(nps, sch);
+
+    if (od === null || thk === null) {
+      resOD.textContent = '—';
+      resTHK.textContent = '—';
+      resID.textContent = '—';
+      resStd.textContent = '—';
+      return;
+    }
+
+    var id = od - 2 * thk;
+    var std = getStandardForSchedule(sch);
+
+    resOD.textContent = od.toFixed(1) + ' mm';
+    resTHK.textContent = thk.toFixed(2) + ' mm';
+    resID.textContent = id.toFixed(1) + ' mm';
+    resStd.textContent = std;
+  }
+
+  // ============================================================
+  // EVENTOS
+  // ============================================================
+
+  npsSelect.addEventListener('change', function() {
+    updateScheduleOptions(this.value);
+    calcular();
+  });
+
+  schSelect.addEventListener('change', calcular);
+
+  // ============================================================
+  // INICIALIZACIÓN
+  // ============================================================
+
+  // NPS 2 por defecto
+  for (var i = 0; i < npsSelect.options.length; i++) {
+    if (npsSelect.options[i].value === '2') {
+      npsSelect.selectedIndex = i;
+      break;
+    }
+  }
+
+  updateScheduleOptions(npsSelect.value);
+  calcular();
+
+})();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>

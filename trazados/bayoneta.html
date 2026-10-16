@@ -16,40 +16,68 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 16px 11px 40px;   /* ⬅️ antes 24 16 60 */
+    padding: 16px 11px 40px;
     color: #222;
   }
 
   .container {
-    max-width: 733px;         /* ⬅️ antes 1100 (≈ 2/3) */
+    max-width: 733px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 7px;       /* ⬅️ antes 10 */
+    border-radius: 7px;
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-    padding: 16px 19px 21px;  /* ⬅️ antes 24 28 32 */
+    padding: 16px 19px 21px;
   }
 
   h1 {
     text-align: center;
-    font-size: 13px;          /* ⬅️ antes 20 */
+    font-size: 13px;
     background: #111;
     color: #fff;
-    padding: 8px 11px;        /* ⬅️ antes 12 16 */
-    border-radius: 4px;       /* ⬅️ antes 6 */
+    padding: 8px 11px;
+    border-radius: 4px;
     margin: 0 0 5px;
   }
 
   .subtitulo {
     text-align: center;
-    font-size: 9px;           /* ⬅️ antes 13 */
+    font-size: 9px;
     color: #666;
-    margin: 0 0 15px;         /* ⬅️ antes 22 */
+    margin: 0 0 12px;
+  }
+
+  /* ============ BOTÓN BAYONETA ============ */
+  .btn-bayoneta-paralela {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    background: var(--azul);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    border-radius: 5px;
+    margin: 0 0 14px;
+    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .btn-bayoneta-paralela:hover {
+    background: #174a85;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(30, 95, 168, 0.45);
+  }
+  .btn-bayoneta-paralela:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
   }
 
   .layout {
     display: grid;
-    grid-template-columns: 253px 1fr;   /* ⬅️ antes 380px 1fr */
-    gap: 13px;                          /* ⬅️ antes 20 */
+    grid-template-columns: 253px 1fr;
+    gap: 13px;
   }
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
@@ -58,45 +86,51 @@
   .panel {
     background: #f4f6f8;
     border: 1px solid var(--borde);
-    border-radius: 5px;       /* ⬅️ antes 8 */
-    padding: 11px;            /* ⬅️ antes 16 */
+    border-radius: 5px;
+    padding: 11px;
   }
   .panel h2 {
-    font-size: 9px;           /* ⬅️ antes 14 */
-    margin: 0 0 8px;          /* ⬅️ antes 12 */
+    font-size: 9px;
+    margin: 0 0 8px;
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .esquema {
-    margin-bottom: 9px;       /* ⬅️ antes 14 */
+    margin-bottom: 9px;
     background: #e8f0fa;
-    border-radius: 4px;       /* ⬅️ antes 6 */
-    padding: 7px;             /* ⬅️ antes 10 */
-    min-height: 27px;         /* ⬅️ antes 40 */
+    border-radius: 4px;
+    padding: 7px;
+    min-height: 27px;
+    text-align: center;
   }
   .esquema img {
     display: block;
     margin: 0 auto;
     max-width: 100%;
     height: auto;
+    cursor: zoom-in;
+    transition: transform 0.15s ease;
+  }
+  .esquema img:hover {
+    transform: scale(1.03);
   }
 
   label {
     display: block;
-    font-size: 9px;           /* ⬅️ antes 13 */
-    margin: 7px 0 3px;        /* ⬅️ antes 10 0 4 */
+    font-size: 9px;
+    margin: 7px 0 3px;
     font-weight: 600;
     color: #444;
   }
 
   input, select {
     width: 100%;
-    padding: 6px 7px;         /* ⬅️ antes 9 10 */
+    padding: 6px 7px;
     border: 1px solid #c7ccd1;
-    border-radius: 4px;       /* ⬅️ antes 6 */
-    font-size: 10px;          /* ⬅️ antes 15 */
+    border-radius: 4px;
+    font-size: 10px;
     background: #fff;
     color: #222;
   }
@@ -108,18 +142,18 @@
   .fila {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 7px;                 /* ⬅️ antes 10 */
+    gap: 7px;
   }
 
   button {
     width: 100%;
-    padding: 7px;             /* ⬅️ antes 10 */
-    margin-top: 9px;          /* ⬅️ antes 14 */
+    padding: 7px;
+    margin-top: 9px;
     border: none;
-    border-radius: 4px;       /* ⬅️ antes 6 */
+    border-radius: 4px;
     background: #111;
     color: #fff;
-    font-size: 9px;           /* ⬅️ antes 14 */
+    font-size: 9px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
@@ -134,10 +168,10 @@
   button.sec:hover { background: #f4f6f8; }
 
   .aviso {
-    margin-top: 7px;          /* ⬅️ antes 10 */
-    padding: 5px 7px;         /* ⬅️ antes 8 10 */
-    border-radius: 4px;       /* ⬅️ antes 6 */
-    font-size: 9px;           /* ⬅️ antes 13 */
+    margin-top: 7px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    font-size: 9px;
     display: none;
   }
   .aviso.error {
@@ -154,13 +188,13 @@
   .resultado {
     background: #fff;
     border: 1px solid var(--borde);
-    border-radius: 5px;       /* ⬅️ antes 8 */
-    padding: 11px;            /* ⬅️ antes 16 */
-    min-height: 133px;        /* ⬅️ antes 200 */
+    border-radius: 5px;
+    padding: 11px;
+    min-height: 133px;
   }
   .resultado h2 {
-    font-size: 9px;           /* ⬅️ antes 14 */
-    margin: 0 0 8px;          /* ⬅️ antes 12 */
+    font-size: 9px;
+    margin: 0 0 8px;
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -169,73 +203,129 @@
   .resumen {
     display: flex;
     flex-direction: column;
-    gap: 4px;                 /* ⬅️ antes 6 */
-    margin: 8px 0 5px;        /* ⬅️ antes 12 0 8 */
-    font-size: 10px;          /* ⬅️ antes 15 */
+    gap: 4px;
+    margin: 8px 0 5px;
+    font-size: 10px;
     font-weight: 600;
   }
   .resumen .dato {
     background: #f4f6f8;
     border: 1px solid var(--borde);
-    padding: 7px 9px;         /* ⬅️ antes 10 14 */
-    border-radius: 4px;       /* ⬅️ antes 6 */
+    padding: 7px 9px;
+    border-radius: 4px;
     color: #111;
   }
   .resumen .titulo {
     background: transparent;
     color: #444;
     font-weight: 700;
-    padding: 4px 0 1px;       /* ⬅️ antes 6 0 2 */
+    padding: 4px 0 1px;
     border: none;
   }
 
   .nota {
-    font-size: 8px;           /* ⬅️ antes 12 */
+    font-size: 8px;
     color: #667085;
-    margin-top: 7px;          /* ⬅️ antes 10 */
+    margin-top: 7px;
   }
 
   /* Anular cualquier flex del body que ponga la cabecera al lado de la tarjeta */
   body { display: block !important; }
+
+  /* ============ LIGHTBOX (ventana flotante) ============ */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+  }
+  .lightbox.activo {
+    display: flex;
+  }
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    background: #fff;
+    padding: 10px;
+    cursor: default;
+    animation: zoomIn 0.25s ease;
+  }
+  .lightbox .cerrar {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease;
+  }
+  .lightbox .cerrar:hover {
+    transform: scale(1.2);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes zoomIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Calculadora de Bayoneta de Tubería</h1>
-  <p class="subtitulo">Cálculo de tramo recto y ángulos de corte del codo</p>
+  <p class="subtitulo">Cálculo de tramo recto y ángulos de corte del codo — medidas en mm</p>
+
+  <!-- Botón único: Cálculo peine bayonetas misma dirección -->
+  <a href="bayoneta_paralela.html" class="btn-bayoneta-paralela">🔧 Cálculo peine bayonetas</a>
 
   <div class="layout">
 
     <section class="panel">
       <h2>Datos de entrada</h2>
 
-      <div class="esquema" id="esquemaEntrada"></div>
+      <!-- Imagen del esquema (clic para ampliar) -->
+      <div class="esquema" id="esquemaEntrada">
+        <img src="img/bayoneta.png" alt="Esquema de la bayoneta de tubería" id="imgBayoneta">
+      </div>
 
-      <label for="unidad">Unidad</label>
-      <select id="unidad">
+      <!-- Selector de unidad oculto: mantiene compatibilidad con bayoneta.js -->
+      <select id="unidad" hidden>
         <option value="mm" selected>Milímetros (mm)</option>
-        <option value="pulg">Pulgadas (in)</option>
       </select>
 
       <div class="fila">
         <div>
-          <label for="in_O1">Offset vertical O₁</label>
+          <label for="in_O1">Offset vertical O₁ (mm)</label>
           <input type="number" id="in_O1" value="300" step="any" min="0">
         </div>
         <div>
-          <label for="in_O2">Offset horizontal O₂</label>
+          <label for="in_O2">Offset horizontal O₂ (mm)</label>
           <input type="number" id="in_O2" value="500" step="any" min="0">
         </div>
       </div>
 
       <div class="fila">
         <div>
-          <label for="in_d">Diámetro exterior (d)</label>
+          <label for="in_d">Diámetro exterior d (mm)</label>
           <input type="number" id="in_d" value="200" step="any" min="0">
         </div>
         <div>
-          <label for="in_R">Radio del codo (R)</label>
+          <label for="in_R">Radio del codo R (mm)</label>
           <input type="number" id="in_R" value="300" step="any" min="0">
         </div>
       </div>
@@ -247,19 +337,114 @@
       <p class="nota">
         El ángulo del codo α se calcula automáticamente a partir de los dos offsets.
         Los codos son de mercado y se degradan al ángulo calculado.
+        Todas las medidas en <strong>mm</strong>.
       </p>
     </section>
 
     <section class="resultado">
       <h2>Resultados</h2>
-      <div id="imagenPatron" class="esquema"></div>
+      <!-- Sin imagen duplicada: solo lista de resultados -->
       <div id="resumenSalida"></div>
     </section>
 
   </div>
 </div>
 
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <img src="img/bayoneta.png" alt="Esquema de la bayoneta ampliado" id="imgLightbox">
+</div>
+
 <script src="bayoneta.js"></script>
+
+<script>
+/* ============ LIGHTBOX (versión robusta con delegación) ============ */
+(function(){
+  "use strict";
+
+  const lightbox       = document.getElementById('lightbox');
+  const cerrarLightbox = document.getElementById('cerrarLightbox');
+  const imgLightbox    = document.getElementById('imgLightbox');
+
+  if (!lightbox) return;
+
+  function abrirLightbox(srcImagen){
+    if (srcImagen) imgLightbox.src = srcImagen;
+    lightbox.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrarLightboxFn(){
+    lightbox.classList.remove('activo');
+    document.body.style.overflow = '';
+  }
+
+  // Delegación: cualquier clic sobre una imagen dentro de .esquema la amplía
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.esquema img');
+    if (img) {
+      e.preventDefault();
+      abrirLightbox(img.src);
+    }
+  });
+
+  // Cerrar
+  cerrarLightbox.addEventListener('click', cerrarLightboxFn);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) cerrarLightboxFn();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('activo')) {
+      cerrarLightboxFn();
+    }
+  });
+})();
+
+/* ============ OCULTAR FILAS NO DESEADAS EN RESULTADOS ============ */
+(function(){
+  "use strict";
+
+  const patronesAOcultar = [
+    /arco\s*—\s*línea\s*media/i,
+    /longitud\s*bruta\s*entre\s*codos/i
+  ];
+
+  function limpiarResumen(){
+    const contenedor = document.getElementById('resumenSalida');
+    if (!contenedor) return;
+
+    // Buscar todos los elementos que contengan los textos a ocultar
+    const candidatos = contenedor.querySelectorAll('div, p, li, tr, span');
+    candidatos.forEach(el => {
+      const texto = (el.textContent || '').trim();
+      if (patronesAOcultar.some(p => p.test(texto))) {
+        if (texto.length < 120) {
+          el.style.display = 'none';
+        }
+      }
+    });
+  }
+
+  const btnCalcular = document.getElementById('btnCalcular');
+  if (btnCalcular) {
+    btnCalcular.addEventListener('click', () => {
+      setTimeout(limpiarResumen, 50);
+    });
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(limpiarResumen, 100);
+  });
+
+  const contenedor = document.getElementById('resumenSalida');
+  if (contenedor && window.MutationObserver) {
+    const observer = new MutationObserver(() => {
+      setTimeout(limpiarResumen, 10);
+    });
+    observer.observe(contenedor, { childList: true, subtree: true });
+  }
+})();
+</script>
 
 <!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
 <link rel="stylesheet" href="men-header.css">
