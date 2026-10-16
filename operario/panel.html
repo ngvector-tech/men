@@ -30,252 +30,554 @@
     border-radius: 6px;
     margin: 0 0 8px;
   }
-  .bienvenida {
+  .subtitulo {
     text-align: center;
     font-size: 14px;
     color: #555;
     margin-bottom: 22px;
   }
-  .vinculos {
-    display: grid;
-    gap: 12px;
+
+  /* ---------- LOGIN ---------- */
+  #loginBox { max-width: 340px; margin: 20px auto 0; }
+  #loginBox label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: #444; margin: 12px 0 4px;
   }
+  #loginBox input {
+    width: 100%; padding: 10px 12px; font-size: 14px;
+    border: 1px solid #c7ccd1; border-radius: 6px;
+  }
+  #loginBox input:focus { outline: none; border-color: #4a90d9; }
+  #loginBox button {
+    width: 100%; margin-top: 16px; padding: 12px;
+    background: #111; color: #fff; border: none;
+    border-radius: 6px; font-size: 14px; font-weight: 700;
+    cursor: pointer;
+  }
+  #loginBox button:hover { background: #333; }
+  #loginBox button:disabled { opacity: 0.6; cursor: wait; }
+  .login-error {
+    margin-top: 12px; padding: 10px 12px;
+    background: #fdecea; color: #b42318;
+    border-radius: 6px; font-size: 13px;
+    text-align: center; display: none;
+  }
+  .login-error.visible { display: block; }
+
+  /* ---------- PANEL ---------- */
+  #panelBox { display: none; }
+  #panelBox.visible { display: block; }
+
+  .cabecera {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .usuario-info { font-size: 14px; color: #555; }
+  .usuario-info strong { color: #111; }
+
+  .badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 10px; font-size: 11px;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge.admin { background: #ffb300; color: #222; }
+  .badge.operario { background: #e8f0fa; color: #1e5fa8; }
+
+  .admin-selector {
+    display: none; background: #fff8e1;
+    border: 1px solid #ffe082; border-left: 4px solid #ffb300;
+    border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;
+  }
+  .admin-selector.visible { display: block; }
+  .admin-selector label {
+    font-size: 12px; font-weight: 600;
+    color: #7a5b00; display: block; margin-bottom: 6px;
+  }
+  .admin-selector select {
+    width: 100%; padding: 8px 10px; font-size: 13px;
+    border: 1px solid #c7ccd1; border-radius: 6px;
+    background: #fff;
+  }
+
+  .btn-anadir {
+    display: block; width: 100%; padding: 10px;
+    background: #137a3f; color: #fff; border: none;
+    border-radius: 6px; font-size: 13px;
+    font-weight: 700; cursor: pointer; margin-bottom: 14px;
+  }
+  .btn-anadir:hover { background: #0e5c2f; }
+
+  .btn-admin-ops {
+    display: none; width: 100%; padding: 10px;
+    background: #0284c7; color: #fff; border: none;
+    border-radius: 6px; font-size: 13px;
+    font-weight: 700; cursor: pointer; margin-bottom: 14px;
+  }
+  .btn-admin-ops:hover { background: #026aa0; }
+
+  .vinculos { display: grid; gap: 10px; }
   .vinculo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    background: #f8f9fa;
-    border: 1px solid #e0e3e6;
-    border-left: 4px solid #4a90d9;
-    border-radius: 8px;
-    color: #222;
-    transition: all 0.15s;
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px; background: #f8f9fa;
+    border: 1px solid #e0e3e6; border-left: 4px solid #4a90d9;
+    border-radius: 8px; transition: all 0.15s;
   }
-  .vinculo:hover {
-    background: #eaf4ff;
-    transform: translateX(2px);
+  .vinculo:hover { background: #eaf4ff; }
+  .vinculo a {
+    color: inherit; text-decoration: none; flex: 1;
+    display: flex; align-items: center; min-width: 0;
   }
+  .vinculo .info { flex: 1; min-width: 0; }
   .vinculo .titulo {
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 600; font-size: 14px; color: #111;
   }
   .vinculo .url {
-    font-size: 12px;
-    color: #777;
-    margin-top: 2px;
-    word-break: break-all;
+    font-size: 12px; color: #777;
+    margin-top: 2px; word-break: break-all;
   }
-  .vinculo .flecha {
-    font-size: 20px;
-    color: #4a90d9;
-    margin-left: 12px;
-  }
-  .vacio {
-    text-align: center;
-    color: #888;
-    padding: 30px 0;
-    font-style: italic;
-  }
-  .cerrar {
-    display: block;
-    margin: 26px auto 0;
-    padding: 10px 24px;
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .cerrar:hover { background: #333; }
+  .vinculo .acciones { display: flex; gap: 6px; flex-shrink: 0; }
 
-  /* --- Administración --- */
-  .admin-bar {
-    display: none;
-    background: #fff8e1;
-    border: 1px solid #ffe082;
-    border-left: 4px solid #ffb300;
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 18px;
+  .btn-mini {
+    padding: 6px 10px; font-size: 12px; font-weight: 600;
+    border: none; border-radius: 5px; cursor: pointer; line-height: 1;
   }
-  .admin-bar.visible { display: block; }
-  .admin-bar h3 {
-    margin: 0 0 10px;
-    font-size: 14px;
-    color: #7a5b00;
-  }
-  .admin-bar .fila {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-  }
-  .admin-bar input {
-    flex: 1;
-    min-width: 120px;
-    padding: 8px 10px;
-    font-size: 13px;
-    border: 1px solid #c7ccd1;
-    border-radius: 6px;
-  }
-  .admin-bar input:focus {
-    outline: none;
-    border-color: #ffb300;
-  }
-  .admin-bar button {
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    border: none;
-    border-radius: 6px;
-    background: #ffb300;
-    color: #222;
-    cursor: pointer;
-  }
-  .admin-bar button:hover { background: #ffca28; }
+  .btn-mini.editar { background: #0284c7; color: #fff; }
+  .btn-mini.editar:hover { background: #026aa0; }
+  .btn-mini.borrar { background: #c0392b; color: #fff; }
+  .btn-mini.borrar:hover { background: #e74c3c; }
+  .btn-mini:disabled { opacity: 0.6; cursor: wait; }
 
-  /* Botón de eliminar vínculo (solo admin) */
-  .vinculo .borrar {
-    background: #c0392b;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 10px;
-    line-height: 1;
+  .vacio { text-align: center; color: #888; padding: 30px 0; font-style: italic; }
+  .loading { text-align: center; color: #888; padding: 30px 0; }
+  .error-box {
+    background: #fdecea; color: #b42318; padding: 10px 14px;
+    border-radius: 6px; font-size: 13px; margin-bottom: 14px; display: none;
   }
-  .vinculo .borrar:hover { background: #e74c3c; }
-  .vinculo .borrar:disabled { opacity: 0.6; cursor: wait; }
+  .error-box.visible { display: block; }
+
+  .btn-cerrar {
+    display: block; width: 100%; margin-top: 22px; padding: 10px;
+    background: #fff; color: #111;
+    border: 1px solid #c7ccd1; border-radius: 6px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn-cerrar:hover { background: #f4f6f8; }
+
+  /* ---------- MODAL ---------- */
+  .modal-fondo {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 9999;
+    justify-content: center; align-items: center; padding: 20px;
+  }
+  .modal-fondo.visible { display: flex; }
+  .modal {
+    background: #fff; border-radius: 10px; padding: 22px 24px;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  .modal h2 { margin: 0 0 14px; font-size: 16px; }
+  .modal label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: #444; margin: 10px 0 4px;
+  }
+  .modal input[type="text"],
+  .modal input[type="password"] {
+    width: 100%; padding: 9px 11px; font-size: 13px;
+    border: 1px solid #c7ccd1; border-radius: 6px;
+  }
+  .modal input:focus { outline: none; border-color: #4a90d9; }
+  .modal-botones { display: flex; gap: 8px; margin-top: 18px; }
+  .modal-botones button {
+    flex: 1; padding: 10px; font-size: 13px; font-weight: 600;
+    border: none; border-radius: 6px; cursor: pointer;
+  }
+  .modal-botones .cancelar {
+    background: #f1f5f9; color: #444; border: 1px solid #cbd5e1;
+  }
+  .modal-botones .cancelar:hover { background: #e2e8f0; }
+  .modal-botones .guardar { background: #137a3f; color: #fff; }
+  .modal-botones .guardar:hover { background: #0e5c2f; }
+  .modal-botones .guardar:disabled { opacity: 0.6; cursor: wait; }
 </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Panel de Vínculos</h1>
-  <div class="bienvenida">Bienvenido, <strong id="nombreUser"></strong></div>
+  <div class="subtitulo" id="subtitulo">Acceso restringido</div>
 
-  <!-- Panel de administración (solo visible en modo admin) -->
-  <div class="admin-bar" id="adminBar">
-    <h3>🛠️ Modo administrador — añadir vínculo a <span id="adminPara"></span></h3>
-    <div class="fila">
-      <input type="text" id="nuevoTitulo" placeholder="Título (ej: Tubería)">
-      <input type="text" id="nuevaUrl" placeholder="URL (https://...)">
-      <button type="button" id="btnAnadir">Añadir</button>
-    </div>
-    <div style="font-size:12px;color:#7a5b00;">
-      Como admin, puedes eliminar cualquier vínculo con el botón ✕. Los vínculos base se "ocultan" (no se borran del código, pero dejan de mostrarse).
-    </div>
+  <!-- ============ LOGIN ============ -->
+  <div id="loginBox">
+    <label for="loginPassword">Contraseña</label>
+    <input type="password" id="loginPassword" placeholder="Introduce tu contraseña" autocomplete="off">
+    <button type="button" id="btnLogin">Entrar</button>
+    <div class="login-error" id="loginError"></div>
   </div>
 
-  <div class="vinculos" id="vinculosBox"></div>
-  <button class="cerrar" id="btnCerrar">Cerrar sesión</button>
+  <!-- ============ PANEL ============ -->
+  <div id="panelBox">
+    <div class="cabecera">
+      <div class="usuario-info">
+        Sesión: <strong id="nombreUser">—</strong>
+        <span class="badge" id="rolBadge"></span>
+      </div>
+      <button class="btn-cerrar" id="btnCerrar" style="width:auto;margin:0;padding:8px 14px;">Cerrar sesión</button>
+    </div>
+
+    <button class="btn-admin-ops" id="btnGestionarOps">👥 Gestionar operarios</button>
+
+    <div class="admin-selector" id="adminSelector">
+      <label for="operarioSelect">Ver vínculos de:</label>
+      <select id="operarioSelect"></select>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <button class="btn-anadir" id="btnAnadir" style="display:none;">➕ Añadir vínculo</button>
+
+    <div class="vinculos" id="vinculosBox">
+      <div class="loading">Cargando…</div>
+    </div>
+  </div>
 </div>
 
+<!-- ============ MODAL AÑADIR/EDITAR VÍNCULO ============ -->
+<div class="modal-fondo" id="modalFondo">
+  <div class="modal">
+    <h2 id="modalTitulo">Añadir vínculo</h2>
+    <label for="modalTituloInput">Título</label>
+    <input type="text" id="modalTituloInput" placeholder="Ej: Tubería">
+    <label for="modalUrlInput">URL</label>
+    <input type="text" id="modalUrlInput" placeholder="https://...">
+    <div class="modal-botones">
+      <button class="cancelar" id="modalCancelar">Cancelar</button>
+      <button class="guardar" id="modalGuardar">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL GESTIÓN OPERARIOS ============ -->
+<div class="modal-fondo" id="modalOpsFondo">
+  <div class="modal" style="max-width:700px;">
+    <h2>👥 Gestión de Operarios</h2>
+
+    <button class="btn-anadir" id="btnNuevoOperario" style="background:#137a3f;">
+      ➕ Nuevo operario
+    </button>
+
+    <div style="max-height:50vh;overflow:auto;margin-top:12px;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:#f4f6f8;">
+            <th style="padding:8px;text-align:left;border-bottom:1px solid #e0e3e6;">Nombre</th>
+            <th style="padding:8px;text-align:left;border-bottom:1px solid #e0e3e6;">Contraseña</th>
+            <th style="padding:8px;text-align:center;border-bottom:1px solid #e0e3e6;">Admin</th>
+            <th style="padding:8px;text-align:center;border-bottom:1px solid #e0e3e6;">Activo</th>
+            <th style="padding:8px;text-align:center;border-bottom:1px solid #e0e3e6;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaOpsBody">
+          <tr><td colspan="5" style="text-align:center;padding:20px;color:#888;">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-botones" style="margin-top:16px;">
+      <button class="cancelar" id="modalOpsCerrar">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL EDITAR/CREAR OPERARIO ============ -->
+<div class="modal-fondo" id="modalOpEditFondo">
+  <div class="modal" style="max-width:420px;">
+    <h2 id="modalOpEditTitulo">Nuevo operario</h2>
+
+    <label for="opEditNombre">Nombre</label>
+    <input type="text" id="opEditNombre" placeholder="Ej: Arturo">
+
+    <label for="opEditPassword">Contraseña</label>
+    <input type="text" id="opEditPassword" placeholder="Ej: 5248">
+
+    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+      <input type="checkbox" id="opEditAdmin" style="width:auto;">
+      Es administrador
+    </label>
+
+    <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+      <input type="checkbox" id="opEditActivo" style="width:auto;" checked>
+      Activo
+    </label>
+
+    <div class="modal-botones">
+      <button class="cancelar" id="opEditCancelar">Cancelar</button>
+      <button class="guardar" id="opEditGuardar">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Tu configuración -->
+<script src="supabase.js"></script>
+
 <script>
-// ============================================================
-// VÍNCULOS POR OPERARIO (base del código)
-// ============================================================
-const VINCULOS_BASE = {
-  "Arturo": [
-    { titulo: "Tuberia", url: "https://autode.sk/4huHBcz" },
-    { titulo: "Portico", url: "https://autode.sk/4rhZtLh" }
-  ],
-  "Nahum": [],
-  "Juanma": [],
-  "Paco": [
-    { titulo: "rack borges", url: "https://autode.sk/4ixtUL6" }
-  ],
-  "Ricardo": [],
-  "admin": []
-};
+/* ============================================================
+   LOG DE ARRANQUE
+   ============================================================ */
+console.log('[0] Script cargado');
 
-["Heribert", "Manolo", "Rabal"].forEach(n => {
-  if (!VINCULOS_BASE[n]) VINCULOS_BASE[n] = [];
-});
+/* ============================================================
+   Estado global
+   ============================================================ */
+let usuario       = null;
+let operarioVisto = null;
+let modoModal     = 'crear';
+let vinculoEditId = null;
+let modoOpEdit    = 'crear';
+let opEditId      = null;
 
-// --- Claves de localStorage ---
-const LS_KEY_EXTRAS  = 'vinculos_extra';   // vínculos añadidos por el admin
-const LS_KEY_OCULTOS = 'vinculos_ocultos'; // vínculos base que el admin ha "eliminado"
+/* ============================================================
+   Referencias DOM
+   ============================================================ */
+const loginBox        = document.getElementById('loginBox');
+const panelBox        = document.getElementById('panelBox');
+const subtitulo       = document.getElementById('subtitulo');
+const loginPassword   = document.getElementById('loginPassword');
+const btnLogin        = document.getElementById('btnLogin');
+const loginError      = document.getElementById('loginError');
 
-function cargarExtras() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY_EXTRAS)) || {}; }
-  catch (e) { return {}; }
+const nombreUser      = document.getElementById('nombreUser');
+const rolBadge        = document.getElementById('rolBadge');
+const btnCerrar       = document.getElementById('btnCerrar');
+const adminSelector   = document.getElementById('adminSelector');
+const operarioSelect  = document.getElementById('operarioSelect');
+const errorBox        = document.getElementById('errorBox');
+const btnAnadir       = document.getElementById('btnAnadir');
+const vinculosBox     = document.getElementById('vinculosBox');
+const btnGestionarOps = document.getElementById('btnGestionarOps');
+
+const modalFondo      = document.getElementById('modalFondo');
+const modalTitulo     = document.getElementById('modalTitulo');
+const modalTituloInput= document.getElementById('modalTituloInput');
+const modalUrlInput   = document.getElementById('modalUrlInput');
+const modalCancelar   = document.getElementById('modalCancelar');
+const modalGuardar    = document.getElementById('modalGuardar');
+
+const modalOpsFondo     = document.getElementById('modalOpsFondo');
+const modalOpsCerrar    = document.getElementById('modalOpsCerrar');
+const tablaOpsBody      = document.getElementById('tablaOpsBody');
+const btnNuevoOperario  = document.getElementById('btnNuevoOperario');
+
+const modalOpEditFondo  = document.getElementById('modalOpEditFondo');
+const modalOpEditTitulo = document.getElementById('modalOpEditTitulo');
+const opEditNombre      = document.getElementById('opEditNombre');
+const opEditPassword    = document.getElementById('opEditPassword');
+const opEditAdmin       = document.getElementById('opEditAdmin');
+const opEditActivo      = document.getElementById('opEditActivo');
+const opEditCancelar    = document.getElementById('opEditCancelar');
+const opEditGuardar     = document.getElementById('opEditGuardar');
+
+console.log('[0.1] Referencias DOM listas. ¿existe sb?', typeof window.sb);
+
+/* ============================================================
+   Utilidades
+   ============================================================ */
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
-function guardarExtras(obj) {
-  try { localStorage.setItem(LS_KEY_EXTRAS, JSON.stringify(obj)); } catch (e) {}
+function mostrarError(msg) {
+  errorBox.textContent = msg;
+  errorBox.classList.add('visible');
 }
-function cargarOcultos() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY_OCULTOS)) || {}; }
-  catch (e) { return {}; }
-}
-function guardarOcultos(obj) {
-  try { localStorage.setItem(LS_KEY_OCULTOS, JSON.stringify(obj)); } catch (e) {}
-}
-
-// --- Operario y modo admin ---
-let operario = null;
-let esAdmin = false;
-try {
-  operario = sessionStorage.getItem('operario');
-  esAdmin  = sessionStorage.getItem('admin') === '1';
-} catch (e) {}
-
-const params = new URLSearchParams(window.location.search);
-if (!operario) operario = params.get('op');
-if (params.get('admin') === '1') {
-  esAdmin = true;
-  try { sessionStorage.setItem('admin', '1'); } catch (e) {}
-}
-
-if (!operario) window.location.replace('index.html');
-if (!VINCULOS_BASE[operario]) VINCULOS_BASE[operario] = [];
-
-document.getElementById('nombreUser').textContent =
-  operario + (esAdmin ? ' (admin)' : '');
-
-// ============================================================
-// LISTA ACTUAL = base (menos los ocultos) + extras
-// ============================================================
-function listaActual() {
-  const extras  = cargarExtras();
-  const ocultos = cargarOcultos();
-
-  const propiosExtras  = extras[operario]  || [];
-  const propiosOcultos = ocultos[operario] || [];
-
-  // Filtrar los base que están ocultos
-  const baseVisibles = VINCULOS_BASE[operario].filter(b =>
-    !propiosOcultos.some(o => o.titulo === b.titulo && o.url === b.url)
-  );
-
-  // Marcar cada elemento con su origen
-  const baseConFlag   = baseVisibles.map(v => ({ ...v, _tipo: 'base' }));
-  const extrasConFlag = propiosExtras.map(v => ({ ...v, _tipo: 'extra' }));
-
-  return baseConFlag.concat(extrasConFlag);
+function ocultarError() {
+  errorBox.textContent = '';
+  errorBox.classList.remove('visible');
 }
 
-// ============================================================
-// RENDER
-// ============================================================
-const box = document.getElementById('vinculosBox');
+/* ============================================================
+   LOGIN
+   ============================================================ */
+async function hacerLogin() {
+  console.log('[1] hacerLogin disparado');
+  loginError.classList.remove('visible');
 
-function render() {
-  box.innerHTML = '';
-  const lista = listaActual();
+  const pass = (loginPassword.value || '').trim();
+  console.log('[2] pass =', JSON.stringify(pass));
 
-  if (lista.length === 0) {
-    box.innerHTML = '<div class="vacio">No tienes vínculos asignados.</div>';
+  if (!pass) {
+    loginError.textContent = 'Introduce la contraseña.';
+    loginError.classList.add('visible');
+    return;
+  }
+  if (!window.sb) {
+    loginError.textContent = 'Error: no se ha cargado supabase.js';
+    loginError.classList.add('visible');
     return;
   }
 
-  lista.forEach((v) => {
+  btnLogin.disabled = true;
+  btnLogin.textContent = 'Comprobando…';
+
+  const { data, error } = await sb
+    .from('operarios')
+    .select('id, nombre, es_admin, activo')
+    .eq('password', pass)
+    .eq('activo', true)
+    .limit(2);
+
+  console.log('[3] Supabase devolvió:', { data, error });
+
+  btnLogin.disabled = false;
+  btnLogin.textContent = 'Entrar';
+
+  if (error) {
+    console.log('[3a] Error de conexión');
+    loginError.textContent = 'Error de conexión: ' + error.message;
+    loginError.classList.add('visible');
+    return;
+  }
+  if (!data || data.length === 0) {
+    console.log('[3b] Contraseña no encontrada');
+    loginError.textContent = 'Contraseña incorrecta.';
+    loginError.classList.add('visible');
+    return;
+  }
+  if (data.length > 1) {
+    console.log('[3c] Contraseña duplicada');
+    loginError.textContent = 'Hay varias cuentas con esa contraseña.';
+    loginError.classList.add('visible');
+    return;
+  }
+
+  const u = data[0];
+  usuario = { id: u.id, nombre: u.nombre, es_admin: !!u.es_admin };
+  console.log('[3d] Usuario encontrado:', usuario);
+
+  try { sessionStorage.setItem('usuario', JSON.stringify(usuario)); } catch (e) {}
+
+  console.log('[3e] Llamando a entrarAlPanel()…');
+  await entrarAlPanel();
+  console.log('[3f] entrarAlPanel() terminó');
+}
+
+/* ============================================================
+   Entrar al panel
+   ============================================================ */
+async function entrarAlPanel() {
+  console.log('[4] entrarAlPanel, usuario =', usuario);
+
+  loginBox.style.display = 'none';
+  panelBox.classList.add('visible');
+  subtitulo.textContent = 'Vínculos de ' + usuario.nombre;
+
+  nombreUser.textContent = usuario.nombre;
+  rolBadge.textContent = usuario.es_admin ? 'Admin' : 'Operario';
+  rolBadge.className = 'badge ' + (usuario.es_admin ? 'admin' : 'operario');
+
+  if (usuario.es_admin) {
+    console.log('[4a] Es admin: preparando selector y botones');
+    adminSelector.classList.add('visible');
+    btnAnadir.style.display = 'block';
+    btnGestionarOps.style.display = 'block';
+
+    await cargarListaOperarios();
+    operarioVisto = { id: usuario.id, nombre: usuario.nombre };
+    operarioSelect.value = String(usuario.id);
+  } else {
+    console.log('[4b] Es operario: sin selector');
+    adminSelector.classList.remove('visible');
+    btnAnadir.style.display = 'none';
+    btnGestionarOps.style.display = 'none';
+    operarioVisto = { id: usuario.id, nombre: usuario.nombre };
+  }
+
+  console.log('[4c] Llamando a renderVinculos()…');
+  await renderVinculos();
+  console.log('[4d] renderVinculos() terminó');
+}
+
+/* ============================================================
+   Selector operarios (admin)
+   ============================================================ */
+async function cargarListaOperarios() {
+  console.log('[5] cargarListaOperarios()');
+
+  const { data, error } = await sb
+    .from('operarios')
+    .select('id, nombre')
+    .eq('activo', true)
+    .order('nombre', { ascending: true });
+
+  if (error) { console.error('[5a] Error:', error); return; }
+
+  operarioSelect.innerHTML = '';
+  data.forEach(op => {
+    const opt = document.createElement('option');
+    opt.value = String(op.id);
+    opt.textContent = op.nombre;
+    operarioSelect.appendChild(opt);
+  });
+
+  console.log('[5b] Operarios cargados:', data.length);
+
+  if (!operarioSelect.dataset.listener) {
+    operarioSelect.dataset.listener = '1';
+    operarioSelect.addEventListener('change', () => {
+      const id = parseInt(operarioSelect.value, 10);
+      const op = data.find(o => o.id === id);
+      if (op) {
+        operarioVisto = { id: op.id, nombre: op.nombre };
+        renderVinculos();
+      }
+    });
+  }
+}
+
+/* ============================================================
+   Cargar / render vínculos
+   ============================================================ */
+async function cargarVinculosDe(operarioId) {
+  console.log('[6] cargarVinculosDe', operarioId);
+
+  const { data, error } = await sb
+    .from('vinculos')
+    .select('*')
+    .eq('operario_id', operarioId)
+    .eq('activo', true)
+    .order('creado_en', { ascending: true });
+
+  if (error) {
+    console.error('[6a] Error:', error);
+    mostrarError('Error al cargar vínculos: ' + error.message);
+    return [];
+  }
+  console.log('[6b] Vínculos:', data);
+  return data || [];
+}
+
+async function renderVinculos() {
+  console.log('[7] renderVinculos para', operarioVisto);
+
+  ocultarError();
+  vinculosBox.innerHTML = '<div class="loading">Cargando…</div>';
+
+  const lista = await cargarVinculosDe(operarioVisto.id);
+  vinculosBox.innerHTML = '';
+
+  if (lista.length === 0) {
+    vinculosBox.innerHTML = '<div class="vacio">No hay vínculos para este operario.</div>';
+    return;
+  }
+
+  lista.forEach(v => {
     const row = document.createElement('div');
     row.className = 'vinculo';
 
@@ -283,114 +585,280 @@ function render() {
     a.href = v.url;
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
-    a.style.cssText = 'display:flex; align-items:center; flex:1; text-decoration:none; color:inherit; min-width:0;';
 
     const info = document.createElement('div');
-    info.style.cssText = 'flex:1; min-width:0;';
+    info.className = 'info';
     info.innerHTML = `
-      <div class="titulo">${v.titulo}</div>
-      <div class="url">${v.url}</div>
+      <div class="titulo">${esc(v.titulo)}</div>
+      <div class="url">${esc(v.url)}</div>
     `;
     a.appendChild(info);
-
-    const flecha = document.createElement('div');
-    flecha.className = 'flecha';
-    flecha.textContent = '→';
-    a.appendChild(flecha);
-
     row.appendChild(a);
 
-    // Botón eliminar SOLO admin
-    if (esAdmin) {
-      const btnDel = document.createElement('button');
-      btnDel.className = 'borrar';
-      btnDel.textContent = '✕';
-      btnDel.title = v._tipo === 'base' ? 'Ocultar este vínculo base' : 'Eliminar este vínculo';
-      btnDel.style.cssText = 'margin-left:12px; flex-shrink:0;';
-      btnDel.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
+    if (usuario.es_admin) {
+      const acciones = document.createElement('div');
+      acciones.className = 'acciones';
 
-        const msg = v._tipo === 'base'
-          ? `¿Ocultar el vínculo base "${v.titulo}"? (Podrás restaurarlo borrando los datos del navegador)`
-          : `¿Eliminar el vínculo "${v.titulo}"?`;
-        if (!confirm(msg)) return;
-
-        if (v._tipo === 'base') {
-          // Marcar como oculto
-          const ocultos = cargarOcultos();
-          ocultos[operario] = ocultos[operario] || [];
-          ocultos[operario].push({ titulo: v.titulo, url: v.url });
-          guardarOcultos(ocultos);
-        } else {
-          // Eliminar de extras
-          const extras = cargarExtras();
-          const propios = extras[operario] || [];
-          const idx = propios.findIndex(e => e.titulo === v.titulo && e.url === v.url);
-          if (idx >= 0) propios.splice(idx, 1);
-          extras[operario] = propios;
-          guardarExtras(extras);
-        }
-
-        render();
+      const btnEditar = document.createElement('button');
+      btnEditar.className = 'btn-mini editar';
+      btnEditar.textContent = '✏️';
+      btnEditar.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        abrirModal('editar', v);
       });
-      row.appendChild(btnDel);
+
+      const btnBorrar = document.createElement('button');
+      btnBorrar.className = 'btn-mini borrar';
+      btnBorrar.textContent = '🗑️';
+      btnBorrar.addEventListener('click', async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (!confirm(`¿Borrar el vínculo "${v.titulo}"?`)) return;
+
+        btnBorrar.disabled = true;
+        const { error } = await sb.from('vinculos').delete().eq('id', v.id);
+        if (error) { alert('Error: ' + error.message); btnBorrar.disabled = false; return; }
+        renderVinculos();
+      });
+
+      acciones.appendChild(btnEditar);
+      acciones.appendChild(btnBorrar);
+      row.appendChild(acciones);
     }
 
-    box.appendChild(row);
+    vinculosBox.appendChild(row);
   });
 }
 
-render();
+/* ============================================================
+   Modal vínculo
+   ============================================================ */
+function abrirModal(modo, vinculo) {
+  modoModal = modo;
+  vinculoEditId = vinculo ? vinculo.id : null;
 
-// ============================================================
-// PANEL ADMIN: AÑADIR VÍNCULOS
-// ============================================================
-if (esAdmin) {
-  const adminBar = document.getElementById('adminBar');
-  adminBar.classList.add('visible');
-  document.getElementById('adminPara').textContent = operario;
+  if (modo === 'crear') {
+    modalTitulo.textContent = 'Añadir vínculo';
+    modalTituloInput.value = '';
+    modalUrlInput.value = '';
+  } else {
+    modalTitulo.textContent = 'Editar vínculo';
+    modalTituloInput.value = vinculo.titulo;
+    modalUrlInput.value = vinculo.url;
+  }
 
-  document.getElementById('btnAnadir').addEventListener('click', () => {
-    const titulo = document.getElementById('nuevoTitulo').value.trim();
-    const url    = document.getElementById('nuevaUrl').value.trim();
-
-    if (!titulo || !url) {
-      alert('Rellena título y URL.');
-      return;
-    }
-    if (!/^https?:\/\//i.test(url)) {
-      alert('La URL debe empezar por http:// o https://');
-      return;
-    }
-
-    const extras = cargarExtras();
-    extras[operario] = extras[operario] || [];
-    extras[operario].push({ titulo, url });
-    guardarExtras(extras);
-
-    document.getElementById('nuevoTitulo').value = '';
-    document.getElementById('nuevaUrl').value = '';
-    render();
-  });
+  modalFondo.classList.add('visible');
+  setTimeout(() => modalTituloInput.focus(), 50);
+}
+function cerrarModal() {
+  modalFondo.classList.remove('visible');
+  modoModal = 'crear';
+  vinculoEditId = null;
 }
 
-// ============================================================
-// CERRAR SESIÓN
-// ============================================================
-document.getElementById('btnCerrar').addEventListener('click', () => {
-  const eraAdmin = (() => {
-    try { return sessionStorage.getItem('admin') === '1'; } catch (e) { return false; }
-  })();
-
-  try {
-    sessionStorage.removeItem('operario');
-    if (!eraAdmin) sessionStorage.removeItem('admin');
-  } catch (e) {}
-
-  window.location.href = eraAdmin ? 'lista.html' : 'index.html';
+btnAnadir.addEventListener('click', () => abrirModal('crear'));
+modalCancelar.addEventListener('click', cerrarModal);
+modalFondo.addEventListener('click', (e) => {
+  if (e.target === modalFondo) cerrarModal();
 });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modalFondo.classList.contains('visible')) cerrarModal();
+});
+
+modalGuardar.addEventListener('click', async () => {
+  const titulo = modalTituloInput.value.trim();
+  const url    = modalUrlInput.value.trim();
+
+  if (!titulo || !url) { alert('Rellena título y URL.'); return; }
+  if (!/^https?:\/\//i.test(url)) { alert('La URL debe empezar por http:// o https://'); return; }
+
+  modalGuardar.disabled = true;
+
+  if (modoModal === 'crear') {
+    const { error } = await sb.from('vinculos').insert({
+      operario_id: operarioVisto.id,
+      titulo, url, tipo: 'extra', activo: true
+    });
+    modalGuardar.disabled = false;
+    if (error) { alert('Error: ' + error.message); return; }
+  } else {
+    const { error } = await sb.from('vinculos')
+      .update({ titulo, url })
+      .eq('id', vinculoEditId);
+    modalGuardar.disabled = false;
+    if (error) { alert('Error: ' + error.message); return; }
+  }
+
+  cerrarModal();
+  renderVinculos();
+});
+
+/* ============================================================
+   GESTIÓN DE OPERARIOS
+   ============================================================ */
+btnGestionarOps.addEventListener('click', async () => {
+  modalOpsFondo.classList.add('visible');
+  await cargarTablaOps();
+});
+modalOpsCerrar.addEventListener('click', () => {
+  modalOpsFondo.classList.remove('visible');
+});
+modalOpsFondo.addEventListener('click', (e) => {
+  if (e.target === modalOpsFondo) modalOpsFondo.classList.remove('visible');
+});
+
+async function cargarTablaOps() {
+  tablaOpsBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#888;">Cargando…</td></tr>';
+
+  const { data, error } = await sb
+    .from('operarios')
+    .select('*')
+    .order('id', { ascending: true });
+
+  if (error) {
+    tablaOpsBody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#b42318;">Error: ${error.message}</td></tr>`;
+    return;
+  }
+
+  tablaOpsBody.innerHTML = '';
+  data.forEach(op => {
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid #e0e3e6';
+
+    tr.innerHTML = `
+      <td style="padding:8px;">${esc(op.nombre)}</td>
+      <td style="padding:8px;font-family:monospace;">${esc(op.password)}</td>
+      <td style="padding:8px;text-align:center;">${op.es_admin ? '✅' : '—'}</td>
+      <td style="padding:8px;text-align:center;">${op.activo ? '✅' : '❌'}</td>
+      <td style="padding:8px;text-align:center;white-space:nowrap;">
+        <button class="btn-mini editar" data-id="${op.id}" title="Editar">✏️</button>
+        <button class="btn-mini borrar" data-id="${op.id}" title="Borrar">🗑️</button>
+      </td>
+    `;
+
+    tr.querySelector('.editar').addEventListener('click', () => abrirModalOpEdit('editar', op));
+    tr.querySelector('.borrar').addEventListener('click', () => borrarOperario(op));
+
+    tablaOpsBody.appendChild(tr);
+  });
+}
+
+btnNuevoOperario.addEventListener('click', () => abrirModalOpEdit('crear'));
+
+function abrirModalOpEdit(modo, op) {
+  modoOpEdit = modo;
+  opEditId = op ? op.id : null;
+
+  if (modo === 'crear') {
+    modalOpEditTitulo.textContent = 'Nuevo operario';
+    opEditNombre.value = '';
+    opEditPassword.value = '';
+    opEditAdmin.checked = false;
+    opEditActivo.checked = true;
+  } else {
+    modalOpEditTitulo.textContent = 'Editar operario';
+    opEditNombre.value = op.nombre;
+    opEditPassword.value = op.password;
+    opEditAdmin.checked = !!op.es_admin;
+    opEditActivo.checked = !!op.activo;
+  }
+
+  modalOpEditFondo.classList.add('visible');
+  setTimeout(() => opEditNombre.focus(), 50);
+}
+
+opEditCancelar.addEventListener('click', () => {
+  modalOpEditFondo.classList.remove('visible');
+});
+modalOpEditFondo.addEventListener('click', (e) => {
+  if (e.target === modalOpEditFondo) modalOpEditFondo.classList.remove('visible');
+});
+
+opEditGuardar.addEventListener('click', async () => {
+  const nombre   = opEditNombre.value.trim();
+  const password = opEditPassword.value.trim();
+  const es_admin = opEditAdmin.checked;
+  const activo   = opEditActivo.checked;
+
+  if (!nombre || !password) {
+    alert('Rellena nombre y contraseña.');
+    return;
+  }
+
+  opEditGuardar.disabled = true;
+
+  if (modoOpEdit === 'crear') {
+    const { error } = await sb.from('operarios').insert({
+      nombre, password, es_admin, activo
+    });
+    opEditGuardar.disabled = false;
+    if (error) { alert('Error: ' + error.message); return; }
+  } else {
+    const { error } = await sb.from('operarios')
+      .update({ nombre, password, es_admin, activo })
+      .eq('id', opEditId);
+    opEditGuardar.disabled = false;
+    if (error) { alert('Error: ' + error.message); return; }
+  }
+
+  modalOpEditFondo.classList.remove('visible');
+  await cargarTablaOps();
+  await cargarListaOperarios();
+});
+
+async function borrarOperario(op) {
+  if (op.id === usuario.id) {
+    alert('No puedes borrarte a ti mismo.');
+    return;
+  }
+  if (!confirm(`¿Borrar al operario "${op.nombre}" y TODOS sus vínculos?`)) return;
+
+  const { error: errV } = await sb
+    .from('vinculos')
+    .delete()
+    .eq('operario_id', op.id);
+  if (errV) { alert('Error al borrar vínculos: ' + errV.message); return; }
+
+  const { error: errO } = await sb
+    .from('operarios')
+    .delete()
+    .eq('id', op.id);
+  if (errO) { alert('Error al borrar operario: ' + errO.message); return; }
+
+  await cargarTablaOps();
+  await cargarListaOperarios();
+}
+
+/* ============================================================
+   Cerrar sesión   ============================================================ */
+btnCerrar.addEventListener('click', () => {
+  console.log('[8] Cerrando sesión');
+  try { sessionStorage.removeItem('usuario'); } catch (e) {}
+  usuario = null;
+  operarioVisto = null;
+  panelBox.classList.remove('visible');
+  loginBox.style.display = 'block';
+  subtitulo.textContent = 'Acceso restringido';
+  loginPassword.value = '';
+  loginError.classList.remove('visible');
+});
+
+/* ============================================================
+   Arranque
+   ============================================================ */
+btnLogin.onclick = hacerLogin;
+loginPassword.onkeydown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    hacerLogin();
+  }
+};
+
+// Limpiar sesión previa al cargar
+try { sessionStorage.removeItem('usuario'); } catch (e) {}
+
+console.log('[0.2] Arranque terminado');
 </script>
+
 <link rel="stylesheet" href="men-header.css">
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
