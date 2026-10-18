@@ -7,31 +7,20 @@
 <style>
   * { box-sizing: border-box; }
   body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f2; margin: 0; padding: 16px 11px 40px; color: #222; display: block !important; }
-  .container { max-width: 520px; margin: 0 auto; background: #fff; border-radius: 7px; box-shadow: 0 2px 7px rgba(0,0,0,0.08); padding: 16px 19px 21px; }
+  .container { max-width: 520px; margin: 0 auto; background: #fff; border-radius: 7px; box-shadow: 0 2px 7px rgba(0,0,0,0.08); padding: 16px 19px 21px; position: relative; }
   h1 { text-align: center; font-size: 15px; background: #111; color: #fff; padding: 8px 11px; border-radius: 4px; margin: 0 0 4px; }
 
-  /* Línea de resumen debajo del título */
-  .resumen-seleccion {
-    text-align: center;
-    color: #a03428;
-    font-weight: bold;
-    font-size: 9px;
-    margin: 4px 0 12px;
-    min-height: 13px;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-  }
+  .resumen-seleccion { text-align: center; color: #a03428; font-weight: bold; font-size: 9px; margin: 4px 0 12px; min-height: 13px; letter-spacing: 0.3px; text-transform: uppercase; }
 
   .grid-2 { display: table; width: 100%; table-layout: fixed; margin-bottom: 8px; }
   .col { display: table-cell; width: 50%; padding-right: 5px; vertical-align: top; }
   .col:last-child { padding-right: 0; padding-left: 5px; }
-  .field { margin-bottom: 9px; }
+  .field { margin-bottom: 9px; position: relative; }
   .field label { display: block; font-size: 9px; font-weight: 600; color: #444; margin-bottom: 3px; }
-  select { width: 100%; padding: 6px 7px; font-size: 9px; border: 1px solid #c7ccd1; border-radius: 4px; background: #fff; }
+  select { width: 100%; padding: 6px 7px; font-size: 9px; border: 1px solid #c7ccd1; border-radius: 4px; background: #fff; cursor: pointer; }
   select:focus { outline: none; border-color: #4a90d9; }
   select:disabled { background: #f4f6f8; color: #aaa; cursor: not-allowed; }
 
-  /* Colores de las opciones del desplegable de Norma */
   select option.norma-actual { color: #256b2c; font-weight: 600; }
   select option.norma-antigua { color: #a03428; font-weight: 600; }
 
@@ -55,62 +44,45 @@
   .bloque-tornilleria .btn-ir { display: block; width: 100%; margin-top: 9px; padding: 8px; background: #16a34a; color: #fff; border: none; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; }
   .bloque-tornilleria .btn-ir-sec { display: block; width: 100%; margin-top: 5px; padding: 7px; background: #fff; color: #b42318; border: 1px solid #ea580c; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; }
 
-  /* ============ DESPLEGABLE DE TIPOS DE CARAS ============ */
+  /* Desplegable de tipos de caras (mantenido) */
   #tipoSelect { width: 100%; padding: 6px 7px; font-size: 9px; border: 1px solid #c7ccd1; border-radius: 4px; background: #fff; }
   #tipoSelect:focus { outline: none; border-color: #4a90d9; }
 
-  /* ============ VENTANA FLOTANTE PARA IMAGEN DE TIPO ============ */
-#imgTipoFlotante {
-    position: fixed;
-    background: #fff;
-    border: 2px solid #0284c7;
-    border-radius: 6px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    padding: 6px;               /* ← Reducido de 10px a 6px */
-    z-index: 99999;
-    display: none;
-    max-width: 320px;           /* ← Ancho máximo fijo (antes 90vw) */
-    max-height: 200vh;           /* ← Alto máximo reducido */
-    overflow: visible;
-}
+  /* ========================================================= */
+  /* VENTANA FLOTANTE CON EL CATÁLOGO DE CATEGORÍAS            */
+  /* ========================================================= */
+  #panelCategoriasFlotante {
+      position: absolute;
+      z-index: 1000;
+      background: #fff;
+      border: 2px solid #0284c7;
+      border-radius: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      padding: 8px;
+      display: none;
+      width: 250px; /* Ancho del catálogo */
+      top: 100%;
+      left: 0;
+      margin-top: 5px;
+  }
+  #panelCategoriasFlotante.activa { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  
+  .cat-opcion {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      background: #f8fafc;
+      width: 70px;
+      transition: background 0.2s, border-color 0.2s;
+  }
+  .cat-opcion:hover { background: #e0f2fe; border-color: #38bdf8; }
+  .cat-opcion img { width: 50px; height: 40px; object-fit: contain; margin-bottom: 4px; }
+  .cat-opcion span { font-size: 8px; font-weight: bold; color: #333; text-align: center; text-transform: uppercase; }
 
-#imgTipoFlotante img {
-    max-width: 100%;
-    max-height: 60vh;           /* ← Imagen más pequeña (antes 60vh) */
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-}
-    #imgTipoFlotante.activa { display: block; }
-  #imgTipoFlotante .titulo {
-    font-size: 10px;
-    font-weight: bold;
-    color: #0284c7;
-    text-align: center;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  #imgTipoFlotante .cerrar {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: #dc2626;
-    color: #fff;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  }
-  #imgTipoFlotante .cerrar:hover { background: #b91c1c; }
 </style>
 <link rel="stylesheet" href="men-header.css">
 </head>
@@ -124,7 +96,16 @@
 
   <div id="formulario" style="display:none;">
     <div class="grid-2">
-      <div class="col"><div class="field"><label for="catSelect">1. Categoría</label><select id="catSelect"><option value="">-- Selecciona Categoria --</option></select></div></div>
+      <div class="col">
+        <div class="field">
+          <label for="catSelect">1. Categoría</label>
+          <!-- Al hacer clic aquí se abre el panel visual -->
+          <select id="catSelect"><option value="">-- Selecciona Categoria --</option></select>
+          
+          <!-- Panel flotante de categorías -->
+          <div id="panelCategoriasFlotante"></div>
+        </div>
+      </div>
       <div class="col"><div class="field"><label for="normaSelect">2. Norma</label><select id="normaSelect" disabled><option value="">-- Selecciona Norma --</option></select></div></div>
     </div>
     <div class="grid-2">
@@ -168,13 +149,6 @@
   </div>
 </div>
 
-<!-- VENTANA FLOTANTE PARA IMAGEN DE TIPO DE CARA -->
-<div id="imgTipoFlotante">
-    <button class="cerrar" onclick="cerrarImgTipo(event)" title="Cerrar">✕</button>
-    <div class="titulo" id="imgTipoTitulo">Tipo</div>
-    <img id="imgTipoSrc" src="" alt="Tipo de cara">
-</div>
-
 <script>
 let DATA = [], lineasArticulos = [];
 const catSelect = document.getElementById('catSelect');
@@ -187,6 +161,17 @@ const imgBox = document.getElementById('imgBox');
 const resultsDiv = document.getElementById('results');
 const panelTornilleria = document.getElementById('panelTornilleria');
 const resumenSeleccion = document.getElementById('resumenSeleccion');
+
+// ============================================================
+// MAPEO DE CATEGORÍA -> ARCHIVO DE IMAGEN
+// ============================================================
+const MAPA_IMG_CATEGORIAS = {
+    'PLANA':   'plana.png',
+    'CUELLO':  'cuello.png',
+    'COLLARIN':'collarin.png',
+    'LOCA':    'loca.png',
+    'HUB':     'hub.png'
+};
 
 function limpiarCampo(valor) {
   valor = String(valor == null ? '' : valor).trim();
@@ -292,7 +277,6 @@ async function cargarBridas() {
     const res = await fetch('bridas.csv');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     DATA = parsearCSV(await res.text());
-    console.log(`✓ ${DATA.length} filas cargadas desde bridas.csv`);
   } catch (e) { console.error('❌ Error bridas.csv:', e); alert('No se pudo cargar bridas.csv'); }
 }
 
@@ -301,7 +285,6 @@ async function cargarArticulos() {
     const res = await fetch('../Pedidos desde obra/articulos.txt');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     lineasArticulos = (await res.text()).split(/\r?\n/).map(l => l.trim()).filter(l => l).map(l => l.split(';').map(c => c.replace(/^"|"$/g, '').trim()));
-    console.log(`✓ ${lineasArticulos.length} líneas desde articulos.txt`);
   } catch (e) { console.error('❌ Error articulos.txt:', e); }
 }
 
@@ -319,12 +302,76 @@ async function init() {
 function initCategories() {
   const cats = [...new Set(DATA.map(item => item[0]))].filter(Boolean).sort();
   catSelect.innerHTML = '<option value="">-- Selecciona Categoría --</option>';
-  cats.forEach(cat => { catSelect.innerHTML += `<option value="${cat}">${cat}</option>`; });
+  
+  // Rellenar el select tradicional
+  cats.forEach(cat => { 
+      catSelect.innerHTML += `<option value="${cat}">${cat}</option>`; 
+  });
+
+  // Rellenar el panel visual flotante
+  const panel = document.getElementById('panelCategoriasFlotante');
+  panel.innerHTML = '';
+  cats.forEach(cat => {
+      // Obtener el archivo de imagen
+      const archivo = MAPA_IMG_CATEGORIAS[cat] || `${cat.toLowerCase()}.png`;
+      const imgPath = `img/${archivo}`;
+      
+      const div = document.createElement('div');
+      div.className = 'cat-opcion';
+      div.onclick = () => {
+          catSelect.value = cat;
+          catSelect.dispatchEvent(new Event('change'));
+          panel.classList.remove('activa');
+      };
+      
+      // Placeholder por si la imagen no existe en el catálogo
+      div.innerHTML = `
+          <img src="${imgPath}" alt="${cat}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'50\\' height=\\'40\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23f1f5f9\\'/><text x=\\'50%\\' y=\\'50%\\' font-family=\\'Arial\\' font-size=\\'8\\' fill=\\'%2364748b\\' text-anchor=\\'middle\\' dy=\\'.3em\\'>?</text></svg>'">
+          <span>${cat}</span>
+      `;
+      panel.appendChild(div);
+  });
 }
 
+// ============================================================
+// CONTROL DEL PANEL FLOTANTE DE CATEGORÍAS
+// ============================================================
+const panelCategorias = document.getElementById('panelCategoriasFlotante');
+
+// Al hacer clic en el select, abrimos/cerramos el panel (y prevenimos el desplegable nativo)
+catSelect.addEventListener('mousedown', function(e) {
+    // Evitar que el select nativo se abra en algunos navegadores
+    e.preventDefault(); 
+    
+    // Alternar visibilidad del panel
+    if (panelCategorias.classList.contains('activa')) {
+        panelCategorias.classList.remove('activa');
+    } else {
+        panelCategorias.classList.add('activa');
+    }
+});
+
+// Cerrar el panel al hacer clic fuera
+document.addEventListener('click', function(event) {
+    if (panelCategorias.classList.contains('activa')) {
+        // Si el clic NO es en el select ni en el panel, cerrar
+        if (event.target !== catSelect && !panelCategorias.contains(event.target)) {
+            panelCategorias.classList.remove('activa');
+        }
+    }
+});
+
+
+// ============================================================
+// RESTO DE LÓGICA (updateImage, filtros, etc.)
+// ============================================================
 function updateImage(cat) {
-  if (!cat) { imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria</span>'; return; }
-  const imgPath = `img/${cat.toLowerCase()}.png`;
+  if (!cat) {
+    imgBox.innerHTML = '<span class="img-placeholder">Selecciona una categoria para ver su esquema</span>';
+    return;
+  }
+  const archivo = MAPA_IMG_CATEGORIAS[cat] || `${cat.toLowerCase()}.png`;
+  const imgPath = `img/${archivo}`;
   imgBox.innerHTML = `<img src="${imgPath}" alt="${cat}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>Imagen no encontrada: ${imgPath}</span>';">`;
 }
 
@@ -345,21 +392,12 @@ catSelect.addEventListener('change', function() {
   updateImage(cat);
   const previaNorma = normaSelect.value;
   const previaDN = dnSelect.value;
-  const previaPN = pnSelect.value;
 
   normaSelect.disabled = !cat;
   if (cat) {
-    const normas = [...new Set(
-      DATA.filter(item => item[0] === cat)
-          .flatMap(item => [item[12], item[11]])
-    )].filter(Boolean);
-
+    const normas = [...new Set(DATA.filter(item => item[0] === cat).flatMap(item => [item[12], item[11]]))].filter(Boolean);
     const ordenadas = ordenarNormas(normas);
-    const opciones = ordenadas.map(n => ({
-      valor: n,
-      etiqueta: n,
-      clase: claseNorma(n)
-    }));
+    const opciones = ordenadas.map(n => ({ valor: n, etiqueta: n, clase: claseNorma(n) }));
     const ok = rellenarSelect(normaSelect, opciones, '-- Selecciona Norma --', previaNorma);
     if (ok) normaSelect.dispatchEvent(new Event('change'));
     else {
@@ -384,17 +422,11 @@ catSelect.addEventListener('change', function() {
 normaSelect.addEventListener('change', function() {
   const cat = catSelect.value, norma = this.value;
   const previaDN = dnSelect.value;
-
   aplicarColorSeleccionNorma();
   actualizarResumen();
-
   dnSelect.disabled = !norma;
   if (norma) {
-    const dns = [...new Set(
-      DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma))
-          .map(item => item[1])
-    )].filter(Boolean);
-
+    const dns = [...new Set(DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma)).map(item => item[1]))].filter(Boolean);
     const opciones = dns.map(dn => ({ valor: dn, etiqueta: dn }));
     const ok = rellenarSelect(dnSelect, opciones, '-- Selecciona DN --', previaDN);
     if (ok) dnSelect.dispatchEvent(new Event('change'));
@@ -416,16 +448,10 @@ normaSelect.addEventListener('change', function() {
 dnSelect.addEventListener('change', function() {
   const cat = catSelect.value, norma = normaSelect.value, dn = this.value;
   const previaPN = pnSelect.value;
-
   actualizarResumen();
-
   pnSelect.disabled = !dn;
   if (dn) {
-    const pns = [...new Set(
-      DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn)
-          .map(item => item[2])
-    )].filter(Boolean);
-
+    const pns = [...new Set(DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn).map(item => item[2]))].filter(Boolean);
     const opciones = pns.map(pn => ({ valor: pn, etiqueta: pn }));
     const ok = rellenarSelect(pnSelect, opciones, '-- Selecciona PN --', previaPN);
     if (ok) pnSelect.dispatchEvent(new Event('change'));
@@ -446,20 +472,14 @@ matSelect.addEventListener('change', function() {
   actualizarResumen();
   const cat = catSelect.value, norma = normaSelect.value, dn = dnSelect.value, pn = pnSelect.value;
   if (!cat || !norma || !dn || !pn) return;
-  const matches = DATA.filter(item => 
-    item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn
-  );
-  if (matches.length > 0) {
-    panelTornilleria.innerHTML = generarPanelTornilleria(matches[0], matSelect.value);
-  }
+  const matches = DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn);
+  if (matches.length > 0) panelTornilleria.innerHTML = generarPanelTornilleria(matches[0], matSelect.value);
 });
 
 function renderResults() {
   const cat = catSelect.value, norma = normaSelect.value, dn = dnSelect.value, pn = pnSelect.value;
   if (!cat || !norma || !dn || !pn) { resultsDiv.innerHTML = ''; panelTornilleria.innerHTML = ''; return; }
-  const matches = DATA.filter(item => 
-    item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn
-  );
+  const matches = DATA.filter(item => item[0] === cat && (item[12] === norma || item[11] === norma) && item[1] === dn && item[2] === pn);
   if (matches.length === 0) { resultsDiv.innerHTML = '<div class="no-results">Sin datos.</div>'; panelTornilleria.innerHTML = ''; return; }
   panelTornilleria.innerHTML = generarPanelTornilleria(matches[0], matSelect.value);
 
@@ -467,18 +487,14 @@ function renderResults() {
   matches.forEach(m => {
     let descripcion = '';
     for (let i = m.length - 1; i >= 0; i--) { if (m[i] && m[i].trim()) { descripcion = m[i]; break; } }
-
     const colorPrincipal = colorNorma(m[12]);
-
     const normaPrincipalConDP = `${m[12]} · DN${m[1]} · ${m[2]}`;
-
     let filaCompatible = '';
     if (m[11]) {
       const colorComp = colorNorma(m[11]);
       const normaCompatibleConDP = `${m[11]} · DN${m[1]} · ${m[2]}`;
       filaCompatible = `<tr><th>Norma compatible</th><td style="color:${colorComp}; font-weight:bold;">${normaCompatibleConDP}</td></tr>`;
     }
-
     html += `
       <div class="card-result">
         <div class="card-title">${descripcion}</div>
@@ -501,10 +517,7 @@ function renderResults() {
 
 function generarPanelTornilleria(fila, material) {
   const espesor = fila[6], nTaladros = parseInt(fila[8]) || 0, diamTaladro = fila[9];
-
-  if (!nTaladros || !diamTaladro || !espesor) {
-    return `<div class="bloque-tornilleria"><h3>🔩 Tornillería calculada</h3><p class="linea-nota">Sin datos suficientes.</p></div>`;
-  }
+  if (!nTaladros || !diamTaladro || !espesor) return `<div class="bloque-tornilleria"><h3>🔩 Tornillería calculada</h3><p class="linea-nota">Sin datos suficientes.</p></div>`;
 
   const metrico = diametroTornilloDesdeTaladro(diamTaladro);
   const longitud = calcularLongitudTornillo(espesor, metrico);
@@ -517,99 +530,48 @@ function generarPanelTornilleria(fila, material) {
   if (!refTornillo) {
     for (let L = longitud + 5; L <= longitud + 60; L += 5) {
       const refAlt = buscarReferenciaArticulo('TORNILLOS', `${metrico}X${L}`, matU, 'DIN931');
-      if (refAlt) {
-        refTornillo = refAlt;
-        longitudFinal = L;
-        esAlternativa = true;
-        break;
-      }
+      if (refAlt) { refTornillo = refAlt; longitudFinal = L; esAlternativa = true; break; }
     }
   }
 
   const refTuerca = buscarReferenciaArticulo('TUERCAS', `M${metrico}`, matU, 'DIN934');
 
-  let lineaTornillo;
-  if (refTornillo && !esAlternativa) {
-    lineaTornillo = `
-      <div class="linea-calc">
-        • TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} — ${nTaladros} ud.
-        <span style="color:#16a34a;"> (REF ${refTornillo})</span>
-      </div>`;
-  } else if (refTornillo && esAlternativa) {
-    lineaTornillo = `
-      <div class="linea-calc" style="color:#b45309;">
-        • TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} — ${nTaladros} ud.
-        <span style="color:#dc2626;"> (NO existe en inventario)</span>
-      </div>
+  let lineaTornillo = refTornillo 
+    ? `<div class="linea-calc">• TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} — ${nTaladros} ud. <span style="color:#16a34a;"> (REF ${refTornillo})</span></div>`
+    : `<div class="linea-calc" style="color:#b45309;">• TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} — ${nTaladros} ud. <span style="color:#dc2626;"> (sin REF en base)</span></div>`;
+
+  if (esAlternativa) {
+    lineaTornillo += `
       <div class="linea-calc" style="color:#b45309; margin-left:18px; padding:8px 10px; background:#fef3c7; border-left:3px solid #f59e0b; border-radius:4px;">
         ↳ <strong>Alternativa al alza codificado:</strong><br>
-        TORNILLO HEXAGONAL DIN931 ${metrico}X${longitudFinal} — ${nTaladros} ud.
-        <span style="color:#16a34a; font-weight:bold;"> (REF ${refTornillo})</span>
-      </div>`;
-  } else {
-    lineaTornillo = `
-      <div class="linea-calc" style="color:#b45309;">
-        • TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud} — ${nTaladros} ud.
-        <span style="color:#dc2626;"> (sin REF en base, ni alternativa encontrada)</span>
+        TORNILLO HEXAGONAL DIN931 ${metrico}X${longitudFinal} — ${nTaladros} ud. <span style="color:#16a34a; font-weight:bold;"> (REF ${refTornillo})</span>
       </div>`;
   }
 
-  let lineaTuerca;
-  if (refTuerca) {
-    lineaTuerca = `
-      <div class="linea-calc">
-        • TUERCA DIN934 M${metrico} — ${nTaladros} ud.
-        <span style="color:#16a34a;"> (REF ${refTuerca})</span>
-      </div>`;
-  } else {
-    lineaTuerca = `
-      <div class="linea-calc" style="color:#b45309;">
-        • TUERCA DIN934 M${metrico} — ${nTaladros} ud.
-        <span style="color:#dc2626;"> (sin REF en base)</span>
-      </div>`;
-  }
+  let lineaTuerca = refTuerca 
+    ? `<div class="linea-calc">• TUERCA DIN934 M${metrico} — ${nTaladros} ud. <span style="color:#16a34a;"> (REF ${refTuerca})</span></div>`
+    : `<div class="linea-calc" style="color:#b45309;">• TUERCA DIN934 M${metrico} — ${nTaladros} ud. <span style="color:#dc2626;"> (sin REF en base)</span></div>`;
 
   const avisoCambio = esAlternativa ? `
-    <div style="
-      margin-top:16px;
-      padding:14px 16px;
-      background:#fef3c7;
-      border:2px solid #f59e0b;
-      border-left:6px solid #dc2626;
-      border-radius:6px;
-      font-size:14px;
-      color:#7c2d12;
-      line-height:1.5;
-    ">
-      <div style="font-weight:bold; font-size:15px; margin-bottom:8px; color:#b91c1c;">
-        ⚠️ ADVERTENCIA: el tornillo se va a cambiar
-      </div>
-      <div style="margin-bottom:6px;">
-        El tornillo calculado <strong>DIN931 ${metrico}X${longitud}</strong> no existe en la base.
-      </div>
-      <div>
-        Se va a pedir el inmediato superior que sí tiene código:
+    <div style="margin-top:16px; padding:14px 16px; background:#fef3c7; border:2px solid #f59e0b; border-left:6px solid #dc2626; border-radius:6px; font-size:14px; color:#7c2d12; line-height:1.5;">
+      <div style="font-weight:bold; font-size:15px; margin-bottom:8px; color:#b91c1c;">⚠️ ADVERTENCIA: el tornillo se va a cambiar</div>
+      <div style="margin-bottom:6px;">El tornillo calculado <strong>DIN931 ${metrico}X${longitud}</strong> no existe en la base.</div>
+      <div>Se va a pedir el inmediato superior que sí tiene código:
         <div style="margin-top:8px; padding:10px 12px; background:#fff; border-radius:4px; font-weight:bold; color:#166534; font-size:15px;">
-          DIN931 ${metrico}X${longitudFinal}
-          <span style="color:#16a34a;"> (REF ${refTornillo})</span>
+          DIN931 ${metrico}X${longitudFinal} <span style="color:#16a34a;"> (REF ${refTornillo})</span>
         </div>
       </div>
-    </div>
-  ` : '';
+    </div>` : '';
 
   const refPedirTornillo = refTornillo || '';
-  const descPedirTornillo = esAlternativa
-    ? `TORNILLO HEXAGONAL DIN931 ${metrico}X${longitudFinal}`
-    : `TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud}`;
+  const descPedirTornillo = esAlternativa ? `TORNILLO HEXAGONAL DIN931 ${metrico}X${longitudFinal}` : `TORNILLO HEXAGONAL DIN931 ${metrico}X${longitud}`;
 
   return `
     <div class="bloque-tornilleria">
       <h3>🔩 Tornillería calculada (1 unión)</h3>
       ${lineaTornillo}
       ${lineaTuerca}
-      <div class="linea-nota">
-        Ø taladro ${diamTaladro}mm → M${metrico}. Espesor plato ${espesor}mm. Material: <strong>${matU}</strong>.
-      </div>
+      <div class="linea-nota">Ø taladro ${diamTaladro}mm → M${metrico}. Espesor plato ${espesor}mm. Material: <strong>${matU}</strong>.</div>
       ${avisoCambio}
       <button class="btn-ir" onclick="irATornillo('${refPedirTornillo}', '${descPedirTornillo}')">📋 Pedir el TORNILLO</button>
       <button class="btn-ir-sec" onclick="irATuerca('${refTuerca || ''}', 'TUERCA DIN934 M${metrico}')">📋 Pedir solo la TUERCA</button>
@@ -618,11 +580,7 @@ function generarPanelTornilleria(fila, material) {
 
 function buscarReferenciaArticulo(cat, dim, mat, din) {
   if (!lineasArticulos.length) return null;
-  const catU = cat.toUpperCase();
-  const dimU = dim.toUpperCase();
-  const matU = mat.toUpperCase();
-  const dinU = (din || '').toUpperCase();
-
+  const catU = cat.toUpperCase(), dimU = dim.toUpperCase(), matU = mat.toUpperCase(), dinU = (din || '').toUpperCase();
   for (const linea of lineasArticulos) {
     if (!linea || linea.length < 6) continue;
     if (String(linea[0]).toUpperCase() !== catU) continue;
@@ -635,92 +593,43 @@ function buscarReferenciaArticulo(cat, dim, mat, din) {
 }
 
 function irATornillo(ref, descripcion) {
-  const operario = (sessionStorage.getItem('operarioNombre') || '').trim();
-  const obra = (sessionStorage.getItem('operarioObra') || '').trim();
   const params = new URLSearchParams();
   if (ref) params.set('ref', ref);
   params.set('desc', descripcion);
   params.set('tipo', 'tornillo');
-  if (operario) params.set('operario', operario);
-  if (obra) params.set('obra', obra);
   window.location.assign(`../Pedidos desde obra/index.html?${params.toString()}`);
 }
 
 function irATuerca(ref, descripcion) {
-  const operario = (sessionStorage.getItem('operarioNombre') || '').trim();
-  const obra = (sessionStorage.getItem('operarioObra') || '').trim();
   const params = new URLSearchParams();
   if (ref) params.set('ref', ref);
   params.set('desc', descripcion);
   params.set('tipo', 'tuerca');
-  if (operario) params.set('operario', operario);
-  if (obra) params.set('obra', obra);
   window.location.assign(`../Pedidos desde obra/index.html?${params.toString()}`);
 }
 
 function diametroTornilloDesdeTaladro(taladro) {
   const t = parseFloat(String(taladro).replace(',', '.'));
   if (isNaN(t)) return 0;
-
   const tabla = [
-    [11,     10],
-    [12,     10],
-    [13.5,   12],
-    [14,     12],
-    [15.9,   16],
-    [16,     16],
-    [17.5,   20],
-    [18,     16],
-    [19.1,   20],
-    [20,     16],
-    [20.6,   22],
-    [22.2,   22],
-    [23.8,   24],
-    [24,     20],
-    [25.4,   24],
-    [26.9,   27],
-    [28.6,   27],
-    [30.2,   30],
-    [31.8,   30],
-    [34.9,   33],
-    [36.5,   36],
-    [38.1,   36],
-    [41.3,   39],
-    [44.5,   42],
-    [47.6,   45],
-    [50.8,   48],
-    [53.9,   52],
-    [57.2,   56],
-    [60.3,   60],
-    [63.5,   64],
-    [66.7,   68],
-    [69.9,   72],
-    [73.0,   76],
-    [76.2,   80]
+    [11,10],[12,10],[13.5,12],[14,12],[15.9,16],[16,16],[17.5,20],[18,16],[19.1,20],[20,16],
+    [20.6,22],[22.2,22],[23.8,24],[24,20],[25.4,24],[26.9,27],[28.6,27],[30.2,30],[31.8,30],
+    [34.9,33],[36.5,36],[38.1,36],[41.3,39],[44.5,42],[47.6,45],[50.8,48],[53.9,52],[57.2,56],
+    [60.3,60],[63.5,64],[66.7,68],[69.9,72],[73.0,76],[76.2,80]
   ];
-
   for (const [d, m] of tabla) {
     if (Math.abs(t - d) < 0.3) return m;
   }
-
   let mejor = null;
   for (const [d, m] of tabla) {
-    if (d <= t) {
-      if (mejor === null || d > mejor[0]) mejor = [d, m];
-    }
+    if (d <= t) { if (mejor === null || d > mejor[0]) mejor = [d, m]; }
   }
   if (mejor) return mejor[1];
-
   return tabla[0][1];
 }
 
 function alturaTuercaDIN934(metrico) {
-  const tabla = {
-    4:3.2, 5:4, 6:5, 8:6.5, 10:8, 12:10, 14:11, 16:13, 18:15,
-    20:16, 22:18, 24:19, 27:22, 30:24, 33:26, 36:29, 39:31,
-    42:34, 45:36, 48:38, 52:42, 56:46, 60:48, 64:52, 68:56,
-    72:60, 76:64, 80:68
-  };
+  const tabla = { 4:3.2, 5:4, 6:5, 8:6.5, 10:8, 12:10, 14:11, 16:13, 18:15, 20:16, 22:18, 24:19, 27:22, 30:24, 33:26, 36:29, 39:31, 42:34, 45:36, 48:38, 52:42, 56:46, 60:48, 64:52, 68:56, 72:60, 76:64, 80:68 };
   return tabla[metrico] || 13;
 }
 
@@ -742,88 +651,8 @@ btnLimpiar.addEventListener('click', function() {
   matSelect.value = 'ZINC';
   normaSelect.style.color = '';
   normaSelect.style.fontWeight = '';
-  // Resetear también el selector de tipos de caras
-  if (typeof tipoSelect !== 'undefined' && tipoSelect) tipoSelect.value = '';
-  if (typeof cerrarImgTipo === 'function') cerrarImgTipo();
+  panelCategorias.classList.remove('activa');
   actualizarResumen();
-});
-
-// ============================================================
-// DESPLEGABLE DE TIPOS DE CARAS + VENTANA FLOTANTE DE IMAGEN
-// ============================================================
-
-// Prefijo de la carpeta donde están las imágenes de tipos de cara
-const RUTA_IMG_TIPOS = 'img/';
-
-const tipoSelect = document.getElementById('tipoSelect');
-const imgTipoFlotante = document.getElementById('imgTipoFlotante');
-const imgTipoTitulo = document.getElementById('imgTipoTitulo');
-const imgTipoSrc = document.getElementById('imgTipoSrc');
-
-function mostrarImagenTipo(nombreTipo) {
-    if (!nombreTipo) return;
-
-    // Nombre del archivo: "tipo A.png" (coincide con las opciones del select)
-    const nombreArchivo = `${nombreTipo}.png`;
-    const rutaCompleta = RUTA_IMG_TIPOS + nombreArchivo;
-
-    imgTipoTitulo.textContent = nombreTipo.toUpperCase();
-    imgTipoSrc.src = rutaCompleta;
-    imgTipoSrc.onerror = function() {
-        this.onerror = null;
-        imgTipoSrc.alt = 'Imagen no encontrada: ' + rutaCompleta;
-        imgTipoSrc.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80"><rect width="100%" height="100%" fill="%23f1f5f9" stroke="%23cbd5e1"/><text x="50%" y="50%" font-family="Arial" font-size="11" fill="%2364748b" text-anchor="middle" dy=".3em">Imagen no encontrada</text></svg>';
-    };
-
-    // Posicionar encima del #imgBox (panel con la imagen de la brida)
-    const rect = imgBox.getBoundingClientRect();
-    imgTipoFlotante.classList.add('activa');
-
-    requestAnimationFrame(() => {
-        const ancho = imgTipoFlotante.offsetWidth;
-        const alto = imgTipoFlotante.offsetHeight;
-
-        let left = rect.left + (rect.width - ancho) / 2;
-        let top  = rect.top - alto - 10;
-
-        if (top < 10) top = rect.bottom + 10;
-        if (left < 10) left = 10;
-        if (left + ancho > window.innerWidth - 10) left = window.innerWidth - ancho - 10;
-        if (top + alto > window.innerHeight - 10) top = window.innerHeight - alto - 10;
-
-        imgTipoFlotante.style.left = left + 'px';
-        imgTipoFlotante.style.top  = top + 'px';
-    });
-}
-
-function cerrarImgTipo(event) {
-    if (event) event.stopPropagation();
-    imgTipoFlotante.classList.remove('activa');
-    imgTipoSrc.src = '';
-    if (tipoSelect) tipoSelect.value = '';
-}
-
-if (tipoSelect) {
-    tipoSelect.addEventListener('change', function() {
-        if (this.value) {
-            mostrarImagenTipo(this.value);
-        } else {
-            cerrarImgTipo();
-        }
-    });
-}
-
-document.addEventListener('click', function(event) {
-    if (!imgTipoFlotante.classList.contains('activa')) return;
-    if (!imgTipoFlotante.contains(event.target) && event.target !== tipoSelect) {
-        cerrarImgTipo();
-    }
-});
-
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape' && imgTipoFlotante.classList.contains('activa')) {
-        cerrarImgTipo();
-    }
 });
 
 // ============================================================
