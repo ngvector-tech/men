@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Diámetro de Colector</title>
+<style>
+  :root{
+    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
+    --borde:#e0e3e6; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+    display: block !important;
+  }
+
+  .container {
+    max-width: 733px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 5px;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 9px;
+    color: #666;
+    margin: 0 0 12px;
+  }
+
+  .btn-bayoneta-paralela {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    background: var(--azul);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    border-radius: 5px;
+    margin: 0 0 14px;
+    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-bayoneta-paralela:hover {
+    background: #174a85;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(30, 95, 168, 0.45);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 253px 1fr;
+    gap: 13px;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: #f4f6f8;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    padding: 11px;
+  }
+  .panel h2 {
+    font-size: 9px;
+    margin: 0 0 8px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .esquema {
+    margin-bottom: 9px;
+    background: #e8f0fa;
+    border-radius: 4px;
+    padding: 7px;
+    min-height: 27px;
+    text-align: center;
+  }
+  .esquema img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    transition: transform 0.15s ease;
+  }
+  .esquema img:hover { transform: scale(1.03); }
+
+  label {
+    display: block;
+    font-size: 9px;
+    margin: 7px 0 3px;
+    font-weight: 600;
+    color: #444;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 6px 7px;
+    border: 1px solid #c7ccd1;
+    border-radius: 4px;
+    font-size: 10px;
+    background: #fff;
+    color: #222;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #4a90d9;
+  }
+
+  .fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  /* Para los 8 diámetros: 2 columnas */
+  .fila-diametros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  /* Grupo para select + input manual */
+  .grupo-diametro {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .grupo-diametro .input-manual {
+    display: none;
+  }
+  .grupo-diametro.manual .input-manual {
+    display: block;
+  }
+  .grupo-diametro.manual select {
+    border-color: #4a90d9;
+  }
+
+  button {
+    width: 100%;
+    padding: 7px;
+    margin-top: 9px;
+    border: none;
+    border-radius: 4px;
+    background: #111;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #333; }
+
+  button.sec {
+    background: #fff;
+    color: #111;
+    border: 1px solid #c7ccd1;
+  }
+  button.sec:hover { background: #f4f6f8; }
+
+  .aviso {
+    margin-top: 7px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    display: none;
+  }
+  .aviso.error {
+    background: #fdecea;
+    color: var(--error);
+    display: block;
+  }
+  .aviso.ok {
+    background: #e7f5ec;
+    color: var(--ok);
+    display: block;
+  }
+
+  .resultado {
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    padding: 11px;
+    min-height: 133px;
+  }
+  .resultado h2 {
+    font-size: 9px;
+    margin: 0 0 8px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .resumen {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 8px 0 5px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .resumen .dato {
+    background: #f4f6f8;
+    border: 1px solid var(--borde);
+    padding: 7px 9px;
+    border-radius: 4px;
+    color: #111;
+  }
+  .resumen .titulo {
+    background: transparent;
+    color: #444;
+    font-weight: 700;
+    padding: 4px 0 1px;
+    border: none;
+  }
+  .resumen .dato-grande {
+    background: var(--azul-claro);
+    border: 1px solid #b8cbe0;
+    font-size: 12px;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .nota {
+    font-size: 8px;
+    color: #667085;
+    margin-top: 7px;
+  }
+
+  /* LIGHTBOX */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+  }
+  .lightbox.activo { display: flex; }
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    background: #fff;
+    padding: 10px;
+    cursor: default;
+    animation: zoomIn 0.25s ease;
+  }
+  .lightbox .cerrar {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease;
+  }
+  .lightbox .cerrar:hover { transform: scale(1.2); }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora de Diámetro de Colector</h1>
+  <p class="subtitulo">Cálculo basado en la suma de áreas de las tuberías conectadas — medidas en mm</p>
+
+  <button class="btn-bayoneta-paralela" id="btnCalcularTop">Calcular diámetro del colector</button>
+
+  <div class="layout">
+
+    <section class="panel">
+      <h2>Datos de entrada</h2>
+
+      <div class="esquema" id="esquemaEntrada">
+        <img src="img/colector.png" alt="Esquema del colector" id="imgColector"
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:9px;color:#666;\'>[Esquema no disponible]</span>';">
+      </div>
+
+      <p style="font-size:9px; font-weight:600; margin:0 0 5px; color:#444;">Diámetros de tuberías (mm)</p>
+
+      <div class="fila-diametros" id="contenedorDiametros">
+        <!-- Los campos se generan dinámicamente por JS -->
+      </div>
+
+      <button id="btnCalcular">Calcular</button>
+      <button id="btnLimpiar" class="sec">Limpiar</button>
+      <div class="aviso" id="aviso"></div>
+
+      <p class="nota">
+        El área de la sección del colector debe ser al menos igual a la suma de las áreas de las tuberías conectadas.
+        Se muestra el diámetro interior teórico y el diámetro comercial recomendado (DN).
+        Puedes elegir un DN estándar o seleccionar "Otro…" para introducir un diámetro manual.
+      </p>
+    </section>
+
+    <section class="resultado">
+      <h2>Resultados</h2>
+      <div id="resumenSalida">
+        <div class="resumen">
+          <div class="titulo">Introduce los diámetros y pulsa Calcular</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <img src="img/colector.png" alt="Esquema ampliado" id="imgLightbox"
+       onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23e8f0fa%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23666%22 font-size=%2214%22 text-anchor=%22middle%22%3EEsquema no disponible%3C/text%3E%3C/svg%3E';">
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // --- Lightbox ---
+  const lightbox       = document.getElementById('lightbox');
+  const cerrarLightbox = document.getElementById('cerrarLightbox');
+  const imgLightbox    = document.getElementById('imgLightbox');
+
+  function abrirLightbox(src){
+    if (src) imgLightbox.src = src;
+    lightbox.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrarLightboxFn(){
+    lightbox.classList.remove('activo');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.esquema img');
+    if (img) {
+      e.preventDefault();
+      abrirLightbox(img.src);
+    }
+  });
+
+  cerrarLightbox.addEventListener('click', cerrarLightboxFn);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) cerrarLightboxFn();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('activo')) {
+      cerrarLightboxFn();
+    }
+  });
+
+  // --- Serie de DN estándar (DN15 a DN500) ---
+  const DN_LIST = [15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500];
+
+  // --- Generación dinámica de los 8 campos ---
+  const NUM_CAMPOS = 8;
+  const contenedorDiametros = document.getElementById('contenedorDiametros');
+  const ids = [];
+
+  // Valores por defecto (primeros 4: 50, 50, 80, 80; resto vacíos)
+  const defaults = ['50','50','80','80','','','',''];
+
+  for (let i = 0; i < NUM_CAMPOS; i++) {
+    const idSelect = 'd' + (i+1) + '_sel';
+    const idManual = 'd' + (i+1) + '_man';
+    ids.push({ sel: idSelect, man: idManual, index: i });
+
+    const div = document.createElement('div');
+    div.className = 'fila-grupo';
+
+    const label = document.createElement('label');
+    label.setAttribute('for', idSelect);
+    label.textContent = 'Tubería ' + (i+1);
+
+    const grupo = document.createElement('div');
+    grupo.className = 'grupo-diametro';
+    grupo.id = 'grupo_' + (i+1);
+
+    // Select con DN estándar + opción "Otro…"
+    const select = document.createElement('select');
+    select.id = idSelect;
+
+    // Opción vacía (sin tubería)
+    const optVacia = document.createElement('option');
+    optVacia.value = '';
+    optVacia.textContent = '— sin tubería —';
+    select.appendChild(optVacia);
+
+    // Opciones DN
+    DN_LIST.forEach(dn => {
+      const opt = document.createElement('option');
+      opt.value = String(dn);
+      opt.textContent = 'DN ' + dn + ' (Ø' + dn + ' mm)';
+      select.appendChild(opt);
+    });
+
+    // Opción "Otro…"
+    const optOtro = document.createElement('option');
+    optOtro.value = 'otro';
+    optOtro.textContent = 'Otro… (manual)';
+    select.appendChild(optOtro);
+
+    // Input manual (oculto por defecto)
+    const inputMan = document.createElement('input');
+    inputMan.type = 'number';
+    inputMan.id = idManual;
+    inputMan.className = 'input-manual';
+    inputMan.step = 'any';
+    inputMan.min = '0';
+    inputMan.placeholder = 'Diámetro mm';
+
+    grupo.appendChild(select);
+    grupo.appendChild(inputMan);
+
+    div.appendChild(label);
+    div.appendChild(grupo);
+    contenedorDiametros.appendChild(div);
+
+    // Asignar valor por defecto
+    const def = defaults[i];
+    if (def !== '') {
+      // Si el valor por defecto está en la lista DN, seleccionarlo; si no, "otro" + manual
+      if (DN_LIST.includes(parseFloat(def))) {
+        select.value = def;
+      } else {
+        select.value = 'otro';
+        grupo.classList.add('manual');
+        inputMan.value = def;
+      }
+    } else {
+      select.value = '';
+    }
+
+    // Listener: al cambiar el select, mostrar/ocultar input manual
+    select.addEventListener('change', function() {
+      if (select.value === 'otro') {
+        grupo.classList.add('manual');
+        inputMan.focus();
+      } else {
+        grupo.classList.remove('manual');
+        inputMan.value = '';
+      }
+    });
+  }
+
+  // --- Lógica de cálculo ---
+  const aviso = document.getElementById('aviso');
+  const resumenSalida = document.getElementById('resumenSalida');
+
+  function obtenerDiametros() {
+    const diametros = [];
+    const errores = [];
+
+    for (let i = 0; i < NUM_CAMPOS; i++) {
+      const select = document.getElementById(ids[i].sel);
+      const inputMan = document.getElementById(ids[i].man);
+      const etiqueta = 'Tubería ' + (i+1);
+
+      if (select.value === '') continue; // sin tubería
+
+      let val;
+      if (select.value === 'otro') {
+        val = parseFloat(inputMan.value);
+        if (inputMan.value.trim() === '' || isNaN(val) || val <= 0) {
+          errores.push(`${etiqueta}: introduce un diámetro manual válido (> 0).`);
+          continue;
+        }
+      } else {
+        val = parseFloat(select.value);
+      }
+
+      if (isNaN(val) || val <= 0) {
+        errores.push(`${etiqueta}: el diámetro debe ser mayor que 0.`);
+        continue;
+      }
+
+      diametros.push(val);
+    }
+
+    return { diametros, errores };
+  }
+
+  function calcular() {
+    const { diametros, errores } = obtenerDiametros();
+
+    if (errores.length > 0) {
+      mostrarError(errores.join(' '));
+      return;
+    }
+
+    if (diametros.length === 0) {
+      mostrarError('Debes introducir al menos un diámetro de tubería válido.');
+      return;
+    }
+
+    // Suma de áreas
+    let sumaAreas = 0;
+    diametros.forEach(d => {
+      sumaAreas += Math.PI * Math.pow(d / 2, 2);
+    });
+
+    // Diámetro teórico: D = sqrt(4 * A / p)
+    const diametroTeorico = Math.sqrt((4 * sumaAreas) / Math.PI);
+
+    // Buscar DN comercial inmediatamente superior o igual
+    let dnRecomendado = null;
+    for (let dn of DN_LIST) {
+      if (dn >= diametroTeorico - 0.01) {
+        dnRecomendado = dn;
+        break;
+      }
+    }
+
+    // Mostrar resultados
+    aviso.className = 'aviso ok';
+    aviso.textContent = 'Cálculo realizado correctamente.';
+
+    let html = '<div class="resumen">';
+    html += '<div class="titulo">Resumen del cálculo</div>';
+
+    html += `<div class="dato">Tuberías introducidas: ${diametros.length}</div>`;
+    html += `<div class="dato">Suma de áreas de tuberías: ${sumaAreas.toFixed(2)} mm²</div>`;
+    html += `<div class="dato dato-grande">Diámetro interior teórico mínimo: <strong>${diametroTeorico.toFixed(2)} mm</strong></div>`;
+
+    if (dnRecomendado !== null) {
+      html += `<div class="dato dato-grande">Diámetro comercial recomendado (DN): <strong>DN ${dnRecomendado}</strong></div>`;
+    } else {
+      html += `<div class="dato" style="color:#b42318;">El diámetro teórico supera DN500. Consulta con un especialista.</div>`;
+    }
+
+    html += '<div class="titulo" style="margin-top:6px;">Detalle de áreas</div>';
+    diametros.forEach((d, i) => {
+      const area = Math.PI * Math.pow(d / 2, 2);
+      html += `<div class="dato" style="font-weight:400;font-size:9px;">Tubería ${i+1}: Ø${d} mm → ${area.toFixed(2)} mm²</div>`;
+    });
+
+    html += '</div>';
+    resumenSalida.innerHTML = html;
+  }
+
+  function mostrarError(msg) {
+    aviso.className = 'aviso error';
+    aviso.textContent = msg;
+    resumenSalida.innerHTML = '<div class="resumen"><div class="titulo">Corrige los datos para calcular</div></div>';
+  }
+
+  function limpiar() {
+    for (let i = 0; i < NUM_CAMPOS; i++) {
+      const select = document.getElementById(ids[i].sel);
+      const inputMan = document.getElementById(ids[i].man);
+      const grupo = document.getElementById('grupo_' + (i+1));
+
+      const def = defaults[i];
+      if (def !== '') {
+        if (DN_LIST.includes(parseFloat(def))) {
+          select.value = def;
+          grupo.classList.remove('manual');
+          inputMan.value = '';
+        } else {
+          select.value = 'otro';
+          grupo.classList.add('manual');
+          inputMan.value = def;
+        }
+      } else {
+        select.value = '';
+        grupo.classList.remove('manual');
+        inputMan.value = '';
+      }
+    }
+    aviso.className = 'aviso';
+    aviso.textContent = '';
+    resumenSalida.innerHTML = '<div class="resumen"><div class="titulo">Introduce los diámetros y pulsa Calcular</div></div>';
+  }
+
+  // Eventos
+  document.getElementById('btnCalcular').addEventListener('click', calcular);
+  document.getElementById('btnCalcularTop').addEventListener('click', calcular);
+  document.getElementById('btnLimpiar').addEventListener('click', limpiar);
+
+  // Enter en cualquier input/select → calcular
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const target = e.target;
+      if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
+        calcular();
+      }
+    }
+  });
+
+  // Estado inicial
+  limpiar();
+})();
+</script>
+
+<!-- Cabecera MEN (opcional, igual que en tu plantilla) -->
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
