@@ -1,0 +1,180 @@
+/* SEA sketch kit — shaded SVG sketches with drafting-style dimensions.
+   Used by the free calculators. All coordinates are SVG px (y down).
+   var S = SeaSketch(svgEl, W, H);  S.dimH(...), S.dimV(...), S.dimA(...), S.leader(...), ... */
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  var C={ink:'#0B1F3A',dim:'#1f5f8b',key:'#c2410c',mute:'#7a8896',bg:'#f7fafc',grid:'#e7eef3',teal:'#00857b'};
+  var FONT='Arial,Helvetica,sans-serif';
+
+  function mk(tag,at,txt){ var e=document.createElementNS(NS,tag); for(var k in at){ if(at[k]!=null) e.setAttribute(k,at[k]); } if(txt!=null) e.textContent=txt; return e; }
+  function f1(v){ return (Math.round(v*10)/10).toFixed(1); }
+  function P(a){ return f1(a[0])+' '+f1(a[1]); }
+
+  function Sketch(svg,W,H,o){
+    o=o||{}; this.svg=svg; this.W=W; this.H=H; this.id=(svg.id||'sk')+'_';
+    svg.innerHTML=''; svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    svg.setAttribute('font-family',FONT);
+    this.defs=mk('defs',{}); svg.appendChild(this.defs); this._defs();
+    if(o.bg!==false){
+      svg.appendChild(mk('rect',{x:0,y:0,width:W,height:H,fill:C.bg}));
+      svg.appendChild(mk('rect',{x:0,y:0,width:W,height:H,fill:'url(#'+this.id+'grid)'}));
+    }
+    this.g=mk('g',{}); svg.appendChild(this.g);      // geometry layer
+    this.d=mk('g',{}); svg.appendChild(this.d);      // dimension layer (always on top)
+  }
+  var p=Sketch.prototype;
+  p.C=C; p.mk=mk;
+  p.url=function(n){ return 'url(#'+this.id+n+')'; };
+
+  p._grad=function(name,x1,y1,x2,y2,stops){
+    var g=mk('linearGradient',{id:this.id+name,x1:x1,y1:y1,x2:x2,y2:y2});
+    stops.forEach(function(s){ g.appendChild(mk('stop',{offset:s[0],'stop-color':s[1],'stop-opacity':s[2]==null?1:s[2]})); });
+    this.defs.appendChild(g);
+  };
+  p._defs=function(){
+    var steel=[[0,'#566878'],[0.16,'#9fb0bf'],[0.4,'#f4f7fa'],[0.58,'#cdd8e1'],[0.82,'#8698a8'],[1,'#47586a']];
+    this._grad('steelH',0,0,1,0,steel);                 // vertical cylinder (shading runs left-right)
+    this._grad('steelV',0,0,0,1,steel);                 // horizontal cylinder
+    this._grad('plate',0,0,1,1,[[0,'#eef3f7'],[0.5,'#d3dde6'],[1,'#b4c2cf']]);
+    this._grad('plateEdge',0,0,0,1,[[0,'#8b9cab'],[1,'#5d6e7e']]);
+    this._grad('inside',0,0,1,0,[[0,'#1d2a38'],[0.55,'#4a5b6b'],[1,'#26333f']]);
+    this._grad('mark',0,0,1,1,[[0,'#c9efe9'],[1,'#9adcd2']]);
+    this._grad('weld',0,0,1,1,[[0,'#4a3b2a'],[1,'#1f1a14']]);
+    this._grad('liquid',0,0,0,1,[[0,'#9fd6f2'],[0.12,'#5fb2e3'],[1,'#2a78b8']]);
+    this._grad('cutaway',0,0,0,1,[[0,'#f4f8fb'],[1,'#e3ecf2']]);
+    this._grad('bore',0,0,1,0,[[0,'#93a6b6'],[0.22,'#d5dfe7'],[0.5,'#f2f6f9'],[0.78,'#d5dfe7'],[1,'#93a6b6']]);
+    var gp=mk('pattern',{id:this.id+'grid',width:20,height:20,patternUnits:'userSpaceOnUse'});
+    gp.appendChild(mk('path',{d:'M20 0H0V20',fill:'none',stroke:C.grid,'stroke-width':1})); this.defs.appendChild(gp);
+    var self=this;
+    function hatch(name,ang,bgc,sp){
+      var h=mk('pattern',{id:self.id+name,width:sp,height:sp,patternUnits:'userSpaceOnUse',patternTransform:'rotate('+ang+')'});
+      h.appendChild(mk('rect',{x:0,y:0,width:sp,height:sp,fill:bgc}));
+      h.appendChild(mk('line',{x1:0,y1:0,x2:0,y2:sp,stroke:C.ink,'stroke-width':0.9,'stroke-opacity':0.75}));
+      self.defs.appendChild(h);
+    }
+    hatch('hatchA',45,'#cfdbe5',5.5);      // e.g. flange / shell
+    hatch('hatchB',-45,'#e6edf3',5.5);     // e.g. pipe
+    hatch('hatchC',45,'#f3dfb5',4.5);      // e.g. pad
+    var f=mk('filter',{id:this.id+'shadow',x:'-20%',y:'-20%',width:'140%',height:'150%'});
+    f.appendChild(mk('feDropShadow',{dx:0,dy:2.5,stdDeviation:3,'flood-color':'#0B1F3A','flood-opacity':0.28}));
+    this.defs.appendChild(f);
+  };
+
+  /* ---------- geometry helpers ---------- */
+  p.add=function(tag,at,txt){ var e=mk(tag,at,txt); this.g.appendChild(e); return e; };
+  p.path=function(d,at){ at=at||{}; at.d=d; return this.add('path',at); };
+  p.centerline=function(x1,y1,x2,y2){ return this.add('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:C.mute,'stroke-width':0.9,'stroke-dasharray':'14 3 3 3'}); };
+  p.hidden=function(d){ return this.path(d,{fill:'none',stroke:C.mute,'stroke-width':1,'stroke-dasharray':'5 4'}); };
+  /* a tube drawn along a path: dark edge, steel body, soft highlight */
+  p.tube=function(d,w,back){
+    var cols=back?['#33414f','#6b7d8d','#93a5b4']:['#2a3947','#9fb1c0','#f1f5f8'];
+    this.path(d,{fill:'none',stroke:cols[0],'stroke-width':w,'stroke-linecap':'round','stroke-linejoin':'round'});
+    this.path(d,{fill:'none',stroke:cols[1],'stroke-width':Math.max(w-2,1),'stroke-linecap':'round','stroke-linejoin':'round'});
+    this.path(d,{fill:'none',stroke:cols[2],'stroke-width':Math.max(w*0.3,0.8),'stroke-linecap':'round','stroke-linejoin':'round','stroke-opacity':back?0.55:0.95,transform:'translate('+f1(-w*0.12)+' '+f1(-w*0.14)+')'});
+  };
+
+  /* outline of a vessel with two dished heads: L = tan-tan length, D = diameter, hd = head depth (px) */
+  p.vesselPath=function(cx,cy,L,D,hd,vert){ var a=L/2, r=D/2;
+    if(!vert) return 'M'+f1(cx-a)+' '+f1(cy-r)+' L'+f1(cx+a)+' '+f1(cy-r)+' A'+f1(hd)+' '+f1(r)+' 0 0 1 '+f1(cx+a)+' '+f1(cy+r)+' L'+f1(cx-a)+' '+f1(cy+r)+' A'+f1(hd)+' '+f1(r)+' 0 0 1 '+f1(cx-a)+' '+f1(cy-r)+' Z';
+    return 'M'+f1(cx-r)+' '+f1(cy+a)+' L'+f1(cx-r)+' '+f1(cy-a)+' A'+f1(r)+' '+f1(hd)+' 0 0 1 '+f1(cx+r)+' '+f1(cy-a)+' L'+f1(cx+r)+' '+f1(cy+a)+' A'+f1(r)+' '+f1(hd)+' 0 0 1 '+f1(cx-r)+' '+f1(cy+a)+' Z'; };
+  /* draw it. o.vert, o.cut (cut-away: pale inside + thick wall, returns a clip url for the contents), o.seams */
+  p.vessel=function(cx,cy,L,D,hd,o){
+    o=o||{}; var d=this.vesselPath(cx,cy,L,D,hd,o.vert), a=L/2, r=D/2, id=this.id+'ves'+(this._vn=(this._vn||0)+1);
+    var cp=mk('clipPath',{id:id}); cp.appendChild(mk('path',{d:d})); this.defs.appendChild(cp);
+    if(o.cut){ this.path(d,{fill:this.url('cutaway'),stroke:'none',filter:this.url('shadow')}); }
+    else this.path(d,{fill:this.url(o.vert?'steelH':'steelV'),stroke:C.ink,'stroke-width':1.6,'stroke-linejoin':'round',filter:this.url('shadow')});
+    var self=this; function seam(){ if(o.seams===false||o.cut) return;
+      [-1,1].forEach(function(sg){ if(o.vert) self.add('line',{x1:cx-r,y1:cy+sg*a,x2:cx+r,y2:cy+sg*a,stroke:C.ink,'stroke-width':0.9,'stroke-opacity':0.45});
+        else self.add('line',{x1:cx+sg*a,y1:cy-r,x2:cx+sg*a,y2:cy+r,stroke:C.ink,'stroke-width':0.9,'stroke-opacity':0.45}); }); }
+    seam();
+    return {d:d,clip:'url(#'+id+')',wall:function(){ self.path(d,{fill:'none',stroke:'#3a4a5a','stroke-width':4.2,'stroke-linejoin':'round'}); self.path(d,{fill:'none',stroke:'#c8d4de','stroke-width':1.2,'stroke-linejoin':'round'}); }};
+  };
+
+  /* ---------- text ---------- */
+  p.textW=function(s,fs){ return String(s).length*(fs||11.5)*0.56; };
+  p.text=function(x,y,s,o){
+    o=o||{}; var fs=o.size||11.5;
+    var at={x:f1(x),y:f1(y),'font-size':fs,'font-weight':o.weight||700,fill:o.color||C.dim,'text-anchor':o.anchor||'middle','dominant-baseline':'central',
+      stroke:o.halo===false?null:(o.haloColor||C.bg),'stroke-width':o.halo===false?null:3.4,'stroke-linejoin':'round','paint-order':'stroke'};
+    if(o.rot) at.transform='rotate('+f1(o.rot)+' '+f1(x)+' '+f1(y)+')';
+    if(o.italic) at['font-style']='italic';
+    var e=mk('text',at,s); (o.layer==='g'?this.g:this.d).appendChild(e); return e;
+  };
+
+  /* ---------- dimensions ---------- */
+  p._arrow=function(tip,dir,col){ // dir = unit vector pointing from body toward the tip
+    var L=8.5,w=2.7, bx=tip[0]-dir[0]*L, by=tip[1]-dir[1]*L, nx=-dir[1], ny=dir[0];
+    this.d.appendChild(mk('polygon',{points:P(tip)+' '+P([bx+nx*w,by+ny*w])+' '+P([bx-nx*w,by-ny*w]),fill:col}));
+  };
+  p._line=function(a,b,col,w,dash){ this.d.appendChild(mk('line',{x1:f1(a[0]),y1:f1(a[1]),x2:f1(b[0]),y2:f1(b[1]),stroke:col,'stroke-width':w||1,'stroke-dasharray':dash||null})); };
+  /* core: dimension line q1→q2, text above it (side = ±1 along the normal), ext lines from p1,p2 */
+  p._dim=function(p1,p2,q1,q2,txt,o){
+    o=o||{}; var col=o.key?C.key:(o.color||C.dim), fs=o.size||11.5;
+    var dx=q2[0]-q1[0], dy=q2[1]-q1[1], L=Math.sqrt(dx*dx+dy*dy)||1, u=[dx/L,dy/L];
+    // extension lines
+    [[p1,q1],[p2,q2]].forEach(function(pr){
+      var ex=pr[1][0]-pr[0][0], ey=pr[1][1]-pr[0][1], el=Math.sqrt(ex*ex+ey*ey);
+      if(el<1.5) return; var v=[ex/el,ey/el], gap=o.gap==null?3:o.gap;
+      this._line([pr[0][0]+v[0]*gap,pr[0][1]+v[1]*gap],[pr[1][0]+v[0]*4,pr[1][1]+v[1]*4],col,0.8);
+    },this);
+    var tw=this.textW(txt,fs), inside=L>=tw+26, arrowsIn=L>=24;
+    if(arrowsIn){ this._line(q1,q2,col,1); this._arrow(q1,[-u[0],-u[1]],col); this._arrow(q2,u,col); }
+    else { // arrows outside, pointing in
+      this._line([q1[0]-u[0]*16,q1[1]-u[1]*16],[q2[0]+u[0]*16,q2[1]+u[1]*16],col,1);
+      this._arrow(q1,u,col); this._arrow(q2,[-u[0],-u[1]],col);
+    }
+    // text: along the line, kept upright
+    var ang=Math.atan2(u[1],u[0])*180/Math.PI; if(ang>=89.999) ang-=180; if(ang<-90.001) ang+=180;   // vertical text reads bottom-to-top
+    var side=o.side||-1, n=[-u[1],u[0]];
+    // make "side=-1" mean visually above / left of the line
+    if(n[1]>0||(Math.abs(n[1])<1e-6&&n[0]>0)){ n=[-n[0],-n[1]]; }
+    var off=(fs*0.5+3.5)*(-side); // side -1 → along n (up)
+    var tx,ty;
+    if(o.flat){ // horizontal label beside a (near-)vertical dimension line
+      var sg=-side, mx=(q1[0]+q2[0])/2+n[0]*7*sg, my=(q1[1]+q2[1])/2+n[1]*7*sg;
+      this.text(mx,my,txt,{size:fs,color:col,anchor:(n[0]*sg<0)?'end':'start',haloColor:o.haloColor}); return; }
+    if(inside){ tx=(q1[0]+q2[0])/2+n[0]*off; ty=(q1[1]+q2[1])/2+n[1]*off; }
+    else { var ext=(arrowsIn?6:20)+tw/2, e=o.textEnd===1?-1:1; // push text past one end
+      var q=e>0?q2:q1; if(arrowsIn) this._line(q,[q[0]+u[0]*e*(tw+10),q[1]+u[1]*e*(tw+10)],col,1);
+      else this._line([q[0]+u[0]*e*16,q[1]+u[1]*e*16],[q[0]+u[0]*e*(tw+24),q[1]+u[1]*e*(tw+24)],col,1);
+      tx=q[0]+u[0]*e*ext+n[0]*off; ty=q[1]+u[1]*e*ext+n[1]*off; }
+    this.text(tx,ty,txt,{size:fs,color:col,rot:ang,haloColor:o.haloColor});
+  };
+  /* horizontal distance between p1 and p2, dimension line at y */
+  p.dimH=function(p1,p2,y,txt,o){ this._dim(p1,p2,[p1[0],y],[p2[0],y],txt,o); };
+  /* vertical distance, dimension line at x */
+  p.dimV=function(p1,p2,x,txt,o){ this._dim(p1,p2,[x,p1[1]],[x,p2[1]],txt,o); };
+  /* aligned: parallel to p1→p2, shifted by off px along the left-hand normal of p1→p2 (negative = other side) */
+  p.dimA=function(p1,p2,off,txt,o){
+    var dx=p2[0]-p1[0], dy=p2[1]-p1[1], L=Math.sqrt(dx*dx+dy*dy)||1, n=[dy/L,-dx/L];
+    o=o||{}; if(o.side==null){ // put the text on the far side from the geometry
+      var nn=[-dy/L,dx/L]; if(nn[1]>0||(Math.abs(nn[1])<1e-6&&nn[0]>0)) nn=[-nn[0],-nn[1]];
+      o.side=((n[0]*nn[0]+n[1]*nn[1])*off>=0)?-1:1; }
+    this._dim(p1,p2,[p1[0]+n[0]*off,p1[1]+n[1]*off],[p2[0]+n[0]*off,p2[1]+n[1]*off],txt,o);
+  };
+  /* angle dimension: arc centre c, radius r, from a0 to a1 (radians, screen sense), label at mid-angle */
+  p.dimAng=function(c,r,a0,a1,txt,o){
+    o=o||{}; var col=o.key?C.key:(o.color||C.dim), fs=o.size||11.5;
+    var s=[c[0]+r*Math.cos(a0),c[1]+r*Math.sin(a0)], e=[c[0]+r*Math.cos(a1),c[1]+r*Math.sin(a1)];
+    var large=Math.abs(a1-a0)>Math.PI?1:0, sweep=a1>a0?1:0;
+    this.d.appendChild(mk('path',{d:'M'+P(s)+' A'+f1(r)+' '+f1(r)+' 0 '+large+' '+sweep+' '+P(e),fill:'none',stroke:col,'stroke-width':1}));
+    if(r*Math.abs(a1-a0)>22){ var sg=sweep?1:-1;
+      this._arrow(s,[ Math.sin(a0)*sg,-Math.cos(a0)*sg],col); this._arrow(e,[-Math.sin(a1)*sg, Math.cos(a1)*sg],col); }
+    var am=(a0+a1)/2, tr=o.textR==null?r+12:o.textR, tx=c[0]+tr*Math.cos(am)+(o.dx||0), ty=c[1]+tr*Math.sin(am)+(o.dy||0);
+    this.text(tx,ty,txt,{size:fs,color:col,anchor:o.anchor});
+  };
+  /* leader: arrow at tip, straight to elbow, short shoulder, text. side: 1 = text to the right, -1 = left */
+  p.leader=function(tip,elbow,txt,o){
+    o=o||{}; var col=o.key?C.key:(o.color||C.dim), fs=o.size||11.5, side=o.side||(elbow[0]>=tip[0]?1:-1);
+    var dx=tip[0]-elbow[0], dy=tip[1]-elbow[1], L=Math.sqrt(dx*dx+dy*dy)||1;
+    if(o.via){ dx=tip[0]-o.via[0]; dy=tip[1]-o.via[1]; L=Math.sqrt(dx*dx+dy*dy)||1; this._line(o.via,tip,col,1); this._line(elbow,o.via,col,1); }
+    else this._line(elbow,tip,col,1);
+    this._arrow(tip,[dx/L,dy/L],col);
+    var sh=[elbow[0]+side*9,elbow[1]]; this._line(elbow,sh,col,1);
+    this.text(sh[0]+side*4,sh[1],txt,{size:fs,color:col,anchor:side>0?'start':'end'});
+  };
+  p.note=function(x,y,s,o){ o=o||{}; return this.text(x,y,s,{size:o.size||10.5,color:o.color||C.mute,weight:o.weight||600,anchor:o.anchor||'middle',italic:o.italic!==false,halo:o.halo}); };
+
+  window.SeaSketch=function(svg,W,H,o){ return new Sketch(svg,W,H,o); };
+  window.SeaSketch.fmt=function(v,n){ return (isFinite(v)?v:0).toLocaleString('en-US',{minimumFractionDigits:n,maximumFractionDigits:n}); };
+})();

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora de Longitud de Bobina</title>
+<style>
+  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; --verde: #1c9b8a; }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
+  .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 13px; }
+
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; }
+  .panel-title { background: var(--verde); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+  .panel-body { padding: 8px; background: #fff; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
+  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
+  .input-box { width: 80px; flex-shrink: 0; }
+  .input-box input, .input-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
+  .input-box select { text-align: left; font-family: inherit; padding: 4px; }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
+  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
+  .result-val.big { font-size: 12px; background: #e7f1ff; }
+
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  .banner.warn { background: #fdf1dc; color: #9a6a12; border-color: #e7c98f; }
+
+  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; min-height: 250px; cursor: zoom-in; }
+  .svg-box svg { width: 100%; max-width: 500px; height: auto; max-height: 350px; }
+  .cap { font-size: 10px; color: #69707a; font-style: italic; text-align: center; margin: 2px 0 0; }
+
+  .tabs { display: flex; gap: 0; border: 2px solid var(--azul); border-radius: 4px; overflow: hidden; margin: 8px; }
+  .tab { flex: 1; background: #fff; color: var(--azul); border: none; font-weight: 700; font-size: 12px; padding: 8px 12px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .tab + .tab { border-left: 2px solid var(--azul); }
+  .tab.on { background: var(--azul); color: #fff; }
+  .tab:not(.on):hover { background: #eef3f7; }
+
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 99999; justify-content: center; align-items: center; padding: 10px; cursor: zoom-out; }
+  .lightbox.activo { display: flex; }
+  .lightbox img { width: 95vw; height: 95vh; object-fit: contain; background: #fff; padding: 10px; border-radius: 4px; cursor: default; }
+  .lightbox .cerrar { position: absolute; top: 15px; right: 22px; color: #fff; font-size: 32px; font-weight: 700; cursor: pointer; user-select: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">Calculadora de Longitud de Bobina</div>
+
+  <div class="tabs">
+    <button class="tab on" data-mode="hel">Bobina Helicoidal</button>
+    <button class="tab" data-mode="spi">Bobina Espiral Plana</button>
+  </div>
+
+  <div class="grid">
+    <div class="panel" style="grid-column: 1 / -1;">
+      <div class="panel-title">1 · Tubería / Varilla</div>
+      <div class="panel-body">
+        <div class="grid" style="padding:0; gap:11px 28px;">
+          <div class="row"><div class="label">Unidades</div><div class="input-box"><select id="clUnit"><option value="mm">mm</option><option value="inch">pulgada</option></select></div></div>
+          <div class="row"><div class="label">Material</div><div class="input-box"><select id="clRho"><option value="7850">Acero carbono</option><option value="8000">Acero inoxidable</option><option value="8940">Cobre</option><option value="2700">Aluminio</option></select></div></div>
+          <div class="row"><div class="label">Diámetro exterior (do)</div><div class="input-box"><input id="clDo" type="number" step="any" value="60.3"></div></div>
+          <div class="row"><div class="label">Espesor pared (t)<small>0 = barra maciza</small></div><div class="input-box"><input id="clT" type="number" step="any" value="3.91"></div></div>
+          <div class="row"><div class="label">Longitud tubería estándar<small>para calcular piezas a pedir</small></div><div class="input-box"><input id="clStock" type="number" step="any" value="6000"></div></div>
+          <div class="row"><div class="label">Colas rectas (total)<small>entrada y salida de la bobina</small></div><div class="input-box"><input id="clTail" type="number" step="any" value="0"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" id="modeHel">
+    <div class="panel">
+      <div class="panel-title">2 · Datos Bobina Helicoidal</div>
+      <div class="panel-body">
+        <div class="row"><div class="label">Diámetro de la bobina</div><div class="input-box"><input id="hlD" type="number" step="any" value="1200"></div></div>
+        <div class="row"><div class="label">El diámetro se mide a</div><div class="input-box"><select id="hlBasis"><option value="mean">Línea central</option><option value="out">Exterior</option><option value="in">Interior</option></select></div></div>
+        <div class="row"><div class="label">Definir por</div><div class="input-box"><select id="hlDef"><option value="np">Giros y paso</option><option value="nh">Giros y altura</option><option value="hp">Altura y paso</option></select></div></div>
+        <div class="row"><div class="label">Número de giros (n)</div><div class="input-box"><input id="hlN" type="number" step="any" value="8"></div></div>
+        <div class="row"><div class="label">Paso (p)<small>centro a centro</small></div><div class="input-box"><input id="hlP" type="number" step="any" value="120"></div></div>
+        <div class="row"><div class="label">Altura (H)</div><div class="input-box"><input id="hlH" type="number" step="any" value="960" disabled></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">3 · Resultados</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Diámetro central (Dm)</div><div class="result-val" id="hoDm">-</div></div>
+        <div class="result-row"><div class="result-label">Giros / Paso / Altura</div><div class="result-val" id="hoNPH">-</div></div>
+        <div class="result-row"><div class="result-label">Longitud por vuelta</div><div class="result-val" id="hoLt">-</div></div>
+        <div class="result-row"><div class="result-label">Ángulo de hélice</div><div class="result-val" id="hoAng">-</div></div>
+        <div class="result-row"><div class="result-label">Espacio entre giros</div><div class="result-val" id="hoGap">-</div></div>
+        <div class="result-row"><div class="result-label">Dimensiones exteriores</div><div class="result-val" id="hoEnv">-</div></div>
+        <div class="result-row"><div class="result-label">Longitud total tubería</div><div class="result-val big" id="hoL">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" id="modeSpi" style="display:none;">
+    <div class="panel">
+      <div class="panel-title">2 · Datos Bobina Espiral</div>
+      <div class="panel-body">
+        <div class="row"><div class="label">Diámetro interior (Di)</div><div class="input-box"><input id="spDi" type="number" step="any" value="300"></div></div>
+        <div class="row"><div class="label">Espacio entre giros (c)</div><div class="input-box"><input id="spC" type="number" step="any" value="40"></div></div>
+        <div class="row"><div class="label">Definir por</div><div class="input-box"><select id="spDef"><option value="n">Número de giros</option><option value="do">Diámetro exterior</option></select></div></div>
+        <div class="row"><div class="label">Número de giros (n)</div><div class="input-box"><input id="spN" type="number" step="any" value="6"></div></div>
+        <div class="row"><div class="label">Diámetro exterior (Do)</div><div class="input-box"><input id="spDo" type="number" step="any" value="1504" disabled></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">3 · Resultados</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Paso (p)</div><div class="result-val" id="soP">-</div></div>
+        <div class="result-row"><div class="result-label">Número de giros</div><div class="result-val" id="soN">-</div></div>
+        <div class="result-row"><div class="result-label">Diámetro interior / exterior</div><div class="result-val" id="soD">-</div></div>
+        <div class="result-row"><div class="result-label">Radio primer / último giro</div><div class="result-val" id="soR">-</div></div>
+        <div class="result-row"><div class="result-label">Longitud total tubería</div><div class="result-val big" id="soL">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner" id="clBanner">Calculando...</div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">Cantidades de Tubería</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Superficie exterior</div><div class="result-val" id="qoA">-</div></div>
+        <div class="result-row"><div class="result-label">Peso de la tubería</div><div class="result-val" id="qoW">-</div></div>
+        <div class="result-row"><div class="result-label">Volumen de retención</div><div class="result-val" id="qoV">-</div></div>
+        <div class="result-row"><div class="result-label">Tuberías estándar a pedir</div><div class="result-val" id="qoS">-</div></div>
+        <div class="result-row"><div class="label" style="font-size:9px; color:#666; margin-top:8px;">Nota: Geometría únicamente. Añada margen de recorte y recuperación elástica.</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title" id="clSkTitle">Vista previa de la Bobina</div>
+      <div class="panel-body">
+        <div class="svg-box" onclick="abrirLightbox('sk1')"><svg id="sk1" viewBox="0 0 470 350"></svg></div>
+        <p class="cap" id="clCap">Las proporciones son indicativas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" onclick="cerrarLightbox()">&times;</span>
+  <img id="imgLightbox" alt="Vista ampliada">
+</div>
+
+<script src="sea-sketch.js.descarga"></script>
+<script>
+// ============ LIGHTBOX ============
+function abrirLightbox(svgId) {
+  const el = document.getElementById(svgId); if (!el) return;
+  const clone = el.cloneNode(true);
+  if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('width', '1200'); clone.setAttribute('height', '900');
+  const xml = new XMLSerializer().serializeToString(clone);
+  const svg64 = btoa(unescape(encodeURIComponent(xml)));
+  document.getElementById('imgLightbox').src = 'data:image/svg+xml;base64,' + svg64;
+  document.getElementById('lightbox').classList.add('activo');
+}
+function cerrarLightbox() { document.getElementById('lightbox').classList.remove('activo'); }
+document.getElementById('lightbox').addEventListener('click', function(e){
+  if (e.target === this || e.target.className === 'cerrar') cerrarLightbox();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarLightbox(); });
+
+// ============ LÓGICA ============
+const $ = id => document.getElementById(id);
+const fx = (v, d) => v.toFixed(d);
+let mode = 'hel';
+
+function num(id) { return parseFloat($(id).value); }
+function setOut(id, t) { $(id).innerHTML = t; }
+function lock(id, on, val) {
+  const e = $(id); e.disabled = on;
+  e.style.background = on ? '#eaf6f4' : '#fff';
+  e.style.borderColor = on ? '#c9e6e2' : '';
+  if (on && val != null && isFinite(val)) e.value = +val.toFixed(3);
+}
+
+function fail(msg) {
+  const b = $('clBanner'); b.className = 'banner warn'; b.innerHTML = '⚠ ' + msg;
+  const outs = ['qoA','qoW','qoV','qoS'].concat(mode === 'hel' ? ['hoDm','hoNPH','hoLt','hoAng','hoGap','hoEnv','hoL'] : ['soP','soN','soD','soR','soL']);
+  outs.forEach(i => setOut(i, '–'));
+  $('sk1').innerHTML = '';
+}
+
+function quantities(L, d0, t, u) {
+  const metric = u === 'mm', rho = num('clRho'), stock = num('clStock');
+  const solid = !(t > 0) || t >= d0 / 2, di = solid ? 0 : d0 - 2 * t;
+  const Am = Math.PI / 4 * (d0 * d0 - di * di), Ai = Math.PI / 4 * di * di;
+
+  setOut('qoA', metric ? fx(Math.PI * d0 * L / 1e6, 3) + ' m²' : fx(Math.PI * d0 * L / 144, 2) + ' ft²');
+  setOut('qoW', metric ? fx(Am * L * rho / 1e9, 1) + ' kg · ' + fx(Am * rho / 1e6, 2) + ' kg/m' : fx(Am * L * rho * 3.6127e-5, 1) + ' lb · ' + fx(Am * 12 * rho * 3.6127e-5, 2) + ' lb/ft');
+  setOut('qoV', solid ? 'Barra maciza' : (metric ? fx(Ai * L / 1e6, 1) + ' litros' : fx(Ai * L / 231, 2) + ' US gal'));
+
+  if (stock > 0) {
+    const pcs = Math.ceil(L / stock - 1e-9);
+    setOut('qoS', pcs + ' × ' + fx(stock, 0) + ' ' + u + ' · ' + Math.max(pcs - 1, 0) + ' uniones');
+  } else setOut('qoS', '–');
+}
+
+function lenOut(id, L, u) {
+  const unidadTexto = (u === 'mm') ? 'm' : 'ft';
+  const valorConvertido = (u === 'mm') ? (L / 1000) : (L / 12);
+  const decimales = (u === 'mm') ? 3 : 2;
+  
+  const elemento = $(id);
+  if (elemento) {
+    elemento.textContent = fx(valorConvertido, decimales) + ' ' + unidadTexto;
+  }
+}
+
+function calc() {
+  const u = $('clUnit').value, d0 = num('clDo'), t = num('clT') || 0, tail = num('clTail') || 0;
+  $('modeHel').style.display = mode === 'hel' ? 'grid' : 'none';
+  $('modeSpi').style.display = mode === 'spi' ? 'grid' : 'none';$('clSkTitle').textContent = mode === 'hel' ? 'Vista previa: Bobina Helicoidal' : 'Vista previa: Bobina Espiral';
+
+  if (!(d0 > 0)) return fail('Introduce el diámetro exterior.');
+  if (t < 0 || tail < 0) return fail('El espesor y las colas no pueden ser negativos.');
+
+  if (mode === 'hel') helical(u, d0, t, tail);
+  else spiral(u, d0, t, tail);
+}
+
+function helical(u, d0, t, tail) {
+  const Din = num('hlD'), basis = $('hlBasis').value, def =$('hlDef').value;
+  let n = num('hlN'), p = num('hlP'), H = num('hlH');
+
+  lock('hlN', def === 'hp'); lock('hlP', def === 'nh'); lock('hlH', def === 'np');
+
+  if (!(Din > 0)) return fail('Introduce el diámetro de la bobina.');
+  const Dm = basis === 'out' ? Din - d0 : (basis === 'in' ? Din + d0 : Din);
+  if (!(Dm > d0)) return fail('El diámetro central debe ser mayor que el diámetro del tubo (do).');
+
+  if (def === 'np') {
+    if (!(n > 0) || !(p > 0)) return fail('Introduce el número de giros y el paso.');
+    H = n * p; lock('hlH', true, H);
+  } else if (def === 'nh') {
+    if (!(n > 0) || !(H > 0)) return fail('Introduce el número de giros y la altura.');
+    p = H / n; lock('hlP', true, p);
+  } else {
+    if (!(H > 0) || !(p > 0)) return fail('Introduce la altura y el paso.');
+    n = H / p; lock('hlN', true, n);
+  }
+
+  const Lt = Math.sqrt(Math.pow(Math.PI * Dm, 2) + p * p), L = n * Lt + tail, gap = p - d0;
+
+  setOut('hoDm', fx(Dm, 2));
+  setOut('hoNPH', fx(n, 2) + ' · ' + fx(p, 2) + ' · ' + fx(H, 1) + ' ' + u);
+  setOut('hoLt', fx(Lt, 2));
+  setOut('hoAng', fx(Math.atan2(p, Math.PI * Dm) * 180 / Math.PI, 2));
+  setOut('hoGap', fx(gap, 2));
+  setOut('hoEnv', fx(Dm + d0, 1) + ' / ' + fx(Dm - d0, 1) + ' · ' + fx(H + d0, 1) + ' ' + u);
+  lenOut('hoL', L, u);
+  quantities(L, d0, t, u);
+
+  const b = $('clBanner');
+  if (gap < 0) {
+    b.className = 'banner warn';
+    b.innerHTML = '⚠ El paso es menor que el diámetro del tubo. Los giros se superpondrían por ' + fx(-gap, 1) + ' ' + u + '.';
+  } else {
+    b.className = 'banner';
+    b.innerHTML = '✔ Bobina Helicoidal · ' + fx(n, 2) + ' giros · Longitud total: ' + (u === 'mm' ? fx(L / 1000, 2) + ' m' : fx(L / 12, 2) + ' ft');
+  }
+
+  drawHelix(Dm, d0, p, n, H, u);
+}
+
+function spiral(u, d0, t, tail) {
+  const Di = num('spDi'), c = num('spC'), def = $('spDef').value;
+  let n = num('spN'), Do = num('spDo');
+
+  lock('spN', def === 'do'); lock('spDo', def === 'n');
+
+  if (!(Di >= 0) || !(c >= 0)) return fail('Introduce el diámetro interior y el espacio entre giros.');
+  const p = d0 + c, a = Di / 2 + d0 / 2;
+
+  if (def === 'n') {
+    if (!(n > 0)) return fail('Introduce el número de giros.');
+    Do = 2 * (a + n * p) + d0; lock('spDo', true, Do);
+  } else {
+    if (!(Do > Di + 2 * d0)) return fail('El diámetro exterior debe ser mayor que Di + 2·do.');
+    n = ((Do - d0) / 2 - a) / p; lock('spN', true, n);
+  }
+
+  const b = p / (2 * Math.PI), r1 = a + n * p;
+  function F(r) { const s = Math.sqrt(r * r + b * b); return (r * s + b * b * Math.log(r + s)) / (2 * b); }
+  const L = F(r1) - F(a) + tail;
+
+  setOut('soP', fx(p, 2));
+  setOut('soN', fx(n, 2));
+  setOut('soD', fx(Di, 1) + ' / ' + fx(Do, 1) + ' ' + u);
+  setOut('soR', fx(a, 1) + ' / ' + fx(r1, 1) + ' ' + u);
+  lenOut('soL', L, u);
+  quantities(L, d0, t, u);
+
+  const bn = $('clBanner'); bn.className = 'banner';
+  bn.innerHTML = '✔ Bobina Espiral Plana · ' + fx(n, 2) + ' giros · Longitud total: ' + (u === 'mm' ? fx(L / 1000, 2) + ' m' : fx(L / 12, 2) + ' ft');
+
+  drawSpiral(a, p, n, d0, Do, u);
+}
+
+// ============ DIBUJOS USANDO LA LIBRERÍA ORIGINAL ============
+function drawHelix(Dm, d0, p, n, H, u) {
+  const W = 470, Hc = 350, S = SeaSketch($('sk1'), W, Hc), cx = 222, w = 196, ry = 20;
+  $('sk1').setAttribute('viewBox', `0 0 ${W} ${Hc}`);
+
+  const nd = Math.min(Math.max(Math.round(n), 1), 7);
+  let dpx = Math.min(Math.max(w * d0 / Dm, 6), 20);
+  let ppx = Math.min(Math.max(w * p / Dm, dpx + 3), 46);
+  if (nd * ppx > 200) { ppx = 200 / nd; dpx = Math.min(dpx, Math.max(ppx - 3, 4)); }
+
+  const tot = nd * ppx, y0 = (Hc - tot) / 2 + 2;
+  const P = phi => [cx - w / 2 * Math.cos(phi), y0 + ppx * phi / (2 * Math.PI) + ry * Math.sin(phi)];
+
+  const half = (k, front) => {
+    const a0 = 2 * Math.PI * k + (front ? 0 : Math.PI);
+    let s = '';
+    for (let i = 0; i <= 26; i++) {
+      const q = P(a0 + Math.PI * i / 26);
+      s += (i ? ' L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1);
+    }
+    return s;
+  };
+
+  S.add('ellipse', { cx, cy: y0 + tot + ry + dpx / 2 + 5, rx: w * 0.54, ry: 8, fill: '#0B1F3A', 'fill-opacity': 0.12 });
+  S.centerline(cx, y0 - ry - dpx / 2 - 14, cx, y0 + tot + ry + dpx / 2 + 14);
+
+  for (let k = 0; k < nd; k++) S.tube(half(k, false), dpx, true);
+  for (let j = 0; j < nd; j++) S.tube(half(j, true), dpx, false);
+
+  [P(0), P(2 * Math.PI * nd)].forEach(e => {
+    S.add('ellipse', { cx: e[0], cy: e[1], rx: dpx * 0.22, ry: dpx / 2, fill: '#1d2a38', stroke: S.C.ink, 'stroke-width': 1 });
+  });
+
+  const xl = cx - w / 2, xr = cx + w / 2, g = dpx / 2 + 3;
+  S.dimH([xl, y0], [xr, y0 + ppx / 2], y0 - ry - dpx / 2 - 24, 'Dm = ' + fx(Dm, 1));
+  S.dimV([xl, y0], [xl, y0 + tot], xl - 38, 'H = ' + fx(H, 1));
+
+  if (nd >= 2) {
+    const k1 = nd >= 3 ? 1 : 0;
+    S.dimV([xr, y0 + (k1 + 0.5) * ppx], [xr, y0 + (k1 + 1.5) * ppx], xr + dpx / 2 + 28, 'p = ' + fx(p, 1));
+  }
+  S.dimH([xl - dpx / 2, y0 + tot], [xr + dpx / 2, y0 + tot - ppx / 2], y0 + tot + ry + dpx / 2 + 40, 'OD = ' + fx(Dm + d0, 1));
+
+  const tp = P(Math.PI); tp[0] += dpx/2*0.72; tp[1] -= dpx/2*0.66;
+  S.leader(tp, [tp[0] + 30, tp[1] - 28], 'do = ' + fx(d0, 1), { side: 1 });
+  if (nd < Math.round(n)) S.note(W - 10, Hc - 12, 'mostrando ' + nd + ' de ' + fx(n, 1) + ' giros', { anchor: 'end' });
+}
+
+function drawSpiral(a, p, n, d0, Do, u) {
+  const W = 470, Hc = 350, S = SeaSketch($('sk1'), W, Hc), cx = W / 2, cy = 160;
+  $('sk1').setAttribute('viewBox', `0 0 ${W} ${Hc}`);
+
+  const nn = Math.min(n, 16), r1 = a + nn * p, sc = 122 / (r1 + d0 / 2), b = p / (2 * Math.PI);
+  let s = '', steps = Math.ceil(nn * 72);
+
+  for (let i = 0; i <= steps; i++) {
+    const phi = 2 * Math.PI * nn * i / steps, r = (a + b * phi) * sc;
+    s += (i ? ' L' : 'M') + (cx + r * Math.cos(phi)).toFixed(1) + ' ' + (cy - r * Math.sin(phi)).toFixed(1);
+  }
+
+  S.add('circle', { cx, cy: cy + 4, r: (r1 + d0 / 2) * sc + 5, fill: '#0B1F3A', 'fill-opacity': 0.07 });
+  S.centerline(cx - (r1 * sc + 28), cy, cx + (r1 * sc + 28), cy);
+  S.centerline(cx, cy - (r1 * sc + 22), cx, cy + (r1 * sc + 22));
+
+  S.tube(s, Math.max(d0 * sc, 2.6), false);
+
+  const yd = cy + (r1 + d0 / 2) * sc + 34;
+  S.dimH([cx - (r1 - p / 2 + d0 / 2) * sc, cy], [cx + (r1 + d0 / 2) * sc, cy], yd, 'Do ≈ ' + fx(Do, 1));
+
+  S.note(cx, 18, fx(n, 2) + ' giros · paso ' + fx(p, 1) + ' ' + u, { italic: false, color: S.C.dim, weight: 700, size: 11.5 });
+  if (nn < n) S.note(W - 10, Hc - 12, 'mostrando 16 de ' + fx(n, 1) + ' giros', { anchor: 'end' });
+}
+
+// ============ INIT ============
+document.querySelectorAll('.tab').forEach(b => {
+  b.addEventListener('click', () => {
+    mode = b.getAttribute('data-mode');
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === b));
+    calc();
+  });
+});
+
+['clUnit','clRho','clDo','clT','clStock','clTail','hlD','hlBasis','hlDef','hlN','hlP','hlH','spDi','spC','spDef','spN','spDo'].forEach(id => {
+  $(id).addEventListener('input', calc);$(id).addEventListener('change', calc);
+});
+
+calc();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>

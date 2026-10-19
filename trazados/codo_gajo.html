@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Miter Bend (Codo de Gajos)</title>
+<style>
+  :root{ --azul:#1e5fa8; --borde:#e0e3e6; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f2; margin: 0; padding: 16px; color: #222; }
+  .container { max-width: 850px; margin: 0 auto; background: #fff; border-radius: 7px; box-shadow: 0 2px 7px rgba(0,0,0,0.08); padding: 16px 19px 21px; }
+  h1 { text-align: center; font-size: 13px; background: #111; color: #fff; padding: 8px; border-radius: 4px; margin: 0 0 5px; }
+  .layout { display: grid; grid-template-columns: 260px 1fr; gap: 13px; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+  .panel { background: #f4f6f8; border: 1px solid var(--borde); border-radius: 5px; padding: 11px; }
+  .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  label { display: block; font-size: 9px; margin: 7px 0 3px; font-weight: 600; color: #444; }
+  input, select { width: 100%; padding: 6px 7px; border: 1px solid #c7ccd1; border-radius: 4px; font-size: 10px; background: #fff; color: #222; }
+  
+  button { width: 100%; padding: 7px; margin-top: 9px; border: none; border-radius: 4px; background: #111; color: #fff; font-size: 9px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  button:hover { background: #333; }
+  
+  button.sec { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+  button.sec:hover { background: #bae6fd; color: #0369a1; }
+
+  .resultado-seccion { background: #fff; border: 1px solid var(--borde); border-radius: 5px; padding: 11px; margin-bottom: 15px; }
+  .resultado-seccion h3 { font-size: 11px; margin: 0 0 8px; color: #111; text-align: center; background: #f4f6f8; padding: 5px; border-radius: 4px; }
+  .svg-container { display: flex; justify-content: center; align-items: center; background: #fafafa; border: 1px solid var(--borde); border-radius: 4px; padding: 10px; margin-bottom: 10px; cursor: zoom-in; }
+  .svg-container svg { max-width: 100%; height: auto; }
+
+  /* Nuevo recuadro de resumen destacado */
+  .resumen-medidas {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-left: 4px solid #0284c7;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .medida-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .medida-label {
+    font-size: 10px;
+    color: #0369a1;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .medida-valor {
+    font-size: 16px;
+    color: #0f172a;
+    font-weight: 800;
+  }
+  .medida-unidad {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .tabla-gen { width: 100%; border-collapse: collapse; font-size: 11px; } /* Letra un poco más grande */
+  .tabla-gen th, .tabla-gen td { border: 1px solid var(--borde); padding: 5px; text-align: center; }
+  .tabla-gen th { background: #f4f6f8; font-weight: 600; font-size: 11px;}
+  .tabla-gen tr:nth-child(even) { background: #f4f6f8; }
+  
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 99999; justify-content: center; align-items: center; padding: 20px; cursor: zoom-out; }
+  .lightbox.activo { display: flex; }
+  .lightbox img { max-width: 95vw; max-height: 90vh; border-radius: 6px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); background: #fff; padding: 10px; cursor: default; }
+  .lightbox .cerrar { position: absolute; top: 15px; right: 22px; color: #fff; font-size: 32px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora de Miter Bend (Codo de Gajos)</h1>
+  <div class="layout">
+    <section class="panel">
+      <div class="fila">
+        <div><label for="in_d">Diámetro (d)</label><input type="number" id="in_d" value="200" step="any"></div>
+        <div><label for="in_R">Radio de curvatura (R)</label><input type="number" id="in_R" value="300" step="any"></div>
+      </div>
+      <div class="fila">
+        <div><label for="in_theta">Ángulo total (θ) °</label><input type="number" id="in_theta" value="90" step="any"></div>
+        <div><label for="in_P">Nº de partes (P)</label>
+          <select id="in_P"><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select>
+        </div>
+      </div>
+      <label for="in_L">Nº de líneas de desarrollo (L)</label>
+      <select id="in_L"><option value="12">12</option><option value="16">16</option><option value="24" selected>24</option><option value="36">36</option><option value="48">48</option></select>
+      <button id="btnCalcular">Calcular Desarrollo</button>
+    </section>
+    <section class="resultado"><div id="contenedorResultados"></div></section>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <img id="imgLightbox" alt="Vista ampliada">
+</div>
+
+<script>
+document.getElementById('btnCalcular').addEventListener('click', function() {
+    const d = parseFloat(document.getElementById('in_d').value);
+    const R = parseFloat(document.getElementById('in_R').value);
+    const theta = parseFloat(document.getElementById('in_theta').value);
+    const P = parseInt(document.getElementById('in_P').value);
+    const L = parseInt(document.getElementById('in_L').value);
+
+    const contenedor = document.getElementById('contenedorResultados');
+    if (isNaN(d) || isNaN(R) || isNaN(theta) || d <= 0 || R <= 0 || theta <= 0) { alert("Valores inválidos"); return; }
+
+    // --- FÓRMULAS MATEMÁTICAS EXACTAS ---
+    const phi_deg = theta / (2 * (P - 1));
+    const phi_rad = phi_deg * (Math.PI / 180);
+    
+    const perimetro = Math.PI * d;
+    const paso = perimetro / L;
+    const radio = d / 2;
+
+    let datosExtremos = [], datosCentrales = [];
+    
+    for (let i = 0; i <= L; i++) {
+        const anguloLinea = (360 / L) * i;
+        const anguloRad = anguloLinea * (Math.PI / 180);
+        
+        const h_end = (R - radio * Math.cos(anguloRad)) * Math.tan(phi_rad);
+        const h_mid = 2 * (R - radio * Math.cos(anguloRad)) * Math.tan(phi_rad);
+
+        datosExtremos.push({ linea: `L${i}`, angulo: anguloLinea, longitud: h_end, distanciaX: i * paso });
+        datosCentrales.push({ linea: `M${i}`, angulo: anguloLinea, longitud: h_mid, distanciaX: i * paso });
+    }
+
+    // Encontrar la longitud máxima (el Largo de la chapa) para cada gajo
+    const maxExtremo = Math.max(...datosExtremos.map(d => d.longitud));
+    const maxCentral = Math.max(...datosCentrales.map(d => d.longitud));
+
+    function generarSeccionHTML(titulo, datos, esCentral, largoTotal) {
+        const svgWidth = 500, svgHeight = 240, marginX = 40, marginY = 30;
+        const plotWidth = svgWidth - marginX - 20, plotHeight = svgHeight - marginY - 40;
+        const escalaX = plotWidth / perimetro;
+        
+        const maxAlturaGlobal = Math.max(...datosCentrales.map(d => d.longitud));
+        const escalaY = plotHeight / (maxAlturaGlobal * 1.15);
+
+        const yBaseVisual = svgHeight - marginY - 10; 
+
+        let pathSuperior = "", pathInferior = "", generatricesHTML = "";
+
+        datos.forEach((dato, index) => {
+            const x = marginX + (dato.distanciaX * escalaX);
+            
+            if (esCentral) {
+                const semiAncho = (dato.longitud / 2) * escalaY;
+                const yCentro = yBaseVisual - ((maxAlturaGlobal / 2) * escalaY);
+                
+                const ySuperior = yCentro - semiAncho;
+                const yInferior = yCentro + semiAncho;
+                
+                if (index === 0) {
+                    pathSuperior += `M ${x} ${ySuperior} `;
+                    pathInferior += `M ${x} ${yInferior} `;
+                } else {
+                    pathSuperior += `L ${x} ${ySuperior} `;
+                    pathInferior += `L ${x} ${yInferior} `;
+                }
+                
+                generatricesHTML += `<line x1="${x}" y1="${yInferior}" x2="${x}" y2="${ySuperior}" stroke="#a0b8d0" stroke-width="1" stroke-dasharray="3,3" />`;
+            } else {
+                const ySuperior = yBaseVisual - (dato.longitud * escalaY);
+                
+                if (index === 0) {
+                    pathSuperior += `M ${x} ${ySuperior} `;
+                    pathInferior += `M ${x} ${yBaseVisual} `;
+                } else {
+                    pathSuperior += `L ${x} ${ySuperior} `;
+                    pathInferior += `L ${x} ${yBaseVisual} `;
+                }
+                
+                generatricesHTML += `<line x1="${x}" y1="${yBaseVisual}" x2="${x}" y2="${ySuperior}" stroke="#a0b8d0" stroke-width="1" stroke-dasharray="3,3" />`;
+            }
+
+            if (L <= 24 || index % (L/12) === 0) {
+               generatricesHTML += `<text x="${x}" y="${yBaseVisual + 12}" font-size="8" fill="#666" text-anchor="middle">${dato.linea}</text>`;
+            }
+        });
+
+        let mirrorHTML = `
+            <line x1="${marginX + plotWidth/2}" y1="10" x2="${marginX + plotWidth/2}" y2="${svgHeight - marginY}" stroke="#ccc" stroke-dasharray="5,5" />
+            <text x="${marginX + plotWidth/2 + 5}" y="15" font-size="9" fill="#999">Mirror Line</text>
+        `;
+
+        const x1 = marginX;
+        const x2 = marginX + (paso * escalaX);
+        const yFlecha = svgHeight - marginY + 22;
+        let acotacionHTML = `
+            <line x1="${x1}" y1="${yFlecha}" x2="${x2}" y2="${yFlecha}" stroke="#111" stroke-width="1" />
+            <line x1="${x1}" y1="${yFlecha - 3}" x2="${x1}" y2="${yFlecha + 3}" stroke="#111" stroke-width="1" />
+            <line x1="${x2}" y1="${yFlecha - 3}" x2="${x2}" y2="${yFlecha + 3}" stroke="#111" stroke-width="1" />
+            <text x="${(x1+x2)/2}" y="${yFlecha - 4}" font-size="8" fill="#111" text-anchor="middle">C = ${paso.toFixed(1)}</text>
+        `;
+
+        const svgId = `svg-${esCentral ? 'mid' : 'end'}`;
+        let svgHTML = `<svg id="${svgId}" viewBox="0 0 ${svgWidth} ${svgHeight + 10}" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="${svgWidth}" height="${svgHeight + 10}" fill="#fff" />
+            ${mirrorHTML}
+            ${generatricesHTML}
+            <path d="${pathSuperior}" stroke="#1e5fa8" stroke-width="2.5" fill="none" />
+            <path d="${pathInferior}" stroke="#1e5fa8" stroke-width="2.5" fill="none" />
+            ${acotacionHTML}
+            <text x="${marginX}" y="${svgHeight - marginY + 22}" font-size="9" fill="#333" text-anchor="middle">0°</text>
+            <text x="${svgWidth - 20}" y="${svgHeight - marginY + 22}" font-size="9" fill="#333" text-anchor="middle">360°</text>
+        </svg>`;
+
+        // Crear el recuadro de medidas destacadas
+        let medidasHTML = `
+            <div class="resumen-medidas">
+                <div class="medida-item">
+                    <span class="medida-label">Longitud de Chapa (Desarrollo)</span>
+                    <span class="medida-valor">${perimetro.toFixed(2)} <span class="medida-unidad">mm</span></span>
+                </div>
+                <div class="medida-item">
+                    <span class="medida-label">Ancho Total de la Pieza</span>
+                    <span class="medida-valor">${largoTotal.toFixed(2)} <span class="medida-unidad">mm</span></span>
+                </div>
+            </div>
+        `;
+
+        let tablaHTML = `<table class="tabla-gen" id="tabla-${esCentral ? 'mid' : 'end'}">
+            <thead><tr><th>Línea</th><th>Ángulo (°)</th><th>Longitud Real (mm)</th></tr></thead><tbody>`;
+        datos.forEach(dato => {
+            tablaHTML += `<tr><td>${dato.linea}</td><td>${dato.angulo.toFixed(0)}°</td><td>${dato.longitud.toFixed(2)}</td></tr>`;
+        });
+        tablaHTML += `</tbody></table>`;
+
+        const tipo = esCentral ? 'mid' : 'end';
+        let botonesHTML = `
+            <div style="display:flex; gap:10px; margin-top:10px; margin-bottom: 12px;">
+                <button class="sec" onclick="copiarImagen('${svgId}', this)">Copiar Imagen</button>
+                <button class="sec" onclick="copiarTabla('tabla-${tipo}', this)">Copiar Resultados</button>
+            </div>
+        `;
+
+        return `<div class="resultado-seccion">
+                    <h3>${titulo}</h3>
+                    <div class="svg-container" onclick="abrirLightbox('${svgId}')">${svgHTML}</div>
+                    ${medidasHTML}
+                    ${botonesHTML}
+                    ${tablaHTML}
+                </div>`;
+    }
+
+    contenedor.innerHTML = generarSeccionHTML("Gajos de Extremo (End Parts)", datosExtremos, false, maxExtremo) + generarSeccionHTML("Gajos Centrales (Middle Parts)", datosCentrales, true, maxCentral);
+});
+
+/* ============ FUNCIONES DE LIGHTBOX Y COPIADO ============ */
+function abrirLightbox(svgId) {
+    const svgElement = document.getElementById(svgId);
+    if (!svgElement) return;
+    
+    const clone = svgElement.cloneNode(true);
+    if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    const xml = new XMLSerializer().serializeToString(clone);
+    const svg64 = btoa(unescape(encodeURIComponent(xml)));
+    const image64 = 'data:image/svg+xml;base64,' + svg64;
+
+    const lightbox = document.getElementById('lightbox');
+    const imgLightbox = document.getElementById('imgLightbox');
+    imgLightbox.src = image64;
+    lightbox.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+}
+
+document.getElementById('cerrarLightbox').addEventListener('click', function() {
+    document.getElementById('lightbox').classList.remove('activo');
+    document.body.style.overflow = '';
+});
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.getElementById('lightbox').classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+});
+
+function copiarImagen(svgId, btn) {
+    const svgElement = document.getElementById(svgId);
+    if (!svgElement) return;
+
+    const clone = svgElement.cloneNode(true);
+    if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    
+    const bbox = svgElement.getBoundingClientRect();
+    clone.setAttribute('width', bbox.width);
+    clone.setAttribute('height', bbox.height);
+
+    const xml = new XMLSerializer().serializeToString(clone);
+    const svg64 = btoa(unescape(encodeURIComponent(xml)));
+    const image64 = 'data:image/svg+xml;base64,' + svg64;
+
+    const img = new Image();
+    img.onload = function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width || 500;
+        canvas.height = img.height || 250;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(function(blob) {
+            try {
+                const item = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([item]).then(() => {
+                    const originalText = btn.textContent;
+                    btn.textContent = '¡Copiado!';
+                    setTimeout(() => btn.textContent = originalText, 2000);
+                }).catch(err => {
+                    console.error('Error al copiar la imagen: ', err);
+                    alert('No se pudo copiar la imagen. Tu navegador puede no ser compatible.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Error al copiar la imagen.');
+            }
+        }, 'image/png');
+    };
+    img.src = image64;
+}
+
+function copiarTabla(tablaId, btn) {
+    const tabla = document.getElementById(tablaId);
+    if (!tabla) return;
+
+    let texto = "";
+    const filas = tabla.querySelectorAll('tr');
+    filas.forEach(fila => {
+        const celdas = fila.querySelectorAll('th, td');
+        const datosFila = [];
+        celdas.forEach(celda => datosFila.push(celda.innerText.trim()));
+        texto += datosFila.join('\t') + '\n';
+    });
+
+    navigator.clipboard.writeText(texto).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = '¡Copiado!';
+        setTimeout(() => btn.textContent = originalText, 2000);
+    }).catch(err => {
+        console.error('Error al copiar texto: ', err);
+        alert('No se pudo copiar el texto.');
+    });
+}
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>

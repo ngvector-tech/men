@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora de Conos Excéntricos</title>
+<style>
+  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; --naranja: #c2410c; }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
+  .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 13px; }
+
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; }
+  .panel-title { background: var(--azul); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; }
+  .panel-body { padding: 8px; background: #fff; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
+  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
+  .input-box { width: 80px; flex-shrink: 0; }
+  .input-box input, .input-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
+  .input-box select { text-align: left; font-family: inherit; padding: 4px; }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
+  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
+  .result-val.big { font-size: 12px; background: #e7f1ff; }
+
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  .banner.warn { background: #fdf1dc; color: #9a6a12; border-color: #e7c98f; }
+
+  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; min-height: 200px; cursor: zoom-in; }
+  .svg-box svg { width: 100%; max-width: 500px; height: auto; max-height: 300px; }
+  .cap { font-size: 10px; color: #69707a; font-style: italic; text-align: center; margin: 2px 0 0; }
+
+  .table-wrap { overflow-x: auto; margin: 8px; max-height: 400px; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 400px; }
+  th { background: var(--azul); color: #fff; padding: 5px; text-align: center; position: sticky; top: 0; }
+  td { border: 1px solid var(--borde); padding: 3px; text-align: center; font-family: monospace; }
+  tr:nth-child(even) { background: var(--gris); }
+  tr.key td { background: #fff3d6; font-weight: 700; }
+
+  .actions { display: flex; gap: 6px; justify-content: flex-end; padding: 8px; flex-wrap: wrap; }
+  .btn { background: var(--azul); color: #fff; border: none; border-radius: 3px; font-weight: 700; font-size: 11px; padding: 6px 12px; cursor: pointer; }
+  .btn.ghost { background: #fff; color: var(--azul); border: 2px solid var(--azul); padding: 4px 12px; }
+  .btn:hover { opacity: 0.9; }
+
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 99999; justify-content: center; align-items: center; padding: 10px; cursor: zoom-out; }
+  .lightbox.activo { display: flex; }
+  .lightbox img { width: 95vw; height: 95vh; object-fit: contain; background: #fff; padding: 10px; border-radius: 4px; cursor: default; }
+  .lightbox .cerrar { position: absolute; top: 15px; right: 22px; color: #fff; font-size: 32px; font-weight: 700; cursor: pointer; user-select: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">Calculadora de Conos Excéntricos</div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">1 · El Cono</div>
+      <div class="panel-body">
+        <div class="row"><div class="label">Diámetro extremo grande, D</div><div class="input-box"><input id="ecD" type="number" step="any" value="1000"></div></div>
+        <div class="row"><div class="label">Diámetro extremo pequeño, d</div><div class="input-box"><input id="ecd" type="number" step="any" value="600"></div></div>
+        <div class="row"><div class="label">Altura vertical, H<small>entre los dos planos extremos</small></div><div class="input-box"><input id="ecH" type="number" step="any" value="500"></div></div>
+        <div class="row"><div class="label">Desplazamiento, e<small>0 = concéntrico</small></div><div class="input-box"><input id="ecE" type="number" step="any" value="200"></div></div>
+        <div class="row"><div class="label">Ajuste rápido</div><div class="input-box"><select id="ecQuick"><option value="">Con desplazamiento</option><option value="flat">Plano por un lado</option><option value="conc">Concéntrico (e=0)</option></select></div></div>
+        <div class="row"><div class="label">Los diámetros son</div><div class="input-box"><select id="ecBasis"><option value="in">Interior (ID)</option><option value="mean"> A eje</option><option value="out">Exterior (OD)</option></select></div></div>
+        <div class="row"><div class="label">Espesor de placa, t</div><div class="input-box"><input id="ecT" type="number" step="any" value="8"></div></div>
+        <div class="row"><div class="label">Divisiones<small>alrededor del círculo completo</small></div><div class="input-box"><select id="ecN"><option>12</option><option selected>16</option><option>24</option><option>32</option><option>48</option></select></div></div>
+        <div class="row"><div class="label">Material<small>para cálculo de peso</small></div><div class="input-box"><select id="ecRho"><option value="7850">Acero carbono</option><option value="8000">Acero inoxidable</option><option value="2700">Aluminio</option></select></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">2 · Resultados</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Tipo</div><div class="result-val" id="eco0">-</div></div>
+        <div class="result-row"><div class="result-label">Diámetros medios D / d</div><div class="result-val" id="eco1">-</div></div>
+        <div class="result-row"><div class="result-label">Lado más corto</div><div class="result-val" id="eco2">-</div></div>
+        <div class="result-row"><div class="result-label">Lado más largo</div><div class="result-val big" id="eco3">-</div></div>
+        <div class="result-row"><div class="result-label">Acordes: abajo / arriba</div><div class="result-val" id="eco4">-</div></div>
+        <div class="result-row"><div class="result-label">Tamaño de placa</div><div class="result-val big" id="eco5">-</div></div>
+        <div class="result-row"><div class="result-label">Superficie · Peso</div><div class="result-val" id="eco6">-</div></div>
+        <div class="result-row"><div class="result-label">Utilización</div><div class="result-val" id="eco7">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner" id="ecBanner">Calculando...</div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">Alzado y planta · a escala</div>
+      <div class="panel-body">
+        <div class="svg-box" onclick="abrirLightbox('sk1')"><svg id="sk1" viewBox="0 0 470 452"></svg></div>
+        <p class="cap">Las líneas grises representan la triangulación; solo se usan sus longitudes reales.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Patrón plano · a escala</div>
+      <div class="panel-body">
+        <div class="svg-box" onclick="abrirLightbox('sk2')"><svg id="sk2" viewBox="0 0 600 420"></svg></div>
+        <p class="cap">Naranja = costura. La estación 0 está en el lado largo, opuesto al desplazamiento.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="ecTbl">
+      <thead><tr>
+        <th>Estación</th><th>Ángulo</th><th>Línea lateral<small>de abajo hacia arriba</small></th><th>Diagonal</small></th><th>Radio 1</th><th>Radio 2</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="ecCopy">Copiar tabla</button>
+    <button class="btn" id="ecCsv">Descargar CSV</button>
+    <button class="btn ghost" id="ecPrint">Imprimir</button>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <span class="cerrar" onclick="cerrarLightbox()">&times;</span>
+  <img id="imgLightbox" alt="Vista ampliada">
+</div>
+
+<script>
+// ============  LIGHTBOX ============
+function abrirLightbox(svgId) {
+  const el = document.getElementById(svgId); if (!el) return;
+  const clone = el.cloneNode(true);
+  if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('width', '1200'); clone.setAttribute('height', '900');
+  const xml = new XMLSerializer().serializeToString(clone);
+  const svg64 = btoa(unescape(encodeURIComponent(xml)));
+  document.getElementById('imgLightbox').src = 'data:image/svg+xml;base64,' + svg64;
+  document.getElementById('lightbox').classList.add('activo');
+}
+function cerrarLightbox() { document.getElementById('lightbox').classList.remove('activo'); }
+document.getElementById('lightbox').addEventListener('click', function(e){
+  if (e.target === this || e.target.className === 'cerrar') cerrarLightbox();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarLightbox(); });
+
+// ============ MOTOR SVG ============
+const S = (el, W, H) => {
+  el.innerHTML = `<defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e7eef3" stroke-width="1"/></pattern>
+    <linearGradient id="steelH" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#566878"/><stop offset="0.2" stop-color="#9fb0bf"/><stop offset="0.45" stop-color="#f4f7fa"/><stop offset="0.65" stop-color="#cdd8e1"/><stop offset="0.85" stop-color="#8698a8"/><stop offset="1" stop-color="#47586a"/></linearGradient>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef3f7"/><stop offset="0.5" stop-color="#d3dde6"/><stop offset="1" stop-color="#b4c2cf"/></linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9efe9"/><stop offset="1" stop-color="#9adcd2"/></linearGradient>
+    <filter id="s"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/></filter>
+  </defs>
+  <rect width="${W}" height="${H}" fill="#f7fafc"/><rect width="${W}" height="${H}" fill="url(#g)"/>`;
+  return {
+    C: { ink: '#0B1F3A', key: '#c2410c', dim: '#1f5f8b', mute: '#7a8896' },
+    add: (t, a) => { let e = document.createElementNS('http://www.w3.org/2000/svg', t); for (let k in a) e.setAttribute(k, a[k]); el.appendChild(e); },
+    path: (d, a) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'path'); e.setAttribute('d', d); for (let k in a) e.setAttribute(k, a[k]); el.appendChild(e); },
+    text: (x, y, s, o) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'text'); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('font-size', o.size || 10); e.setAttribute('fill', o.color || '#333'); e.setAttribute('text-anchor', o.anchor || 'middle'); e.textContent = s; el.appendChild(e); },
+    note: (x, y, s, o) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'text'); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('font-size', 10); e.setAttribute('fill', '#7a8896'); e.setAttribute('font-style', 'italic'); e.setAttribute('text-anchor', (o && o.anchor) || 'middle'); e.textContent = s; el.appendChild(e); },
+    dimH: (p1, p2, y, t) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'g'); e.innerHTML = `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p1[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p2[0]}" y1="${p2[1]}" x2="${p2[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p1[0]}" y1="${y}" x2="${p2[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="1"/><text x="${(p1[0]+p2[0])/2}" y="${y-5}" font-size="11" font-weight="700" fill="#1f5f8b" text-anchor="middle">${t}</text>`; el.appendChild(e); },
+    dimV: (p1, p2, x, t) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'g'); e.innerHTML = `<line x1="${p1[0]}" y1="${p1[1]}" x2="${x}" y2="${p1[1]}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p2[0]}" y1="${p2[1]}" x2="${x}" y2="${p2[1]}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${x}" y1="${p1[1]}" x2="${x}" y2="${p2[1]}" stroke="#1f5f8b" stroke-width="1"/><text x="${x+5}" y="${(p1[1]+p2[1])/2}" font-size="11" font-weight="700" fill="#1f5f8b" text-anchor="start" dominant-baseline="central">${t}</text>`; el.appendChild(e); },
+    center: (x1,y1,x2,y2) => { let e = document.createElementNS('http://www.w3.org/2000/svg','line'); e.setAttribute('x1',x1); e.setAttribute('y1',y1); e.setAttribute('x2',x2); e.setAttribute('y2',y2); e.setAttribute('stroke','#7a8896'); e.setAttribute('stroke-width',0.9); e.setAttribute('stroke-dasharray','14 3 3 3'); el.appendChild(e); }
+  };
+};
+
+// ============ LÓGICA ============
+const $ = id => document.getElementById(id);
+const fx = (v, d) => v.toFixed(d);
+const RAD = Math.PI / 180;
+
+function hyp(x, y) { return Math.sqrt(x*x + y*y); }
+function sideOf(A, B, P) { return (B[0]-A[0])*(P[1]-A[1]) - (B[1]-A[1])*(P[0]-A[0]); }
+function tri(A, B, dA, dB, sg) {
+  let dx = B[0]-A[0], dy = B[1]-A[1], D = hyp(dx, dy); if(D < 1e-9) return A.slice();
+  let a = (dA*dA - dB*dB + D*D)/(2*D), h2 = dA*dA - a*a, h = h2>0 ? Math.sqrt(h2) : 0;
+  return [A[0] + a*dx/D + sg*h*dy/D, A[1] + a*dy/D - sg*h*dx/D];
+}
+function opp(A, B, dA, dB, prev) {
+  let p1 = tri(A, B, dA, dB, 1), p2 = tri(A, B, dA, dB, -1);
+  return sideOf(A, B, prev) * sideOf(A, B, p1) < 0 ? p1 : p2;
+}
+
+let last = null;
+
+function calc() {
+  const D = +$('ecD').value, d = +$('ecd').value, H = +$('ecH').value;
+  let e = +$('ecE').value || 0;
+  const basis = $('ecBasis').value, t = +$('ecT').value || 0;
+  const n = +$('ecN').value, rho = +$('ecRho').value, quick = $('ecQuick').value;
+  const banner = $('ecBanner'); banner.className = 'banner';
+
+  function fail(m) {
+    banner.classList.add('warn'); banner.innerHTML = '? ' + m; last = null;
+    ['eco0','eco1','eco2','eco3','eco4','eco5','eco6','eco7'].forEach(i => $(i).textContent = '–');
+    $('ecTbl').querySelector('tbody').innerHTML = '';
+    ['sk1','sk2'].forEach(i => $(i).innerHTML = '');
+  }
+
+  if (!(D > 0) || !(d > 0) || !(H > 0)) return fail('Introduce ambos diámetros y la altura.');
+  if (d >= D) return fail('El extremo pequeño debe ser menor que el grande.');
+
+  if (quick === 'flat') { e = (D - d) / 2; $('ecE').value = +e.toFixed(2); }
+  else if (quick === 'conc') { e = 0; $('ecE').value = 0; }
+  
+  $('ecE').disabled = !!quick; 
+  $('ecE').style.background = quick ? '#eaf6f4' : '#fff';
+  
+  if (e < 0) return fail('El desplazamiento no puede ser negativo.');
+  if (e > (D - d)/2 + 1e-9) return fail('Desplazamiento mayor a (D - d)/2 = ' + fx((D-d)/2,1) + ' mm.');
+
+  const k = basis === 'in' ? t : (basis === 'out' ? -t : 0);
+  const Dm = D + k, dm = d + k;
+  if (dm <= 0) return fail('El extremo pequeño es muy pequeño para este espesor.');
+
+  const RB = Dm/2, RT = dm/2;
+  const B = [], T = [];
+
+  for (let i = 0; i <= n; i++) {
+    const th = Math.PI + 2 * Math.PI * i / n;
+    B.push([RB * Math.cos(th), RB * Math.sin(th)]);
+    T.push([e + RT * Math.cos(th), RT * Math.sin(th)]);
+  }
+
+  const sideLine = i => Math.sqrt(Math.pow(T[i][0]-B[i][0],2) + Math.pow(T[i][1]-B[i][1],2) + H*H);
+  const diag = i => Math.sqrt(Math.pow(B[i+1][0]-T[i][0],2) + Math.pow(B[i+1][1]-T[i][1],2) + H*H);
+  
+  const cb = 2 * RB * Math.sin(Math.PI/n), ct = 2 * RT * Math.sin(Math.PI/n);
+  
+  const bp = new Array(n+1), tp = new Array(n+1);
+  bp[0] = [0, 0]; tp[0] = [0, sideLine(0)];
+  
+  for (let i = 0; i < n; i++) {
+    bp[i+1] = i === 0 ? tri(bp[0], tp[0], cb, diag(0), 1) : opp(bp[i], tp[i], cb, diag(i), tp[i-1]);
+    tp[i+1] = opp(tp[i], bp[i+1], ct, sideLine(i+1), bp[i]);
+  }
+
+  const xs = [], ys = [];
+  bp.concat(tp).forEach(p => { xs.push(p[0]); ys.push(p[1]); });
+  const pw = Math.max(...xs) - Math.min(...xs);
+  const ph = Math.max(...ys) - Math.min(...ys);
+
+  const heron = (x, y, z) => { const s = (x+y+z)/2, v = s*(s-x)*(s-y)*(s-z); return v>0 ? Math.sqrt(v) : 0; };
+  let area = 0;
+  for (let i = 0; i < n; i++) {
+    area += heron(sideLine(i), diag(i), cb) + heron(diag(i), sideLine(i+1), ct);
+  }
+
+  let smin = 1e9, smax = -1e9;
+  for (let i = 0; i <= n; i++) { const v = sideLine(i); if(v < smin) smin = v; if(v > smax) smax = v; }
+
+  $('eco0').textContent = e < 1e-9 ? 'Concéntrico' : (Math.abs(e - (D-d)/2) < 0.5 ? 'Excéntrico (plano por un lado)' : 'Excéntrico, offset ' + fx(e,1) + ' mm');
+  $('eco1').textContent = fx(Dm,1) + ' / ' + fx(dm,1) + ' mm';
+  $('eco2').textContent = fx(smin,1) + ' mm';
+  $('eco3').textContent = fx(smax,1) + ' mm';
+  $('eco4').textContent = fx(cb,2) + ' · ' + fx(ct,2) + ' mm';
+  $('eco5').textContent = fx(pw,0) + ' × ' + fx(ph,0) + ' mm';
+  $('eco6').textContent = fx(area/1e6,3) + ' m²' + (t > 0 ? ' · ' + fx(area*t*rho/1e9,1) + ' kg' : '');
+  $('eco7').textContent = fx(area/(pw*ph)*100,1) + ' %';
+
+  banner.innerHTML = '? ' + (e < 1e-9 ? 'Concéntrico' : 'Excéntrico') + ' · lados ' + fx(smin,1) + ' a ' + fx(smax,1) + ' mm · placa ' + fx(pw,0) + ' × ' + fx(ph,0) + ' mm';
+
+  let html = '';
+  const rows = [];
+  for (let i = 0; i <= n; i++) {
+    const th = ((180 + 360 * i / n) % 360);
+    const sl = sideLine(i);
+    const dg = i < n ? diag(i) : null;
+    rows.push([i, th, sl, dg, RB, RT]);
+    const key = (i === 0 || i === n || 2*i === n);
+    html += `<tr${key ? ' class="key"' : ''}><td>${i}</td><td>${fx(th,1)}°</td><td>${fx(sl,2)}</td><td>${dg == null ? '–' : fx(dg,2)}</td><td>${fx(RB,1)}</td><td>${fx(RT,1)}</td></tr>`;
+  }
+  $('ecTbl').querySelector('tbody').innerHTML = html;
+
+  last = { D, d, H, e, n, rows };
+
+  drawEcc(B, T, RB, RT, e, H, Dm, dm, n);
+  drawPat(bp, tp, n, pw, ph);
+}
+
+// ============ DIBUJOS ============
+function drawEcc(B, T, RB, RT, e, H, Dm, dm, n) {
+  const W = 470, Hc = 452, svg = S($('sk1'), W, Hc), ink = svg.C.ink;
+  $('sk1').setAttribute('viewBox', `0 0 ${W} ${Hc}`);
+  
+  const mL = 54, mR = 62, planH = 172;
+  const sc = Math.min((W - mL - mR) / Dm, (planH - 26) / Dm);
+  const cx = W / 2, cy = 36 + planH / 2;
+  
+  const X = x => cx + x * sc, Y = y => cy - y * sc;
+
+  svg.add('circle', { cx, cy, r: RB * sc, fill: 'url(#plate)', stroke: ink, 'stroke-width': 1.7, filter: 'url(#s)' });
+
+  for (let i = 0; i < n; i++) {
+    svg.add('line', { x1: X(B[i][0]), y1: Y(B[i][1]), x2: X(T[i][0]), y2: Y(T[i][1]), stroke: '#b9c6d2', 'stroke-width': 0.8 });
+    svg.add('line', { x1: X(T[i][0]), y1: Y(T[i][1]), x2: X(B[i+1][0]), y2: Y(B[i+1][1]), stroke: '#cfd9e2', 'stroke-width': 0.6 });
+  }
+
+  svg.add('circle', { cx: X(e), cy, r: RT * sc, fill: '#dde6ee', stroke: ink, 'stroke-width': 1.5 });
+  svg.center(X(-RB) - 12, cy, X(RB) + 12, cy);
+
+  svg.dimH([X(-RB), Y(-RB)], [X(RB), Y(-RB)], Y(-RB) + 30, 'D = ' + fx(Dm, 0));
+  if (e > 0.5) svg.dimH([cx, Y(RT)], [X(e), Y(RT)], Y(RT) - 22, 'e = ' + fx(e, 0));
+  svg.note(cx, 40 - 14, 'planta', {});
+
+  const ey = Y(-RB) + 30 + 58, eh = Math.min(110, Hc - 34 - ey);
+  const bl = X(-RB), br = X(RB), tl = X(e - RT), tr = X(e + RT), yB = ey + eh;
+
+  svg.path(`M${bl} ${yB} L${br} ${yB} L${tr} ${ey} L${tl} ${ey} Z`, { fill: 'url(#steelH)', stroke: ink, 'stroke-width': 1.6, 'stroke-linejoin': 'round', filter: 'url(#s)' });
+
+  svg.center(cx, ey - 14, cx, yB + 16);
+  if (e > 0.5) svg.center(X(e), ey - 14, X(e), yB + 16);
+
+  svg.dimV([bl, ey], [bl, yB], bl - 30, 'H = ' + fx(H, 0));
+  svg.dimH([tl, ey], [tr, ey], ey - 24, 'd = ' + fx(dm, 0));
+  svg.note(cx, yB + 30, 'alzado', {});
+}
+
+function drawPat(bp, tp, n, pw, ph) {
+  const W = 600, Hc = 420, svg = S($('sk2'), W, Hc), ink = svg.C.ink;
+  $('sk2').setAttribute('viewBox', `0 0 ${W} ${Hc}`);
+  
+  const xs = [], ys = [];
+  bp.concat(tp).forEach(p => { xs.push(p[0]); ys.push(p[1]); });
+  const x0 = Math.min(...xs), y0 = Math.min(...ys);
+  
+  const mL = 44, mR = 44, mT = 46, mB = 54;
+  const sc = Math.min((W - mL - mR) / pw, (Hc - mT - mB) / ph);
+  const ox = mL + ((W - mL - mR) - pw * sc) / 2;
+  const oy = mT + ((Hc - mT - mB) - ph * sc) / 2;
+
+  const T = p => [ox + (p[0] - x0) * sc, oy + (ph - (p[1] - y0)) * sc];
+  const q = p => { const v = T(p); return v[0].toFixed(1) + ' ' + v[1].toFixed(1); };
+
+  let d = 'M' + q(bp[0]);
+  for (let i = 1; i <= n; i++) d += ' L' + q(bp[i]);
+  d += ' L' + q(tp[n]);
+  for (let i = n - 1; i >= 0; i--) d += ' L' + q(tp[i]);
+  
+  svg.path(d + ' Z', { fill: 'url(#mark)', stroke: ink, 'stroke-width': 1.7, 'stroke-linejoin': 'round', filter: 'url(#s)' });
+
+  for (let i = 0; i <= n; i++) {
+    svg.add('line', { x1: T(bp[i])[0], y1: T(bp[i])[1], x2: T(tp[i])[0], y2: T(tp[i])[1], stroke: '#8fa4b5', 'stroke-width': 0.8 });
+    if (i < n) svg.add('line', { x1: T(tp[i])[0], y1: T(tp[i])[1], x2: T(bp[i+1])[0], y2: T(bp[i+1])[1], stroke: '#c1cdd8', 'stroke-width': 0.6, 'stroke-dasharray': '3 3' });
+  }
+
+  [[bp[0], tp[0]], [bp[n], tp[n]]].forEach(s => {
+    svg.add('line', { x1: T(s[0])[0], y1: T(s[0])[1], x2: T(s[1])[0], y2: T(s[1])[1], stroke: svg.C.key, 'stroke-width': 2.6 });
+  });
+
+  const st = Math.max(1, Math.round(n / 8));
+  for (let i = 0; i <= n; i += st) {
+    const v = T(bp[i]);
+    svg.text(v[0], v[1] + 13, String(i), { size: 9.5, color: svg.C.mute });
+  }
+
+  svg.dimH([ox, oy + ph * sc], [ox + pw * sc, oy + ph * sc], oy + ph * sc + 32, fx(pw, 0));
+  svg.dimV([ox + pw * sc, oy], [ox + pw * sc, oy + ph * sc], ox + pw * sc + 28, fx(ph, 0));
+  svg.note(12, 16, 'naranja = costura · gris = líneas laterales · discontinuo = diagonales', { anchor: 'start' });
+}
+
+// ============ EXPORTACIÓN ============
+function tableText(sep) {
+  if (!last) return '';
+  let s = ['Estación','Ángulo (deg)','Línea lateral (mm)','Diagonal (mm)'].join(sep) + '\n';
+  last.rows.forEach(r => {
+    s += [r[0], r[1].toFixed(1), r[2].toFixed(2), r[3] == null ? '' : r[3].toFixed(2)].join(sep) + '\n';
+  });
+  return s;
+}
+
+$('ecCopy').addEventListener('click', () => {
+  const t = tableText('\t'); if (!t) return;
+  navigator.clipboard.writeText(t).then(() => {
+    $('ecCopy').textContent = '¡Copiado!';
+    setTimeout(() => $('ecCopy').textContent = 'Copiar tabla', 1500);
+  }).catch(() => window.prompt('Copie la tabla:', t));
+});
+
+$('ecCsv').addEventListener('click', () => {
+  if (!last) return;
+  const head = 'Cono Excéntrico\nD,' + last.D + ',mm\nd,' + last.d + ',mm\nH,' + last.H + ',mm\noffset,' + last.e + ',mm\ndivisiones,' + last.n + '\n\n';
+  const blob = new Blob([head + tableText(',')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cono-excentrico-' + last.D + '-' + last.d + '-H' + last.H + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+$('ecPrint').addEventListener('click', () => window.print());
+
+// ============ INIT ============
+['ecD','ecd','ecH','ecE','ecQuick','ecBasis','ecT','ecN','ecRho'].forEach(id => {
+  $(id).addEventListener('input', calc);
+  $(id).addEventListener('change', calc);
+});
+calc();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>

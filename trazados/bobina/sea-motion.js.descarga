@@ -1,0 +1,518 @@
+/* ==========================================================================
+   Static Equipment Academy — Motion engine  v1.1
+   No dependencies. One shared rAF loop. Everything is opt-out under
+   prefers-reduced-motion, and every pointer effect is gated on a fine pointer
+   so touch devices keep the plain CSS hover states.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  window.__seaMotion = true;
+
+  var root = document.documentElement;
+  var calm = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  /* the boot script in <head> hid the reveal targets — if we are calm, give
+     them straight back before anything else runs */
+  if (calm) { root.classList.remove('sea-js'); }
+
+  var ready = function (fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  };
+
+  /* ---------------------------------------------------------------- rAF ---
+     One loop, one registry. It parks itself the moment nothing is moving. */
+  var springs = [];
+  var running = false;
+
+  function tick() {
+    /* iterate a snapshot: a spring that settles removes itself from `springs`
+       mid-loop, which would otherwise make us skip its neighbour */
+    var frame = springs.slice();
+    for (var i = 0; i < frame.length; i++) frame[i]();
+    if (springs.length) requestAnimationFrame(tick);
+    else running = false;
+  }
+  function kick() {
+    if (!running) { running = true; requestAnimationFrame(tick); }
+  }
+
+  /* -------------------------------------------------------------- chrome ---
+     Scroll rail + grain. Both are injected rather than authored into 29 files. */
+  function chrome() {
+    var bar = document.createElement('div');
+    bar.className = 'sea-progress';
+    document.body.appendChild(bar);
+
+    var native = window.CSS && CSS.supports && CSS.supports('animation-timeline', 'scroll()');
+    if (!native && !calm) {
+      var onScroll = function () {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.setProperty('--sea-p', h > 0 ? (window.scrollY / h).toFixed(4) : 0);
+      };
+      addEventListener('scroll', onScroll, { passive: true });
+      addEventListener('resize', onScroll, { passive: true });
+      onScroll();
+    }
+
+    /* A full-viewport fixed overlay above everything costs a repaint on every
+       scroll frame. Worth it for the texture on a desktop display; not worth
+       it on a phone, where it is barely perceptible anyway. */
+    if (!calm && fine) {
+      var grain = document.createElement('div');
+      grain.className = 'sea-grain';
+      document.body.appendChild(grain);
+    }
+  }
+
+  /* -------------------------------------------------------------- reveal ---
+     Must mirror the selector list in sea-motion.css exactly. */
+  var REVEAL = '.tile, .row, .article-card, .rel-card, .cta-card, .faq-item,' +
+               '.sec-head, .lib-sec .sec-label, .th-chip, .tip-box, .formula-box,' +
+               '.table-wrap, .pills span, .colheads, .rownums, .ct-panel';
+
+  function stagger(nodes) {
+    /* index within the immediate parent so each grid/row restarts its own
+       cascade instead of inheriting a page-wide counter */
+    var seen = new Map();
+    nodes.forEach(function (el) {
+      var p = el.parentNode;
+      var n = seen.get(p) || 0;
+      seen.set(p, n + 1);
+      el.style.setProperty('--sea-i', Math.min(n, 9));
+    });
+  }
+
+  function reveals() {
+    var nodes = [].slice.call(document.querySelectorAll(REVEAL));
+    var legacy = [].slice.call(document.querySelectorAll('.reveal'));
+    stagger(nodes);
+    stagger(legacy);
+
+    if (calm) {
+      nodes.forEach(function (e) { e.classList.add('sea-in'); });
+      legacy.forEach(function (e) { e.classList.add('in'); });
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add(e.target.classList.contains('reveal') ? 'in' : 'sea-in');
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+
+    var all = nodes.concat(legacy);
+    all.forEach(function (e) { io.observe(e); });
+
+    /* Safety net: nothing on this site is allowed to stay invisible because an
+       observer never fired (blocked tab, odd crawler, zero-height ancestor). */
+    var flush = function () {
+      all.forEach(function (e) {
+        e.classList.add(e.classList.contains('reveal') ? 'in' : 'sea-in');
+      });
+      io.disconnect();
+    };
+    addEventListener('load', function () { setTimeout(flush, 5000); });
+    if (document.readyState === 'complete') setTimeout(flush, 5000);
+  }
+
+  /* ------------------------------------------------- mobile first paint ---
+     On phones the boot script leaves .sea-js off, so the page paints in full
+     before this bundle arrives (nothing waits on JS). Mark whatever is
+     already on screen as revealed, then switch the hidden state on for the
+     rest — those still rise in as the visitor scrolls. */
+  function firstPaint() {
+    if (calm || root.classList.contains('sea-js')) return;
+    var vh = window.innerHeight;
+    var onScreen = function (el) {
+      var r = el.getBoundingClientRect();
+      return r.bottom > 0 && r.top < vh;
+    };
+    [].forEach.call(document.querySelectorAll(REVEAL + ', .reveal'), function (el) {
+      if (onScreen(el)) el.classList.add(el.classList.contains('reveal') ? 'in' : 'sea-in');
+    });
+    [].forEach.call(document.querySelectorAll(SPLIT), function (h) {
+      if (onScreen(h)) h.setAttribute('data-sea-still', '');
+    });
+    root.classList.add('sea-js');
+  }
+
+  /* ---------------------------------------------------------- split type ---
+     Wraps every word of a display heading in its own inline-block so the line
+     can rise letter-of-the-law smoothly. Only touches text nodes, so inline
+     markup inside the heading survives. */
+  var SPLIT = '.hero h1, .page-hero h1, .tool-hero h1, .article-head h1';
+
+  function splitWords(el) {
+    var words = [];
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var texts = [], n;
+    while ((n = walker.nextNode())) texts.push(n);
+
+    texts.forEach(function (node) {
+      if (!node.nodeValue.trim()) return;
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (!part.trim()) { frag.appendChild(document.createTextNode(part)); return; }
+        var s = document.createElement('span');
+        s.className = 'sea-w';
+        s.textContent = part;
+        frag.appendChild(s);
+        words.push(s);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+    return words;
+  }
+
+  function headings() {
+    if (calm) return;
+    [].forEach.call(document.querySelectorAll(SPLIT), function (h) {
+      if (h.hasAttribute('data-sea-still')) return;
+      if (h.querySelector('a, svg, img, .sea-w')) return;
+      if ((h.textContent || '').trim().split(/\s+/).length > 44) return;
+
+      var words = splitWords(h);
+      words.forEach(function (w, i) { w.style.setProperty('--sea-i', i); });
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          words.forEach(function (w) { w.classList.add('sea-in'); });
+          io.disconnect();
+        });
+      }, { threshold: 0.2 });
+      io.observe(h);
+    });
+  }
+
+  /* --------------------------------------------------------------- sheen ---
+     A rotating conic ring, added as a real child because ::before/::after are
+     already spoken for by the page's own glass styling. */
+  function sheen() {
+    /* Hover-only effect, so it earns nothing on a touch screen — and a
+       mask-composite ring is exactly the kind of thing mobile engines render
+       inconsistently. Don't create the layers at all there. */
+    if (calm || !fine) return;
+    var sel = '.tile, .glass, .row, .cta-card, .article-card, .rel-card, .faq-item, .formula-box';
+    [].forEach.call(document.querySelectorAll(sel), function (el) {
+      if (el.querySelector(':scope > .sea-sheen')) return;
+      var s = document.createElement('span');
+      s.className = 'sea-sheen';
+      s.setAttribute('aria-hidden', 'true');
+      el.appendChild(s);
+    });
+  }
+
+  /* ---------------------------------------------------------------- tilt ---
+     Spring-damped 3D tilt. Targets are set on pointer events, the loop eases
+     the element towards them — that easing is what makes it feel buttery
+     rather than glued to the cursor. */
+  function tilt() {
+    if (calm || !fine) return;
+    var sel = '.tile, .glass, .row, .cta-card, .article-card, .rel-card';
+    [].forEach.call(document.querySelectorAll(sel), function (el) {
+      el.classList.add('sea-tilt');
+
+      var cur = { rx: 0, ry: 0, lift: 0, sc: 1 };
+      var tgt = { rx: 0, ry: 0, lift: 0, sc: 1 };
+      var registered = false;
+
+      var step = function () {
+        var k = 0.16, moved = false;
+        for (var key in cur) {
+          var d = tgt[key] - cur[key];
+          if (Math.abs(d) > 0.0005) { cur[key] += d * k; moved = true; }
+          else cur[key] = tgt[key];
+        }
+        el.style.setProperty('--sea-rx', cur.rx.toFixed(3) + 'deg');
+        el.style.setProperty('--sea-ry', cur.ry.toFixed(3) + 'deg');
+        el.style.setProperty('--sea-lift', cur.lift.toFixed(2) + 'px');
+        el.style.setProperty('--sea-scale', cur.sc.toFixed(4));
+        if (!moved) {
+          registered = false;
+          springs.splice(springs.indexOf(step), 1);
+          el.classList.remove('sea-live');
+        }
+        return moved;
+      };
+
+      var wake = function () {
+        if (registered) return;
+        registered = true;
+        el.classList.add('sea-live');
+        springs.push(step);
+        kick();
+      };
+
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        var max = r.width > 520 ? 3.2 : 5.5;      /* big tiles tilt less */
+        tgt.ry = px * max * 2;
+        tgt.rx = -py * max * 2;
+        tgt.lift = -9;
+        tgt.sc = 1.012;
+        wake();
+      }, { passive: true });
+
+      el.addEventListener('pointerleave', function () {
+        tgt.rx = tgt.ry = 0; tgt.lift = 0; tgt.sc = 1;
+        wake();
+      }, { passive: true });
+    });
+  }
+
+  /* ------------------------------------------------------------ magnetic ---
+     Buttons lean towards the cursor. Same spring, much smaller amplitude. */
+  function magnetic() {
+    if (calm || !fine) return;
+    var sel = '.wa-btn, .join-btn, .btn, .dl-pdf, .cta-btn, .back-link';
+    [].forEach.call(document.querySelectorAll(sel), function (el) {
+      el.classList.add('sea-mag');
+
+      var cur = { x: 0, y: 0, sc: 1 };
+      var tgt = { x: 0, y: 0, sc: 1 };
+      var registered = false;
+
+      var step = function () {
+        var k = 0.2, moved = false;
+        for (var key in cur) {
+          var d = tgt[key] - cur[key];
+          if (Math.abs(d) > 0.0008) { cur[key] += d * k; moved = true; }
+          else cur[key] = tgt[key];
+        }
+        el.style.setProperty('--sea-mx', cur.x.toFixed(2) + 'px');
+        el.style.setProperty('--sea-my', cur.y.toFixed(2) + 'px');
+        el.style.setProperty('--sea-scale', cur.sc.toFixed(4));
+        if (!moved) { registered = false; springs.splice(springs.indexOf(step), 1); }
+        return moved;
+      };
+      var wake = function () {
+        if (registered) return;
+        registered = true; springs.push(step); kick();
+      };
+
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect();
+        tgt.x = ((e.clientX - r.left) / r.width - 0.5) * 12;
+        tgt.y = ((e.clientY - r.top) / r.height - 0.5) * 8 - 2;
+        tgt.sc = 1.03;
+        wake();
+      }, { passive: true });
+      el.addEventListener('pointerleave', function () {
+        tgt.x = tgt.y = 0; tgt.sc = 1; wake();
+      }, { passive: true });
+    });
+  }
+
+  /* ----------------------------------------------------------------- nav ---
+     One pill that slides between links, replacing the per-link underline and
+     the per-link glass chip the scrolled header used to draw. */
+  function nav() {
+    var links = document.getElementById('navLinks');
+    if (!links) return;
+    var items = [].slice.call(links.querySelectorAll('a'));
+    if (!items.length) return;
+
+    items.forEach(function (a, i) { a.style.setProperty('--sea-i', i); });
+
+    var pill = document.createElement('span');
+    pill.className = 'sea-nav-pill';
+    pill.setAttribute('aria-hidden', 'true');
+    links.insertBefore(pill, links.firstChild);
+
+    var active = links.querySelector('a.active') || items[0];
+
+    var moveTo = function (a) {
+      if (!a || innerWidth <= 860) { pill.classList.remove('on'); return; }
+      pill.style.setProperty('--pl', a.offsetLeft + 'px');
+      pill.style.setProperty('--pt', a.offsetTop + 'px');
+      pill.style.setProperty('--pw', a.offsetWidth + 'px');
+      pill.style.setProperty('--ph', a.offsetHeight + 'px');
+      pill.classList.add('on');
+    };
+
+    /* place it without a transition on first paint */
+    var settle = function () {
+      var t = pill.style.transition;
+      pill.style.transition = 'none';
+      moveTo(active);
+      pill.offsetWidth;                       /* flush */
+      pill.style.transition = t;
+    };
+    settle();
+    addEventListener('resize', settle, { passive: true });
+    addEventListener('load', settle);
+    document.addEventListener('visibilitychange', settle);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
+    /* nav geometry settles late (web fonts, wrapping, the scrolled pill) —
+       watch it rather than guessing at timeouts */
+    if (window.ResizeObserver) new ResizeObserver(settle).observe(links);
+
+    items.forEach(function (a) {
+      a.addEventListener('pointerenter', function () { moveTo(a); });
+    });
+    links.addEventListener('pointerleave', function () { moveTo(active); });
+  }
+
+  /* --------------------------------------------------------- eased scroll ---
+     A damped follower on window.scrollY. Real scroll position is still the
+     source of truth, so CSS scroll/view timelines, anchors, and the browser's
+     own scrollbar all stay in sync — we only change how fast we get there.
+     Desktop pointers only; anything with its own scroll container is left
+     completely alone. */
+  function easedScroll() {
+    if (calm || !fine || matchMedia('(pointer:coarse)').matches) return;
+
+    root.classList.add('sea-smooth');
+
+    var target = window.scrollY;
+    var cur = target;
+    var lastSet = -1;      /* the position we last wrote, see the scroll guard */
+    var last = 0;
+
+    var maxScroll = function () {
+      return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    };
+
+    /* Does the wheel land inside something that scrolls on its own?
+       Calculator panels, modals and code blocks all do. */
+    var ownsScroll = function (e) {
+      var path = e.composedPath ? e.composedPath() : [];
+      for (var i = 0; i < path.length; i++) {
+        var el = path[i];
+        if (!el || el.nodeType !== 1) continue;
+        if (el === document.body || el === root) break;
+        var cs = getComputedStyle(el);
+        var oy = cs.overflowY, ox = cs.overflowX;
+        if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) return true;
+        if ((ox === 'auto' || ox === 'scroll') && el.scrollWidth > el.clientWidth + 1) return true;
+      }
+      return false;
+    };
+
+    var step = function () {
+      var now = performance.now();
+      var dt = Math.min(64, now - last || 16.7);
+      last = now;
+      /* frame-rate independent damping — same glide on 60Hz and 144Hz */
+      var k = 1 - Math.pow(1 - 0.14, dt / 16.667);
+      cur += (target - cur) * k;
+
+      if (Math.abs(target - cur) < 0.4) { cur = target; }
+      lastSet = cur;
+      window.scrollTo(0, cur);
+
+      return cur !== target;
+    };
+
+    var registered = false;
+    var runner = function () {
+      var alive = step();
+      if (!alive) {
+        registered = false;
+        springs.splice(springs.indexOf(runner), 1);
+      }
+      return alive;
+    };
+    var wake = function () {
+      if (!registered) {
+        registered = true;
+        last = performance.now();
+        springs.push(runner);
+      }
+      kick();
+    };
+
+    /* We swallow the browser's own scrolling, so if our follower ever fails to
+       run the page would be frozen. Prove it works on the first real wheel and
+       hand scrolling straight back if it doesn't. */
+    var proved = false;
+    var onWheel = function (e) {
+      if (e.ctrlKey || e.defaultPrevented || ownsScroll(e)) return;
+      var d = e.deltaY;
+      if (e.deltaMode === 1) d *= 18;            /* lines  */
+      else if (e.deltaMode === 2) d *= innerHeight;/* pages  */
+      e.preventDefault();
+
+      var before = window.scrollY;
+      target = Math.max(0, Math.min(maxScroll(), target + d));
+      wake();
+
+      if (!proved && document.visibilityState === 'visible' && target !== before) {
+        var want = target;
+        setTimeout(function () {
+          if (proved) return;
+          if (window.scrollY !== before) { proved = true; return; }
+          if (want === target) {                 /* nothing moved — bail out */
+            removeEventListener('wheel', onWheel, { passive: false });
+            root.classList.remove('sea-smooth');
+          }
+        }, 350);
+      }
+    };
+    addEventListener('wheel', onWheel, { passive: false });
+
+    /* Anything that isn't the wheel — keyboard, scrollbar drag, find-in-page,
+       an anchor jump — moves the page directly, so resync the follower.
+       Scroll events fire asynchronously, so a simple "am I mid-write" flag
+       would already be false by the time this runs; compare against the last
+       position we actually wrote instead. */
+    addEventListener('scroll', function () {
+      if (Math.abs(window.scrollY - lastSet) > 2) { target = cur = window.scrollY; }
+    }, { passive: true });
+
+    /* in-page anchors ride the same follower */
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented) return;      /* the page's own handler owns this */
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a) return;
+      var id = a.getAttribute('href');
+      if (!id || id === '#') return;
+      var dest = document.querySelector(id);
+      if (!dest) return;
+      e.preventDefault();
+      var pad = parseFloat(getComputedStyle(root).scrollPaddingTop) || 0;
+      target = Math.max(0, Math.min(maxScroll(),
+        window.scrollY + dest.getBoundingClientRect().top - pad));
+      history.replaceState(null, '', id);
+      wake();
+    });
+  }
+
+  /* -------------------------------------------------------------- burger ---
+     The page's own script toggles .open on the nav; mirror it onto the button
+     so the bars can morph into an X. */
+  function burger() {
+    var t = document.getElementById('menuToggle');
+    var l = document.getElementById('navLinks');
+    if (!t || !l) return;
+    /* This script is deferred, so our listener is registered after the page's
+       own — by the time we run, it has already toggled .open on the nav and we
+       can mirror it synchronously. */
+    var sync = function () { t.classList.toggle('open', l.classList.contains('open')); };
+    t.addEventListener('click', sync);
+    l.addEventListener('click', sync);
+  }
+
+  /* --------------------------------------------------------------- boot ---- */
+  ready(function () {
+    firstPaint();
+    chrome();
+    sheen();
+    headings();
+    reveals();
+    tilt();
+    magnetic();
+    nav();
+    burger();
+    easedScroll();
+  });
+})();

@@ -1,0 +1,662 @@
+/* ==========================================================================
+   Static Equipment Academy — Motion & Surface System  v1.1
+   --------------------------------------------------------------------------
+   Loaded on every page AFTER the page's own inline <style>, so equal-
+   specificity rules here win. Everything animates transform / opacity / filter
+   only, and every effect collapses under prefers-reduced-motion.
+   ========================================================================== */
+
+/* ---------- registered custom props (needed for smooth interpolation) ----- */
+@property --sea-angle { syntax:'<angle>';  initial-value:0deg; inherits:false; }
+@property --sea-rx    { syntax:'<angle>';  initial-value:0deg; inherits:false; }
+@property --sea-ry    { syntax:'<angle>';  initial-value:0deg; inherits:false; }
+@property --sea-lift  { syntax:'<length>'; initial-value:0px;  inherits:false; }
+@property --sea-scale { syntax:'<number>'; initial-value:1;    inherits:false; }
+@property --sea-mx    { syntax:'<length>'; initial-value:0px;  inherits:false; }
+@property --sea-my    { syntax:'<length>'; initial-value:0px;  inherits:false; }
+
+:root{
+  /* easing curves ------------------------------------------------------- */
+  --e-out:      cubic-bezier(.16,1,.3,1);        /* expo out — the workhorse */
+  --e-soft:     cubic-bezier(.22,.61,.36,1);
+  --e-spring:   cubic-bezier(.34,1.56,.44,1);    /* gentle overshoot         */
+  --e-glide:    cubic-bezier(.65,.05,.36,1);
+
+  --t-fast: .22s;
+  --t-mid:  .42s;
+  --t-slow: .78s;
+
+  /* deeper, cooler base — makes the glass and the teal actually glow ----- */
+  --bg:        #101315;
+  --ink:       #0A0C0D;
+  --surface:   #151A1C;
+  --surface-2: #1C2225;
+  --line:      rgba(255,255,255,0.085);
+  --line-2:    rgba(255,255,255,0.155);
+
+  --glow-teal: rgba(31,211,196,0.28);
+  --glow-amber:rgba(245,158,11,0.22);
+}
+
+/* ---------- base polish --------------------------------------------------- */
+html{ scroll-padding-top: 96px; }
+body{
+  background:
+    radial-gradient(1200px 700px at 12% -6%, rgba(0,169,157,0.11), transparent 62%),
+    radial-gradient(1000px 620px at 92% 2%,  rgba(245,158,11,0.055), transparent 60%),
+    var(--bg);
+  background-repeat:no-repeat;
+  text-rendering: optimizeLegibility;
+}
+/* let the page-top wash show through instead of being painted over */
+.hero, .about{ background:transparent; }
+
+h1,h2,h3{ text-wrap: balance; }
+p, li{ text-wrap: pretty; }
+
+/* the eased scroller drives scrollTop itself — native smooth would fight it */
+html.sea-smooth{ scroll-behavior:auto; }
+
+/* interior page heroes still carried the old warm-grey wash */
+.page-hero, .tool-hero{
+  background:
+    radial-gradient(120% 92% at 80% 8%,  rgba(0,169,157,0.20) 0%, transparent 54%),
+    radial-gradient(95% 80% at 6% 0%,    rgba(245,158,11,0.075) 0%, transparent 56%),
+    linear-gradient(180deg, var(--bg) 0%, var(--ink) 100%);
+}
+
+::selection{ background: rgba(31,211,196,0.30); color:#fff; }
+
+/* thin, on-brand scrollbar */
+html{ scrollbar-width: thin; scrollbar-color: rgba(31,211,196,.34) transparent; }
+::-webkit-scrollbar{ width:11px; height:11px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, rgba(31,211,196,.55), rgba(0,169,157,.32));
+  border-radius:99px; border:3px solid transparent; background-clip:content-box;
+}
+::-webkit-scrollbar-thumb:hover{ background: linear-gradient(180deg, rgba(31,211,196,.85), rgba(0,169,157,.55)); background-clip:content-box; }
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{
+  outline:2px solid var(--teal-bright); outline-offset:3px; border-radius:10px;
+}
+
+/* ---------- cross-document page transitions ------------------------------ */
+@view-transition{ navigation: auto; }
+
+@keyframes sea-vt-out{
+  from{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+  to  { opacity:0; transform:translateY(-14px) scale(.992); filter:blur(4px); }
+}
+@keyframes sea-vt-in{
+  from{ opacity:0; transform:translateY(18px) scale(.994); filter:blur(6px); }
+  to  { opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+}
+::view-transition-old(root){ animation: sea-vt-out .26s var(--e-glide) both; }
+::view-transition-new(root){ animation: sea-vt-in  .52s var(--e-out) both; }
+header{ view-transition-name: sea-header; }
+
+/* ---------- scroll progress rail ----------------------------------------- */
+.sea-progress{
+  position:fixed; inset:0 0 auto 0; height:2px; z-index:2000;
+  transform-origin:0 50%; transform:scaleX(var(--sea-p,0));
+  background:linear-gradient(90deg, var(--teal), var(--teal-bright) 55%, var(--orange));
+  box-shadow:0 0 14px rgba(31,211,196,.55);
+  pointer-events:none;
+}
+@keyframes sea-prog{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+@supports (animation-timeline: scroll()){
+  .sea-progress{ animation: sea-prog linear both; animation-timeline: scroll(root block); }
+}
+
+/* ---------- film grain ---------------------------------------------------- */
+.sea-grain{
+  position:fixed; inset:0; z-index:1900; pointer-events:none; opacity:.038;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.55'/></svg>");
+  background-size:160px 160px;
+}
+
+/* ==========================================================================
+   REVEAL ON SCROLL
+   The hidden state only exists while <html class="sea-js"> is present, so a
+   JS failure can never leave content invisible (the boot script removes the
+   class if the motion bundle never arrives).
+   ========================================================================== */
+
+.reveal{
+  opacity:0; transform:translateY(26px) scale(.988); filter:blur(7px);
+  transition:
+    opacity   var(--t-slow) var(--e-out),
+    transform var(--t-slow) var(--e-out),
+    filter    var(--t-slow) var(--e-out);
+  transition-delay: calc(var(--sea-i,0) * 70ms);
+}
+.reveal.in{ opacity:1; transform:none; filter:none; }
+
+html.sea-js :is(
+  .tile, .row, .article-card, .rel-card, .cta-card, .faq-item,
+  .sec-head, .lib-sec .sec-label, .th-chip, .tip-box, .formula-box,
+  .table-wrap, .pills span, .colheads, .rownums, .ct-panel
+){
+  opacity:0; transform:translateY(24px) scale(.99); filter:blur(6px);
+  transition:
+    opacity   var(--t-slow) var(--e-out),
+    transform var(--t-slow) var(--e-out),
+    filter    var(--t-slow) var(--e-out),
+    box-shadow var(--t-mid) var(--e-out),
+    border-color var(--t-mid) var(--e-out);
+  transition-delay: calc(var(--sea-i,0) * 65ms);
+}
+html.sea-js :is(
+  .tile, .row, .article-card, .rel-card, .cta-card, .faq-item,
+  .sec-head, .lib-sec .sec-label, .th-chip, .tip-box, .formula-box,
+  .table-wrap, .pills span, .colheads, .rownums, .ct-panel
+).sea-in{ opacity:1; transform:none; filter:none; }
+
+/* words of a display heading rise one after another */
+.sea-w{ display:inline-block; will-change:transform,opacity,filter; }
+html.sea-js .sea-w{
+  opacity:0; transform:translateY(.5em) rotate(.5deg); filter:blur(8px);
+  transition:
+    opacity   .82s var(--e-out),
+    transform .82s var(--e-out),
+    filter    .82s var(--e-out);
+  transition-delay: calc(var(--sea-i,0) * 42ms);
+}
+html.sea-js .sea-w.sea-in{ opacity:1; transform:none; filter:none; }
+
+/* hero copy fading up and out as it leaves the top of the screen */
+@keyframes sea-hero-exit{
+  from{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+  to  { opacity:0; transform:translateY(-46px) scale(.97); filter:blur(5px); }
+}
+@supports (animation-timeline: view()){
+  .hero .hero-top, .page-hero .wrap, .tool-hero .wrap{
+    animation: sea-hero-exit linear both;
+    animation-timeline: view(block);
+    animation-range: exit 0% exit 78%;
+  }
+}
+
+/* ==========================================================================
+   GLASS 2.0
+   ========================================================================== */
+
+.glass, .tile{
+  background:linear-gradient(158deg,
+    rgba(255,255,255,0.105) 0%,
+    rgba(255,255,255,0.028) 54%,
+    rgba(255,255,255,0.062) 100%);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border:1px solid var(--line-2);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    inset 0 -1px 0 rgba(0,0,0,0.30),
+    0 26px 64px -30px rgba(0,0,0,0.92);
+}
+.tile{ border-radius:20px; }
+
+/* the rotating light that traces the border on hover */
+.sea-sheen{
+  position:absolute; inset:0; border-radius:inherit; padding:1px;
+  pointer-events:none; opacity:0; z-index:3;
+  background:conic-gradient(from var(--sea-angle),
+    transparent 0deg,
+    rgba(31,211,196,.95) 34deg,
+    rgba(31,211,196,0) 96deg,
+    transparent 190deg,
+    rgba(245,158,11,.75) 244deg,
+    rgba(245,158,11,0) 300deg,
+    transparent 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite:exclude;
+  transition:opacity var(--t-mid) var(--e-out);
+}
+@keyframes sea-spin{ to{ --sea-angle:360deg; } }
+:is(.tile,.glass,.row,.cta-card,.article-card,.rel-card,.faq-item,.formula-box):hover > .sea-sheen{
+  opacity:1; animation:sea-spin 3.6s linear infinite;
+}
+:is(.row,.cta-card,.article-card,.rel-card,.faq-item,.formula-box){ position:relative; }
+
+/* long-form article furniture — no tilt on a block of text, just a lift */
+:is(.faq-item,.formula-box){
+  transition:transform var(--t-mid) var(--e-out), border-color var(--t-mid) var(--e-out),
+             box-shadow var(--t-mid) var(--e-out);
+}
+:is(.faq-item,.formula-box):hover{
+  transform:translateY(-3px);
+  border-color:rgba(31,211,196,0.34);
+  box-shadow:0 22px 46px -28px rgba(0,0,0,.9), 0 0 34px -16px var(--glow-teal);
+}
+:is(.tip-box,.highlight){
+  transition:transform var(--t-mid) var(--e-out), box-shadow var(--t-mid) var(--e-out);
+}
+:is(.tip-box,.highlight):hover{
+  transform:translateX(4px);
+  box-shadow:-4px 0 22px -10px var(--glow-teal);
+}
+
+/* pointer-tracked 3D tilt — JS drives --sea-rx/--sea-ry/--sea-lift with a
+   spring, so no CSS transition is wanted on transform here. */
+.sea-tilt,
+.sea-tilt:hover{
+  transform:
+    perspective(1200px)
+    rotateX(var(--sea-rx,0deg))
+    rotateY(var(--sea-ry,0deg))
+    translate3d(0, var(--sea-lift,0px), 0)
+    scale(var(--sea-scale,1));
+  transform-style:preserve-3d;
+}
+.sea-tilt.sea-live{ will-change:transform; }
+
+/* richer hover glow */
+.tile:hover{
+  border-color:rgba(31,211,196,0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    0 40px 80px -30px rgba(0,0,0,0.95),
+    0 0 0 1px rgba(31,211,196,0.16),
+    0 0 56px -8px var(--glow-teal);
+}
+.t-tools:hover{
+  border-color:rgba(245,158,11,0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    0 40px 80px -30px rgba(0,0,0,0.95),
+    0 0 0 1px rgba(245,158,11,0.18),
+    0 0 56px -8px var(--glow-amber);
+}
+.glass:hover{
+  border-color:rgba(31,211,196,0.48);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.24),
+    0 34px 70px -30px rgba(0,0,0,0.9),
+    0 0 44px -10px var(--glow-teal);
+}
+.tile .go svg, .tile .ref, .tile .ico svg{
+  transition:transform var(--t-mid) var(--e-spring), color var(--t-mid) var(--e-out), stroke var(--t-mid) var(--e-out);
+}
+.tile:hover .go svg{ transform:translateX(7px); }
+.tile:hover .ico svg{ transform:translateY(-2px) scale(1.06); }
+
+/* list rows (free-resources / advanced-tools) get the same treatment */
+.row{
+  transition:
+    background var(--t-mid) var(--e-out),
+    border-color var(--t-mid) var(--e-out),
+    box-shadow var(--t-mid) var(--e-out);
+}
+.row:hover{
+  box-shadow:0 26px 54px -30px rgba(0,0,0,.9), 0 0 40px -14px var(--glow-teal);
+}
+.row .row-icon{ transition:transform var(--t-mid) var(--e-spring); }
+.row:hover .row-icon{ transform:scale(1.08) rotate(-3deg); }
+
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
+
+header{ transition:padding .5s var(--e-out); }
+header .nav{
+  transition:
+    padding .5s var(--e-out),
+    max-width .5s var(--e-out),
+    background .4s var(--e-out),
+    border-color .4s var(--e-out),
+    box-shadow .4s var(--e-out),
+    backdrop-filter .4s var(--e-out);
+}
+header.scrolled .nav{
+  background:linear-gradient(150deg, rgba(38,44,46,0.60), rgba(16,19,21,0.56));
+  backdrop-filter:blur(26px) saturate(190%);
+  -webkit-backdrop-filter:blur(26px) saturate(190%);
+  border:1px solid rgba(255,255,255,0.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 22px 50px -18px rgba(0,0,0,0.72);
+}
+
+/* One sliding pill replaces the per-link underline + per-link chip.
+   The pill needs a positioned parent — but ONLY on desktop. Below 860px the
+   page's own CSS makes nav.links a `position:fixed` drop-down panel, and this
+   sheet loads after it, so an unscoped rule here would silently win (media
+   queries add no specificity) and drop the closed menu back into flow. */
+@media (min-width:861px){
+  nav.links{ position:relative; }
+}
+nav.links a::after{ display:none !important; }
+header.scrolled nav.links a{ background:transparent; border-color:transparent; }
+header.scrolled nav.links a:hover{ background:transparent; }
+header.scrolled nav.links a.active{ background:transparent; border-color:transparent; color:var(--text); }
+nav.links a{
+  position:relative; z-index:1;
+  transition:color var(--t-fast) var(--e-out);
+}
+.sea-nav-pill{
+  position:absolute; z-index:0; top:var(--pt,0); left:var(--pl,0);
+  width:var(--pw,0); height:var(--ph,0); border-radius:999px;
+  background:linear-gradient(150deg, rgba(31,211,196,0.20), rgba(31,211,196,0.08));
+  border:1px solid rgba(31,211,196,0.30);
+  box-shadow:0 6px 20px -8px rgba(31,211,196,.5), inset 0 1px 0 rgba(255,255,255,.16);
+  opacity:0; pointer-events:none;
+  transition:
+    left .46s var(--e-out), width .46s var(--e-out),
+    top .46s var(--e-out), height .46s var(--e-out),
+    opacity .3s var(--e-out);
+}
+.sea-nav-pill.on{ opacity:1; }
+@media (max-width:860px){ .sea-nav-pill{ display:none; } }
+
+/* animated hamburger → X */
+.menu-toggle span{ transition:transform .38s var(--e-out), opacity .24s var(--e-out); transform-origin:center; }
+.menu-toggle.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.menu-toggle.open span:nth-child(2){ opacity:0; transform:scaleX(.2); }
+.menu-toggle.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+@media (max-width:860px){
+  /* Re-assert the page's own positioning, and hard-hide the closed panel.
+     opacity:0 alone is not enough — mobile Safari still paints a closed
+     panel's backdrop-filter, which reads as a floating translucent box. */
+  nav.links{
+    position:fixed; visibility:hidden;
+    transform:translateY(-14px) scale(.97);
+    transition:transform .44s var(--e-out), opacity .3s var(--e-out),
+               visibility 0s linear .3s;
+  }
+  nav.links.open{
+    visibility:visible; transform:none;
+    transition:transform .44s var(--e-out), opacity .3s var(--e-out),
+               visibility 0s linear 0s;
+  }
+  /* keep the link chips readable in the open menu */
+  header.scrolled nav.links a, nav.links a{ background:rgba(255,255,255,0.05); }
+  nav.links.open a{
+    animation:sea-menu-in .5s var(--e-out) both;
+    animation-delay:calc(var(--sea-i,0) * 45ms);
+  }
+  @keyframes sea-menu-in{
+    from{ opacity:0; transform:translateX(-14px); }
+    to  { opacity:1; transform:none; }
+  }
+}
+
+/* ==========================================================================
+   BUTTONS & LINKS
+   ========================================================================== */
+
+.sea-mag,
+.sea-mag:hover{
+  transform:translate3d(var(--sea-mx,0px), var(--sea-my,0px), 0) scale(var(--sea-scale,1));
+}
+:is(.wa-btn,.join-btn,.btn,.dl-pdf,.back-link,.cta-btn){
+  transition:
+    background var(--t-fast) var(--e-out),
+    color var(--t-fast) var(--e-out),
+    box-shadow var(--t-mid) var(--e-out),
+    transform var(--t-mid) var(--e-out);
+}
+:is(.wa-btn,.join-btn,.btn,.dl-pdf,.cta-btn):hover{
+  box-shadow:0 18px 40px -14px rgba(31,211,196,.5);
+}
+.t-tools :is(.btn,.dl-pdf):hover,
+.btn-orange:hover, .dl-pdf:hover{
+  box-shadow:0 18px 40px -14px rgba(245,158,11,.55);
+}
+:is(.wa-btn,.join-btn,.btn,.dl-pdf,.cta-btn):active{ --sea-scale:.965; }
+
+.social a{ transition:background var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out), transform var(--t-mid) var(--e-spring); }
+.social a:hover{ transform:translateY(-4px) scale(1.08); }
+
+.foot-legal a, .femail{ position:relative; }
+.foot-legal a::after, .femail::after{
+  content:""; position:absolute; left:0; right:0; bottom:-3px; height:1px;
+  background:var(--teal-bright); transform:scaleX(0); transform-origin:right;
+  transition:transform .38s var(--e-out);
+}
+.foot-legal a:hover::after, .femail:hover::after{ transform:scaleX(1); transform-origin:left; }
+
+.article-content a:not(.btn):not(.back-link){
+  background-image:linear-gradient(var(--teal-bright), var(--teal-bright));
+  background-repeat:no-repeat; background-position:0 100%; background-size:0% 1px;
+  transition:background-size .4s var(--e-out), color var(--t-fast) var(--e-out);
+}
+.article-content a:not(.btn):not(.back-link):hover{ background-size:100% 1px; }
+
+/* ==========================================================================
+   AMBIENT BACKGROUND
+   ========================================================================== */
+
+.glow{ will-change:transform; animation:sea-drift-a 27s var(--e-soft) infinite alternate; }
+.glow.g2{ animation-name:sea-drift-b; animation-duration:34s; }
+.glow.g3{ animation-name:sea-drift-c; animation-duration:41s; }
+
+@keyframes sea-drift-a{
+  from{ transform:translate3d(0,0,0) scale(1); }
+  to  { transform:translate3d(70px,54px,0) scale(1.16); }
+}
+@keyframes sea-drift-b{
+  from{ transform:translate3d(0,0,0) scale(1.08); }
+  to  { transform:translate3d(-64px,72px,0) scale(.92); }
+}
+@keyframes sea-drift-c{
+  from{ transform:translate3d(0,0,0) scale(.95); }
+  to  { transform:translate3d(46px,-58px,0) scale(1.18); }
+}
+
+.cells{ opacity:.9; animation:sea-cells 18s ease-in-out infinite alternate; }
+@keyframes sea-cells{ from{ opacity:.65; } to{ opacity:1; } }
+
+/* ==========================================================================
+   TYPE
+   ========================================================================== */
+
+/* Gradient display type. Word-split headings get it per word instead of on the
+   parent — a transformed descendant would otherwise break background-clip:text
+   and drop the glyphs entirely. */
+@supports (-webkit-background-clip:text) or (background-clip:text){
+  :is(.about h2, .why h2, .community h2),
+  :is(.hero h1 .l1, .page-hero h1, .tool-hero h1, .article-head h1) .sea-w{
+    background:linear-gradient(176deg, #FFFFFF 6%, #D5DBDA 58%, #A9B2B1 100%);
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; color:transparent;
+  }
+}
+.kick, .eyebrow{ transition:letter-spacing .5s var(--e-out); }
+
+/* ==========================================================================
+   MOBILE  (≤860px — the same breakpoint every page uses for the hamburger)
+   --------------------------------------------------------------------------
+   Desktop is untouched. Phones trade the GPU-heavy effects (backdrop blur,
+   filter blur, 120px-blurred blobs, per-word compositor layers) for cheap
+   opacity/transform work, so scrolling stays smooth and the first paint is
+   not gated on the motion bundle arriving.
+   ========================================================================== */
+@media (max-width:860px){
+  :root{ --t-slow:.52s; --t-mid:.3s; }
+
+  html{ scroll-padding-top:84px; text-rendering:auto; }
+
+  /* The boot script leaves .sea-js off on phones, so the page paints fully
+     before sea-motion.js arrives. The bundle marks what is already on screen
+     as revealed and only then switches the hidden state on. */
+  html:not(.sea-js) .reveal{ opacity:1; transform:none; filter:none; }
+
+  /* reveals: opacity + translate only — no blur, no scale, tighter stagger */
+  .reveal,
+  html.sea-js :is(
+    .tile, .row, .article-card, .rel-card, .cta-card, .faq-item,
+    .sec-head, .lib-sec .sec-label, .th-chip, .tip-box, .formula-box,
+    .table-wrap, .pills span, .colheads, .rownums, .ct-panel
+  ){
+    filter:none; transform:translateY(16px);
+    transition:opacity var(--t-slow) var(--e-out), transform var(--t-slow) var(--e-out);
+    transition-delay:calc(var(--sea-i,0) * 40ms);
+  }
+  .sea-w{ will-change:auto; }
+  html.sea-js .sea-w{
+    filter:none; transform:translateY(.32em);
+    transition:opacity .5s var(--e-out), transform .5s var(--e-out);
+    transition-delay:calc(var(--sea-i,0) * 28ms);
+  }
+
+  /* glass without backdrop blur: a dark base under the same highlight
+     gradient keeps the depth, the page glow still tints it softly */
+  .glass, .tile{
+    backdrop-filter:none; -webkit-backdrop-filter:none;
+    background:
+      linear-gradient(158deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 54%, rgba(255,255,255,0.06) 100%),
+      linear-gradient(rgba(21,26,28,0.80), rgba(21,26,28,0.80));
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.16),
+      inset 0 -1px 0 rgba(0,0,0,0.26),
+      0 18px 40px -24px rgba(0,0,0,0.85);
+  }
+  .gnav, .thumb-badge{ backdrop-filter:none; -webkit-backdrop-filter:none; }
+
+  /* fixed nav: a blur over scrolling content repaints every frame */
+  header .nav{
+    transition:padding .4s var(--e-out), max-width .4s var(--e-out),
+               background .3s var(--e-out), border-color .3s var(--e-out), box-shadow .3s var(--e-out);
+  }
+  header.scrolled .nav{
+    backdrop-filter:none; -webkit-backdrop-filter:none;
+    background:linear-gradient(150deg, rgba(40,46,48,0.95), rgba(18,21,23,0.95));
+  }
+  nav.links{
+    backdrop-filter:none; -webkit-backdrop-filter:none;
+    background:linear-gradient(150deg, rgba(42,46,48,0.98), rgba(22,25,27,0.98));
+  }
+
+  /* ambient blobs: a radial mask gives the same soft edge as blur(120px)
+     for free, and they hold still instead of drifting */
+  .glow, .tool-hero .glow{
+    filter:none; animation:none; will-change:auto;
+    transform:scale(1.45);
+    -webkit-mask:radial-gradient(circle closest-side, #000 0%, rgba(0,0,0,.6) 40%, transparent 100%);
+            mask:radial-gradient(circle closest-side, #000 0%, rgba(0,0,0,.6) 40%, transparent 100%);
+  }
+  .cells{ animation:none; opacity:.85; }
+  .map-card::before{ filter:none; }
+
+  /* scroll-linked hero fade needs a repaint per frame — not on a phone */
+  .hero .hero-top, .page-hero .wrap, .tool-hero .wrap{ animation:none; }
+
+  /* page transition: a short fade instead of blur + scale */
+  @keyframes sea-vt-out-m{ from{ opacity:1; } to{ opacity:0; } }
+  @keyframes sea-vt-in-m { from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+  ::view-transition-old(root){ animation:sea-vt-out-m .16s ease-out both; }
+  ::view-transition-new(root){ animation:sea-vt-in-m  .32s var(--e-out) both; }
+
+  .sea-progress{ box-shadow:none; }
+  h1,h2,h3{ text-wrap:balance; }
+
+  /* ---- spacing: tighter rhythm on a narrow screen -------------------- */
+  .hero{ padding:112px 0 56px; }
+  .hero .lede{ line-height:1.62; }
+  .ask{ margin:40px 0 18px; }
+  .about{ padding:64px 0 60px; }
+  .why, .reviews{ padding:60px 0 64px; }
+  .reach{ padding:60px 0 64px; }
+  .community{ padding:60px 0; }
+  .why .head, .reviews .head, .reach .head{ margin-bottom:30px; }
+  .page-hero{ padding:112px 0 34px; }
+  .tool-hero{ padding:108px 0 40px; }
+  footer{ padding:40px 0 24px; }
+  .tile{ border-radius:16px; }
+}
+
+/* the three small bento tiles sit side by side on a phone instead of one
+   tall column — less scrolling, and the grid reads as a grid again */
+@media (max-width:620px){
+  .bento{ grid-template-columns:repeat(2,1fr); gap:12px; }
+  .t-free, .t-tools{ grid-column:1/3; }
+  .t-courses, .t-blog{ grid-column:auto; min-height:150px; }
+  .t-jobs{ grid-column:1/3; min-height:0; }
+  .t-courses h3, .t-blog h3, .t-jobs h3{ font-size:1rem; }
+  .t-courses p, .t-blog p, .t-jobs p{ font-size:0.8rem; }
+  .tile{ padding:20px 18px 18px; }
+  .t-free h3{ font-size:1.35rem; }
+}
+
+/* ==========================================================================
+   PRINT — nothing may be mid-animation on paper
+   ========================================================================== */
+@media print{
+  .sea-progress, .sea-grain, .sea-sheen, .sea-nav-pill{ display:none !important; }
+  .reveal,
+  html.sea-js :is(.tile,.row,.article-card,.rel-card,.cta-card,.faq-item,.sec-head,
+    .lib-sec .sec-label,.th-chip,.tip-box,.formula-box,.table-wrap,.pills span,
+    .colheads,.rownums,.ct-panel),
+  html.sea-js .sea-w{
+    opacity:1 !important; transform:none !important; filter:none !important;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION — everything above collapses to a plain, still page
+   ========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  @view-transition{ navigation: none; }
+  .reveal,
+  html.sea-js :is(.tile,.row,.article-card,.rel-card,.cta-card,.faq-item,.sec-head,
+    .lib-sec .sec-label,.th-chip,.tip-box,.formula-box,.table-wrap,.pills span,
+    .colheads,.rownums,.ct-panel),
+  html.sea-js .sea-w{
+    opacity:1 !important; transform:none !important; filter:none !important; transition:none !important;
+  }
+  .glow, .cells, .sea-sheen{ animation:none !important; }
+  .sea-grain{ display:none; }
+  .sea-tilt, .sea-tilt:hover, .sea-mag, .sea-mag:hover{ transform:none !important; }
+  .hero .hero-top, .page-hero .wrap, .tool-hero .wrap{ animation:none !important; }
+  *{ transition-duration:.01ms !important; animation-duration:.01ms !important; }
+}
+
+/* ==========================================================================
+   Related calculators block (free tool pages) + home "start here" strip
+   ========================================================================== */
+.sea-rel{padding:10px 0 84px;}
+.sea-rel__kick{font-family:var(--mono,ui-monospace,monospace);font-size:11.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--teal-bright,#1fd3c4);margin:0 0 12px;}
+.sea-rel h2{font-size:clamp(1.45rem,1.3vw + 1rem,1.9rem);font-weight:700;letter-spacing:-.02em;color:var(--text,#F2F1EC);margin:0 0 26px;}
+.sea-rel__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.sea-rel__card{display:flex;flex-direction:column;padding:20px 20px 18px;border-radius:14px;color:inherit;text-decoration:none;
+  background:linear-gradient(158deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.16);
+  transition:transform .28s cubic-bezier(.2,.7,.3,1),border-color .28s,box-shadow .28s;}
+.sea-rel__card:hover{transform:translateY(-4px);border-color:rgba(31,211,196,.55);box-shadow:0 22px 44px -24px rgba(0,0,0,.8),0 0 30px -10px rgba(31,211,196,.28);}
+.sea-rel__thumb{display:block;margin:-20px -20px 16px;border-radius:14px 14px 0 0;overflow:hidden;aspect-ratio:3/2;background:#1C1C1B;border-bottom:1px solid rgba(255,255,255,.1);}
+.sea-rel__thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.sea-rel__tag{font-family:var(--mono,ui-monospace,monospace);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-bright,#1fd3c4);margin-bottom:10px;}
+.sea-rel__card h3{font-size:1rem;font-weight:600;line-height:1.35;color:var(--text,#F2F1EC);margin:0 0 8px;}
+.sea-rel__card p{font-size:.83rem;line-height:1.58;color:var(--text-dim,#A8A6A0);margin:0 0 16px;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.sea-rel__go{margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--teal-bright,#1fd3c4);}
+.sea-rel__go svg,.sea-rel__all svg{width:14px;height:14px;transition:transform .28s;}
+.sea-rel__card:hover .sea-rel__go svg,.sea-rel__all:hover svg{transform:translateX(4px);}
+.sea-rel__card--pro{border-color:rgba(245,158,11,.4);}
+.sea-rel__card--pro .sea-rel__tag,.sea-rel__card--pro .sea-rel__go{color:var(--orange,#F59E0B);}
+.sea-rel__card--pro:hover{border-color:rgba(245,158,11,.8);box-shadow:0 22px 44px -24px rgba(0,0,0,.8),0 0 30px -10px rgba(245,158,11,.3);}
+.sea-rel__all{display:inline-flex;align-items:center;gap:7px;margin-top:24px;font-size:13.5px;font-weight:600;color:var(--teal-bright,#1fd3c4);text-decoration:none;}
+.sea-rel--home{padding:84px 0 20px;}
+.sea-rel--home .sea-rel__grid{grid-template-columns:repeat(3,1fr);}
+@media (max-width:1000px){.sea-rel__grid,.sea-rel--home .sea-rel__grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.sea-rel__grid,.sea-rel--home .sea-rel__grid{grid-template-columns:1fr;}.sea-rel{padding-bottom:60px;}}
+@media (prefers-reduced-motion:reduce){.sea-rel__card,.sea-rel__go svg{transition:none;}.sea-rel__card:hover{transform:none;}}
+
+/* advanced bundle band (home) */
+.sea-band{padding:44px 0 92px;}
+.sea-band__card{display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;padding:30px 32px;border-radius:18px;
+  background:linear-gradient(140deg,rgba(245,158,11,.13),rgba(255,255,255,.03) 60%);border:1px solid rgba(245,158,11,.4);}
+.sea-band__txt{flex:1 1 420px;min-width:0;}
+.sea-band__txt .sea-rel__kick{color:var(--orange,#F59E0B);}
+.sea-band__txt h2{font-size:clamp(1.3rem,1.1vw + 1rem,1.7rem);font-weight:700;letter-spacing:-.02em;color:var(--text,#F2F1EC);margin:0 0 10px;}
+.sea-band__txt p{font-size:.95rem;line-height:1.68;color:var(--text-dim,#A8A6A0);margin:0;}
+.sea-band__buy{display:flex;flex-direction:column;align-items:flex-start;gap:12px;}
+.sea-band__price{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;color:var(--text,#F2F1EC);line-height:1;}
+.sea-band__price span{font-size:1rem;font-weight:600;color:var(--text-dim,#A8A6A0);}
+.sea-band__save{font-family:var(--mono,ui-monospace,monospace);font-size:11.5px;color:var(--orange,#F59E0B);letter-spacing:.04em;}
+.sea-band__btn{display:inline-flex;align-items:center;gap:8px;background:var(--orange,#F59E0B);color:#2a1a00;font-weight:700;font-size:14.5px;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .2s,transform .2s;}
+.sea-band__btn:hover{background:#ffb632;transform:translateY(-2px);}
+.sea-band__btn svg{width:15px;height:15px;}

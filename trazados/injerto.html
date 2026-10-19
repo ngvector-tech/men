@@ -2,461 +2,486 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Injerto de Tubería</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora de Derivaciones de Tuberías</title>
 <style>
-  :root{
-    --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
-    --borde:#e0e3e6; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
-  }
+  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; --naranja: #c2410c; }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
+  .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 13px; }
 
-  * { box-sizing: border-box; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
 
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #eef0f2;
-    margin: 0;
-    padding: 16px 11px 40px;
-    color: #222;
-    display: block !important;
-  }
+  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; }
+  .panel-title { background: var(--azul); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; }
+  .panel-body { padding: 8px; background: #fff; }
 
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 7px;
-    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-    padding: 16px 19px 21px;
-  }
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
+  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
+  .input-box { width: 80px; flex-shrink: 0; }
+  .input-box input, .input-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
+  .input-box select { text-align: left; font-family: inherit; padding: 4px; }
 
-  h1 {
-    text-align: center;
-    font-size: 13px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
-    border-radius: 4px;
-    margin: 0 0 5px;
-  }
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
+  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
+  .result-val.big { font-size: 12px; background: #e7f1ff; }
 
-  .subtitulo {
-    text-align: center;
-    font-size: 9px;
-    color: #666;
-    margin: 0 0 15px;
-  }
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  .banner.warn { background: #fdf1dc; color: #9a6a12; border-color: #e7c98f; }
 
-  .layout {
-    display: grid;
-    grid-template-columns: 253px 1fr;
-    gap: 13px;
-  }
-  @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; }
-  }
+  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; min-height: 200px; cursor: zoom-in; }
+  .svg-box svg { width: 100%; max-width: 500px; height: auto; max-height: 300px; }
+  .cap { font-size: 10px; color: #69707a; font-style: italic; text-align: center; margin: 2px 0 0; }
 
-  /* ---------- Panel izquierdo ---------- */
-  .panel {
-    background: #f4f6f8;
-    border: 1px solid var(--borde);
-    border-radius: 5px;
-    padding: 11px;
-  }
-  .panel h2 {
-    font-size: 9px;
-    margin: 0 0 8px;
-    color: #111;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+  .table-wrap { overflow-x: auto; margin: 8px; max-height: 400px; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 400px; }
+  th { background: var(--azul); color: #fff; padding: 5px; text-align: center; position: sticky; top: 0; }
+  td { border: 1px solid var(--borde); padding: 3px; text-align: center; font-family: monospace; }
+  tr:nth-child(even) { background: var(--gris); }
+  tr.key td { background: #fff3d6; font-weight: 700; }
 
-  .esquema {
-    margin-bottom: 9px;
-    background: #e8f0fa;
-    border-radius: 4px;
-    padding: 7px;
-    min-height: 27px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .esquema img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-    cursor: zoom-in;
-    transition: transform 0.15s ease;
-  }
-  .esquema img:hover {
-    transform: scale(1.03);
-  }
-  .esquema:empty { display: none; }
+  .actions { display: flex; gap: 6px; justify-content: flex-end; padding: 8px; flex-wrap: wrap; }
+  .btn { background: var(--azul); color: #fff; border: none; border-radius: 3px; font-weight: 700; font-size: 11px; padding: 6px 12px; cursor: pointer; }
+  .btn.ghost { background: #fff; color: var(--azul); border: 2px solid var(--azul); padding: 4px 12px; }
+  .btn:hover { opacity: 0.9; }
 
-  label {
-    display: block;
-    font-size: 9px;
-    margin: 7px 0 3px;
-    font-weight: 600;
-    color: #444;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 6px 7px;
-    border: 1px solid #c7ccd1;
-    border-radius: 4px;
-    font-size: 10px;
-    background: #fff;
-    color: #222;
-  }
-  input:focus, select:focus {
-    outline: none;
-    border-color: #4a90d9;
-  }
-
-  .fila {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px;
-  }
-
-  button {
-    width: 100%;
-    padding: 7px;
-    margin-top: 9px;
-    border: none;
-    border-radius: 4px;
-    background: #111;
-    color: #fff;
-    font-size: 9px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  button:hover { background: #333; }
-
-  button.sec {
-    background: #fff;
-    color: #111;
-    border: 1px solid #c7ccd1;
-  }
-  button.sec:hover { background: #f4f6f8; }
-
-  .aviso {
-    margin-top: 7px;
-    padding: 5px 7px;
-    border-radius: 4px;
-    font-size: 9px;
-    display: none;
-  }
-  .aviso.error {
-    background: #fdecea;
-    color: var(--error);
-    display: block;
-  }
-  .aviso.ok {
-    background: #e7f5ec;
-    color: var(--ok);
-    display: block;
-  }
-
-  /* ---------- Panel derecho ---------- */
-  .resultado {
-    background: #fff;
-    border: 1px solid var(--borde);
-    border-radius: 5px;
-    padding: 11px;
-    min-height: 133px;
-  }
-  .resultado h2 {
-    font-size: 9px;
-    margin: 0 0 8px;
-    color: #111;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  #svgPatron {
-    margin-bottom: 11px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f4f6f8;
-    border: 1px solid var(--borde);
-    border-radius: 4px;
-    padding: 8px;
-  }
-  #svgPatron svg {
-    max-width: 100%;
-    height: auto;
-    cursor: zoom-in;
-    transition: transform 0.15s ease;
-  }
-  #svgPatron svg:hover {
-    transform: scale(1.03);
-  }
-  #svgPatron img {
-    max-width: 100%;
-    height: auto;
-    cursor: zoom-in;
-    transition: transform 0.15s ease;
-  }
-  #svgPatron img:hover {
-    transform: scale(1.03);
-  }
-
-  /* Tabla que genera injerto.js */
-  .tabla-gen {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 7px;
-    font-size: 10px;
-  }
-  .tabla-gen th {
-    background: #f4f6f8;
-    color: #111;
-    padding: 5px;
-    text-align: left;
-    border: 1px solid var(--borde);
-    font-weight: 600;
-  }
-  .tabla-gen td {
-    border: 1px solid var(--borde);
-    padding: 4px 5px;
-  }
-  .tabla-gen tr:nth-child(even) { background: #f4f6f8; }
-  .tabla-gen th:first-child,
-  .tabla-gen td:first-child {
-    width: 40px;
-    padding-left: 4px;
-    padding-right: 4px;
-    text-align: left;
-  }
-
-  .titulo {
-    font-weight: 700;
-    color: #111;
-    padding: 4px 0 1px;
-  }
-
-  .nota {
-    font-size: 8px;
-    color: #667085;
-    margin-top: 7px;
-    line-height: 1.5;
-  }
-
-  /* ============ LIGHTBOX ============ */
-  .lightbox {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 99999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    cursor: zoom-out;
-    animation: fadeIn 0.2s ease;
-  }
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 99999; justify-content: center; align-items: center; padding: 10px; cursor: zoom-out; }
   .lightbox.activo { display: flex; }
-  .lightbox img {
-    max-width: 95vw;
-    max-height: 90vh;
-    border-radius: 6px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-    background: #fff;
-    padding: 10px;
-    cursor: default;
-    animation: zoomIn 0.25s ease;
-  }
-  .lightbox .cerrar {
-    position: absolute;
-    top: 15px;
-    right: 22px;
-    color: #fff;
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1;
-    cursor: pointer;
-    user-select: none;
-    transition: transform 0.15s ease;
-  }
-  .lightbox .cerrar:hover { transform: scale(1.2); }
-
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  @keyframes zoomIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .lightbox img { width: 95vw; height: 95vh; object-fit: contain; background: #fff; padding: 10px; border-radius: 4px; cursor: default; }
+  .lightbox .cerrar { position: absolute; top: 15px; right: 22px; color: #fff; font-size: 32px; font-weight: 700; cursor: pointer; user-select: none; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Calculadora de Injerto de Tubería</h1>
-  <p class="subtitulo">Cálculo del injerto de caña sobre cabezal (α entre ejes) — medidas en mm</p>
+  <div class="header">Calculadora de Derivaciones y Juntas de Tuberías</div>
 
-  <div class="layout">
-
-    <!-- ==================== PANEL IZQUIERDO ==================== -->
-    <section class="panel">
-      <h2>Datos de entrada</h2>
-
-      <div class="esquema" id="esquemaEntrada"></div>
-
-      <!-- Selector de unidad oculto: mantiene compatibilidad con injerto.js -->
-      <select id="unidad" hidden>
-        <option value="mm" selected>Milímetros (mm)</option>
-      </select>
-
-      <div class="fila">
-        <div>
-          <label for="in_D">Diámetro base D (mm)</label>
-          <input type="number" id="in_D" value="200" step="any" min="0">
-        </div>
-        <div>
-          <label for="in_d">Diámetro caña d (mm)</label>
-          <input type="number" id="in_d" value="160" step="any" min="0">
-        </div>
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">1 · La Junta</div>
+      <div class="panel-body">
+        <div class="row"><div class="label">Ø exterior tubería principal, D<small>la tubería sobre la que se apoya</small></div><div class="input-box"><input id="D" type="number" step="any" value="323.9"></div></div>
+        <div class="row"><div class="label">Ø exterior tubería derivación, d</div><div class="input-box"><input id="d" type="number" step="any" value="219.1"></div></div>
+        <div class="row"><div class="label">Ángulo entre ejes<small>90° = tee · <90° = lateral</small></div><div class="input-box"><input id="ang" type="number" step="any" min="5" max="90" value="90"></div></div>
+        <div class="row"><div class="label">Desplazamiento<small>0 = radial · >0 = tangencial/hillside</small></div><div class="input-box"><input id="e" type="number" step="any" min="0" value="0"></div></div>
+        <div class="row"><div class="label">Longitud total derivación<small>desde extremo cuadrado al eje principal</small></div><div class="input-box"><input id="L" type="number" step="any" value="400"></div></div>
+        <div class="row"><div class="label">Estaciones<small>alrededor de la línea</small></div><div class="input-box"><select id="N"><option>12</option><option selected>16</option><option>24</option><option>32</option><option>48</option></select></div></div>
+        <div class="row"><div class="label">Holgura de raíz<small>0 = plantilla desnuda</small></div><div class="input-box"><input id="gap" type="number" step="any" min="0" value="0"></div></div>
       </div>
+    </div>
 
-      <div class="fila">
-        <div>
-          <label for="in_C">Altura C (mm)</label>
-          <input type="number" id="in_C" value="170" step="any" min="0">
-        </div>
-        <div>
-          <label for="in_alpha">Ángulo α (° entre ejes)</label>
-          <input type="number" id="in_alpha" value="60" step="any" min="15" max="90">
-        </div>
+    <div class="panel">
+      <div class="panel-title">2 · Resultados</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Tipo de junta</div><div class="result-val" id="r0">-</div></div>
+        <div class="result-row"><div class="result-label">Circunferencia ramal<small>ancho plantilla</small></div><div class="result-val" id="r1">-</div></div>
+        <div class="result-row"><div class="result-label">Lado más largo / más corto</div><div class="result-val" id="r2">-</div></div>
+        <div class="result-row"><div class="result-label">Profundidad silla (boca pez)</div><div class="result-val big" id="r3">-</div></div>
+        <div class="result-row"><div class="result-label">Agujero en tubería principal</div><div class="result-val" id="r4">-</div></div>
+        <div class="result-row"><div class="result-label">Longitud soldadura perimetral</div><div class="result-val" id="r5">-</div></div>
       </div>
+    </div>
+  </div>
 
-      <label for="in_N">Nº de divisiones (N)</label>
-      <select id="in_N">
-        <option value="12" selected>12</option>
-        <option value="24">24</option>
-        <option value="36">36</option>
-      </select>
+  <div class="banner" id="banner">Calculando...</div>
 
-      <button id="btnCalcular">Calcular</button>
-      <button id="btnCSV" class="sec">Exportar CSV</button>
-      <button id="btnSVG" class="sec">Exportar SVG</button>
-      <div class="aviso" id="aviso"></div>
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">Sección · a escala</div>
+      <div class="panel-body">
+        <div class="svg-box" onclick="abrirLightbox('sk1')"><svg id="sk1" viewBox="0 0 540 380"></svg></div>
+        <p class="cap">Sección transversal de ambos tubos. Naranja = línea de corte.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Plantilla del ramal</div>
+      <div class="panel-body">
+        <div class="svg-box" onclick="abrirLightbox('sk2')"><svg id="sk2" viewBox="0 0 560 300"></svg></div>
+        <p class="cap">Envuelva alrededor del ramal, estación 0 en la línea principal.</p>
+      </div>
+    </div>
+  </div>
 
-      <p class="nota">
-        α es el ángulo entre el eje de la caña y el eje del cabezal.
-        α = 90° → injerto recto (perpendicular).
-        α = 45° → injerto típico.
-        α = 30° → caña excesiva para soldar.
-        Todas las medidas en <strong>mm</strong>.
-      </p>
-    </section>
+  <div class="grid">
+    <div class="panel" style="grid-column: 1 / -1;">
+      <div class="panel-title">Agujero en tubería principal · a escala</div>
+      <div class="panel-body">
+        <div class="svg-box" onclick="abrirLightbox('sk3')"><svg id="sk3" viewBox="0 0 560 330"></svg></div>
+        <p class="cap">Coloque sobre la superficie de la tubería principal, midiendo un círculo desde la línea superior.</p>
+      </div>
+    </div>
+  </div>
 
-    <!-- ==================== PANEL DERECHO ==================== -->
-    <section class="resultado">
-      <h2>Resultados</h2>
-      <div id="svgPatron"></div>
-      <div id="resumenSalida"></div>
-    </section>
+  <div class="table-wrap">
+    <table id="tabla">
+      <thead><tr>
+        <th>Estación</th><th>Ángulo φ</th><th>Distancia recorrida</th><th>Longitud ramal</th><th>Agujero: a lo largo</th><th>Agujero: redondo</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
+  <div class="actions">
+    <button class="btn" id="btnCopy">Copiar tabla</button>
+    <button class="btn" id="btnCsv">Descargar CSV</button>
+    <button class="btn ghost" id="btnPrint">Imprimir</button>
   </div>
 </div>
 
-<!-- ============ LIGHTBOX ============ -->
 <div class="lightbox" id="lightbox">
-  <span class="cerrar" id="cerrarLightbox">&times;</span>
+  <span class="cerrar" onclick="cerrarLightbox()">&times;</span>
   <img id="imgLightbox" alt="Vista ampliada">
 </div>
 
-<script src="injerto.js?v=2"></script>
-
 <script>
-/* ============ LIGHTBOX (delegación robusta) ============ */
-(function(){
-  "use strict";
+// ============ LIGHTBOX ============
+function abrirLightbox(svgId) {
+  const el = document.getElementById(svgId); if (!el) return;
+  const clone = el.cloneNode(true);
+  if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('width', '1200'); clone.setAttribute('height', '900');
+  const xml = new XMLSerializer().serializeToString(clone);
+  const svg64 = btoa(unescape(encodeURIComponent(xml)));
+  document.getElementById('imgLightbox').src = 'data:image/svg+xml;base64,' + svg64;
+  document.getElementById('lightbox').classList.add('activo');
+}
+function cerrarLightbox() { document.getElementById('lightbox').classList.remove('activo'); }
+document.getElementById('lightbox').addEventListener('click', function(e){
+  if (e.target === this || e.target.className === 'cerrar') cerrarLightbox();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarLightbox(); });
 
-  const lightbox       = document.getElementById('lightbox');
-  const cerrarLightbox = document.getElementById('cerrarLightbox');
-  const imgLightbox    = document.getElementById('imgLightbox');
+// ============ MOTOR SVG ============
+const S = (el, W, H) => {
+  el.innerHTML = `<defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e7eef3" stroke-width="1"/></pattern>
+    <linearGradient id="steelV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#566878"/><stop offset="0.2" stop-color="#9fb0bf"/><stop offset="0.45" stop-color="#f4f7fa"/><stop offset="0.65" stop-color="#cdd8e1"/><stop offset="0.85" stop-color="#8698a8"/><stop offset="1" stop-color="#47586a"/></linearGradient>
+    <linearGradient id="steelH" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#566878"/><stop offset="0.2" stop-color="#9fb0bf"/><stop offset="0.45" stop-color="#f4f7fa"/><stop offset="0.65" stop-color="#cdd8e1"/><stop offset="0.85" stop-color="#8698a8"/><stop offset="1" stop-color="#47586a"/></linearGradient>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef3f7"/><stop offset="0.5" stop-color="#d3dde6"/><stop offset="1" stop-color="#b4c2cf"/></linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9efe9"/><stop offset="1" stop-color="#9adcd2"/></linearGradient>
+    <filter id="s"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25"/></filter>
+  </defs>
+  <rect width="${W}" height="${H}" fill="#f7fafc"/><rect width="${W}" height="${H}" fill="url(#g)"/>`;
+  return {
+    C: { ink: '#0B1F3A', key: '#c2410c', dim: '#1f5f8b', mute: '#7a8896' },
+    add: (t, a) => { let e = document.createElementNS('http://www.w3.org/2000/svg', t); for (let k in a) e.setAttribute(k, a[k]); el.appendChild(e); },
+    path: (d, a) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'path'); e.setAttribute('d', d); for (let k in a) e.setAttribute(k, a[k]); el.appendChild(e); },
+    text: (x, y, s, o) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'text'); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('font-size', o.size || 10); e.setAttribute('fill', o.color || '#333'); e.setAttribute('text-anchor', o.anchor || 'middle'); e.textContent = s; el.appendChild(e); },
+    note: (x, y, s, o) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'text'); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('font-size', 10); e.setAttribute('fill', '#7a8896'); e.setAttribute('font-style', 'italic'); e.setAttribute('text-anchor', (o && o.anchor) || 'middle'); e.textContent = s; el.appendChild(e); },
+    dimH: (p1, p2, y, t) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'g'); e.innerHTML = `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p1[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p2[0]}" y1="${p2[1]}" x2="${p2[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p1[0]}" y1="${y}" x2="${p2[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="1"/><text x="${(p1[0]+p2[0])/2}" y="${y-5}" font-size="11" font-weight="700" fill="#1f5f8b" text-anchor="middle">${t}</text>`; el.appendChild(e); },
+    dimV: (p1, p2, x, t) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'g'); e.innerHTML = `<line x1="${p1[0]}" y1="${p1[1]}" x2="${x}" y2="${p1[1]}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p2[0]}" y1="${p2[1]}" x2="${x}" y2="${p2[1]}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${x}" y1="${p1[1]}" x2="${x}" y2="${p2[1]}" stroke="#1f5f8b" stroke-width="1"/><text x="${x+5}" y="${(p1[1]+p2[1])/2}" font-size="11" font-weight="700" fill="#1f5f8b" text-anchor="start" dominant-baseline="central">${t}</text>`; el.appendChild(e); },
+    center: (x1,y1,x2,y2) => { let e = document.createElementNS('http://www.w3.org/2000/svg','line'); e.setAttribute('x1',x1); e.setAttribute('y1',y1); e.setAttribute('x2',x2); e.setAttribute('y2',y2); e.setAttribute('stroke','#7a8896'); e.setAttribute('stroke-width',0.9); e.setAttribute('stroke-dasharray','14 3 3 3'); el.appendChild(e); }
+  };
+};
 
-  if (!lightbox) return;
+// ============ LÓGICA ============
+const $ = id => document.getElementById(id);
+const fx = (v, d) => v.toFixed(d);
+const RAD = Math.PI / 180;
 
-  function abrirLightbox(srcImagen){
-    if (!srcImagen) return;
-    imgLightbox.src = srcImagen;
-    lightbox.classList.add('activo');
-    document.body.style.overflow = 'hidden';
+function build(R, r, th, e, N) {
+  const st = Math.sin(th), ct = Math.cos(th), pts = [];
+  for (let i = 0; i <= N; i++) {
+    const phi = 2 * Math.PI * i / N;
+    const y = e + r * Math.sin(phi);
+    const q = R * R - y * y;
+    if (q < 0) return null;
+    const root = Math.sqrt(q);
+    const t = (root - r * Math.cos(phi) * ct) / st;
+    const x = t * ct - r * Math.cos(phi) * st;
+    const z = root;
+    const s = R * Math.atan2(y, z);
+    const u = r * phi;
+    pts.push({ i, phi, t, x, y, z, s, u });
   }
-  function cerrarLightboxFn(){
-    lightbox.classList.remove('activo');
-    document.body.style.overflow = '';
+  return pts;
+}
+
+let last = null;
+
+function calc() {
+  const D = +$('D').value, d = +$('d').value, ang = +$('ang').value;
+  const e = +$('e').value || 0, L = +$('L').value, N = +$('N').value, gap = +$('gap').value || 0;
+  const banner = $('banner'); banner.className = 'banner';
+
+  function fail(m) {
+    banner.classList.add('warn'); banner.innerHTML = '⚠ ' + m; last = null;
+    ['r0','r1','r2','r3','r4','r5'].forEach(i => $(i).textContent = '–');
+    $('tabla').querySelector('tbody').innerHTML = '';
+    ['sk1','sk2','sk3'].forEach(i => $(i).innerHTML = '');
   }
 
-  function svgADataURL(svgEl){
-    try {
-      const clone = svgEl.cloneNode(true);
-      if (!clone.getAttribute('xmlns')) {
-        clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      }
-      if (!clone.getAttribute('xmlns:xlink')) {
-        clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-      }
-      if (!clone.getAttribute('width')) {
-        const vb = (clone.getAttribute('viewBox') || '').split(/\s+/);
-        if (vb.length === 4) {
-          clone.setAttribute('width',  vb[2]);
-          clone.setAttribute('height', vb[3]);
-        }
-      }
-      const xml  = new XMLSerializer().serializeToString(clone);
-      const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
-      return URL.createObjectURL(blob);
-    } catch(err) {
-      console.warn('No se pudo serializar el SVG:', err);
-      return null;
+  if (!(D > 0) || !(d > 0)) return fail('Introduzca ambos diámetros exteriores.');
+  if (d > D) return fail('La derivación no puede ser mayor que la tubería principal.');
+  if (!(ang >= 5) || ang > 90) return fail('El ángulo debe estar entre 5° y 90°.');
+  if (e < 0) return fail('El desplazamiento no puede ser negativo.');
+
+  const R = D / 2, r = d / 2, th = ang * RAD;
+  if (e + r > R + 1e-9) return fail('Desplazamiento + radio ramal (' + fx(e+r,1) + ' mm) supera el radio principal (' + fx(R,1) + ' mm).');
+
+  const pts = build(R, r, th, e, N);
+  if (!pts) return fail('Estos valores no dan una intersección válida.');
+  if (!(L > 0)) return fail('Introduzca la longitud total del ramal.');
+
+  let tmax = -1e9, tmin = 1e9;
+  for (const p of pts) { if (p.t > tmax) tmax = p.t; if (p.t < tmin) tmin = p.t; }
+  if (L <= tmax) return fail('La longitud del ramal debe superar ' + fx(tmax,1) + ' mm.');
+
+  const fine = build(R, r, th, e, 720);
+  let Lmax = -1e9, Lmin = 1e9, weld = 0, xmin = 1e9, xmax = -1e9, smin = 1e9, smax = -1e9;
+  for (let i = 0; i < fine.length; i++) {
+    const p = fine[i], Li = L - p.t + gap;
+    if (Li > Lmax) Lmax = Li; if (Li < Lmin) Lmin = Li;
+    if (p.x < xmin) xmin = p.x; if (p.x > xmax) xmax = p.x;
+    if (p.s < smin) smin = p.s; if (p.s > smax) smax = p.s;
+    if (i) {
+      const dx = p.x - fine[i-1].x, dy = p.y - fine[i-1].y, dz = p.z - fine[i-1].z;
+      weld += Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
   }
 
-  document.addEventListener('click', function(e){
-    const imgEsquema = e.target.closest('.esquema img');
-    if (imgEsquema) {
-      e.preventDefault();
-      abrirLightbox(imgEsquema.src);
-      return;
-    }
-    const imgPatron = e.target.closest('#svgPatron img');
-    if (imgPatron) {
-      e.preventDefault();
-      abrirLightbox(imgPatron.src);
-      return;
-    }
-    const svgPatron = e.target.closest('#svgPatron svg');
-    if (svgPatron) {
-      e.preventDefault();
-      const url = svgADataURL(svgPatron);
-      if (url) abrirLightbox(url);
-      return;
-    }
+  let type;
+  if (Math.abs(ang - 90) < 0.01) {
+    if (e < 1e-9) type = (Math.abs(d - D) < 0.01 ? 'Tee diámetro igual' : 'Tee diámetro desigual');
+    else type = (Math.abs(e + r - R) < 0.5 ? 'Ramal tangencial' : 'Ramal desplazado (hillside)');
+  } else {
+    type = e < 1e-9 ? ('Lateral a ' + fx(ang,1) + '°') : ('Lateral desplazado a ' + fx(ang,1) + '°');
+  }
+
+  $('r0').textContent = type;
+  $('r1').textContent = fx(Math.PI * d, 1) + ' mm';
+  $('r2').textContent = fx(Lmax, 1) + ' / ' + fx(Lmin, 1) + ' mm';
+  $('r3').textContent = fx(Lmax - Lmin, 1) + ' mm';
+  $('r4').textContent = fx(xmax - xmin, 1) + ' × ' + fx(smax - smin, 1) + ' mm';
+  $('r5').textContent = fx(weld, 1) + ' mm';
+
+  banner.innerHTML = '✔ ' + type + ' · cortar ramal a ' + fx(Lmax,1) + ' mm · profundidad silla ' + fx(Lmax-Lmin,1) + ' mm · agujero ' + fx(xmax-xmin,1) + ' × ' + fx(smax-smin,1) + ' mm';
+
+  let html = '';
+  const rows = [];
+  pts.forEach(p => {
+    if (p.i === N) return;
+    const Li = L - p.t + gap;
+    rows.push([p.i, p.phi / RAD, p.u, Li, p.x, p.s]);
+    const key = (p.i === 0 || 4*p.i === N || 2*p.i === N || 4*p.i === 3*N);
+    html += `<tr${key?' class="key"':''}><td>${p.i}</td><td>${fx(p.phi/RAD,1)}°</td><td>${fx(p.u,2)}</td><td><strong>${fx(Li,2)}</strong></td><td>${fx(p.x,2)}</td><td><strong>${fx(p.s,2)}</strong></td></tr>`;
+  });
+  $('tabla').querySelector('tbody').innerHTML = html;
+
+  last = { D, d, ang, e, L, N, rows };
+
+  drawJoint(R, r, th, e, L, fine);
+  drawBranch(fine, d, L, gap, Lmax, Lmin, N, pts);
+  drawHole(fine, xmin, xmax, smin, smax, R);
+}
+
+// ============ DIBUJOS ============
+function drawJoint(R, r, th, e, L, fine) {
+  const W = 540, H = 380, svg = S($('sk1'), W, H), ink = svg.C.ink;
+  $('sk1').setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const st = Math.sin(th), ct = Math.cos(th);
+  const run = Math.max(2.5 * R, 2 * (L * ct + r) + R);
+  const mL = 74, mR = 74, mT = 54, mB = 64;
+  const need = L * st + r * Math.abs(ct) + 2 * R;
+  const sc = Math.min((W - mL - mR) / run, (H - mT - mB) / need);
+  const cx = mL + (W - mL - mR) / 2;
+  const cy = mT + (H - mT - mB - need * sc) / 2 + (L * st + r * Math.abs(ct)) * sc + R * sc;
+
+  const T = p => [cx + p[0] * sc, cy - p[1] * sc];
+  const X = x => cx + x * sc, Z = z => cy - z * sc;
+  const half = run / 2;
+
+  svg.add('rect', { x: X(-half), y: Z(R), width: 2 * half * sc, height: 2 * R * sc, fill: 'url(#steelV)', stroke: ink, 'stroke-width': 1.6, filter: 'url(#s)' });
+  svg.center(X(-half), Z(0), X(half), Z(0));
+
+  const ux = ct, uz = st, axv = -st, azv = ct;
+  const pt = (t, sg) => [t * ux + sg * r * axv, t * uz + sg * r * azv];
+  const p1 = pt(L, 1), p2 = pt(L, -1);
+  let c1 = null, c2 = null;
+  for (const sg of [1, -1]) {
+    const q = R * R - e * e;
+    const t = (Math.sqrt(q) - r * sg * ct) / st;
+    const p = pt(t, sg);
+    if (sg > 0) c1 = p; else c2 = p;
+  }
+  svg.path(
+    'M' + T(p1).map(v=>v.toFixed(1)).join(' ') +
+    ' L' + T(c1).map(v=>v.toFixed(1)).join(' ') +
+    ' L' + T(c2).map(v=>v.toFixed(1)).join(' ') +
+    ' L' + T(p2).map(v=>v.toFixed(1)).join(' ') + ' Z',
+    { fill: 'url(#steelH)', stroke: ink, 'stroke-width': 1.6, 'stroke-linejoin': 'round', filter: 'url(#s)' }
+  );
+
+  let cut = '';
+  for (let i = 0; i < fine.length; i += 6) {
+    cut += (cut ? ' L' : 'M') + X(fine[i].x).toFixed(1) + ' ' + Z(fine[i].z).toFixed(1);
+  }
+  svg.path(cut, { fill: 'none', stroke: svg.C.key, 'stroke-width': 2.6, 'stroke-linecap': 'round' });
+
+  const axA = pt(L + r * 0.45, 0), axB = pt(-r * 0.35, 0);
+  svg.center(T(axB)[0], T(axB)[1], T(axA)[0], T(axA)[1]);
+
+  let tmin = 1e9;
+  for (const p of fine) if (p.t < tmin) tmin = p.t;
+  svg.dimV(T(p1), T(c1), T(p1)[0] - 20, 'largo ' + fx(L - tmin, 1));
+  svg.dimH([X(-half), Z(-R)], [X(half), Z(-R)], Z(-R) + 36, 'run Ø ' + fx(2*R, 1));
+  if (e > 0) svg.note(12, 16, 'offset ' + fx(e,1) + ' mm fuera de esta vista', { anchor: 'start' });
+}
+
+function drawBranch(fine, d, L, gap, Lmax, Lmin, N, pts) {
+  const circ = Math.PI * d;
+  const W = 560, mL = 62, mR = 42, mT = 52, mB = 58;
+  const pw = W - mL - mR, sc = pw / circ;
+  const rise = (Lmax - Lmin) * sc, body = Math.max(rise + 34, 54);
+  const H = Math.round(mT + body + mB);
+  const svg = S($('sk2'), W, H), ink = svg.C.ink;
+   $('sk2').setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const yBase = H - mB;
+  const X = u => mL + u * sc;
+  const Y = l => yBase - (l - Lmin) * sc - 17;
+
+  svg.add('rect', { x: mL, y: Y(Lmax) - 12, width: pw, height: yBase - Y(Lmax) + 12, fill: 'url(#plate)', stroke: 'none', 'fill-opacity': 0.45 });
+
+  let cur = '';
+  for (let i = 0; i < fine.length; i++) {
+    cur += (i ? ' L' : 'M') + X(fine[i].u).toFixed(1) + ' ' + Y(L - fine[i].t + gap).toFixed(1);
+  }
+  svg.path(cur + ' L' + X(circ).toFixed(1) + ' ' + yBase + ' L' + mL + ' ' + yBase + ' Z',
+    { fill: 'url(#mark)', stroke: 'none', 'fill-opacity': 0.85 });
+  svg.path(cur, { fill: 'none', stroke: svg.C.key, 'stroke-width': 2.4, 'stroke-linejoin': 'round' });
+  svg.add('line', { x1: mL, y1: yBase, x2: mL + pw, y2: yBase, stroke: ink, 'stroke-width': 2 });
+
+  pts.forEach(p => {
+    if (p.i === N) return;
+    const x = X(p.u), key = (p.i === 0 || 4*p.i === N || 2*p.i === N || 4*p.i === 3*N);
+    svg.add('line', { x1: x, y1: yBase, x2: x, y2: Y(L - p.t + gap), stroke: key ? svg.C.key : '#c7d3dd', 'stroke-width': key ? 1.1 : 0.8, 'stroke-dasharray': key ? '4 3' : 'none' });
+    if (key || N <= 16) svg.text(x, yBase + 14, String(p.i), { size: 9, color: svg.C.mute });
   });
 
-  function cerrarYLiberar(){
-    if (imgLightbox.src && imgLightbox.src.startsWith('blob:')) {
-      try { URL.revokeObjectURL(imgLightbox.src); } catch(err) {}
-    }
-    cerrarLightboxFn();
-  }
+  svg.dimH([mL, yBase], [mL + pw, yBase], yBase + 34, 'π·d = ' + fx(circ, 1));
+  svg.dimV([mL - 20, Y(Lmax)], [mL - 20, yBase], mL - 20, fx(Lmax, 1));
+  svg.note(mL, mT - 22, 'extremo cuadrado abajo · estación 0 mira a lo largo', { anchor: 'start' });
+  if (gap > 0) svg.note(W - 12, mT - 22, 'incl. holgura ' + fx(gap, 1) + ' mm', { anchor: 'end' });
+}
 
-  cerrarLightbox.addEventListener('click', cerrarYLiberar);
-  lightbox.addEventListener('click', function(e){
-    if (e.target === lightbox) cerrarYLiberar();
+function drawHole(fine, xmin, xmax, smin, smax, R) {
+  const svgEl = $('sk3');
+  
+  const wx = xmax - xmin;
+  const ws = smax - smin;
+
+  // 1. Definir área de dibujo máxima y escala
+  const maxDrawW = 320; // Ancho máximo reservado para el agujero
+  const maxDrawH = 220; // Alto máximo reservado para el agujero
+  const sc = Math.min(maxDrawW / (wx || 1), maxDrawH / (ws || 1));
+
+  // 2. Calcular el tamaño del agujero en píxeles
+  const pw = wx * sc;
+  const ph = ws * sc;
+
+  // 3. Márgenes fijos (suficientes para textos y cotas)
+  const mL = 80;  // Margen izquierdo (para los textos superiores)
+  const mT = 80;  // Margen superior
+  const mR = 130; // Margen derecho (para la cota vertical)
+  const mB = 90;  // Margen inferior (para la cota horizontal)
+
+  // 4. Dimensiones totales del SVG
+  const W = mL + pw + mR;
+  const H = mT + ph + mB;
+
+  // 5. Aplicar el viewBox dinámico
+  svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  
+  const svg = S(svgEl, W, H), ink = svg.C.ink;
+  
+  // 6. Origen del dibujo (esquina superior izquierda del agujero)
+  const ox = mL;
+  const oy = mT;
+
+  // Funciones de mapeo (coordenadas matemáticas a SVG)
+  const X = x => ox + (x - xmin) * sc;
+  const Y = s => oy + (smax - s) * sc;
+
+  // 7. Dibujar fondo gris (ligeramente más grande que el agujero)
+  const pad = 25; // padding alrededor del agujero
+  svg.add('rect', { 
+    x: ox - pad, 
+    y: oy - pad, 
+    width: pw + pad * 2, 
+    height: ph + pad * 2, 
+    fill: 'url(#plate)', 
+    stroke: ink, 
+    'stroke-width': 1.5, 
+    rx: 4 
   });
-  document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape' && lightbox.classList.contains('activo')) cerrarYLiberar();
+
+  // 8. Dibujar contorno del agujero (naranja)
+  let p = '';
+  for (let i = 0; i < fine.length; i++) {
+    p += (i ? ' L' : 'M') + X(fine[i].x).toFixed(1) + ' ' + Y(fine[i].s).toFixed(1);
+  }
+  svg.path(p + ' Z', { fill: '#fde3c8', stroke: svg.C.key, 'stroke-width': 2.5, 'stroke-linejoin': 'round' });
+
+  // 9. Líneas de centro (punteadas)
+  svg.center(ox - pad - 15, Y(0), ox + pw + pad + 15, Y(0));
+  svg.center(X(0), oy - pad - 15, X(0), oy + ph + pad + 15);
+
+  // 10. Cotas (dibujadas dentro de los márgenes)
+  // Cota horizontal (abajo)
+  svg.dimH([X(xmin), Y(smin)], [X(xmax), Y(smin)], oy + ph + pad + 30, 'a lo largo ' + fx(wx, 1));
+  
+  // Cota vertical (derecha)
+  svg.dimV([X(xmax), Y(smax)], [X(xmax), Y(smin)], ox + pw + pad + 30, 'redondo ' + fx(ws, 1));
+
+  // 11. Textos
+  svg.note(mL - 10, 25, 'horizontal = línea superior tubería principal', { anchor: 'start' });
+  svg.note(mL - 10, 45, 'vertical = centro del ramal', { anchor: 'start' });
+  svg.note(W - 20, H - 15, 'marcar sobre superficie', { anchor: 'end' });
+}
+
+// ============ EXPORTACIÓN ============
+function tableText(sep) {
+  if (!last) return '';
+  let s = ['Estación','Ángulo (deg)','Distancia (mm)','Longitud ramal (mm)','Agujero largo (mm)','Agujero redondo (mm)'].join(sep) + '\n';
+  last.rows.forEach(r => {
+    s += [r[0], r[1].toFixed(1), r[2].toFixed(2), r[3].toFixed(2), r[4].toFixed(2), r[5].toFixed(2)].join(sep) + '\n';
   });
-})();
+  return s;
+}
+
+$('btnCopy').addEventListener('click', () => {
+  const t = tableText('\t'); if (!t) return;
+  navigator.clipboard.writeText(t).then(() => {
+    $('btnCopy').textContent = '¡Copiado!';
+    setTimeout(() => $('btnCopy').textContent = 'Copiar tabla', 1500);
+  }).catch(() => window.prompt('Copie la tabla:', t));
+});
+
+$('btnCsv').addEventListener('click', () => {
+  if (!last) return;
+  const head = 'Derivación de tubería\nrun OD,' + last.D + ',mm\nbranch OD,' + last.d + ',mm\nangle,' + last.ang + ',deg\noffset,' + last.e + ',mm\nbranch length,' + last.L + ',mm\n\n';
+  const blob = new Blob([head + tableText(',')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'derivacion-' + last.D + 'x' + last.d + '-' + last.ang + 'deg.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+$('btnPrint').addEventListener('click', () => window.print());
+
+// ============ INIT ============
+['D','d','ang','e','L','N','gap'].forEach(id => {
+  $(id).addEventListener('input', calc);
+  $(id).addEventListener('change', calc);
+});
+calc();
 </script>
-
-<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
 <link rel="stylesheet" href="men-header.css">
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
