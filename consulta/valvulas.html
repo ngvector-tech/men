@@ -11,41 +11,42 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 16px 11px 40px;             /* ⬅️ antes 24 16 60 */
+    padding: 16px 11px 40px;
     color: #222;
   }
 
   .container {
-    max-width: 600px;                   /* ⬅️ antes 900 (≈ 2/3) */
+    max-width: 600px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 7px;                 /* ⬅️ antes 10 */
+    border-radius: 7px;
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-    padding: 16px 19px 21px;            /* ⬅️ antes 24 28 32 */
+    padding: 16px 19px 21px;
+    position: relative; /* IMPORTANTE para el panel flotante */
   }
 
   h1 {
     text-align: center;
-    font-size: 13px;                    /* ⬅️ antes 20 */
+    font-size: 13px;
     background: #111;
     color: #fff;
-    padding: 8px 11px;                  /* ⬅️ antes 12 16 */
-    border-radius: 4px;                 /* ⬅️ antes 6 */
-    margin: 0 0 5px;                    /* ⬅️ antes 8 */
+    padding: 8px 11px;
+    border-radius: 4px;
+    margin: 0 0 5px;
   }
 
   .subtitulo {
     text-align: center;
-    font-size: 9px;                     /* ⬅️ antes 13 */
+    font-size: 9px;
     color: #666;
-    margin: 0 0 15px;                   /* ⬅️ antes 22 */
+    margin: 0 0 15px;
   }
 
   /* ===== Layout en dos columnas ===== */
   .layout {
     display: grid;
-    grid-template-columns: 253px 1fr;   /* ⬅️ antes 380px 1fr */
-    gap: 13px;                          /* ⬅️ antes 20 */
+    grid-template-columns: 253px 1fr;
+    gap: 13px;
   }
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
@@ -55,44 +56,45 @@
   .panel {
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
-    border-radius: 5px;                 /* ⬅️ antes 8 */
-    padding: 11px;                      /* ⬅️ antes 16 */
+    border-radius: 5px;
+    padding: 11px;
   }
   .panel h2 {
-    font-size: 9px;                     /* ⬅️ antes 14 */
-    margin: 0 0 8px;                    /* ⬅️ antes 12 */
+    font-size: 9px;
+    margin: 0 0 8px;
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
-  .field { margin-bottom: 11px; }       /* ⬅️ antes 16 */
+  .field { margin-bottom: 11px; position: relative; }
 
   .field label {
     display: block;
-    font-size: 9px;                     /* ⬅️ antes 13 */
+    font-size: 9px;
     font-weight: 600;
     color: #444;
-    margin-bottom: 3px;                 /* ⬅️ antes 5 */
+    margin-bottom: 3px;
   }
 
   select {
     width: 100%;
-    padding: 6px 7px;                   /* ⬅️ antes 9 10 */
-    font-size: 10px;                    /* ⬅️ antes 15 */
+    padding: 6px 7px;
+    font-size: 10px;
     border: 1px solid #c7ccd1;
-    border-radius: 4px;                 /* ⬅️ antes 6 */
+    border-radius: 4px;
     background: #fff;
     color: #222;
+    cursor: pointer;
   }
   select:focus { outline: none; border-color: #4a90d9; }
   select:disabled { background: #f1f3f5; color: #999; cursor: not-allowed; }
 
   .nota {
-    font-size: 8px;                     /* ⬅️ antes 12 */
+    font-size: 8px;
     font-weight: 700;
     color: #b04a3f;
-    margin-top: 9px;                    /* ⬅️ antes 14 */
+    margin-top: 9px;
     line-height: 1.4;
   }
 
@@ -100,13 +102,13 @@
   .resultado {
     background: #fff;
     border: 1px solid #e0e3e6;
-    border-radius: 5px;                 /* ⬅️ antes 8 */
-    padding: 11px;                      /* ⬅️ antes 16 */
-    min-height: 173px;                  /* ⬅️ antes 260 */
+    border-radius: 5px;
+    padding: 11px;
+    min-height: 173px;
   }
   .resultado h2 {
-    font-size: 9px;                     /* ⬅️ antes 14 */
-    margin: 0 0 8px;                    /* ⬅️ antes 12 */
+    font-size: 9px;
+    margin: 0 0 8px;
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -114,57 +116,94 @@
 
   .imagen-area {
     text-align: center;
-    min-height: 120px;                  /* ⬅️ antes 180 */
+    min-height: 120px;
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
-    border-radius: 4px;                 /* ⬅️ antes 6 */
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 7px;                       /* ⬅️ antes 10 */
-    margin-bottom: 11px;                /* ⬅️ antes 16 */
+    padding: 7px;
+    margin-bottom: 11px;
   }
-  .imagen-area img { max-width: 100%; max-height: 147px; }  /* ⬅️ antes 220 */
-  .imagen-area p { color: #667085; font-size: 9px; }  /* ⬅️ antes 13 */
+  .imagen-area img { max-width: 100%; max-height: 147px; object-fit: contain; }
+  .imagen-area p { color: #667085; font-size: 9px; }
 
   .dato {
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
-    border-radius: 5px;                 /* ⬅️ antes 8 */
-    padding: 12px;                      /* ⬅️ antes 18 */
+    border-radius: 5px;
+    padding: 12px;
     text-align: center;
     display: none;
   }
   .dato.visible { display: block; }
 
   .dato .label {
-    font-size: 9px;                     /* ⬅️ antes 13 */
+    font-size: 9px;
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;                 /* ⬅️ antes 6 */
+    margin-bottom: 4px;
   }
   .dato .valor {
-    font-size: 19px;                    /* ⬅️ antes 28 */
+    font-size: 19px;
     font-weight: 700;
     color: #111;
     display: block;
   }
 
-  /* Tabla de dimensiones (si la usa valvulas.js) */
+  /* Tabla de dimensiones */
   table {
     border-collapse: collapse;
     width: 100%;
-    font-size: 10px;                    /* ⬅️ antes 14 */
-    margin-top: 7px;                    /* ⬅️ antes 10 */
+    font-size: 10px;
+    margin-top: 7px;
   }
   th, td {
     border: 1px solid #e0e3e6;
-    padding: 5px 9px;                   /* ⬅️ antes 8 14 */
+    padding: 5px 9px;
     text-align: left;
   }
   th { background: #f4f6f8; font-weight: 600; color: #111; }
   td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ========================================================= */
+  /* VENTANA FLOTANTE CON EL CATÁLOGO DE VÁLVULAS (ESTILO HTML 2) */
+  /* ========================================================= */
+  #panelValvulasFlotante {
+      position: absolute;
+      z-index: 1000;
+      background: #fff;
+      border: 2px solid #0284c7;
+      border-radius: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      padding: 8px;
+      display: none;
+      width: 100%; 
+      top: 100%;
+      left: 0;
+      margin-top: 5px;
+      max-height: 250px; 
+      overflow-y: auto;
+  }
+  #panelValvulasFlotante.activa { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  
+  .valvula-opcion {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      background: #f8fafc;
+      width: 70px;
+      transition: background 0.2s, border-color 0.2s;
+  }
+  .valvula-opcion:hover { background: #e0f2fe; border-color: #38bdf8; }
+  .valvula-opcion img { width: 50px; height: 40px; object-fit: contain; margin-bottom: 4px; }
+  .valvula-opcion span { font-size: 8px; font-weight: bold; color: #333; text-align: center; text-transform: uppercase; line-height: 1.1; }
 </style>
 </head>
 <body>
@@ -200,6 +239,9 @@
           <option value="casquillo">Racor casquillo soldar DIN 11851</option>
           <option value="macho">Racor macho soldar DIN 11851</option>
         </select>
+        
+        <!-- Panel flotante de válvulas -->
+        <div id="panelValvulasFlotante"></div>
       </div>
 
       <div class="field">
@@ -236,6 +278,102 @@
 </div>
 
 <script src="valvulas.js"></script>
+
+<!-- ============================================================ -->
+<!-- SCRIPT PARA EL CATÁLOGO VISUAL (Basado en el HTML de bridas) -->
+<!-- ============================================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoSelect = document.getElementById('tipoValvula');
+    const panel = document.getElementById('panelValvulasFlotante');
+    const imagenArea = document.getElementById('imagenArea');
+    const imgPlaceholder = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='40'><rect width='100%' height='100%' fill='%23f1f5f9'/><text x='50%' y='50%' font-family='Arial' font-size='8' fill='%2364748b' text-anchor='middle' dy='.3em'>?</text></svg>`;
+
+    // 1. Crear la estructura del panel con placeholders
+    function crearEstructura() {
+        const opciones = tipoSelect.options;
+        panel.innerHTML = '';
+        
+        for (let i = 1; i < opciones.length; i++) {
+            const valor = opciones[i].value;
+            const texto = opciones[i].text;
+
+            const div = document.createElement('div');
+            div.className = 'valvula-opcion';
+            
+            div.onclick = function() {
+                tipoSelect.value = valor;
+                tipoSelect.dispatchEvent(new Event('change'));
+                panel.classList.remove('activa');
+            };
+
+            div.innerHTML = `
+                <img id="thumb_${valor}" src="${imgPlaceholder}" alt="${valor}">
+                <span>${texto}</span>
+            `;
+            panel.appendChild(div);
+        }
+    }
+
+    // 2. El "Espía" que copia las imágenes de la derecha a la izquierda
+    function extraerImagenes() {
+        const opciones = tipoSelect.options;
+        const seleccionOriginal = tipoSelect.value;
+
+        // Ocultamos el parpadeo
+        panel.style.visibility = 'hidden';
+
+        for (let i = 1; i < opciones.length; i++) {
+            const valor = opciones[i].value;
+            
+            // Simulamos que el usuario selecciona la opción
+            tipoSelect.value = valor;
+            tipoSelect.dispatchEvent(new Event('change'));
+
+            // Leemos la imagen que se acaba de generar a la derecha
+            const imgReal = imagenArea.querySelector('img');
+            
+            // Si la imagen existe, la copiamos a nuestra miniatura
+            if (imgReal && imgReal.src) {
+                const thumb = document.getElementById(`thumb_${valor}`);
+                if (thumb) {
+                    thumb.src = imgReal.src;
+                }
+            }
+        }
+
+        // Dejamos el selector como estaba al principio
+        tipoSelect.value = seleccionOriginal;
+        tipoSelect.dispatchEvent(new Event('change'));
+        panel.style.visibility = 'visible';
+    }
+
+    // 3. Control de abrir/cerrar
+    tipoSelect.addEventListener('mousedown', function(e) {
+        e.preventDefault(); 
+        if (panel.classList.contains('activa')) {
+            panel.classList.remove('activa');
+        } else {
+            panel.classList.add('activa');
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        if (panel.classList.contains('activa')) {
+            if (event.target !== tipoSelect && !panel.contains(event.target)) {
+                panel.classList.remove('activa');
+            }
+        }
+    });
+
+    // 4. Ejecutar
+    crearEstructura();
+    
+    // Esperamos 1 segundo (1000ms) para asegurarnos de que valvulas.js haya cargado del todo
+    setTimeout(extraerImagenes, 1000); 
+});
+</script>
+
 <link rel="stylesheet" href="men-header.css">
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>

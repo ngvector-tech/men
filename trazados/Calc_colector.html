@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Diámetro de Colector</title>
+<title>Calculadora de Colector - Bridas y DN Comercial</title>
 <style>
   :root{
     --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
     --borde:#e0e3e6; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
   }
-
   * { box-sizing: border-box; }
-
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
@@ -20,16 +18,14 @@
     color: #222;
     display: block !important;
   }
-
   .container {
-    max-width: 733px;
+    max-width: 950px;
     margin: 0 auto;
     background: #fff;
     border-radius: 7px;
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
     padding: 16px 19px 21px;
   }
-
   h1 {
     text-align: center;
     font-size: 13px;
@@ -39,7 +35,6 @@
     border-radius: 4px;
     margin: 0 0 5px;
   }
-
   .subtitulo {
     text-align: center;
     font-size: 9px;
@@ -47,38 +42,12 @@
     margin: 0 0 12px;
   }
 
-  .btn-bayoneta-paralela {
-    display: block;
-    width: 100%;
-    text-align: center;
-    text-decoration: none;
-    background: var(--azul);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 10px 14px;
-    border-radius: 5px;
-    margin: 0 0 14px;
-    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    cursor: pointer;
-    border: none;
-  }
-  .btn-bayoneta-paralela:hover {
-    background: #174a85;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(30, 95, 168, 0.45);
-  }
-
   .layout {
     display: grid;
-    grid-template-columns: 253px 1fr;
+    grid-template-columns: 280px 1fr;
     gap: 13px;
   }
-  @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
   .panel {
     background: #f4f6f8;
@@ -93,25 +62,6 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-
-  .esquema {
-    margin-bottom: 9px;
-    background: #e8f0fa;
-    border-radius: 4px;
-    padding: 7px;
-    min-height: 27px;
-    text-align: center;
-  }
-  .esquema img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-    cursor: zoom-in;
-    transition: transform 0.15s ease;
-  }
-  .esquema img:hover { transform: scale(1.03); }
-
   label {
     display: block;
     font-size: 9px;
@@ -119,7 +69,6 @@
     font-weight: 600;
     color: #444;
   }
-
   input, select {
     width: 100%;
     padding: 6px 7px;
@@ -129,39 +78,17 @@
     background: #fff;
     color: #222;
   }
-  input:focus, select:focus {
-    outline: none;
-    border-color: #4a90d9;
-  }
+  input:focus, select:focus { outline: none; border-color: #4a90d9; }
 
-  .fila {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px;
-  }
-
-  /* Para los 8 diámetros: 2 columnas */
   .fila-diametros {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 7px;
   }
-
-  /* Grupo para select + input manual */
-  .grupo-diametro {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .grupo-diametro .input-manual {
-    display: none;
-  }
-  .grupo-diametro.manual .input-manual {
-    display: block;
-  }
-  .grupo-diametro.manual select {
-    border-color: #4a90d9;
-  }
+  .grupo-diametro { display: flex; flex-direction: column; gap: 3px; }
+  .grupo-diametro .input-manual { display: none; }
+  .grupo-diametro.manual .input-manual { display: block; }
+  .grupo-diametro.manual select { border-color: #4a90d9; }
 
   button {
     width: 100%;
@@ -177,13 +104,17 @@
     transition: background 0.2s;
   }
   button:hover { background: #333; }
-
   button.sec {
     background: #fff;
     color: #111;
     border: 1px solid #c7ccd1;
   }
   button.sec:hover { background: #f4f6f8; }
+  button.copiar {
+    background: var(--azul);
+    margin-top: 6px;
+  }
+  button.copiar:hover { background: #174a85; }
 
   .aviso {
     margin-top: 7px;
@@ -192,23 +123,15 @@
     font-size: 9px;
     display: none;
   }
-  .aviso.error {
-    background: #fdecea;
-    color: var(--error);
-    display: block;
-  }
-  .aviso.ok {
-    background: #e7f5ec;
-    color: var(--ok);
-    display: block;
-  }
+  .aviso.error { background: #fdecea; color: var(--error); display: block; }
+  .aviso.ok { background: #e7f5ec; color: var(--ok); display: block; }
 
   .resultado {
     background: #fff;
     border: 1px solid var(--borde);
     border-radius: 5px;
     padding: 11px;
-    min-height: 133px;
+    min-height: 200px;
   }
   .resultado h2 {
     font-size: 9px;
@@ -216,6 +139,25 @@
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+  }
+  
+  #svgContainer {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    margin-top: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+  }
+  #svgContainer svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: zoom-in;
   }
 
   .resumen {
@@ -247,219 +189,181 @@
     text-align: center;
     padding: 10px;
   }
+  .nota { font-size: 8px; color: #667085; margin-top: 7px; }
 
-  .nota {
-    font-size: 8px;
-    color: #667085;
-    margin-top: 7px;
-  }
-
-  /* LIGHTBOX */
   .lightbox {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0,0,0,0.85);
     z-index: 99999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    cursor: zoom-out;
-    animation: fadeIn 0.2s ease;
+    overflow: auto;
+    padding: 40px;
   }
-  .lightbox.activo { display: flex; }
-  .lightbox img {
-    max-width: 95vw;
-    max-height: 90vh;
-    border-radius: 6px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  .lightbox.activo { display: flex; justify-content: center; align-items: flex-start; }
+  
+  .lightbox .lightbox-content {
     background: #fff;
-    padding: 10px;
+    border-radius: 6px;
+    padding: 20px;
+    transform: scale(2);
+    transform-origin: top center;
+    margin-bottom: 100px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
     cursor: default;
-    animation: zoomIn 0.25s ease;
+  }
+  .lightbox .lightbox-content svg {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   .lightbox .cerrar {
-    position: absolute;
+    position: fixed;
     top: 15px;
     right: 22px;
     color: #fff;
     font-size: 32px;
     font-weight: 700;
-    line-height: 1;
     cursor: pointer;
-    user-select: none;
-    transition: transform 0.15s ease;
+    z-index: 100000;
   }
-  .lightbox .cerrar:hover { transform: scale(1.2); }
-
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Calculadora de Diámetro de Colector</h1>
-  <p class="subtitulo">Cálculo basado en la suma de áreas de las tuberías conectadas — medidas en mm</p>
-
-  <button class="btn-bayoneta-paralela" id="btnCalcularTop">Calcular diámetro del colector</button>
+  <h1>Calculadora de Colector — Bridas y DN Estándar</h1>
+  <p class="subtitulo">Espacio para bridas ASME B16.5 y ajuste del colector a tubería comercial</p>
 
   <div class="layout">
 
     <section class="panel">
       <h2>Datos de entrada</h2>
 
-      <div class="esquema" id="esquemaEntrada">
-        <img src="img/colector.png" alt="Esquema del colector" id="imgColector"
-             onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:9px;color:#666;\'>[Esquema no disponible]</span>';">
-      </div>
-
-      <p style="font-size:9px; font-weight:600; margin:0 0 5px; color:#444;">Diámetros de tuberías (mm)</p>
+      <p style="font-size:9px; font-weight:600; margin:0 0 5px; color:#444;">
+        Diámetros exteriores de Tubería (mm)
+      </p>
 
       <div class="fila-diametros" id="contenedorDiametros">
-        <!-- Los campos se generan dinámicamente por JS -->
+        <!-- Generado por JS -->
       </div>
 
-      <button id="btnCalcular">Calcular</button>
+      <button id="btnCalcular">Calcular y generar SVG</button>
       <button id="btnLimpiar" class="sec">Limpiar</button>
+      <button id="btnCopiar" class="copiar">📋 Copiar imagen SVG</button>
       <div class="aviso" id="aviso"></div>
 
       <p class="nota">
-        El área de la sección del colector debe ser al menos igual a la suma de las áreas de las tuberías conectadas.
-        Se muestra el diámetro interior teórico y el diámetro comercial recomendado (DN).
-        Puedes elegir un DN estándar o seleccionar "Otro…" para introducir un diámetro manual.
+        Distancia = (Radio Brida 1) + (Radio Brida 2) + 25 mm (holgura para llave). El DN del colector se ajusta automáticamente a un tamaño comercial (Serie métrica).
       </p>
     </section>
 
     <section class="resultado">
-      <h2>Resultados</h2>
+      <h2>Resultados y esquema SVG</h2>
       <div id="resumenSalida">
         <div class="resumen">
           <div class="titulo">Introduce los diámetros y pulsa Calcular</div>
         </div>
       </div>
+      <div id="svgContainer"></div>
     </section>
 
   </div>
 </div>
 
-<!-- LIGHTBOX -->
+<!-- Lightbox para ampliar SVG -->
 <div class="lightbox" id="lightbox">
   <span class="cerrar" id="cerrarLightbox">&times;</span>
-  <img src="img/colector.png" alt="Esquema ampliado" id="imgLightbox"
-       onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23e8f0fa%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23666%22 font-size=%2214%22 text-anchor=%22middle%22%3EEsquema no disponible%3C/text%3E%3C/svg%3E';">
+  <div class="lightbox-content" id="lightboxContent"></div>
 </div>
 
 <script>
 (function(){
   "use strict";
 
-  // --- Lightbox ---
-  const lightbox       = document.getElementById('lightbox');
-  const cerrarLightbox = document.getElementById('cerrarLightbox');
-  const imgLightbox    = document.getElementById('imgLightbox');
+  // Base de datos simplificada: Tubería OD -> Brida OD (ASME B16.5 Clase 150)
+  const ASME_DATA = [
+    { nps: '1/2',  od: 21.3,  flangeOD: 88.9 },
+    { nps: '3/4',  od: 26.7,  flangeOD: 98.4 },
+    { nps: '1',    od: 33.4,  flangeOD: 107.9 },
+    { nps: '1 1/4',od: 42.2,  flangeOD: 117.3 },
+    { nps: '1 1/2',od: 48.3,  flangeOD: 127.0 },
+    { nps: '2',    od: 60.3,  flangeOD: 152.4 },
+    { nps: '2 1/2',od: 73.0,  flangeOD: 177.8 },
+    { nps: '3',    od: 88.9,  flangeOD: 190.5 },
+    { nps: '3 1/2',od: 101.6, flangeOD: 215.9 },
+    { nps: '4',    od: 114.3, flangeOD: 228.6 },
+    { nps: '5',    od: 141.3, flangeOD: 254.0 },
+    { nps: '6',    od: 168.3, flangeOD: 279.4 },
+    { nps: '8',    od: 219.1, flangeOD: 342.9 },
+    { nps: '10',   od: 273.0, flangeOD: 406.4 },
+    { nps: '12',   od: 323.8, flangeOD: 482.6 }
+  ];
 
-  function abrirLightbox(src){
-    if (src) imgLightbox.src = src;
-    lightbox.classList.add('activo');
-    document.body.style.overflow = 'hidden';
-  }
-  function cerrarLightboxFn(){
-    lightbox.classList.remove('activo');
-    document.body.style.overflow = '';
-  }
+  // Serie de DN comerciales (en mm) para ajustar el colector al alza
+  const SERIE_DN = [15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500, 600];
 
-  document.addEventListener('click', function(e){
-    const img = e.target.closest('.esquema img');
-    if (img) {
-      e.preventDefault();
-      abrirLightbox(img.src);
-    }
-  });
-
-  cerrarLightbox.addEventListener('click', cerrarLightboxFn);
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) cerrarLightboxFn();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox.classList.contains('activo')) {
-      cerrarLightboxFn();
-    }
-  });
-
-  // --- Serie de DN estándar (DN15 a DN500) ---
-  const DN_LIST = [15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500];
-
-  // --- Generación dinámica de los 8 campos ---
   const NUM_CAMPOS = 8;
-  const contenedorDiametros = document.getElementById('contenedorDiametros');
+  const contenedor = document.getElementById('contenedorDiametros');
   const ids = [];
 
-  // Valores por defecto (primeros 4: 50, 50, 80, 80; resto vacíos)
-  const defaults = ['50','50','80','80','','','',''];
+  const defaultsOD = [114.3, 33.4, 33.4, 114.3, '', '', '', ''];
 
   for (let i = 0; i < NUM_CAMPOS; i++) {
-    const idSelect = 'd' + (i+1) + '_sel';
-    const idManual = 'd' + (i+1) + '_man';
-    ids.push({ sel: idSelect, man: idManual, index: i });
+    const idSel = 'd' + (i+1) + '_sel';
+    const idMan = 'd' + (i+1) + '_man';
+    ids.push({ sel: idSel, man: idMan, index: i });
 
     const div = document.createElement('div');
     div.className = 'fila-grupo';
 
     const label = document.createElement('label');
-    label.setAttribute('for', idSelect);
+    label.setAttribute('for', idSel);
     label.textContent = 'Tubería ' + (i+1);
 
     const grupo = document.createElement('div');
     grupo.className = 'grupo-diametro';
     grupo.id = 'grupo_' + (i+1);
 
-    // Select con DN estándar + opción "Otro…"
     const select = document.createElement('select');
-    select.id = idSelect;
+    select.id = idSel;
 
-    // Opción vacía (sin tubería)
     const optVacia = document.createElement('option');
     optVacia.value = '';
     optVacia.textContent = '— sin tubería —';
     select.appendChild(optVacia);
 
-    // Opciones DN
-    DN_LIST.forEach(dn => {
+    ASME_DATA.forEach(item => {
       const opt = document.createElement('option');
-      opt.value = String(dn);
-      opt.textContent = 'DN ' + dn + ' (Ø' + dn + ' mm)';
+      opt.value = String(item.od);
+      opt.textContent = item.nps + '" (Tubo Ø' + item.od + ')';
       select.appendChild(opt);
     });
 
-    // Opción "Otro…"
     const optOtro = document.createElement('option');
     optOtro.value = 'otro';
-    optOtro.textContent = 'Otro… (manual)';
+    optOtro.textContent = 'Otro… (mm)';
     select.appendChild(optOtro);
 
-    // Input manual (oculto por defecto)
     const inputMan = document.createElement('input');
     inputMan.type = 'number';
-    inputMan.id = idManual;
+    inputMan.id = idMan;
     inputMan.className = 'input-manual';
     inputMan.step = 'any';
     inputMan.min = '0';
-    inputMan.placeholder = 'Diámetro mm';
+    inputMan.placeholder = 'Ø exterior mm';
 
     grupo.appendChild(select);
     grupo.appendChild(inputMan);
-
     div.appendChild(label);
     div.appendChild(grupo);
-    contenedorDiametros.appendChild(div);
+    contenedor.appendChild(div);
 
-    // Asignar valor por defecto
-    const def = defaults[i];
+    const def = defaultsOD[i];
     if (def !== '') {
-      // Si el valor por defecto está en la lista DN, seleccionarlo; si no, "otro" + manual
-      if (DN_LIST.includes(parseFloat(def))) {
-        select.value = def;
+      const encontrado = ASME_DATA.find(x => Math.abs(x.od - def) < 0.01);
+      if (encontrado) {
+        select.value = String(encontrado.od);
       } else {
         select.value = 'otro';
         grupo.classList.add('manual');
@@ -469,7 +373,6 @@
       select.value = '';
     }
 
-    // Listener: al cambiar el select, mostrar/ocultar input manual
     select.addEventListener('change', function() {
       if (select.value === 'otro') {
         grupo.classList.add('manual');
@@ -481,34 +384,34 @@
     });
   }
 
-  // --- Lógica de cálculo ---
   const aviso = document.getElementById('aviso');
   const resumenSalida = document.getElementById('resumenSalida');
+  const svgContainer = document.getElementById('svgContainer');
 
   function obtenerDiametros() {
     const diametros = [];
     const errores = [];
 
     for (let i = 0; i < NUM_CAMPOS; i++) {
-      const select = document.getElementById(ids[i].sel);
-      const inputMan = document.getElementById(ids[i].man);
-      const etiqueta = 'Tubería ' + (i+1);
+      const sel = document.getElementById(ids[i].sel);
+      const man = document.getElementById(ids[i].man);
+      const etq = 'Tubería ' + (i+1);
 
-      if (select.value === '') continue; // sin tubería
+      if (sel.value === '') continue;
 
       let val;
-      if (select.value === 'otro') {
-        val = parseFloat(inputMan.value);
-        if (inputMan.value.trim() === '' || isNaN(val) || val <= 0) {
-          errores.push(`${etiqueta}: introduce un diámetro manual válido (> 0).`);
+      if (sel.value === 'otro') {
+        val = parseFloat(man.value);
+        if (man.value.trim() === '' || isNaN(val) || val <= 0) {
+          errores.push(etq + ': introduce un diámetro válido (> 0).');
           continue;
         }
       } else {
-        val = parseFloat(select.value);
+        val = parseFloat(sel.value);
       }
 
       if (isNaN(val) || val <= 0) {
-        errores.push(`${etiqueta}: el diámetro debe ser mayor que 0.`);
+        errores.push(etq + ': el diámetro debe ser > 0.');
         continue;
       }
 
@@ -516,6 +419,161 @@
     }
 
     return { diametros, errores };
+  }
+
+  function obtenerFlangeOD(odTubo) {
+    const match = ASME_DATA.find(x => Math.abs(x.od - odTubo) < 0.1);
+    if (match) return match.flangeOD;
+    return odTubo * 1.8; // Estimación para tubos fuera de tabla
+  }
+
+  function calcularDNColector(diametros) {
+    let sumaAreas = 0;
+    diametros.forEach(d => { sumaAreas += Math.PI * Math.pow(d / 2, 2); });
+    return Math.sqrt((4 * sumaAreas) / Math.PI);
+  }
+
+  // Ajusta el DN teórico a un DN comercial al alza
+  function obtenerDNComercial(dnTeorico) {
+    for (let dn of SERIE_DN) {
+      if (dn >= dnTeorico) return dn;
+    }
+    return SERIE_DN[SERIE_DN.length - 1]; // Si supera el máximo de la tabla
+  }
+
+  function calcularDistancias(diametros) {
+    const numTubos = diametros.length;
+    if (numTubos === 0) return { distancias: [], info: [] };
+
+    const distancias = [];
+    const info = [];
+    const holguraHerramientas = 25; // 25 mm recomendados para pernos/llave
+
+    for (let i = 0; i < numTubos - 1; i++) {
+      const fOD1 = obtenerFlangeOD(diametros[i]);
+      const fOD2 = obtenerFlangeOD(diametros[i+1]);
+      
+      const dist = (fOD1 / 2) + (fOD2 / 2) + holguraHerramientas;
+      
+      distancias.push(dist);
+      info.push({ valor: dist, f1: fOD1, f2: fOD2 });
+    }
+
+    const fODIni = obtenerFlangeOD(diametros[0]);
+    const distIzq = (fODIni / 2) + 20;
+    
+    const fODFin = obtenerFlangeOD(diametros[numTubos-1]);
+    const distDer = (fODFin / 2) + 20;
+
+    distancias.unshift(distIzq);
+    distancias.push(distDer);
+
+    return { distancias, info, holguraHerramientas };
+  }
+
+  function generarSVG(diametros, distancias, dnTeorico, dnComercial) {
+    const numTubos = diametros.length;
+    if (numTubos === 0) return '';
+
+    let maxDiam = Math.max(...diametros, dnComercial);
+    let sumaDists = distancias.reduce((a,b)=>a+b, 0);
+    
+    let escala = Math.min(800 / sumaDists, 80 / maxDiam);
+    escala = Math.max(0.15, Math.min(escala, 3)); 
+
+    const margenIzq = 40; 
+    const margenDer = 100; 
+    const margenSup = 80;  
+    const margenInf = 70;  
+
+    const anchoCuerpo = sumaDists * escala;
+    const anchoTotal = anchoCuerpo + margenIzq + margenDer;
+    const altoTuboColector = Math.max(dnComercial * escala * 0.6, 24);
+    const altoTotal = margenSup + altoTuboColector + margenInf;
+
+    const yColectorSup = margenSup;
+    const yColectorInf = margenSup + altoTuboColector;
+    const yEjeColector = margenSup + altoTuboColector / 2;
+
+    const posX = [margenIzq];
+    for (let i = 0; i <= numTubos; i++) {
+      posX.push(posX[i] + distancias[i] * escala);
+    }
+
+    let svg = '<svg xmlns="http://www.w3.org/2000/svg" ';
+    svg += 'viewBox="0 0 ' + anchoTotal + ' ' + altoTotal + '" ';
+    svg += 'width="100%" height="auto">'; 
+
+    svg += '<rect width="100%" height="100%" fill="#ffffff" />';
+
+    // Colector
+    svg += '<rect x="' + posX[0] + '" y="' + yColectorSup + '" ';
+    svg += 'width="' + anchoCuerpo + '" height="' + altoTuboColector + '" ';
+    svg += 'fill="#f8f9fa" stroke="#b42318" stroke-width="3" rx="3"/>';
+
+    svg += '<text x="' + ((posX[0] + posX[numTubos])/2) + '" y="' + (yEjeColector + 6) + '" ';
+    svg += 'text-anchor="middle" font-size="16" fill="#1e5fa8" font-weight="bold" font-family="Arial">DN ' + dnComercial + '</text>';
+
+    // Tuberías
+    for (let i = 0; i < numTubos; i++) {
+      const cx = posX[i+1];
+      const diam = diametros[i];
+      const anchoTubo = Math.max(diam * escala, 6); 
+      
+      const altoTuboVertical = margenSup - 20; 
+      const ySupTubo = yColectorSup - altoTuboVertical;
+
+      svg += '<rect x="' + (cx - anchoTubo/2) + '" y="' + ySupTubo + '" ';
+      svg += 'width="' + anchoTubo + '" height="' + (altoTuboVertical + 2) + '" ';
+      svg += 'fill="#f8f9fa" stroke="#b42318" stroke-width="2.5" />';
+
+      svg += '<line x1="' + cx + '" y1="' + ySupTubo + '" x2="' + cx + '" y2="' + yColectorSup + '" ';
+      svg += 'stroke="#1e5fa8" stroke-width="1.5" stroke-dasharray="5,3"/>';
+
+      svg += '<text x="' + cx + '" y="' + (ySupTubo - 8) + '" ';
+      svg += 'text-anchor="middle" font-size="12" fill="#111" font-family="Arial" font-weight="bold">';
+      svg += 'Ø' + diam.toFixed(1) + '</text>';
+    }
+
+    // Cotas inferiores
+    const yCota = yColectorInf + 30;
+    for (let i = 0; i <= numTubos; i++) {
+      const x1 = posX[i];
+      const x2 = posX[i+1];
+      const dist = distancias[i];
+
+      svg += '<line x1="' + x1 + '" y1="' + yCota + '" x2="' + x2 + '" y2="' + yCota + '" stroke="#333" stroke-width="1.2"/>';
+
+      const arr = 4;
+      svg += '<line x1="' + x1 + '" y1="' + (yCota - arr) + '" x2="' + x1 + '" y2="' + (yCota + arr) + '" stroke="#333" stroke-width="1.2"/>';
+      svg += '<line x1="' + x2 + '" y1="' + (yCota - arr) + '" x2="' + x2 + '" y2="' + (yCota + arr) + '" stroke="#333" stroke-width="1.2"/>';
+
+      svg += '<line x1="' + x1 + '" y1="' + yColectorInf + '" x2="' + x1 + '" y2="' + (yCota + 5) + '" stroke="#888" stroke-width="0.8" stroke-dasharray="2,2"/>';
+      svg += '<line x1="' + x2 + '" y1="' + yColectorInf + '" x2="' + x2 + '" y2="' + (yCota + 5) + '" stroke="#888" stroke-width="0.8" stroke-dasharray="2,2"/>';
+
+      const cx = (x1 + x2) / 2;
+      svg += '<text x="' + cx + '" y="' + (yCota + 16) + '" ';
+      svg += 'text-anchor="middle" font-size="11" fill="#111" font-family="Arial">';
+      svg += dist.toFixed(1) + '</text>';
+    }
+
+    // Cota vertical DN
+    const xCotaDn = posX[numTubos] + 20; 
+    
+    svg += '<line x1="' + xCotaDn + '" y1="' + yColectorSup + '" x2="' + xCotaDn + '" y2="' + yColectorInf + '" stroke="#333" stroke-width="1.2"/>';
+    svg += '<line x1="' + (xCotaDn - 5) + '" y1="' + yColectorSup + '" x2="' + (xCotaDn + 5) + '" y2="' + yColectorSup + '" stroke="#333" stroke-width="1.2"/>';
+    svg += '<line x1="' + (xCotaDn - 5) + '" y1="' + yColectorInf + '" x2="' + (xCotaDn + 5) + '" y2="' + yColectorInf + '" stroke="#333" stroke-width="1.2"/>';
+    
+    svg += '<line x1="' + posX[numTubos] + '" y1="' + yColectorSup + '" x2="' + (xCotaDn + 5) + '" y2="' + yColectorSup + '" stroke="#888" stroke-width="0.8" stroke-dasharray="2,2"/>';
+    svg += '<line x1="' + posX[numTubos] + '" y1="' + yColectorInf + '" x2="' + (xCotaDn + 5) + '" y2="' + yColectorInf + '" stroke="#888" stroke-width="0.8" stroke-dasharray="2,2"/>';
+    
+    // Aquí mostramos el DN Comercial en la cota del dibujo
+    svg += '<text x="' + (xCotaDn + 8) + '" y="' + (yEjeColector + 5) + '" ';
+    svg += 'text-anchor="start" font-size="12" fill="#111" font-family="Arial" font-weight="bold">';
+    svg += dnComercial + '</text>';
+
+    svg += '</svg>';
+    return svg;
   }
 
   function calcular() {
@@ -531,106 +589,190 @@
       return;
     }
 
-    // Suma de áreas
-    let sumaAreas = 0;
-    diametros.forEach(d => {
-      sumaAreas += Math.PI * Math.pow(d / 2, 2);
-    });
+    const dnTeorico = calcularDNColector(diametros);
+    const dnComercial = obtenerDNComercial(dnTeorico);
+    
+    const result = calcularDistancias(diametros);
+    const distancias = result.distancias;
+    const info = result.info;
+    
+    const longitudTotal = distancias.reduce((a, b) => a + b, 0);
 
-    // Diámetro teórico: D = sqrt(4 * A / p)
-    const diametroTeorico = Math.sqrt((4 * sumaAreas) / Math.PI);
-
-    // Buscar DN comercial inmediatamente superior o igual
-    let dnRecomendado = null;
-    for (let dn of DN_LIST) {
-      if (dn >= diametroTeorico - 0.01) {
-        dnRecomendado = dn;
-        break;
-      }
-    }
-
-    // Mostrar resultados
     aviso.className = 'aviso ok';
-    aviso.textContent = 'Cálculo realizado correctamente.';
+    aviso.textContent = 'Cálculo basado en diámetro de bridas (ASME B16.5).';
 
     let html = '<div class="resumen">';
     html += '<div class="titulo">Resumen del cálculo</div>';
-
-    html += `<div class="dato">Tuberías introducidas: ${diametros.length}</div>`;
-    html += `<div class="dato">Suma de áreas de tuberías: ${sumaAreas.toFixed(2)} mm²</div>`;
-    html += `<div class="dato dato-grande">Diámetro interior teórico mínimo: <strong>${diametroTeorico.toFixed(2)} mm</strong></div>`;
-
-    if (dnRecomendado !== null) {
-      html += `<div class="dato dato-grande">Diámetro comercial recomendado (DN): <strong>DN ${dnRecomendado}</strong></div>`;
-    } else {
-      html += `<div class="dato" style="color:#b42318;">El diámetro teórico supera DN500. Consulta con un especialista.</div>`;
+    html += '<div class="dato">Tuberías: ' + diametros.length + ' — Ø Tubo: ' + diametros.map(d => d.toFixed(1)).join(' · ') + ' mm</div>';
+    
+    // Resaltar DN Comercial vs Teórico
+    html += '<div class="dato dato-grande" style="background:#e8f0fa;border-color:#b8cbe0;margin-bottom:4px;">';
+    html += 'DN Calculado (Teórico): <strong>' + dnTeorico.toFixed(2) + ' mm</strong><br>';
+    html += '<span style="font-size:14px; color:#b42318; margin-top:4px; display:block;">DN Comercial a usar: DN ' + dnComercial + '</span>';
+    html += '</div>';
+    
+    html += '<div class="titulo" style="margin-top:6px;">Distancias entre ejes (mm)</div>';
+    for (let i = 0; i <= diametros.length; i++) {
+      html += '<div class="dato" style="font-weight:400;font-size:9px;">';
+      
+      if (i === 0) {
+        html += `Borde a Tubería 1: <strong>${distancias[i].toFixed(2)} mm</strong> (Brida: Ø${info.length > 0 ? info[0].f1 : obtenerFlangeOD(diametros[0])})`;
+      } else if (i === diametros.length) {
+        html += `Última Tubería a Borde: <strong>${distancias[i].toFixed(2)} mm</strong> (Brida: Ø${info.length > 0 ? info[info.length-1].f2 : obtenerFlangeOD(diametros[diametros.length-1])})`;
+      } else {
+        const f1 = info[i-1].f1;
+        const f2 = info[i-1].f2;
+        html += `Entre Tubo ${i} y ${i+1}: <strong>${distancias[i].toFixed(2)} mm</strong><br>`;
+        html += `<span style="font-size:8px; color:#666;">Brida1: Ø${f1} / 2 + Brida2: Ø${f2} / 2 + ${result.holguraHerramientas} mm</span>`;
+      }
+      
+      html += '</div>';
     }
 
-    html += '<div class="titulo" style="margin-top:6px;">Detalle de áreas</div>';
-    diametros.forEach((d, i) => {
-      const area = Math.PI * Math.pow(d / 2, 2);
-      html += `<div class="dato" style="font-weight:400;font-size:9px;">Tubería ${i+1}: Ø${d} mm → ${area.toFixed(2)} mm²</div>`;
-    });
-
+    html += '<div class="dato dato-grande" style="background:#f4f6f8;border:1px solid #ccc;font-size:12px;margin-top:6px;padding:10px;">';
+    html += 'LONGITUD TOTAL DEL COLECTOR (Borde a Borde): <br><strong>' + longitudTotal.toFixed(2) + ' mm</strong>';
     html += '</div>';
+    html += '</div>';
+    
     resumenSalida.innerHTML = html;
+
+    const svg = generarSVG(diametros, distancias, dnTeorico, dnComercial);
+    svgContainer.innerHTML = svg;
   }
 
   function mostrarError(msg) {
     aviso.className = 'aviso error';
     aviso.textContent = msg;
     resumenSalida.innerHTML = '<div class="resumen"><div class="titulo">Corrige los datos para calcular</div></div>';
+    svgContainer.innerHTML = '';
   }
 
   function limpiar() {
     for (let i = 0; i < NUM_CAMPOS; i++) {
-      const select = document.getElementById(ids[i].sel);
-      const inputMan = document.getElementById(ids[i].man);
+      const sel = document.getElementById(ids[i].sel);
+      const man = document.getElementById(ids[i].man);
       const grupo = document.getElementById('grupo_' + (i+1));
 
-      const def = defaults[i];
+      const def = defaultsOD[i];
       if (def !== '') {
-        if (DN_LIST.includes(parseFloat(def))) {
-          select.value = def;
+        const enc = ASME_DATA.find(x => Math.abs(x.od - def) < 0.01);
+        if (enc) {
+          sel.value = String(enc.od);
           grupo.classList.remove('manual');
-          inputMan.value = '';
+          man.value = '';
         } else {
-          select.value = 'otro';
+          sel.value = 'otro';
           grupo.classList.add('manual');
-          inputMan.value = def;
+          man.value = def;
         }
       } else {
-        select.value = '';
+        sel.value = '';
         grupo.classList.remove('manual');
-        inputMan.value = '';
+        man.value = '';
       }
     }
     aviso.className = 'aviso';
     aviso.textContent = '';
     resumenSalida.innerHTML = '<div class="resumen"><div class="titulo">Introduce los diámetros y pulsa Calcular</div></div>';
+    svgContainer.innerHTML = '';
   }
 
-  // Eventos
-  document.getElementById('btnCalcular').addEventListener('click', calcular);
-  document.getElementById('btnCalcularTop').addEventListener('click', calcular);
-  document.getElementById('btnLimpiar').addEventListener('click', limpiar);
+  async function copiarSVG() {
+    const svgEl = svgContainer.querySelector('svg');
+    if (!svgEl) {
+      aviso.className = 'aviso error';
+      aviso.textContent = 'No hay ningún SVG generado para copiar.';
+      return;
+    }
 
-  // Enter en cualquier input/select → calcular
-  document.addEventListener('keydown', (e) => {
+    const clon = svgEl.cloneNode(true);
+    
+    const w = svgEl.viewBox.baseVal.width;
+    const h = svgEl.viewBox.baseVal.height;
+    clon.setAttribute('width', w);
+    clon.setAttribute('height', h);
+
+    if (!('supports' in window.ClipboardItem) || !window.ClipboardItem.supports('image/svg+xml')) {
+      try {
+        const svgTexto = clon.outerHTML;
+        await navigator.clipboard.writeText(svgTexto);
+        aviso.className = 'aviso ok';
+        aviso.textContent = 'SVG copiado como código fuente.';
+      } catch (err) {
+        aviso.className = 'aviso error';
+        aviso.textContent = 'Error al copiar: ' + err.message;
+      }
+      return;
+    }
+
+    try {
+      const svgTexto = clon.outerHTML;
+      const blob = new Blob([svgTexto], { type: 'image/svg+xml' });
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/svg+xml': blob })
+      ]);
+      aviso.className = 'aviso ok';
+      aviso.textContent = 'Imagen SVG copiada al portapapeles.';
+    } catch (err) {
+      aviso.className = 'aviso error';
+      aviso.textContent = 'Error al copiar SVG: ' + err.message;
+    }
+  }
+
+  const lightbox = document.getElementById('lightbox');
+  const cerrarLightbox = document.getElementById('cerrarLightbox');
+  const lightboxContent = document.getElementById('lightboxContent');
+
+  svgContainer.addEventListener('click', function(e) {
+    const svg = e.target.closest('svg');
+    if (!svg) return;
+
+    const clon = svg.cloneNode(true);
+    
+    const w = svg.viewBox.baseVal.width;
+    const h = svg.viewBox.baseVal.height;
+    clon.setAttribute('width', w);
+    clon.setAttribute('height', h);
+    
+    lightboxContent.innerHTML = '';
+    lightboxContent.appendChild(clon);
+    lightbox.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+  });
+
+  function cerrarLightboxFn() {
+    lightbox.classList.remove('activo');
+    document.body.style.overflow = '';
+    lightboxContent.innerHTML = '';
+  }
+
+  cerrarLightbox.addEventListener('click', cerrarLightboxFn);
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) cerrarLightboxFn();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lightbox.classList.contains('activo')) {
+      cerrarLightboxFn();
+    }
+  });
+
+  document.getElementById('btnCalcular').addEventListener('click', calcular);
+  document.getElementById('btnLimpiar').addEventListener('click', limpiar);
+  document.getElementById('btnCopiar').addEventListener('click', copiarSVG);
+
+  document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
-      const target = e.target;
-      if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
+      const t = e.target;
+      if (t.tagName === 'INPUT' || t.tagName === 'SELECT') {
         calcular();
       }
     }
   });
 
-  // Estado inicial
   limpiar();
 })();
 </script>
 
-<!-- Cabecera MEN (opcional, igual que en tu plantilla) -->
 <link rel="stylesheet" href="men-header.css">
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
