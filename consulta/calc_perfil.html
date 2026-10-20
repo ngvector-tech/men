@@ -38,11 +38,19 @@
     background: #fff;
     font-weight: 600;
   }
-  .img-wrap { text-align: center; margin-bottom: 13px; }  /* ⬅️ antes 20 */
+  .img-wrap { 
+    text-align: center; 
+    margin-bottom: 13px; 
+    display: flex;              /* Añadido para centrar mejor */
+    justify-content: center;    /* Añadido para centrar mejor */
+  }
+  
   .img-wrap img {
-    max-width: 100%; max-height: 147px;      /* ⬅️ antes 220 */
-    border: 1px solid #e0e3e6; border-radius: 4px;  /* ⬅️ antes 6 */
-    background: #fafafa;
+    max-width: 100%; 
+    max-height: 147px;
+    border: none;               /* Quita el borde/marco */
+    background: transparent;    /* Quita el fondo gris/blanco */
+    border-radius: 0;           /* Quita las esquinas redondeadas del marco */
   }
   .img-fallback {
     display: none; font-size: 9px;           /* ⬅️ antes 13 */

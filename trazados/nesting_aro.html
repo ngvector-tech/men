@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora de Sector de Anillo Plano</title>
+<style>
+  /* CSS COMPACTO COMPARTIDO */
+  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  
+  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
+  .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
+  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 14px; }
+  
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; background: #fff; }
+  .panel-title { background: var(--azul); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; }
+  .panel-body { padding: 8px; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
+  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
+  
+  .input-box { width: 80px; flex-shrink: 0; }
+  .input-box input, .input-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
+  .input-box select { text-align: left; font-family: inherit; padding: 4px; }
+  .input-box input:focus, .input-box select:focus { outline: none; border-color: var(--azul); }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
+  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
+  .result-val.big { font-size: 13px; background: #e7f1ff; }
+
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 0 8px 8px 8px; }
+
+  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; min-height: 200px; }
+  .svg-box svg { width: 100%; max-width: 400px; height: auto; max-height: 250px; }
+
+  .table-wrap { overflow-x: auto; margin: 8px; border: 1px solid var(--borde); border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 450px; }
+  th { background: var(--azul); color: #fff; padding: 6px; text-align: center; font-size: 11px; }
+  td { border: 1px solid var(--borde); padding: 5px; text-align: center; font-family: monospace; }
+  tr:nth-child(even) { background: var(--gris); }
+  tr:hover { background: #e7f1ff; cursor: pointer; }
+  tr.active td { background: #fff3cd; font-weight: bold; color: #856404; }
+
+  .btn-volver {
+      display: inline-flex; align-items: center; gap: 6px; margin: 10px; padding: 8px 16px;
+      background-color: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7;
+      border-radius: 6px; font-size: 13px; font-weight: bold; text-decoration: none;
+      cursor: pointer; transition: all 0.2s; font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="javascript:history.back()" class="btn-volver">? Volver atrás</a>
+  <div class="header">Calculadora de Sector de Anillo Plano</div>
+  
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">1 · Datos del Anillo</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="label">Unidades</div>
+          <div class="input-box"><select id="unit"><option value="mm">mm</option><option value="inch">pulgadas</option></select></div>
+        </div>
+        <div class="row">
+          <div class="label">Diámetro Exterior<small>D</small></div>
+          <div class="input-box"><input id="D" type="number" value="1000" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Diámetro Interior<small>d</small></div>
+          <div class="input-box"><input id="d" type="number" value="750" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Nº Sectores<small>n (1 a 12)</small></div>
+          <div class="input-box"><input id="n" type="number" value="4" min="1" max="12" step="1"></div>
+        </div>
+        <div class="row">
+          <div class="label">Espacio de Corte<small>g (brecha)</small></div>
+          <div class="input-box"><input id="g" type="number" value="10" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Espesor<small>t</small></div>
+          <div class="input-box"><input id="t" type="number" value="12" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Material</div>
+          <div class="input-box">
+            <select id="rho">
+              <option value="7850">Acero Carbono</option>
+              <option value="8000">Acero Inox</option>
+              <option value="2700">Aluminio</option>
+              <option value="8940">Cobre</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">2 · Resultados</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Ángulo del Sector</div><div class="result-val" id="r-th">-</div></div>
+        <div class="result-row"><div class="result-label">Tamaño del Sector<small>Cuerda × Altura</small></div><div class="result-val" id="r-sec">-</div></div>
+        <div class="result-row"><div class="result-label">Paso de Anidamiento</div><div class="result-val" id="r-p">-</div></div>
+        <div class="result-row"><div class="result-label">Tamaño de Placa<small>Para todos los sectores</small></div><div class="result-val big" id="r-plate">-</div></div>
+        <div class="result-row"><div class="result-label">Uso de Placa<small>Área del anillo / Placa</small></div><div class="result-val" id="r-util">-</div></div>
+        <div class="result-row"><div class="result-label">Ahorro vs 1 Pieza</div><div class="result-val" id="r-save">-</div></div>
+        <div class="result-row"><div class="result-label">Peso (Anillo / Placa)</div><div class="result-val" id="r-wt">-</div></div>
+        <div class="result-row"><div class="result-label">Juntas Soldadas</div><div class="result-val" id="r-joints">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner" id="banner">Calculando...</div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">El Anillo y sus Juntas</div>
+      <div class="panel-body">
+        <div class="svg-box"><svg id="svg-ring" viewBox="0 0 470 360"></svg></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Sectores Anidados a Escala</div>
+      <div class="panel-body">
+        <div class="svg-box"><svg id="svg-lay" viewBox="0 0 520 360"></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin: 0 8px 8px 8px;">
+    <div class="panel-title">Comparativa de Sectores</div>
+    <div class="table-wrap">
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>Sectores</th>
+            <th>Ángulo</th>
+            <th>Tamaño de Placa</th>
+            <th>Uso</th>
+            <th>Ahorro</th>
+            <th>Juntas</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// MATEMÁTICAS Y LÓGICA DEL ANILLO
+// ==========================================
+const $ = id => document.getElementById(id);
+const fx = (v, d) => v.toFixed(d);
+
+function outline(R, r, h) {
+  var n = Math.max(8, Math.ceil(h * 2 * 180 / Math.PI / 1.5));
+  var Ro = R / Math.cos(h / n);
+  var p = [], i;
+  for (i = 0; i <= n; i++) { var a = -h + 2 * h * i / n; p.push([Ro * Math.cos(a), Ro * Math.sin(a)]); }
+  for (i = 0; i <= n; i++) { var b = h - 2 * h * i / n; p.push([r * Math.cos(b), r * Math.sin(b)]); }
+  return p;
+}
+
+function segDist(px, py, ax, ay, bx, by) {
+  var dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy, t = l2 ? ((px - ax) * dx + (py - ay) * dy) / l2 : 0;
+  t = t < 0 ? 0 : (t > 1 ? 1 : t);
+  var qx = ax + t * dx - px, qy = ay + t * dy - py;
+  return Math.sqrt(qx * qx + qy * qy);
+}
+
+function cross(ax, ay, bx, by, cx, cy, dx, dy) {
+  function o(px, py, qx, qy, rx, ry) { return (qx - px) * (ry - py) - (qy - py) * (rx - px); }
+  var d1 = o(cx, cy, dx, dy, ax, ay), d2 = o(cx, cy, dx, dy, bx, by), d3 = o(ax, ay, bx, by, cx, cy), d4 = o(ax, ay, bx, by, dx, dy);
+  return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+}
+
+function clearance(P, s) {
+  var n = P.length, m = 1e18, i, j;
+  for (i = 0; i < n; i++) {
+    var a = P[i], b = P[(i + 1) % n];
+    for (j = 0; j < n; j++) {
+      var c = P[j], d = P[(j + 1) % n];
+      if (cross(a[0], a[1], b[0], b[1], c[0] - s, c[1], d[0] - s, d[1])) return -1;
+      var d1 = segDist(c[0] - s, c[1], a[0], a[1], b[0], b[1]); if (d1 < m) m = d1;
+      var d2 = segDist(a[0], a[1], c[0] - s, c[1], d[0] - s, d[1]); if (d2 < m) m = d2;
+    }
+  }
+  return m;
+}
+
+function pitch(R, r, h, g, Wsec) {
+  var P = outline(R, r, h), top = Wsec + g + 1, step = top / 90, hi = top, lo = null, s;
+  for (s = top - step; s > 0; s -= step) {
+    if (clearance(P, s) < g) { lo = s; break; }
+    hi = s;
+  }
+  if (lo == null) lo = 0;
+  for (var k = 0; k < 26; k++) {
+    var mid = (lo + hi) / 2;
+    if (clearance(P, mid) >= g) hi = mid; else lo = mid;
+  }
+  return hi;
+}
+
+const cache = {};
+function solve(D, d, n, g) {
+  var key = [D, d, n, g].join('|');
+  if (cache[key]) return cache[key];
+  var R = D / 2, r = d / 2, res;
+  if (n === 1) {
+    res = { n: 1, th: 360, chord: D, hgt: D, p: 0, Ls: D + 2 * g, Ws: D + 2 * g };
+  } else {
+    var h = Math.PI / n, chord = 2 * R * Math.sin(h), hgt = R - r * Math.cos(h);
+    var p = pitch(R, r, h, g, hgt);
+    res = { n: n, th: 360 / n, chord: chord, hgt: hgt, p: p, Ls: hgt + (n - 1) * p + 2 * g, Ws: chord + 2 * g };
+  }
+  res.area = res.Ls * res.Ws;
+  cache[key] = res;
+  return res;
+}
+
+// ==========================================
+// DIBUJO DE SVG
+// ==========================================
+const S = (el, W, H) => {
+  el.innerHTML = `<defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e7eef3" stroke-width="1"/></pattern>
+    <filter id="s"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.2"/></filter>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef3f7"/><stop offset="0.5" stop-color="#d3dde6"/><stop offset="1" stop-color="#b4c2cf"/></linearGradient>
+    <linearGradient id="plateEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b9cab"/><stop offset="1" stop-color="#5d6e7e"/></linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9efe9"/><stop offset="1" stop-color="#9adcd2"/></linearGradient>
+  </defs>
+  <rect width="${W}" height="${H}" fill="#f7fafc"/><rect width="${W}" height="${H}" fill="url(#g)"/>`;
+  return {
+    C: { ink: '#0B1F3A', key: '#c2410c', dim: '#1f5f8b', mute: '#7a8896' },
+    add: (t, a) => { let e = document.createElementNS('http://www.w3.org/2000/svg', t); for (let k in a) e.setAttribute(k, a[k]); el.appendChild(e); },
+    path: (d, a) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'path'); e.setAttribute('d', d); for (let k in a) e.setAttribute(k, a[k]); el.appendChild(e); },
+    text: (x, y, s, o) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'text'); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('font-size', o.size || 10); e.setAttribute('fill', o.color || '#333'); e.setAttribute('text-anchor', o.anchor || 'middle'); e.setAttribute('font-weight', o.weight || 'normal'); e.textContent = s; el.appendChild(e); },
+    url: id => `url(#${id})`,
+    centerline: (x1, y1, x2, y2) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'line'); e.setAttribute('x1', x1); e.setAttribute('y1', y1); e.setAttribute('x2', x2); e.setAttribute('y2', y2); e.setAttribute('stroke', '#7a8896'); e.setAttribute('stroke-width', 0.9); e.setAttribute('stroke-dasharray', '14 3 3 3'); el.appendChild(e); },
+    dimH: (p1, p2, y, t, o) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'g'); e.innerHTML = `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p1[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p2[0]}" y1="${p2[1]}" x2="${p2[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="0.8"/><line x1="${p1[0]}" y1="${y}" x2="${p2[0]}" y2="${y}" stroke="#1f5f8b" stroke-width="1"/><text x="${(p1[0]+p2[0])/2}" y="${y-5}" font-size="11.5" font-weight="700" fill="#1f5f8b" text-anchor="middle" stroke="#f7fafc" stroke-width="3.4" stroke-linejoin="round" paint-order="stroke">${t}</text>`; el.appendChild(e); },
+    dimV: (p1, p2, x, t, o) => { let e = document.createElementNS('http://www.w3.org/2000/svg', 'g'); e.innerHTML = `<line x1="${p1[0]}" y1="${p1[1]}" x2="${x}" y2="${p1[1]}" stroke="#c2410c" stroke-width="0.8"/><line x1="${p2[0]}" y1="${p2[1]}" x2="${x}" y2="${p2[1]}" stroke="#c2410c" stroke-width="0.8"/><line x1="${x}" y1="${p1[1]}" x2="${x}" y2="${p2[1]}" stroke="#c2410c" stroke-width="1"/><text x="${x+5}" y="${(p1[1]+p2[1])/2}" font-size="11.5" font-weight="700" fill="#c2410c" text-anchor="middle" dominant-baseline="central" stroke="#f7fafc" stroke-width="3.4" stroke-linejoin="round" paint-order="stroke" transform="rotate(-90 ${x+5} ${(p1[1]+p2[1])/2})">${t}</text>`; el.appendChild(e); }
+  };
+};
+
+function drawRing(D, d, n, th, dp) {
+  var svg = S($('svg-ring'), 470, 360), cx = 222, cy = 172, Rp = 116, rp = Math.min(Math.max(Rp * d / D, 14), Rp - 9), ink = svg.C.ink;
+  function ring(x, y) { return 'M' + (x - Rp) + ' ' + y + ' a' + Rp + ' ' + Rp + ' 0 1 0 ' + (2 * Rp) + ' 0 a' + Rp + ' ' + Rp + ' 0 1 0 ' + (-2 * Rp) + ' 0 Z M' + (x - rp) + ' ' + y + ' a' + rp + ' ' + rp + ' 0 1 0 ' + (2 * rp) + ' 0 a' + rp + ' ' + rp + ' 0 1 0 ' + (-2 * rp) + ' 0 Z'; }
+  svg.path(ring(cx + 4, cy + 5), { fill: svg.url('plateEdge'), 'fill-rule': 'evenodd', stroke: ink, 'stroke-width': 1 });
+  svg.path(ring(cx, cy), { fill: svg.url('plate'), 'fill-rule': 'evenodd', stroke: ink, 'stroke-width': 1.6, filter: svg.url('s') });
+  svg.centerline(cx - Rp - 16, cy, cx + Rp + 16, cy);
+  svg.centerline(cx, cy - Rp - 16, cx, cy + Rp + 16);
+  
+  var R0 = Math.PI / 180, mid = -50;
+  var a0 = (mid + th / 2) * R0;
+  if (n > 1) {
+    for (var k = 0; k < n; k++) {
+      var a = a0 + k * th * R0;
+      svg.add('line', { x1: cx + rp * Math.cos(a), y1: cy + rp * Math.sin(a), x2: cx + Rp * Math.cos(a), y2: cy + Rp * Math.sin(a), stroke: '#d97706', 'stroke-width': 1.8, 'stroke-dasharray': '6 4' });
+    }
+  }
+  svg.dimH([cx - Rp, cy], [cx + Rp, cy], cy + Rp + 36, 'D = ' + fx(D, dp));
+  var ca = Math.cos(25 * R0), sa = Math.sin(25 * R0), txt = 'd = ' + fx(d, dp);
+  if (2 * rp >= 60) {
+    let e = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    e.setAttribute('x1', cx - rp * ca); e.setAttribute('y1', cy + rp * sa); e.setAttribute('x2', cx + rp * ca); e.setAttribute('y2', cy - rp * sa);
+    e.setAttribute('stroke', '#1f5f8b'); e.setAttribute('stroke-width', 1); $('svg-ring').appendChild(e);
+    svg.text(cx, cy, txt, { color: '#1f5f8b', size: 11.5, weight: 'bold' });
+  }
+  if (n > 1) {
+    svg.text(cx, cy - Rp - 20, '? = ' + fx(th, 1) + '°', { color: '#c2410c', size: 12, weight: 'bold' });
+  }
+}
+
+function drawLay(D, d, n, g, me, u, dp) {
+  var svg = S($('svg-lay'), 520, 360), R = D / 2, r = d / 2, ink = svg.C.ink, h = Math.PI / n;
+  var xmin = n > 1 ? r * Math.cos(h) - g : -R - g, xmax = n > 1 ? R + (n - 1) * me.p + g : R + g;
+  var ymin = n > 1 ? -R * Math.sin(h) - g : -R - g, ymax = -ymin;
+  var mL = 30, mR = 92, mT = 52, mB = 56;
+  var sc = Math.min((520 - mL - mR) / (xmax - xmin), (360 - mT - mB) / (ymax - ymin));
+  var ox = mL + ((520 - mL - mR) - (xmax - xmin) * sc) / 2;
+  var oy = mT + ((360 - mT - mB) - (ymax - ymin) * sc) / 2;
+  function T(p) { return [ox + (p[0] - xmin) * sc, oy + (p[1] - ymin) * sc]; }
+  function q(p) { var t = T(p); return t[0].toFixed(1) + ' ' + t[1].toFixed(1); }
+  
+  var p0 = T([xmin, ymin]), p1 = T([xmax, ymax]);
+  svg.path('M' + p0[0] + ' ' + p1[1] + ' l6 6 H' + (p1[0] + 6) + ' V' + (p0[1] + 6) + ' l-6 -6 Z', { fill: svg.url('plateEdge'), stroke: ink, 'stroke-width': 1 });
+  svg.add('rect', { x: p0[0], y: p0[1], width: p1[0] - p0[0], height: p1[1] - p0[1], fill: svg.url('plate'), stroke: ink, 'stroke-width': 1.4, filter: svg.url('s') });
+  
+  var Rp = (R * sc).toFixed(1), rp = (r * sc).toFixed(1);
+  if (n === 1) {
+    var c = T([0, 0]), a = R * sc, b = r * sc;
+    svg.path('M' + (c[0] - a) + ' ' + c[1] + ' a' + a + ' ' + a + ' 0 1 0 ' + (2 * a) + ' 0 a' + a + ' ' + a + ' 0 1 0 ' + (-2 * a) + ' 0 Z M' + (c[0] - b) + ' ' + c[1] + ' a' + b + ' ' + b + ' 0 1 0 ' + (2 * b) + ' 0 a' + b + ' ' + b + ' 0 1 0 ' + (-2 * b) + ' 0 Z', { fill: svg.url('mark'), 'fill-rule': 'evenodd', stroke: ink, 'stroke-width': 1.6 });
+  } else {
+    for (var k = 0; k < n; k++) {
+      var s = k * me.p, ch = Math.cos(h), sh = Math.sin(h);
+      svg.path('M' + q([R * ch + s, -R * sh]) + ' A' + Rp + ' ' + Rp + ' 0 0 1 ' + q([R * ch + s, R * sh]) + ' L' + q([r * ch + s, r * sh]) + ' A' + rp + ' ' + rp + ' 0 0 0 ' + q([r * ch + s, -r * sh]) + ' Z', { fill: svg.url('mark'), stroke: ink, 'stroke-width': 1.5, 'stroke-linejoin': 'round' });
+    }
+  }
+  svg.centerline(p0[0] - 8, T([0, 0])[1], p1[0] + 10, T([0, 0])[1]);
+  svg.dimH([p0[0], p1[1]], [p1[0], p1[1]], p1[1] + 36, fx(me.Ls, dp));
+  svg.dimV([p1[0], p0[1]], [p1[0], p1[1]], p1[0] + 36, fx(me.Ws, dp));
+}
+
+// ==========================================
+// INTERFAZ Y EVENTOS
+// ==========================================
+function calc() {
+  var u = $('unit').value, D = parseFloat($('D').value), d = parseFloat($('d').value);
+  var n = parseInt($('n').value, 10), g = parseFloat($('g').value) || 0;
+  var t = parseFloat($('t').value) || 0, rho = parseFloat($('rho').value);
+  var metric = u === 'mm', dp = metric ? 0 : 2;
+  
+  var banner = $('banner');
+  var bad = null;
+  if (!(D > 0) || !(d > 0)) bad = 'Introduce los diámetros exterior e interior.';
+  else if (d >= D) bad = 'El diámetro interior debe ser menor que el exterior.';
+  else if (!(n >= 1) || n > 12) bad = 'El número de sectores debe estar entre 1 y 12.';
+  else if (g < 0 || t < 0) bad = 'La brecha y el espesor no pueden ser negativos.';
+  
+  if (bad) {
+    banner.style.background = '#f8d7da'; banner.style.color = '#842029'; banner.innerHTML = '? ' + bad;
+    ['r-th','r-sec','r-p','r-plate','r-util','r-save','r-wt','r-joints'].forEach(i => $(i).innerText = '–');
+    $('tbl').querySelector('tbody').innerHTML = ''; 
+    $('svg-ring').innerHTML = ''; 
+    $('svg-lay').innerHTML = '';
+    return;
+  }
+  
+  banner.style.background = '#d1e7dd'; banner.style.color = '#0f5132';
+  
+  var ringA = Math.PI / 4 * (D * D - d * d), one = solve(D, d, 1, g), me = solve(D, d, n, g);
+  function sz(s) { return fx(Math.max(s.Ls, s.Ws), dp) + ' × ' + fx(Math.min(s.Ls, s.Ws), dp); }
+  
+  $('r-th').innerText = fx(me.th, 1) + '°';
+  $('r-sec').innerText = n > 1 ? (fx(me.chord, dp) + ' × ' + fx(me.hgt, dp) + ' ' + u) : '–';
+  $('r-p').innerText = n > 1 ? fx(me.p, dp) + ' ' + u : '–';
+  $('r-plate').innerText = sz(me) + ' ' + u;
+  $('r-util').innerText = fx(ringA / me.area * 100, 1) + ' %';
+  $('r-save').innerText = fx((1 - me.area / one.area) * 100, 1) + ' %';
+  
+  var k = metric ? rho / 1e9 : rho * 3.6127e-5, wu = metric ? ' kg' : ' lb';
+  $('r-wt').innerText = t > 0 ? (fx(ringA * t * k, 1) + ' / ' + fx(me.area * t * k, 1) + wu) : 'indica t';
+  $('r-joints').innerText = n > 1 ? (n + ' uds · ' + fx(n * (D - d) / 2, dp) + ' ' + u) : 'Ninguna (pieza única)';
+  
+  banner.innerHTML = n > 1 ? 
+    ('? ' + n + ' sectores de ' + fx(me.th, 1) + '° · Placa de ' + sz(me) + ' ' + u + ' · Ahorra un ' + fx((1 - me.area / one.area) * 100, 1) + '% de material') : 
+    ('? Anillo de una pieza · Placa de ' + sz(me) + ' ' + u + ' · Aprovechamiento: ' + fx(ringA / me.area * 100, 1) + '%');
+
+  //  Tabla comparativa
+  var ns = [1, 2, 3, 4, 6, 8, 10, 12];
+  if (ns.indexOf(n) < 0) ns.push(n);
+  ns.sort((a, b) => a - b);
+  var html = '';
+  ns.forEach(function(q) {
+    var s = solve(D, d, q, g);
+    html += '<tr data-n="' + q + '" class="' + (q === n ? 'active' : '') + '"><td>' + q + '</td><td>' + fx(s.th, 1) + '°</td><td><strong>' + sz(s) + '</strong></td><td>' + fx(ringA / s.area * 100, 1) + ' %</td><td>' + (q > 1 ? fx((1 - s.area / one.area) * 100, 1) + ' %' : '–') + '</td><td>' + (q > 1 ? q : 0) + '</td></tr>';
+  });
+  $('tbl').querySelector('tbody').innerHTML = html;
+  $('tbl').querySelectorAll('tbody tr').forEach(tr => {
+    tr.addEventListener('click', () => { $('n').value = tr.getAttribute('data-n'); calc(); });
+  });
+  
+  drawRing(D, d, n, me.th, dp);
+  drawLay(D, d, n, g, me, u, dp);
+}
+
+let timer = null;
+function later() { clearTimeout(timer); timer = setTimeout(calc, 150); }
+['unit', 'D', 'd', 'n', 'g', 't', 'rho'].forEach(id => {
+  $(id).addEventListener('input', later);
+  $(id).addEventListener('change', calc);
+});
+
+calc();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
