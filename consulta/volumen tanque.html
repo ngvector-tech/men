@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora de Volumen de Depósito</title>
+<style>
+  /* CSS COMPACTO COMPARTIDO */
+  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  
+  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
+  .container { max-width: 650px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
+  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 14px; }
+  
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+
+  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; background: #fff; }
+  .panel-title { background: var(--azul); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; }
+  .panel-body { padding: 8px; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
+  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
+  
+  .input-box { width: 90px; flex-shrink: 0; }
+  .input-box input { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
+  
+  .select-box { width: 150px; flex-shrink: 0; }
+  .select-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; font-family: inherit; }
+  
+  .input-box input:focus, .select-box select:focus { outline: none; border-color: var(--azul); }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
+  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
+  .result-val.big { font-size: 14px; background: #e7f1ff; padding: 5px 8px; color: #0a58ca; }
+  .result-val small { font-size: 9px; font-weight: normal; color: #666; display: block; margin-top: 2px;}
+
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  
+  /* Dibujo del tanque */
+  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin: 0 8px 8px 8px; display: flex; justify-content: center; align-items: center; min-height: 220px; }
+  .svg-box svg { width: 100%; max-width: 450px; height: auto; max-height: 280px; }
+
+  .btn-volver {
+      display: inline-flex; align-items: center; gap: 6px; margin: 10px; padding: 8px 16px;
+      background-color: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7;
+      border-radius: 6px; font-size: 13px; font-weight: bold; text-decoration: none;
+      cursor: pointer; transition: all 0.2s; font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+  <div class="header">Cálculo de Volumen de Depósito</div>
+  
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">1 · Datos del Cilindro</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="label">Diámetro Exterior<small>De (mm)</small></div>
+          <div class="input-box"><input id="de" type="number" value="1000" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Espesor de Pared<small>e (mm)</small></div>
+          <div class="input-box"><input id="e" type="number" value="6" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Altura del Cilindro<small>H (mm)</small></div>
+          <div class="input-box"><input id="h" type="number" value="2000" step="any"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">2 · Datos de los Fondos</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="label">Tipo de Fondo</div>
+          <div class="select-box">
+            <select id="tipo-fondo">
+              <option value="1">1 - Klopper (0.10)</option>
+              <option value="2">2 - Korbogen (0.13)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">Cantidad de Fondos</div>
+          <div class="select-box">
+            <select id="cant-fondos">
+              <option value="1">1 Fondo</option>
+              <option value="2" selected>2 Fondos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dibujo del tanque -->
+  <div class="svg-box">
+    <svg id="svg-tank" viewBox="0 0 500 350"></svg>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">3 · Resultados</div>
+      <div class="panel-body">
+        <div class="result-row">
+          <div class="result-label">Diámetro Interior Neto</div>
+          <div class="result-val" id="r-di">-</div>
+        </div>
+        <div class="result-row">
+          <div class="result-label">Volumen del Cilindro</div>
+          <div class="result-val" id="r-vol-cil">-</div>
+        </div>
+        <div class="result-row">
+          <div class="result-label">Volumen de los Fondos</div>
+          <div class="result-val" id="r-vol-fondos">-</div>
+        </div>
+        <div class="result-row" style="margin-top: 10px; border-top: 2px solid var(--borde); padding-top: 10px;">
+          <div class="result-label" style="font-size: 13px; color: #0a58ca;">VOLUMEN TOTAL NETO</div>
+          <div class="result-val big" id="r-total">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner" id="banner">Calculando...</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fx = (v, d) => v.toFixed(d);
+
+// ==========================================
+// GENERADOR SVG DEL TANQUE
+// ==========================================
+function dibujarTanque(De, H_cil, cantFondos, tipoFondo) {
+  const svg = $('svg-tank');
+  const W = 500, H = 350;
+  
+  // Márgenes del dibujo
+  const mL = 60, mR = 60, mT = 40, mB = 60;
+  const maxW = W - mL - mR;
+  const maxH = H - mT - mB;
+  
+  // Calcular proporciones para que quepa en el SVG
+  // El abombado del fondo le quita un poco de alto visual. Aproximamos:
+  const fondoVisual = (tipoFondo === "2") ? De * 0.25 : De * 0.15; 
+  const altoTotal = H_cil + (cantFondos * fondoVisual);
+  
+  const esc = Math.min(maxW / De, maxH / altoTotal);
+  
+  const dw = De * esc; // Ancho del tanque en el SVG
+  const hw = H_cil * esc; // Alto del cilindro en el SVG
+  const fh = fondoVisual * esc; // Alto visual del fondo en el SVG
+  
+  // Centro
+  const cx = W / 2;
+  // Punto de inicio (arriba del todo si hay 2 fondos, o arriba del cilindro si es 1)
+  const yStart = mT + (maxH - (hw + (cantFondos * fh))) / 2;
+  
+  const xIzq = cx - dw / 2;
+  const xDer = cx + dw / 2;
+
+  // Definir las curvas del fondo según el tipo
+  let dPath = "";
+  
+  // Dibujamos como si fuera un tubo de izquierda a derecha
+  if (cantFondos === 2) {
+    // Fondo Superior
+    let fhTop = tipoFondo === "2" ? fh * 1.3 : fh; // Korbogen más abombado
+    dPath += `M ${xIzq} ${yStart + fhTop} `;
+    dPath += `C ${xIzq} ${yStart + fhTop*0.2}, ${xDer} ${yStart + fhTop*0.2}, ${xDer} ${yStart + fhTop} `;
+    
+    // Cilindro
+    dPath += `L ${xDer} ${yStart + fhTop + hw} `;
+    
+    // Fondo Inferior
+    let fhBot = tipoFondo === "2" ? fh * 1.3 : fh;
+    dPath += `C ${xDer} ${yStart + fhTop + hw + fhBot*0.8}, ${xIzq} ${yStart + fhTop + hw + fhBot*0.8}, ${xIzq} ${yStart + fhTop + hw} `;
+    
+    // Cierre por la izquierda
+    dPath += `Z`;
+  } else {
+    // Solo Fondo Inferior (el superior es plano)
+    dPath += `M ${xIzq} ${yStart} `; // Superior Izquierda
+    dPath += `L ${xDer} ${yStart} `; // Superior Derecha
+    dPath += `L ${xDer} ${yStart + hw} `; // Bajar por la derecha
+    
+    // Fondo Inferior
+    let fhBot = tipoFondo === "2" ? fh * 1.3 : fh;
+    dPath += `C ${xDer} ${yStart + hw + fhBot*0.8}, ${xIzq} ${yStart + hw + fhBot*0.8}, ${xIzq} ${yStart + hw} `;
+    
+    // Cierre por la izquierda
+    dPath += `Z`;
+  }
+
+  // Colores
+  const cRelleno = "#e7f1ff";
+  const cBorde = "#0d6efd";
+  const cSombra = "rgba(13, 110, 253, 0.2)";
+  
+  let innerSvg = `
+    <defs>
+      <linearGradient id="gradTank" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#f8f9fa"/>
+        <stop offset="20%" stop-color="#e7f1ff"/>
+        <stop offset="80%" stop-color="#e7f1ff"/>
+        <stop offset="100%" stop-color="#d0e2ff"/>
+      </linearGradient>
+    </defs>
+    
+    <!-- Sombra inferior -->
+    <ellipse cx="${cx}" cy="${yStart + hw + (cantFondos===2?fh*1.3:fh) + 15}" rx="${dw/2}" ry="10" fill="rgba(0,0,0,0.05)" />
+    
+    <!-- Cuerpo del tanque -->
+    <path d="${dPath}" fill="url(#gradTank)" stroke="${cBorde}" stroke-width="2" stroke-linejoin="round" />
+  `;
+  
+  // Líneas divisorias entre el cilindro y los fondos
+  if (cantFondos === 2) {
+    innerSvg += `<line x1="${xIzq}" y1="${yStart + fh*1.3}" x2="${xDer}" y2="${yStart + fh*1.3}" stroke="${cBorde}" stroke-width="1" stroke-dasharray="5 5" opacity="0.5"/>`;
+    innerSvg += `<line x1="${xIzq}" y1="${yStart + fh*1.3 + hw}" x2="${xDer}" y2="${yStart + fh*1.3 + hw}" stroke="${cBorde}" stroke-width="1" stroke-dasharray="5 5" opacity="0.5"/>`;
+  } else {
+    innerSvg += `<line x1="${xIzq}" y1="${yStart + hw}" x2="${xDer}" y2="${yStart + hw}" stroke="${cBorde}" stroke-width="1" stroke-dasharray="5 5" opacity="0.5"/>`;
+  }
+
+  // Cotas
+  // Cota Diámetro
+  const yCota = yStart + (cantFondos===2 ? fh*1.3 : 0) + hw + (cantFondos===2 ? fh*1.3 : fh*1.3) + 25;
+  innerSvg += `
+    <line x1="${xIzq}" y1="${yStart + (cantFondos===2?fh*1.3:0) + hw/2}" x2="${xIzq - 20}" y2="${yStart + (cantFondos===2?fh*1.3:0) + hw/2}" stroke="#6c757d" stroke-width="1" />
+    <line x1="${xDer}" y1="${yStart + (cantFondos===2?fh*1.3:0) + hw/2}" x2="${xDer + 20}" y2="${yStart + (cantFondos===2?fh*1.3:0) + hw/2}" stroke="#6c757d" stroke-width="1" />
+    
+    <line x1="${xIzq - 10}" y1="${yStart + (cantFondos===2?fh*1.3:0) + hw/2 - 5}" x2="${xIzq - 10}" y2="${yStart + (cantFondos===2?fh*1.3:0) + hw/2 + 5}" stroke="#6c757d" stroke-width="1" />
+    <line x1="${xDer + 10}" y1="${yStart + (cantFondos===2?fh*1.3:0) + hw/2 - 5}" x2="${xDer + 10}" y2="${yStart + (cantFondos===2?fh*1.3:0) + hw/2 + 5}" stroke="#6c757d" stroke-width="1" />
+    
+    <text x="${cx}" y="${yStart + (cantFondos===2?fh*1.3:0) + hw/2 - 10}" font-size="12" font-family="monospace" font-weight="bold" fill="#495057" text-anchor="middle">Ø ${De} mm</text>
+  `;
+  
+  // Cota Altura
+  innerSvg += `
+    <line x1="${xDer + 25}" y1="${yStart + (cantFondos===2?fh*1.3:0)}" x2="${xDer + 35}" y2="${yStart + (cantFondos===2?fh*1.3:0)}" stroke="#6c757d" stroke-width="1" />
+    <line x1="${xDer + 25}" y1="${yStart + (cantFondos===2?fh*1.3:0) + hw}" x2="${xDer + 35}" y2="${yStart + (cantFondos===2?fh*1.3:0) + hw}" stroke="#6c757d" stroke-width="1" />
+    <line x1="${xDer + 30}" y1="${yStart + (cantFondos===2?fh*1.3:0)}" x2="${xDer + 30}" y2="${yStart + (cantFondos===2?fh*1.3:0) + hw}" stroke="#6c757d" stroke-width="1" />
+    <text x="${xDer + 40}" y="${yStart + (cantFondos===2?fh*1.3:0) + hw/2}" font-size="12" font-family="monospace" font-weight="bold" fill="#495057" text-anchor="start" dominant-baseline="middle">H: ${H_cil} mm</text>
+  `;
+
+  svg.innerHTML = innerSvg;
+}
+
+// ==========================================
+// LÓGICA DE CÁLCULO
+// ==========================================
+function calc() {
+  const De = parseFloat($('de').value);
+  const e = parseFloat($('e').value);
+  const H_cil = parseFloat($('h').value);
+  const tipoFondo = $('tipo-fondo').value;
+  const cantFondos = parseInt($('cant-fondos').value);
+
+  const banner = $('banner');
+  
+  if (isNaN(De) || isNaN(e) || isNaN(H_cil) || De <= 0 || e <= 0 || H_cil <= 0 || (De - 2*e) <= 0) {
+    banner.style.background = '#f8d7da'; banner.style.color = '#842029';
+    banner.innerHTML = '⚠ Introduce valores válidos (De > 2*e).';
+    ['r-di', 'r-vol-cil', 'r-vol-fondos', 'r-total'].forEach(id => $(id).innerText = '–');
+    return;
+  }
+
+  const Di = De - (2 * e);
+  const factorVol = (tipoFondo === "2") ? 0.13 : 0.1;
+  
+  const Ri_dm = (Di / 2) / 100;
+  const H_dm = H_cil / 100;
+  const volCil = Math.PI * Math.pow(Ri_dm, 2) * H_dm;
+  
+  const Di_dm = Di / 100;
+  const volUnFondo = factorVol * Math.pow(Di_dm, 3);
+  const volFondosTotal = volUnFondo * cantFondos;
+  const VolTotal = volCil + volFondosTotal;
+
+  banner.style.background = '#d1e7dd'; banner.style.color = '#0f5132';
+  banner.innerHTML = '✔ Cálculo completado correctamente.';
+
+  $('r-di').innerHTML = fx(Di, 1) + ' <small>mm</small>';
+  $('r-vol-cil').innerHTML = fx(volCil, 2) + ' <small>L</small>';
+  $('r-vol-fondos').innerHTML = fx(volFondosTotal, 2) + ' <small>L</small> (' + cantFondos + ' ud)';
+  $('r-total').innerHTML = fx(VolTotal, 2) + ' <small>Litros</small>';
+
+  // Llamar al dibujo
+  dibujarTanque(De, H_cil, cantFondos, tipoFondo);
+}
+
+// ==========================================
+// EVENTOS
+// ==========================================
+['de', 'e', 'h', 'tipo-fondo', 'cant-fondos'].forEach(id => {
+  $(id).addEventListener('input', calc);
+  $(id).addEventListener('change', calc);
+});
+
+// Inicializar
+calc();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
