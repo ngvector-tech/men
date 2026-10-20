@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora de Cáncamos de Izaje</title>
+<style>
+  /* CSS COMPACTO */
+  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  
+  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
+  .container { max-width: 750px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
+  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 14px; }
+  
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; background: #fff; }
+  .panel-title { background: var(--azul); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; }
+  .panel-body { padding: 8px; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
+  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
+  
+  .input-box { width: 90px; flex-shrink: 0; }
+  .input-box input { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
+  .select-box { width: 100%; flex-shrink: 0; }
+  .select-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; font-family: inherit; }
+  .input-box input:focus, .select-box select:focus { outline: none; border-color: var(--azul); }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
+  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
+  .result-val.big { font-size: 14px; background: #e7f1ff; color: #0a58ca; }
+  
+  /* ESTILO ESPECÍFICO PARA LAS CARGAS */
+  .result-val.red { color: #dc3545; background: #f8d7da; font-size: 14px; padding: 4px 8px; }
+  .result-val.total { color: #fff; background: #198754; font-size: 15px; padding: 4px 8px; }
+
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  
+  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; display: flex; justify-content: center; align-items: center; min-height: 280px; }
+  .svg-box svg { width: 100%; height: auto; max-height: 300px; }
+
+  .btn-volver {
+      display: inline-flex; align-items: center; gap: 6px; margin: 10px; padding: 8px 16px;
+      background-color: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7;
+      border-radius: 6px; font-size: 13px; font-weight: bold; text-decoration: none;
+      cursor: pointer; transition: all 0.2s; font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+  <div class="header">Cálculo de Capacidad de Cáncamo (Orejeta)</div>
+  
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">1 · Material y Cantidad</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="label">Material</div>
+          <div class="select-box" style="width: 180px;">
+            <select id="material">
+              <option value="140">Acero al Carbono (S235 / A36)</option>
+              <option value="160">Acero Inoxidable (304 / 316)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">Nº de unidades<small>Cantidad de cáncamos</small></div>
+          <div class="input-box"><input id="cant" type="number" value="1" min="1" step="1"></div>
+        </div>
+        <div class="row">
+          <div class="label">Tensión Admisible (S)</div>
+          <div class="result-val" id="r-tension">140 N/mm²</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">2 · Dimensiones</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="label">Espesor de chapa<small>t (mm)</small></div>
+          <div class="input-box"><input id="t" type="number" value="12" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Radio Exterior<small>Ro (mm)</small></div>
+          <div class="input-box"><input id="ro" type="number" value="50" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Radio Interior (Agujero)<small>Ri (mm)</small></div>
+          <div class="input-box"><input id="ri" type="number" value="20" step="any"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="svg-box">
+    <svg id="svg-lug" viewBox="0 0 400 300"></svg>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">3 · Resultados de Izaje</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Sección de carga<small>(Ro - Ri)</small></div><div class="result-val" id="r-seccion">-</div></div>
+        <div class="result-row"><div class="result-label">Área transversal<small>(2 * t * (Ro - Ri))</small></div><div class="result-val" id="r-area">-</div></div>
+        
+        <!-- CARGA POR UNIDAD -->
+        <div class="result-row" style="margin-top: 10px; border-top: 2px solid var(--borde); padding-top: 10px;">
+          <div class="result-label" style="font-size: 13px; color: #0a58ca;">CARGA MÁXIMA POR UNIDAD ESTIMADA</div>
+          <div class="result-val red" id="r-carga-ud">-</div>
+        </div>
+        
+        <!-- CARGA TOTAL -->
+        <div class="result-row" style="margin-top: 10px;">
+          <div class="result-label" style="font-size: 13px; color: #198754;">CARGA TOTAL ESTIMADA</div>
+          <div class="result-val total" id="r-carga-total">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner" id="banner">Calculando...</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fx = (v, d) => v.toFixed(d);
+
+// ==========================================
+// GENERADOR DE SVG (Vista de Orejeta Simétrica)
+// ==========================================
+function dibujarLug(Ro, Ri) {
+  const svg = $('svg-lug');
+  const W = 400, H = 300, cx = W/2, cy = H/2 - 10;
+  
+  const anchoBase = Ro * 2.2; 
+  const altoTotal = Ro * 2.5; 
+  
+  const escW = (W - 100) / anchoBase;
+  const escH = (H - 80) / altoTotal;
+  const esc = Math.min(escW, escH);
+  
+  const r_ext = Ro * esc;
+  const r_int = Ri * esc;
+  const w_base = (anchoBase * esc) / 2;
+  const h_total = altoTotal * esc;
+  
+  const yCentro = cy - h_total/3; 
+  const yBase = yCentro + h_total * 0.7;
+  
+  let dPath = `
+    M ${cx - r_ext} ${yCentro}
+    A ${r_ext} ${r_ext} 0 1 1 ${cx + r_ext} ${yCentro}
+    L ${cx + w_base} ${yBase}
+    L ${cx - w_base} ${yBase}
+    Z
+  `;
+  
+  let inner = `
+    <defs>
+      <linearGradient id="gLug" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#e7f1ff"/>
+        <stop offset="100%" stop-color="#b3d1ff"/>
+      </linearGradient>
+    </defs>
+    <path d="${dPath}" fill="rgba(0,0,0,0.05)" transform="translate(3, 5)"/>
+    <path d="${dPath}" fill="url(#gLug)" stroke="#0d6efd" stroke-width="2" stroke-linejoin="round" />
+    <circle cx="${cx}" cy="${yCentro}" r="${r_int}" fill="#fff" stroke="#dc3545" stroke-width="2" />
+    
+    <line x1="${cx - r_ext - 20}" y1="${yCentro}" x2="${cx + r_ext + 20}" y2="${yCentro}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="5 5"/>
+    <line x1="${cx}" y1="${yCentro - r_ext - 20}" x2="${cx}" y2="${yBase + 20}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="5 5"/>
+    
+    <line x1="${cx}" y1="${yCentro}" x2="${cx - r_ext * 0.707}" y2="${yCentro - r_ext * 0.707}" stroke="#0d6efd" stroke-width="1" />
+    <text x="${cx - r_ext * 0.4 - 10}" y="${yCentro - r_ext * 0.4}" font-size="11" font-family="monospace" font-weight="bold" fill="#0d6efd" text-anchor="end">Ro: ${Ro}</text>
+
+    <line x1="${cx}" y1="${yCentro}" x2="${cx + r_int * 0.707}" y2="${yCentro + r_int * 0.707}" stroke="#dc3545" stroke-width="1" />
+    <text x="${cx + r_int * 0.4 + 10}" y="${yCentro + r_int * 0.4 + 5}" font-size="11" font-family="monospace" font-weight="bold" fill="#dc3545" text-anchor="start">Ri: ${Ri}</text>
+    
+    <line x1="${cx - r_ext}" y1="${yCentro}" x2="${cx - r_ext}" y2="${yBase - 20}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="${cx - r_ext - 15}" y1="${yCentro}" x2="${cx - r_ext - 5}" y2="${yCentro}" stroke="#6c757d" stroke-width="1"/>
+    <line x1="${cx - r_ext - 15}" y1="${yCentro + r_ext - r_int}" x2="${cx - r_ext - 5}" y2="${yCentro + r_ext - r_int}" stroke="#6c757d" stroke-width="1"/>
+    <line x1="${cx - r_ext - 10}" y1="${yCentro}" x2="${cx - r_ext - 10}" y2="${yCentro + r_ext - r_int}" stroke="#6c757d" stroke-width="1"/>
+    <text x="${cx - r_ext - 15}" y="${yCentro + (r_ext - r_int)/2}" font-size="10" font-family="monospace" font-weight="bold" fill="#6c757d" text-anchor="end" dominant-baseline="middle">(Ro-Ri)</text>
+    
+    <line x1="${cx - w_base}" y1="${yBase + 15}" x2="${cx + w_base}" y2="${yBase + 15}" stroke="#6c757d" stroke-width="1" />
+    <line x1="${cx - w_base}" y1="${yBase}" x2="${cx - w_base}" y2="${yBase + 20}" stroke="#adb5bd" stroke-width="1" />
+    <line x1="${cx + w_base}" y1="${yBase}" x2="${cx + w_base}" y2="${yBase + 20}" stroke="#adb5bd" stroke-width="1" />
+    <text x="${cx}" y="${yBase + 30}" font-size="10" font-family="monospace" font-weight="bold" fill="#6c757d" text-anchor="middle">Base aprox.</text>
+  `;
+  svg.innerHTML = inner;
+}
+
+// ==========================================
+// LÓGICA DE CÁLCULO
+// ==========================================
+function calc() {
+  const S = parseFloat($('material').value);
+  const cant = parseInt($('cant').value) || 1;
+  const t = parseFloat($('t').value);
+  const Ro = parseFloat($('ro').value);
+  const Ri = parseFloat($('ri').value);
+  const banner = $('banner');
+  
+  if (isNaN(t) || isNaN(Ro) || isNaN(Ri) || t <= 0 || Ro <= 0 || Ri <= 0 || Ri >= Ro) {
+    banner.style.background = '#f8d7da'; banner.style.color = '#842029';
+    banner.innerHTML = '⚠ Error: El Radio Interior (Ri) debe ser menor que el Exterior (Ro).';
+    ['r-seccion','r-area','r-carga-ud', 'r-carga-total'].forEach(id => $(id).innerText = '–');
+    return;
+  }
+
+  const seccion = Ro - Ri;
+  const area = 2 * t * seccion;
+  
+  // Fórmula de capacidad por unidad
+  const cargaMaximaUD = 0.1 * t * 2 * S * seccion;
+  
+  // Carga total multiplicada por el número de unidades
+  const cargaTotal = cargaMaximaUD * cant;
+
+  $('r-tension').innerText = S + ' N/mm²';
+  
+  banner.style.background = '#d1e7dd'; banner.style.color = '#0f5132';
+  banner.innerHTML = '✔ Cálculo completado. Mostrando resultados para ' + cant + ' ud(s).';
+
+  $('r-seccion').innerText = fx(seccion, 1) + ' mm';
+  $('r-area').innerText = fx(area, 1) + ' mm²';
+  
+  // Actualizar resultados
+  $('r-carga-ud').innerText = fx(cargaMaximaUD, 1) + ' kg / ud';
+  $('r-carga-total').innerText = fx(cargaTotal, 1) + ' kg';
+
+  dibujarLug(Ro, Ri);
+}
+
+// ==========================================
+// EVENTOS
+// ==========================================
+['t', 'ro', 'ri', 'material', 'cant'].forEach(id => {
+  $(id).addEventListener('input', calc);
+  $(id).addEventListener('change', calc);
+});
+
+calc();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
