@@ -229,15 +229,6 @@
     <div class="panel">
       <div class="panel-title">1 · Carga y Material</div>
       <div class="panel-body">
-        <div class="row">
-          <div class="label">Escudo de refuerzo</div>
-          <div class="select-box">
-            <select id="pad" class="user-input">
-              <option value="0">Sin escudo</option>
-              <option value="1">Con escudo</option>
-            </select>
-          </div>
-        </div>
         
         <div class="row">
           <div class="label">Posición de la orejeta<small>Configuración de soldadura</small></div>
@@ -352,7 +343,8 @@ $('Sy').addEventListener('input', function() {
 
 function calc() {
   const posicion = $('posicion').value;
-  const pad = $('pad').value === "1";
+  // Eliminada la variable 'pad'
+  
   const W = parseFloat($('W').value) || 0;
   const Imp = parseFloat($('Imp').value) || 1;
   const N = parseFloat($('N').value) || 1;
@@ -393,7 +385,7 @@ function calc() {
   const c3 = areaDesgarro > 0 ? (P * 9.80665) / areaDesgarro : Infinity;
   const c4 = (P * 9.80665) / Math.max((t + 2 * tc) * dh, 0.0001);
   const c5 = (P * 9.80665 * off) / Math.max((w * t * t) / 6, 0.0001);
-  const c6 = pad ? (P * 9.80665) / (0.7071 * 8 * 2 * (100 + 275)) : 0;
+  // Eliminado el cálculo c6 (escudo de refuerzo)
   const areaTraccion = Math.max(te * wb, 0.0001);
   const c7 = (P * 9.80665) / areaTraccion;
 
@@ -407,7 +399,6 @@ function calc() {
       { n: "4) Cojinete del orificio", act: c4, adm: aBr },
       { n: "5) Flexión base + tensión", act: c5, adm: aBn }
     ];
-    if (pad) { checks.push({ n: "6) Corte soldadura escudo", act: c6, adm: aSh }); }
   } else {
     checks = [
       { n: "1) Tracción soldadura base (σ)", act: c7, adm: aTr },
@@ -415,7 +406,6 @@ function calc() {
       { n: "3) Cojinete del orificio", act: c4, adm: aBr },
       { n: "4) Flexión base + tensión", act: c5, adm: aBn }
     ];
-    if (pad) { checks.push({ n: "5) Corte soldadura escudo", act: c6, adm: aSh }); }
   }
 
   let html = '';
@@ -446,7 +436,6 @@ function calc() {
 
   if (maxRatio > 1.0) {
     banner.className = 'banner fail';
-    // CAMBIO AQUÍ: Mensaje dinámico entendible para profanos
     banner.innerHTML = `<b>ALERTA: Exceso de carga</b><br>El nivel de esfuerzo actual supera el límite seguro del material. La pieza está trabajando al <b>${fx(maxRatio * 100, 0)}%</b> de su capacidad (el límite máximo es 100%).`;
     
     adviceBox.style.display = 'block';
@@ -461,7 +450,6 @@ function calc() {
     adviceList.innerHTML = htmlAdvice;
   } else {
     banner.className = 'banner ok';
-    // CAMBIO AQUÍ: Mensaje dinámico entendible para profanos
     banner.innerHTML = `<b>✔ DISEÑO SEGURO</b><br>La pieza trabaja al <b>${fx(maxRatio * 100, 0)}%</b> de su capacidad máxima. Tiene un margen de seguridad adecuado.`;
     
     adviceBox.style.display = 'none';
