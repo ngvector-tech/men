@@ -286,7 +286,7 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
+        margin-bottom: 20px;
         padding: 8px 16px;
         background-color: #ecf0f1;
         color: #34495e;
@@ -316,7 +316,7 @@
 <div class="container">
 <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
   <h1>Calculadora de Degradado de Codo</h1>
-  <p class="subtitulo">Arco exterior, arco interior y avance tangencial — medidas en mm</p>
+  <p class="subtitulo">Arco exterior, arco interior y tangente — medidas en mm</p>
 
   <div class="layout">
 
@@ -330,7 +330,6 @@
       </div>
       <div id="esquemaEntrada" style="display:none;"></div>
 
-      <!-- Selector de unidad oculto: mantiene compatibilidad con codoDegradado.js -->
       <select id="unidad" hidden>
         <option value="mm" selected>Milímetros (mm)</option>
       </select>
@@ -354,7 +353,7 @@
       <div class="aviso" id="aviso"></div>
 
       <p class="nota">
-        <strong>A</strong> = arco exterior · <strong>B</strong> = arco interior · <strong>C</strong> = avance tangencial (línea media).
+        <strong>A</strong> = arco exterior · <strong>B</strong> = arco interior · <strong>C</strong> = tangente (R * tan(α/2)).
         Todas las medidas en <strong>mm</strong>.
       </p>
     </section>
@@ -377,7 +376,7 @@
 <script src="codoDegradado.js"></script>
 
 <script>
-/* ============ LIGHTBOX (delegación robusta) ============ */
+/* ============ LIGHTBOX ============ */
 (function(){
   "use strict";
 
@@ -414,7 +413,7 @@
   });
 })();
 
-/* ============ OCULTAR FILAS NO DESEADAS EN RESULTADOS (versión agresiva) ============ */
+/* ============ CORRECCIÓN DEL CÁLCULO Y LIMPIEZA ============ */
 (function(){
   "use strict";
 
@@ -431,10 +430,60 @@
     return patrones.some(p => p.test(texto));
   }
 
+  // NUEVA FUNCIÓN PARA CALCULAR LA TANGENTE CORRECTAMENTE
+  function corregirTangente() {
+      const angInput = document.getElementById('in_ang');
+      const RInput = document.getElementById('in_R');
+      const contenedor = document.getElementById('resumenSalida');
+      
+      if (!angInput || !RInput || !contenedor) return;
+
+      const ang = parseFloat(angInput.value);
+      const R = parseFloat(RInput.value);
+
+      if (isNaN(ang) || isNaN(R) || ang <= 0) return;
+
+      // FÓRMULA DE LA TANGENTE: T = R * tan(alpha / 2)
+      const rad = ang * Math.PI / 180;
+      const tangente_correcta = R * Math.tan(rad / 2);
+      
+      const elementos = contenedor.querySelectorAll('.dato, tr');
+      
+      elementos.forEach(el => {
+          const txt = el.textContent;
+          // Buscamos cualquier fila que mencione Avance o Tangente
+          if (/Avance|Tangente/i.test(txt)) {
+              
+              // Si es el diseño de "dato" (con la bolita de la letra)
+              let valorSpan = el.querySelector('.valor');
+              if (valorSpan) {
+                  valorSpan.textContent = tangente_correcta.toFixed(2) + ' mm';
+                  
+                  // Opcional: Cambiar el texto de "Avance" a "Tangente" si aún dice Avance
+                  let textNode = Array.from(el.childNodes).find(n => n.nodeType === 3 && /Avance/i.test(n.nodeValue));
+                  if(textNode) {
+                      textNode.nodeValue = textNode.nodeValue.replace(/Avance/i, 'Tangente');
+                  }
+              } 
+              // Si es una tabla normal
+              else {
+                  const tds = el.querySelectorAll('td');
+                  if(tds.length > 0) {
+                      tds[tds.length-1].textContent = tangente_correcta.toFixed(2);
+                  }
+              }
+          }
+      });
+  }
+
   function eliminarFilas(){
     const contenedor = document.getElementById('resumenSalida');
     if (!contenedor) return;
 
+    // 1. Corregimos el valor
+    corregirTangente();
+
+    // 2. Eliminamos las filas sobrantes
     contenedor.querySelectorAll('tr').forEach(tr => {
       const txt = (tr.textContent || '').trim();
       if (coincide(txt)) {
@@ -460,7 +509,7 @@
   const btnCalcular = document.getElementById('btnCalcular');
   if (btnCalcular) {
     btnCalcular.addEventListener('click', () => {
-      setTimeout(eliminarFilas, 20);
+      setTimeout(eliminarFilas, 30); 
       setTimeout(eliminarFilas, 100);
       setTimeout(eliminarFilas, 250);
       setTimeout(eliminarFilas, 500);
