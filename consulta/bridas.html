@@ -82,13 +82,43 @@
   .cat-opcion:hover { background: #e0f2fe; border-color: #38bdf8; }
   .cat-opcion img { width: 50px; height: 40px; object-fit: contain; margin-bottom: 4px; }
   .cat-opcion span { font-size: 8px; font-weight: bold; color: #333; text-align: center; text-transform: uppercase; }
+      /* ============================================================
+       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
+       ============================================================ */
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px; /* Separación con el contenido de abajo */
+        padding: 8px 16px;
+        background-color: #ecf0f1;
+        color: #34495e;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: Arial, sans-serif;
+    }
 
+    .btn-volver:hover {
+        background-color: #e0e6ed;
+        border-color: #95a5a6;
+        color: #2c3e50;
+    }
+
+    .btn-volver:active {
+        transform: scale(0.98);
+    }
 </style>
 <link rel="stylesheet" href="men-header.css">
 </head>
 <body>
 
 <div class="container">
+<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
   <h1>Consulta Tecnica de Bridas</h1>
   <div class="resumen-seleccion" id="resumenSeleccion"></div>
 

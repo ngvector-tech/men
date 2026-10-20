@@ -217,16 +217,50 @@
             font-weight: bold;
             color: #0f172a;
         }
-    </style>
+      /* ============================================================
+       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
+       ============================================================ */
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px; /* Separación con el contenido de abajo */
+        padding: 8px 16px;
+        background-color: #ecf0f1;
+        color: #34495e;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: Arial, sans-serif;
+    }
+
+    .btn-volver:hover {
+        background-color: #e0e6ed;
+        border-color: #95a5a6;
+        color: #2c3e50;
+    }
+
+    .btn-volver:active {
+        transform: scale(0.98);
+    }
+</style>
 </head>
 <body>
-    <div class="contenedor">
+
+<div class="container">
+<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+
         <div class="cabecera">
+		
             <h1 class="titulo-men">MEN</h1>
         </div>
 
         <div id="globoNorma" class="globo-info"></div>
-
+	
         <!-- CAJA CABECERA MODIFICADA: Botón a la izquierda de los inputs -->
         <div class="caja-cabecera">
             <button id="btnNoEncuentro" onclick="abrirModalNoEncuentro()">
@@ -253,10 +287,13 @@
         </div>
 
         <div id="v-cat" class="vista activa">
+		
             <h2 style="font-size: 15px;">Categorías</h2>
             <div id="leyenda-familias"></div>
             <div id="grid-cat" class="grid" style="display:none;"></div>
         </div>
+		
+		
         <div id="v-art" class="vista"><div id="grid-art" class="grid"></div></div>
         <div id="v-dim" class="vista"><div id="grid-dim" class="grid"></div></div>
         <div id="v-pres" class="vista"><div id="grid-pres" class="grid"></div></div>

@@ -27,11 +27,10 @@
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         width: 100%;
-        max-width: 580px;
+        max-width: 800px;
         text-align: center;
     }
 
-    /* Título superior (antes era h1 negro, ahora igual al logo MEN pero más pequeño) */
     .logo-men {
         color: #2980b9;
         font-size: 32px;
@@ -47,23 +46,27 @@
         margin: 0 0 20px;
     }
 
-    /* Contenedor de los botones en 2 columnas */
+    /* Contenedor de los botones */
     .botones {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 25px; /* Espacio antes del botón volver */
     }
 
-    /* Botones del menú (idénticos al primero) */
+    /* Botones cuadrados */
     .btn-menu {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         width: 100%;
-        padding: 8px 4px;
+        aspect-ratio: 1 / 1;
+        padding: 6px;
         border: none;
-        border-radius: 6px;
-        font-size: 10px;
+        border-radius: 8px;
+        font-size: 9px;
         font-weight: bold;
         text-transform: uppercase;
         color: white;
@@ -72,27 +75,61 @@
         transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         text-align: center;
-        line-height: 1.25;
-        min-height: 30px;
+        line-height: 1.1;
+        overflow: hidden;
     }
 
     .btn-menu:active {
-        transform: scale(0.98);
+        transform: scale(0.96);
     }
 
-    /* Subtítulo pequeño dentro del botón (equivalente a .sub del segundo HTML) */
-    .btn-menu .sub {
+    /* Estilo para las imágenes dentro de los botones */
+    .btn-menu img {
+        width: 75%;
+        height: 75%;
+        object-fit: contain;
+        margin-bottom: 2px;
+    }
+
+    /* Texto del botón */
+    .btn-menu span {
         display: block;
-        font-weight: 400;
-        font-size: 9px;
-        opacity: .85;
-        margin-top: 2px;
-        text-transform: none;
-        letter-spacing: 0;
+        width: 100%;
+        word-wrap: break-word;
     }
 
     /* ============================================================
-       COLORES POR CATEGORÍA
+       ESTILO DEL BOTÓN VOLVER
+       ============================================================ */
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px; /* Espacio entre la flecha y el texto */
+        padding: 10px 25px;
+        background-color: #ecf0f1;
+        color: #34495e;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-volver:hover {
+        background-color: #e0e6ed;
+        border-color: #95a5a6;
+        color: #2c3e50;
+    }
+
+    .btn-volver:active {
+        transform: scale(0.98);
+    }
+
+    /* ============================================================
+       COLORES POR CATEGORÍA (Se mantienen)
        ============================================================ */
     .btn-azul-oscuro { background-color: #34495e; }
     .btn-azul-oscuro:hover { background-color: #2c3e50; }
@@ -103,27 +140,12 @@
     .btn-azul { background-color: #2980b9; }
     .btn-azul:hover { background-color: #1f6391; }
 
-    .btn-verde { background-color: #16a085; }
-    .btn-verde:hover { background-color: #12876f; }
-
-    .btn-morado { background-color: #8e44ad; }
-    .btn-morado:hover { background-color: #71368a; }
-
-    .btn-rojo { background-color: #c0392b; }
-    .btn-rojo:hover { background-color: #a93226; }
-
-    .btn-gris { background-color: #7f8c8d; }
-    .btn-gris:hover { background-color: #6b7778; }
-
-    .btn-turquesa { background-color: #17a2b8; }
-    .btn-turquesa:hover { background-color: #138496; }
-
     /* ============================================================
-       RESPONSIVE: en móvil, una sola columna
+       RESPONSIVE: Ajustes para móviles
        ============================================================ */
     @media (max-width: 480px) {
         .menu-container {
-            padding: 20px 15px;
+            padding: 15px 10px;
         }
 
         .logo-men {
@@ -137,18 +159,24 @@
         }
 
         .botones {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
             gap: 8px;
+            margin-bottom: 20px;
         }
 
         .btn-menu {
-            padding: 12px 8px;
-            font-size: 13px;
-            min-height: 45px;
+            font-size: 8px;
+            padding: 4px;
+        }
+        
+        .btn-menu img {
+            width: 70%;
+            height: 70%;
         }
 
-        .btn-menu .sub {
-            font-size: 11px;
+        .btn-volver {
+            width: 100%; /* Ocupa todo el ancho en móvil */
+            padding: 12px;
         }
     }
 </style>
@@ -162,65 +190,102 @@
 
     <div class="botones">
 
-                <a href="bayoneta.html" class="btn-menu btn-azul-oscuro">
-            Bayoneta de tubería
+        <!-- NOTA: Cambia el src="img/nombre.png" por el nombre real de tus imágenes -->
+        
+        <a href="bayoneta.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/bayoneta.png" alt="Bayoneta">
+            <span>Bayoneta de tubería</span>
         </a>
-		          <a href="bayoneta_paralela.html" class="btn-menu btn-azul-oscuro">
-            Ballonetas paralelas
+        
+        <a href="bayoneta_paralela.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/bayoneta_paralela.png" alt="Bayoneta Paralela">
+            <span>Bayonetas paralelas</span>
         </a>
-		 <a href="calculo_escalon.html" class="btn-menu btn-azul">
-            Calculo escaleras
+        
+        <a href="calculo_escalon.html" class="btn-menu btn-azul">
+            <img src="img/escalera.png" alt="Escaleras">
+            <span>Calculo escaleras</span>
         </a>
-		 </a>
-		 <a href="calc_pendiente.html" class="btn-menu btn-azul">
-            Calculo pendientes
+        
+        <a href="calc_pendiente.html" class="btn-menu btn-azul">
+            <img src="img/pendiente.png" alt="Pendientes">
+            <span>Calculo pendientes</span>
         </a>
+        
         <a href="codoDegradado.html" class="btn-menu btn-azul-oscuro">
-            Codo degradado
+            <img src="img/esquema-codo.png" alt="Codo degradado">
+            <span>Codo degradado</span>
         </a>
-		  <a href="codo_gajo.html" class="btn-menu btn-azul-oscuro">
-            Codo a gajos
+		 <a href="codo.html" class="btn-menu btn-naranja">
+            <img src="img/offsetcodo.png" alt="Offset">
+            <span>Offset de codo</span>
         </a>
-		  <a href="Calc_colector.html" class="btn-menu btn-azul-oscuro">
-            Calculo diametro colector
+        
+        <a href="codo_gajo.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/codo_gajo.png" alt="Codo gajos">
+            <span>Codo a gajos</span>
         </a>
-		<a href="dilatacion_termica.html" class="btn-menu btn-azul-oscuro">
-            Dilatacion tuberia
+        
+        <a href="Calc_colector.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/colector.png" alt="Colector">
+            <span>Calculo diametro colector</span>
         </a>
-		<a href="distancia_soportes_tuberia.html" class="btn-menu btn-azul-oscuro">
-            Distancia soporte tuberia metalica
+        
+        <a href="dilatacion_termica.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/dilatacion.png" alt="Dilatación">
+            <span>Dilatacion tuberia</span>
         </a>
-		<a href="distancia_soportes_tuberia_no_metalica.html" class="btn-menu btn-azul-oscuro">
-            Distancia soporte tuberia no metalica
+		  <a href="separacion_tuberias.html" class="btn-menu btn-azul">
+            <img src="img/separacion.png" alt="Separación">
+            <span>Separacion tuberias</span>
         </a>
-		
+        
+        <a href="distancia_soportes_tuberia.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/soporte_metal.png" alt="Soporte metal">
+            <span>Distancia soporte tuberia metalica</span>
+        </a>
+        
+        <a href="distancia_soportes_tuberia_no_metalica.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/soporte_no_metal.png" alt="Soporte no metal">
+            <span>Distancia soporte tuberia no metalica</span>
+        </a>
 
-        <a href="codo.html" class="btn-menu btn-naranja">
-            Offset de codo
+        <a href="transicion.html" class="btn-menu btn-naranja">
+            <img src="img/transicion.png" alt="Transición">
+            <span>Transicion</span>
         </a>
-		<a href="transicion.html" class="btn-menu btn-naranja">
-            Transicion
-        </a>
+        
         <a href="Cono.html" class="btn-menu btn-naranja">
-            Desarrollo de conos
+            <img src="img/Desarrollo de cono.png" alt="Cono">
+            <span>Desarrollo de conos 1</span>
         </a>
-		 <a href="cono_excentrico.html" class="btn-menu btn-naranja">
-            Desarrollo de cono excentrico
+        
+        <a href="cono_excentrico.html" class="btn-menu btn-naranja">
+            <img src="img/Desarrollo de cono.png" alt="Cono excéntrico">
+            <span>Desarrollo de cono 2</span>
         </a>
-	
+    
         <a href="injerto.html" class="btn-menu btn-azul">
-            Injertos
+            <img src="img/injerto.png" alt="Injerto">
+            <span>Injertos</span>
         </a>
-		<a href="separacion_tuberias.html" class="btn-menu btn-azul">
-            Separacion tuberias
-				<a href="long_bobina.html" class="btn-menu btn-azul">
-            Longitud bobina
+        
+        <a href="long_bobina.html" class="btn-menu btn-azul">
+            <img src="img/bobina.png" alt="Bobina">
+            <span>Longitud bobina</span>
         </a>
+        
         <a href="Taladroencirculo.html" class="btn-menu btn-azul">
-            Taladro en círculo
+            <img src="img/brida_esquema.png" alt="Taladro">
+            <span>Taladro en círculo</span>
         </a>
 
     </div>
+
+    <!-- BOTÓN VOLVER ATRÁS -->
+    <a href="javascript:history.back()" class="btn-volver">
+        ⬅ Volver atrás
+    </a>
 
 </div>
 

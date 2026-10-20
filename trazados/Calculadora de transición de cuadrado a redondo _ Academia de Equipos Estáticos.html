@@ -76,6 +76,36 @@
   @media (max-width:680px){.ct-grid.g-wide{grid-template-columns:1fr;}}
   @media print{.ct-tabs{display:none;}}
   @media (max-width:680px){.sk-pb{overflow-x:auto;-webkit-overflow-scrolling:touch;}.sk{min-width:440px;}.sk-cap{position:sticky;left:0;}}
+      /* ============================================================
+       BOTÓN VOLVER (Estilo integrado)
+       ============================================================ */
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        background-color: #f4f6f8;
+        color: #1f5f8b; /* Azul similar al de la web */
+        border: 1px solid #d7dde3;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: Arial, sans-serif;
+    }
+
+    .btn-volver:hover {
+        background-color: #e6ebee;
+        border-color: #bdc3c7;
+        color: #0B1F3A;
+    }
+
+    .btn-volver:active {
+        transform: scale(0.98);
+    }
 </style>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "WebApplication", "name": "Square to Round Transition Calculator", "description": "Free square to round transition development calculator — triangulation layout for concentric and eccentric rectangle-to-round transition pieces, with true-length tables, plate size, weight and a to-scale flat pattern.", "url": "https://staticequipmentacademy.com/free-resources/square-to-round-calculator/", "image": "https://staticequipmentacademy.com/free-resources/thumbs/square-to-round-calculator.png", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "Static Equipment Academy", "url": "https://staticequipmentacademy.com/"}}
@@ -823,6 +853,16 @@ a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"],a[onmoused
 <section class="sec">
   <div class="wrap">
     <div class="ct reveal in" style="--sea-i: 0;">
+	<!-- THE CALCULATOR -->
+<section class="sec">
+  <div class="wrap">
+    
+    <!-- AQUÍ PONES EL BOTÓN -->
+    <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+    
+    <div class="ct reveal in" style="--sea-i: 0;">
+      <div class="ct-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CALCULADORA DE TRANSICIÓN DE CUADRADO A REDONDO</font></font></div>
+      <!-- ... resto del código ... -->
       <div class="ct-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CALCULADORA DE TRANSICIÓN DE CUADRADO A REDONDO</font></font></div>
       <div class="ct-legend"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Patrón plano por triangulación para una pieza de transición de rectángulo a círculo. Deje los desplazamientos en cero para una pieza concéntrica o ajústelos para una excéntrica. Longitudes en mm.</font></font></div>
       <div class="ct-body">

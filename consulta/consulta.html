@@ -27,36 +27,39 @@
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         width: 100%;
-        max-width: 580px;   /* ? ajustado a 2 columnas con texto 12px */
+        max-width: 750px; /* Aumentado para que quepan m√°s columnas de cuadrados */
         text-align: center;
     }
 
     /* Logo MEN */
     .logo-men {
         color: #2980b9;
-        font-size: 32px;    /* ? reducido de 42px a 32px */
+        font-size: 32px;
         font-weight: bold;
         margin-bottom: 20px;
         letter-spacing: 2px;
     }
 
-    /* Contenedor de los botones en 2 columnas */
+    /* Contenedor de los botones (Grid adaptable) */
     .botones {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 12px;
+        justify-content: center;
     }
 
-    /* Botones del men˙ */
+    /* Botones del men√∫ (Cuadrados) */
     .btn-menu {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         width: 100%;
-        padding: 8px 4px;
+        aspect-ratio: 1 / 1; /* Fuerza a que sea un cuadrado */
+        padding: 6px;
         border: none;
-        border-radius: 6px;
-        font-size: 10px;         /* ? TEXTO A 12px */
+        border-radius: 8px;
+        font-size: 9px; /* Texto peque√±o */
         font-weight: bold;
         text-transform: uppercase;
         color: white;
@@ -65,88 +68,63 @@
         transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         text-align: center;
-        line-height: 1.25;
-        min-height: 30px;        /* ? ajustado a la nueva altura */
+        line-height: 1.1;
+        overflow: hidden;
     }
 
     .btn-menu:active {
-        transform: scale(0.98);
+        transform: scale(0.96);
+    }
+
+    /* Estilo para las im√°genes dentro de los botones */
+    .btn-menu img {
+        width: 75%;
+        height: 75%;
+        object-fit: contain;
+        margin-bottom: 2px;
+    }
+
+    /* Texto del bot√≥n */
+    .btn-menu span {
+        display: block;
+        width: 100%;
+        word-wrap: break-word;
     }
 
     /* ============================================================
-       COLORES POR CATEGORÕA
+       COLORES POR CATEGOR√çA (Se mantienen)
        ============================================================ */
 
-    /* --- Azul oscuro (piedra): C·lculos de materiales --- */
-    .btn-azul-oscuro {
-        background-color: #34495e;
-    }
-    .btn-azul-oscuro:hover {
-        background-color: #2c3e50;
-    }
+    .btn-azul-oscuro { background-color: #34495e; }
+    .btn-azul-oscuro:hover { background-color: #2c3e50; }
 
-    /* --- Naranja (zanahoria): Partes y componentes --- */
-    .btn-naranja {
-        background-color: #e67e22;
-    }
-    .btn-naranja:hover {
-        background-color: #d35400;
-    }
+    .btn-naranja { background-color: #e67e22; }
+    .btn-naranja:hover { background-color: #d35400; }
 
-    /* --- Azul brillante (rÌo): C·lculos de tuberÌa --- */
-    .btn-azul {
-        background-color: #2980b9;
-    }
-    .btn-azul:hover {
-        background-color: #1f6391;
-    }
+    .btn-azul { background-color: #2980b9; }
+    .btn-azul:hover { background-color: #1f6391; }
 
-    /* --- Verde esmeralda: Compatibilidades --- */
-    .btn-verde {
-        background-color: #16a085;
-    }
-    .btn-verde:hover {
-        background-color: #12876f;
-    }
+    .btn-verde { background-color: #16a085; }
+    .btn-verde:hover { background-color: #12876f; }
 
-    /* --- Morado: Soportes y separaciones --- */
-    .btn-morado {
-        background-color: #8e44ad;
-    }
-    .btn-morado:hover {
-        background-color: #71368a;
-    }
+    .btn-morado { background-color: #8e44ad; }
+    .btn-morado:hover { background-color: #71368a; }
 
-    /* --- Rojo ladrillo: DilataciÛn y vapor --- */
-    .btn-rojo {
-        background-color: #c0392b;
-    }
-    .btn-rojo:hover {
-        background-color: #a93226;
-    }
+    .btn-rojo { background-color: #c0392b; }
+    .btn-rojo:hover { background-color: #a93226; }
 
-    /* --- Gris pizarra: SÌmbolos y colores --- */
-    .btn-gris {
-        background-color: #7f8c8d;
-    }
-    .btn-gris:hover {
-        background-color: #6b7778;
-    }
+    .btn-gris { background-color: #7f8c8d; }
+    .btn-gris:hover { background-color: #6b7778; }
 
-    /* --- Turquesa: TuberÌa en pulgadas --- */
-    .btn-turquesa {
-        background-color: #17a2b8;
-    }
-    .btn-turquesa:hover {
-        background-color: #138496;
-    }
+    .btn-turquesa { background-color: #17a2b8; }
+    .btn-turquesa:hover { background-color: #138496; }
 
     /* ============================================================
-       RESPONSIVE: en mÛvil, una sola columna
+       RESPONSIVE: Ajustes para m√≥viles
        ============================================================ */
     @media (max-width: 480px) {
         .menu-container {
-            padding: 20px 15px;
+            padding: 15px 10px;
         }
 
         .logo-men {
@@ -155,83 +133,130 @@
         }
 
         .botones {
-            grid-template-columns: 1fr;  /* ? 1 columna en mÛvil */
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
             gap: 8px;
         }
 
         .btn-menu {
-            padding: 12px 8px;
-            font-size: 13px;    /* ? un poco m·s grande en mÛvil para que sea legible */
-            min-height: 45px;
+            padding: 4px;
+            font-size: 8px; /* Texto a√∫n m√°s peque√±o en m√≥vil */
         }
+        
+        .btn-menu img {
+            width: 70%;
+            height: 70%;
+        }
+    }
+      /* ============================================================
+       ESTILODEL BOT√ìN VOLVER (Para calculadoras)
+       ============================================================ */
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px; /* Separaci√≥n con el contenido de abajo */
+        padding: 8px 16px;
+        background-color: #ecf0f1;
+        color: #34495e;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: Arial, sans-serif;
+    }
+
+    .btn-volver:hover {
+        background-color: #e0e6ed;
+        border-color: #95a5a6;
+        color: #2c3e50;
+    }
+
+    .btn-volver:active {
+        transform: scale(0.98);
     }
 </style>
 </head>
 <body>
 
-<div class="menu-container">
+<div class="container">
+<a href="javascript:history.back()" class="btn-volver">? Volver atr√°s</a>
 
     <div class="logo-men">MEN</div>
 
     <div class="botones">
 
-        <!-- ===== C·lculos de materiales ===== -->
+        <!-- ===== C√°lculos de materiales ===== -->
         <a href="calc_perfil.html" class="btn-menu btn-azul-oscuro">
-            Peso perfil y chapa
+            <img src="img/perfil.png" alt="Peso perfil">
+            <span>Peso perfil y chapa</span>
         </a>
+        
         <a href="calc-pulgadas.html" class="btn-menu btn-turquesa">
-            Tuberia pulgadas a mm
+            <img src="img/pulgadas.png" alt="Pulgadas">
+            <span>Tuberia pulgadas a mm</span>
         </a>
-		 </a>
+        
         <a href="esp_tuberia.html" class="btn-menu btn-turquesa">
-            Tuberia espesore SCH
+            <img src="img/espesores.png" alt="Espesores">
+            <span>Tuberia espesore SCH</span>
         </a>
 
-        <!-- ===== V·lvulas ===== -->
+        <!-- ===== V√°lvulas ===== -->
         <a href="valvulas.html" class="btn-menu btn-naranja">
-            Valvulas-Entre caras
+            <img src="img/valvula_compuerta_serie14.png" alt="V√°lvulas">
+            <span>Valvulas-Entre caras</span>
         </a>
+        
         <a href="valvuladiafragma.html" class="btn-menu btn-naranja">
-            Valvulas diafragma-Inclinacion
+            <img src="img/diafragma.png" alt="Diafragma">
+            <span>Valvulas diafragma-Inclinacion</span>
         </a>
 
-        <!-- ===== C·lculos varios ===== -->
-      
+        <!-- ===== C√°lculos varios ===== -->
         <a href="bridas.html" class="btn-menu btn-azul-oscuro">
-            Bridas datos y conf. Tornillos
+            <img src="img/DE CUELLO.png" alt="Bridas">
+            <span>Bridas datos y conf. Tornillos</span>
         </a>
-		 <a href="clamp.html" class="btn-menu btn-azul-oscuro">
-            Clamp localizar
+        
+        <a href="clamp.html" class="btn-menu btn-azul-oscuro">
+            <img src="img/clamp.png" alt="Clamp">
+            <span>Clamp localizar</span>
         </a>
 
         <!-- ===== Compatibilidades ===== -->
         <a href="compatibilidadjuntas.html" class="btn-menu btn-verde">
-            Juntas-Compatibilidad
+            <img src="img/juntas.png" alt="Juntas">
+            <span>Juntas-Compatibilidad</span>
         </a>
-        <a href="compatibilidpolipropileno.html" class="btn-menu btn-verde">
-            Polipropileno-Compatibilidad
-        </a>
-        <a href="compatibilidad_recipiente.html" class="btn-menu btn-verde">
-            Tuberias y recipientes--Compatibilidad
-        </a>
-
-        <!-- ===== Soportes y separaciones ===== -->
-       
-       
-       
-
-        <!-- ===== DilataciÛn y vapor ===== -->
         
-        <a href="carac_vapor.html" class="btn-menu btn-rojo">
-            Caracteristica vapor segun presion
+        <a href="compatibilidpolipropileno.html" class="btn-menu btn-verde">
+            <img src="img/polipropileno.png" alt="Polipropileno">
+            <span>Polipropileno-Compatibilidad</span>
+        </a>
+        
+        <a href="compatibilidad_recipiente.html" class="btn-menu btn-verde">
+            <img src="img/recipientes.png" alt="Recipientes">
+            <span>Tuberias y recipientes--Compatibilidad</span>
         </a>
 
-        <!-- ===== Colores y sÌmbolos ===== -->
-        <a href="color_tuberia.html" class="btn-menu btn-gris">
-            Codigo color de tuberia
+        <!-- ===== Dilataci√≥n y vapor ===== -->
+        <a href="carac_vapor.html" class="btn-menu btn-rojo">
+            <img src="img/vapor.png" alt="Vapor">
+            <span>Caracteristica vapor segun presion</span>
         </a>
+
+        <!-- ===== Colores y s√≠mbolos ===== -->
+        <a href="color_tuberia.html" class="btn-menu btn-gris">
+            <img src="img/colores.png" alt="Colores">
+            <span>Codigo color de tuberia</span>
+        </a>
+        
         <a href="simbolos.html" class="btn-menu btn-gris">
-            Simbolos
+            <img src="img/simbolos.png" alt="S√≠mbolos">
+            <span>Simbolos</span>
         </a>
 
     </div>

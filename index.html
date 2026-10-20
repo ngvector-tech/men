@@ -19,7 +19,9 @@
             align-items: center;
             min-height: 100vh;
         }
-        .menu-container, .login-container {
+        
+        /* --- ESTILOS DEL LOGIN (Mantenidos) --- */
+        .login-container {
             background: white;
             padding: 40px 30px;
             border-radius: 12px;
@@ -28,8 +30,6 @@
             max-width: 320px;
             text-align: center;
         }
-
-        #menu-principal { display: none; }
 
         .logo-men {
             color: #2980b9;
@@ -92,28 +92,81 @@
             margin-top: 10px;
             display: none;
         }
+        .lock-icon {
+            font-size: 48px;
+            color: #2980b9;
+            margin-bottom: 15px;
+        }
 
+        /* --- ESTILOS DEL MENÚ PRINCIPAL (Modificados a Cuadrados) --- */
+        #menu-principal { display: none; }
+
+        .menu-container {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 750px; /* Más ancho para que quepan las columnas de cuadrados */
+            text-align: center;
+        }
+
+        .menu-container .logo-men {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* Grid adaptable para los botones */
+        .botones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* Botones del menú (Cuadrados con imagen) */
         .btn-menu {
-    display: block;
-    width: 100%;
-    padding: 16px;
-    margin-bottom: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    transition: transform 0.1s, background-color 0.2s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    box-sizing: border-box;
-    letter-spacing: 0.5px;
-}
-        .btn-menu:active { transform: scale(0.98); }
-        .btn-menu:last-child { margin-bottom: 0; }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            padding: 6px;
+            border: none;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            line-height: 1.1;
+            overflow: hidden;
+        }
 
+        .btn-menu:active { transform: scale(0.96); }
+
+        /* Imagen dentro del botón */
+        .btn-menu img {
+            width: 75%;
+            height: 75%;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+
+        /* Texto dentro del botón */
+        .btn-menu span {
+            display: block;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Colores de los botones */
         .btn-material { background-color: #34495e; }
         .btn-material:hover { background-color: #2c3e50; }
         .btn-partes { background-color: #e67e22; }
@@ -121,9 +174,10 @@
         .btn-ot { background-color: #2980b9; }
         .btn-ot:hover { background-color: #1f6391; }
 
+        /* Botón cerrar sesión */
         .btn-logout {
-		    display: block; 
-            margin-top: 20px;
+            display: block; 
+            margin-top: 10px;
             padding: 10px;
             background: none;
             border: 1px solid #ccc;
@@ -139,17 +193,26 @@
             border-color: #999;
         }
 
-        .lock-icon {
-            font-size: 48px;
-            color: #2980b9;
-            margin-bottom: 15px;
-        }
-
+        /* Responsive */
         @media (max-width: 480px) {
-            .menu-container, .login-container { padding: 30px 20px; }
-            .logo-men { font-size: 36px; margin-bottom: 25px; }
-            .btn-menu { padding: 16px; font-size: 16px; }
-            .lock-icon { font-size: 40px; }
+            .login-container { padding: 30px 20px; }
+            .login-container .logo-men { font-size: 36px; }
+            
+            .menu-container { padding: 15px 10px; }
+            .menu-container .logo-men { font-size: 28px; margin-bottom: 15px; }
+            
+            .botones-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 8px;
+            }
+            .btn-menu {
+                font-size: 8px;
+                padding: 4px;
+            }
+            .btn-menu img {
+                width: 70%;
+                height: 70%;
+            }
         }
     </style>
 </head>
@@ -175,12 +238,38 @@
     <div id="menu-principal" class="menu-container">
         <div class="logo-men">MEN</div>
 
-        <a href="Pedidos%20desde%20obra/index.html" class="btn-menu btn-material">Material</a>
-        <a href="Pedidos%20desde%20obra/partes/index.html" class="btn-menu btn-partes">Partes</a>
-        <a href="Pedidos%20desde%20obra/ot/index.html" class="btn-menu btn-ot">Lista OT</a>
-        <a href="operario/index.html" class="btn-menu btn-ot">Documentos para operario</a>
-        <a href="trazados/index.html" class="btn-menu btn-ot">Calculos</a>
-        <a href="consulta/consulta.html" class="btn-menu btn-ot">Consultas</a>
+        <div class="botones-grid">
+            <!-- Asegúrate de tener estas imágenes en la carpeta img/ -->
+            <a href="Pedidos%20desde%20obra/index.html" class="btn-menu btn-material">
+                <img src="img/material.png" alt="Material">
+                <span>Material</span>
+            </a>
+            
+            <a href="Pedidos%20desde%20obra/partes/index.html" class="btn-menu btn-partes">
+                <img src="img/partes.png" alt="Partes">
+                <span>Partes</span>
+            </a>
+            
+            <a href="Pedidos%20desde%20obra/ot/index.html" class="btn-menu btn-ot">
+                <img src="img/lista.png" alt="Lista OT">
+                <span>Lista OT</span>
+            </a>
+            
+            <a href="operario/index.html" class="btn-menu btn-ot">
+                <img src="img/operario.png" alt="Operario">
+                <span>Documentos para operario</span>
+            </a>
+            
+            <a href="trazados/index.html" class="btn-menu btn-ot">
+                <img src="img/trazados.png" alt="Trazados">
+                <span>Trazados y calculos</span>
+            </a>
+            
+            <a href="consulta/consulta.html" class="btn-menu btn-ot">
+                <img src="img/consultas.png" alt="Consultas">
+                <span>Consultas</span>
+            </a>
+        </div>
 
         <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
     </div>

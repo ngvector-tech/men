@@ -227,11 +227,42 @@
     cursor: pointer;
     z-index: 100000;
   }
+      /* ============================================================
+       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
+       ============================================================ */
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px; /* Separación con el contenido de abajo */
+        padding: 8px 16px;
+        background-color: #ecf0f1;
+        color: #34495e;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: Arial, sans-serif;
+    }
+
+    .btn-volver:hover {
+        background-color: #e0e6ed;
+        border-color: #95a5a6;
+        color: #2c3e50;
+    }
+
+    .btn-volver:active {
+        transform: scale(0.98);
+    }
 </style>
 </head>
 <body>
 
 <div class="container">
+<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
   <h1>Calculadora de Colector — Bridas y DN Estándar</h1>
   <p class="subtitulo">Espacio para bridas ASME B16.5 y ajuste del colector a tubería comercial</p>
 
