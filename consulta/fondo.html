@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora de Fondos de Depósito</title>
+<style>
+  /* CSS COMPACTO */
+  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  
+  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
+  .container { max-width: 750px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
+  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 14px; }
+  
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; background: #fff; }
+  .panel-title { background: var(--azul); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; }
+  .panel-body { padding: 8px; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
+  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
+  
+  .input-box { width: 90px; flex-shrink: 0; }
+  .input-box input { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
+  .select-box { width: 100%; flex-shrink: 0; }
+  .select-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; font-family: inherit; }
+  .input-box input:focus, .select-box select:focus { outline: none; border-color: var(--azul); }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
+  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
+  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
+  .result-val.big { font-size: 13px; background: #e7f1ff; color: #0a58ca; }
+  
+  /* ESTILO ESPECÍFICO PARA LA ALTURA TOTAL (ROJO) */
+  .result-val.red { color: #dc3545; background: #f8d7da; font-size: 14px; }
+
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  
+  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; display: flex; justify-content: center; align-items: center; min-height: 200px; }
+  .svg-box svg { width: 100%; height: auto; max-height: 220px; }
+
+  .btn-volver {
+      display: inline-flex; align-items: center; gap: 6px; margin: 10px; padding: 8px 16px;
+      background-color: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7;
+      border-radius: 6px; font-size: 13px; font-weight: bold; text-decoration: none;
+      cursor: pointer; transition: all 0.2s; font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+  <div class="header">Cálculo de Fondos (Klopper / Korbogen / Esférico)</div>
+  
+  <div class="grid" style="grid-template-columns: 1fr;">
+    <div class="panel">
+      <div class="panel-title">1 · Datos de Entrada</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="label">Tipo de Fondo</div>
+          <div class="select-box" style="width: 200px;">
+            <select id="tipo-fondo">
+              <option value="1">1 - Klopper (DIN 28011)</option>
+              <option value="2">2 - Korbogen (DIN 28013)</option>
+              <option value="3">3 - Semiesférico</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">Diámetro Exterior<small>De (mm)</small></div>
+          <div class="input-box"><input id="de" type="number" value="1000" step="any"></div>
+        </div>
+        <div class="row">
+          <div class="label">Espesor de Pared<small>e (mm)</small></div>
+          <div class="input-box"><input id="e" type="number" value="6" step="any"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">Vista en Alzado (Perfil)</div>
+      <div class="panel-body">
+        <div class="svg-box"><svg id="svg-perfil" viewBox="0 0 400 220"></svg></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Vista en Planta (Desarrollo)</div>
+      <div class="panel-body">
+        <div class="svg-box"><svg id="svg-planta" viewBox="0 0 400 220"></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">2 · Resultados de Fabricación</div>
+      <div class="panel-body">
+        <div class="result-row"><div class="result-label">Diámetro Interior Neto (Di)</div><div class="result-val" id="r-di">-</div></div>
+        <div class="result-row"><div class="result-label">Diámetro del Disco (Corte)</div><div class="result-val big" id="r-disco">-</div></div>
+        <div class="result-row"><div class="result-label">Altura del Arco (f)</div><div class="result-val" id="r-flecha">-</div></div>
+        
+        <!-- FILA MODIFICADA A ROJO -->
+        <div class="result-row"><div class="result-label">Altura Total (H)</div><div class="result-val red" id="r-htotal">-</div></div>
+        
+        <div class="result-row"><div class="result-label">Radio Mayor (R)</div><div class="result-val" id="r-r">-</div></div>
+        <div class="result-row"><div class="result-label">Radio Menor (r)</div><div class="result-val" id="r-rr">-</div></div>
+        <div class="result-row"><div class="result-label">Pestaña Recta (h)</div><div class="result-val" id="r-pestana">-</div></div>
+        <div class="result-row"><div class="result-label">Volumen Interno</div><div class="result-val" id="r-vol">-</div></div>
+        <div class="result-row"><div class="result-label">Peso Aproximado</div><div class="result-val" id="r-peso">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner" id="banner">Calculando...</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fx = (v, d) => v.toFixed(d);
+const MaxOf = (v1, v2) => Math.max(v1, v2);
+
+// ==========================================
+// GENERADORES DE SVG
+// ==========================================
+function dibujarPlanta(De, D_disco, tipoFondo) {
+  const svg = $('svg-planta');
+  const W = 400, H = 220, cx = W/2, cy = H/2;
+  
+  const esc = Math.min((W - 60) / D_disco, (H - 60) / D_disco);
+  const rd = (D_disco * esc) / 2;
+  const rde = (De * esc) / 2;
+  
+  let inner = `
+    <circle cx="${cx}" cy="${cy}" r="${rd}" fill="#f8f9fa" stroke="#adb5bd" stroke-width="2" stroke-dasharray="8 4" />
+    <circle cx="${cx}" cy="${cy}" r="${rde}" fill="#e7f1ff" stroke="#0d6efd" stroke-width="2" />
+    <line x1="${cx-rd-10}" y1="${cy}" x2="${cx+rd+10}" y2="${cy}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="4 4"/>
+    <line x1="${cx}" y1="${cy-rd-10}" x2="${cx}" y2="${cy+rd+10}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="${cx}" y="${cy - rd - 12}" font-size="11" font-family="monospace" font-weight="bold" fill="#6c757d" text-anchor="middle">Desarrollo: Ø ${fx(D_disco,1)} mm</text>
+    <text x="${cx}" y="${cy + rde - 5}" font-size="10" font-family="monospace" font-weight="bold" fill="#0d6efd" text-anchor="middle">De: Ø ${De} mm</text>
+  `;
+  svg.innerHTML = inner;
+}
+
+function dibujarPerfil(De, e, tipoFondo, f_flecha, h_pestana) {
+  const svg = $('svg-perfil');
+  const W = 400, H = 220, cx = W/2;
+  
+  let D_disco = De;
+  if (tipoFondo === "1") D_disco = 1.11 * De + 1.85 * h_pestana;
+  if (tipoFondo === "2") D_disco = 1.25 * De + 2 * h_pestana;
+  if (tipoFondo === "3") D_disco = Math.PI * (De / 2);
+  
+  const maxW = W - 80, maxH = H - 80;
+  const scaleW = maxW / D_disco, scaleH = maxH / (f_flecha + h_pestana);
+  const esc = Math.min(scaleW, scaleH);
+  
+  const rde = (De * esc) / 2;
+  const rhp = h_pestana * esc;
+  const rfh = f_flecha * esc;
+  
+  const yBase = H - 40;
+  const yPestana = yBase - rhp;
+  const yCima = yPestana - rfh;
+  
+  let dPath = `M ${cx - rde} ${yPestana} `;
+  
+  if (tipoFondo === "3") {
+    dPath += `A ${rde} ${rfh} 0 0 1 ${cx + rde} ${yPestana} `;
+  } else if (tipoFondo === "2") {
+    dPath += `C ${cx - rde} ${yCima + rfh*0.1}, ${cx - rde*0.6} ${yCima}, ${cx} ${yCima} `;
+    dPath += `C ${cx + rde*0.6} ${yCima}, ${cx + rde} ${yCima + rfh*0.1}, ${cx + rde} ${yPestana} `;
+  } else {
+    dPath += `C ${cx - rde} ${yCima}, ${cx + rde} ${yCima}, ${cx + rde} ${yPestana} `;
+  }
+  
+  dPath += `L ${cx + rde} ${yBase} L ${cx - rde} ${yBase} Z`;
+  
+  let inner = `
+    <defs><linearGradient id="gFondo" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e7f1ff"/><stop offset="100%" stop-color="#d0e2ff"/></linearGradient></defs>
+    <ellipse cx="${cx}" cy="${yBase + 5}" rx="${rde + rhp}" ry="6" fill="rgba(0,0,0,0.05)" />
+    <path d="${dPath}" fill="url(#gFondo)" stroke="#0d6efd" stroke-width="2" stroke-linejoin="round" />
+    <line x1="${cx}" y1="${yCima - 15}" x2="${cx}" y2="${yBase + 15}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="4 4"/>
+    
+    <line x1="${cx + rde + 10}" y1="${yCima}" x2="${cx + rde + 25}" y2="${yCima}" stroke="#6c757d" stroke-width="1"/>
+    <line x1="${cx + rde + 10}" y1="${yPestana}" x2="${cx + rde + 25}" y2="${yPestana}" stroke="#6c757d" stroke-width="1"/>
+    <line x1="${cx + rde + 20}" y1="${yCima}" x2="${cx + rde + 20}" y2="${yPestana}" stroke="#6c757d" stroke-width="1"/>
+    <text x="${cx + rde + 25}" y="${(yCima + yPestana)/2}" font-size="11" font-family="monospace" font-weight="bold" fill="#6c757d" dominant-baseline="middle">f: ${fx(f_flecha,1)}</text>
+    
+    <line x1="${cx - rde - 10}" y1="${yPestana}" x2="${cx - rde - 25}" y2="${yPestana}" stroke="#6c757d" stroke-width="1"/>
+    <line x1="${cx - rde - 10}" y1="${yBase}" x2="${cx - rde - 25}" y2="${yBase}" stroke="#6c757d" stroke-width="1"/>
+    <line x1="${cx - rde - 20}" y1="${yPestana}" x2="${cx - rde - 20}" y2="${yBase}" stroke="#6c757d" stroke-width="1"/>
+    <text x="${cx - rde - 25}" y="${(yPestana + yBase)/2}" font-size="11" font-family="monospace" font-weight="bold" fill="#6c757d" text-anchor="end" dominant-baseline="middle">h: ${fx(h_pestana,1)}</text>
+    
+    <line x1="${cx}" y1="${yCima}" x2="${cx}" y2="${yCima - 12}" stroke="#0d6efd" stroke-width="1"/>
+    <text x="${cx}" y="${yCima - 15}" font-size="11" font-family="monospace" font-weight="bold" fill="#dc3545" text-anchor="middle">H: ${fx(f_flecha+h_pestana+e,1)}</text>
+  `;
+  svg.innerHTML = inner;
+}
+
+// ==========================================
+// LÓGICA DE CÁLCULO
+// ==========================================
+function calc() {
+  const tipo = $('tipo-fondo').value;
+  const De = parseFloat($('de').value);
+  const e = parseFloat($('e').value);
+  const banner = $('banner');
+  
+  if (isNaN(De) || isNaN(e) || De <= 0 || e <= 0 || De <= 2*e) {
+    banner.style.background = '#f8d7da'; banner.style.color = '#842029';
+    banner.innerHTML = '⚠ Introduce valores válidos (De > 2*e).';
+    ['r-di','r-disco','r-flecha','r-htotal','r-r','r-rr','r-pestana','r-vol','r-peso'].forEach(i => $(i).innerText = '–');
+    return;
+  }
+
+  const Di = De - 2*e;
+  let R, r_radio, h_pestana, f_flecha, D_disco, Volumen, Superficie;
+
+  if (tipo === "1") {
+    R = De; r_radio = 0.1 * De; h_pestana = MaxOf(3.5 * e, 20);
+    f_flecha = 0.1935 * De - 0.455 * e; D_disco = 1.11 * De + 1.85 * h_pestana;
+    Volumen = 0.1 * Math.pow(Di / 100, 3);
+  } else if (tipo === "2") {
+    R = 0.8 * De; r_radio = 0.154 * De; h_pestana = MaxOf(3 * e, 25);
+    f_flecha = 0.255 * De - 0.635 * e; D_disco = 1.25 * De + 2 * h_pestana;
+    Volumen = 0.13 * Math.pow(Di / 100, 3);
+  } else {
+    R = De / 2; r_radio = De / 2; h_pestana = 0;
+    f_flecha = De / 2; D_disco = Math.PI * (De / 2);
+    Volumen = (2/3 * Math.PI * Math.pow(Di / 200, 3));
+  }
+
+  const H_total = f_flecha + h_pestana + e;
+  const Peso = (Math.PI * Math.pow(D_disco / 2, 2)) * e * 0.00000785;
+
+  banner.style.background = '#d1e7dd'; banner.style.color = '#0f5132';
+  banner.innerHTML = '✔ Cálculo completado.';
+
+  $('r-di').innerText = fx(Di, 1) + ' mm';
+  $('r-disco').innerText = fx(D_disco, 1) + ' mm';
+  $('r-flecha').innerText = fx(f_flecha, 1) + ' mm';
+  $('r-htotal').innerText = fx(H_total, 1) + ' mm'; // Este ahora es rojo gracias al CSS
+  $('r-r').innerText = fx(R, 1) + ' mm';
+  $('r-rr').innerText = fx(r_radio, 1) + ' mm';
+  $('r-pestana').innerText = fx(h_pestana, 1) + ' mm';
+  $('r-vol').innerText = fx(Volumen, 2) + ' Litros';
+  $('r-peso').innerText = fx(Peso, 2) + ' Kg';
+
+  dibujarPlanta(De, D_disco, tipo);
+  dibujarPerfil(De, e, tipo, f_flecha, h_pestana);
+}
+
+['de', 'e', 'tipo-fondo'].forEach(id => {
+  $(id).addEventListener('input', calc);
+  $(id).addEventListener('change', calc);
+});
+
+calc();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
