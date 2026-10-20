@@ -1,259 +1,489 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calculadora de Cáncamos de Izaje</title>
-<style>
-  /* CSS COMPACTO */
-  :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; }
-  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-  
-  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
-  .container { max-width: 750px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 20px; }
-  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 14px; }
-  
-  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
-  @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Calculadora de Orejetas de Elevación</title>
+  <link rel="stylesheet" href="men-header.css">
+  <style>
+    :root { 
+      --azul: #0d6efd; 
+      --azul-oscuro: #0b5ed7;
+      --azul-claro: #e7f1ff;
+      --borde: #dee2e6; 
+      --gris: #f8f9fa; 
+      --texto: #212529; 
+    }
+    * { 
+      box-sizing: border-box; 
+      font-family: system-ui, -apple-system, sans-serif; 
+    }
+    body { 
+      background: #eef2f5; 
+      margin: 0; 
+      padding: 8px; 
+      font-size: 12px; 
+      color: var(--texto); 
+    }
+    .container { 
+      max-width: 900px; 
+      margin: 0 auto; 
+      background: #fff; 
+      border-radius: 6px; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+      overflow: hidden; 
+      margin-bottom: 20px; 
+    }
+    .header { 
+      background: var(--azul); 
+      color: #fff; 
+      padding: 8px; 
+      text-align: center; 
+      font-weight: bold; 
+      font-size: 14px; 
+    }
+    .grid { 
+      display: grid; 
+      grid-template-columns: 1fr; 
+      gap: 8px; 
+      padding: 8px; 
+    }
+    @media (min-width: 768px) { 
+      .grid { grid-template-columns: 1fr 1fr; } 
+    }
+    .panel { 
+      border: 1px solid var(--borde); 
+      border-radius: 4px; 
+      overflow: hidden; 
+      background: #fff; 
+    }
+    .panel-title { 
+      background: var(--azul); 
+      color: #fff; 
+      padding: 6px; 
+      font-size: 11px; 
+      text-align: center; 
+      font-weight: bold; 
+    }
+    .panel-body { padding: 8px; }
+    .row { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 5px; 
+      border-bottom: 1px dashed #f0f0f0; 
+      padding-bottom: 5px; 
+    }
+    .row:last-child { 
+      border: none; 
+      margin-bottom: 0; 
+      padding-bottom: 0; 
+    }
+    .label { 
+      font-size: 11px; 
+      font-weight: 600; 
+      flex: 1; 
+      padding-right: 8px; 
+      line-height: 1.2; 
+    }
+    .label small { 
+      display: block; 
+      font-size: 9px; 
+      font-weight: 400; 
+      color: #666; 
+      margin-top: 1px; 
+    }
+    .input-box { width: 80px; flex-shrink: 0; }
+    .input-box input { 
+      width: 100%; 
+      padding: 4px 6px; 
+      border: 1px solid #ccc; 
+      border-radius: 3px; 
+      font-size: 11px; 
+      text-align: right; 
+      font-family: monospace; 
+    }
+    
+    .input-box input[readonly] {
+      background-color: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+      text-align: center;
+    }
 
-  .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; background: #fff; }
-  .panel-title { background: var(--azul); color: #fff; padding: 6px; font-size: 11px; text-align: center; font-weight: bold; }
-  .panel-body { padding: 8px; }
+    .select-box { width: 140px; flex-shrink: 0; }
+    .select-box select { 
+      width: 100%; 
+      padding: 4px 6px; 
+      border: 1px solid #ccc; 
+      border-radius: 3px; 
+      font-size: 11px; 
+      font-family: inherit; 
+    }
 
-  .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
-  .row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
-  .label { font-size: 11px; font-weight: 600; flex: 1; padding-right: 8px; line-height: 1.2; }
-  .label small { display: block; font-size: 9px; font-weight: 400; color: #666; margin-top: 1px; }
-  
-  .input-box { width: 90px; flex-shrink: 0; }
-  .input-box input { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; text-align: right; font-family: monospace; }
-  .select-box { width: 100%; flex-shrink: 0; }
-  .select-box select { width: 100%; padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; font-family: inherit; }
-  .input-box input:focus, .select-box select:focus { outline: none; border-color: var(--azul); }
+    .select-blue select {
+      background-color: var(--azul-claro);
+      color: var(--azul-oscuro);
+      border: 1px solid var(--azul);
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .select-blue select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+      border-color: var(--azul-oscuro);
+    }
+    .select-blue select option {
+      background-color: #fff;
+      color: var(--texto);
+      font-weight: normal;
+    }
 
-  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 5px; }
-  .result-row:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
-  .result-label { font-size: 11px; font-weight: 600; color: #495057; flex: 1; line-height: 1.2; }
-  .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
-  .result-val.big { font-size: 14px; background: #e7f1ff; color: #0a58ca; }
-  
-  /* ESTILO ESPECÍFICO PARA LAS CARGAS */
-  .result-val.red { color: #dc3545; background: #f8d7da; font-size: 14px; padding: 4px 8px; }
-  .result-val.total { color: #fff; background: #198754; font-size: 15px; padding: 4px 8px; }
+    .input-box input:focus, .select-box select:focus { 
+      outline: none; 
+      border-color: var(--azul); 
+    }
+    .input-box input.warn { 
+      border-color: #dc3545; 
+      background: #f8d7da; 
+      color: #dc3545; 
+      font-weight: bold; 
+    }
+    .banner { 
+      padding: 10px; 
+      border-radius: 4px; 
+      text-align: center; 
+      font-weight: bold; 
+      font-size: 12px; 
+      margin: 8px; 
+      line-height: 1.4;
+    }
+    .banner.ok { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+    .banner.fail { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+    .advice-box { 
+      display: none; 
+      background: #fff3cd; 
+      border: 1px solid #ffecb5; 
+      border-radius: 4px; 
+      padding: 10px; 
+      margin: 8px; 
+      color: #664d03; 
+      font-size: 12px; 
+    }
+    .advice-box h4 { margin: 0 0 6px 0; font-size: 13px; color: #856404; }
+    .advice-box ul { margin: 0; padding-left: 20px; }
+    .advice-box li { margin-bottom: 4px; }
+    
+    .image-box { 
+      background: #f8f9fa; 
+      border: 1px solid var(--borde); 
+      border-radius: 4px; 
+      padding: 10px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      margin: 0 8px 8px 8px; 
+      min-height: 200px;
+    }
+    .image-box img { 
+      max-width: 100%; 
+      height: auto; 
+      max-height: 460px; 
+      object-fit: contain;
+    }
 
-  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
-  
-  .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; display: flex; justify-content: center; align-items: center; min-height: 280px; }
-  .svg-box svg { width: 100%; height: auto; max-height: 300px; }
-
-  .btn-volver {
-      display: inline-flex; align-items: center; gap: 6px; margin: 10px; padding: 8px 16px;
-      background-color: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7;
-      border-radius: 6px; font-size: 13px; font-weight: bold; text-decoration: none;
-      cursor: pointer; transition: all 0.2s; font-family: Arial, sans-serif;
-  }
-  .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
-</style>
+    table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+    th { background: #0b3b4b; color: #fff; padding: 6px; text-align: left; font-weight: bold; }
+    td { border: 1px solid var(--borde); padding: 6px; text-align: center; }
+    td:first-child { text-align: left; }
+    .badge { padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 10px; color: #fff; display: inline-block; }
+    .badge.ok { background: #198754; }
+    .badge.fail { background: #dc3545; }
+    .btn-volver {
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      margin: 10px; 
+      padding: 8px 16px;
+      background-color: #ecf0f1; 
+      color: #34495e; 
+      border: 1px solid #bdc3c7;
+      border-radius: 6px; 
+      font-size: 13px; 
+      font-weight: bold; 
+      text-decoration: none;
+      cursor: pointer; 
+      transition: all 0.2s; 
+      font-family: Arial, sans-serif;
+    }
+    .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
+  </style>
 </head>
 <body>
 
 <div class="container">
   <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <div class="header">Cálculo de Capacidad de Cáncamo (Orejeta)</div>
+  <div class="header">Cálculo de Orejetas de Elevación</div>
   
   <div class="grid">
     <div class="panel">
-      <div class="panel-title">1 · Material y Cantidad</div>
+      <div class="panel-title">1 · Carga y Material</div>
       <div class="panel-body">
         <div class="row">
-          <div class="label">Material</div>
-          <div class="select-box" style="width: 180px;">
-            <select id="material">
-              <option value="140">Acero al Carbono (S235 / A36)</option>
-              <option value="160">Acero Inoxidable (304 / 316)</option>
+          <div class="label">Escudo de refuerzo</div>
+          <div class="select-box">
+            <select id="pad" class="user-input">
+              <option value="0">Sin escudo</option>
+              <option value="1">Con escudo</option>
             </select>
           </div>
         </div>
+        
         <div class="row">
-          <div class="label">Nº de unidades<small>Cantidad de cáncamos</small></div>
-          <div class="input-box"><input id="cant" type="number" value="1" min="1" step="1"></div>
+          <div class="label">Posición de la orejeta<small>Configuración de soldadura</small></div>
+          <div class="select-box select-blue">
+            <select id="posicion" class="user-input">
+              <option value="vertical" selected>Vertical (soldadura lateral a corte)</option>
+              <option value="horizontal">Horizontal (soldadura base a tracción)</option>
+            </select>
+          </div>
         </div>
+
+        <div class="row"><div class="label">Peso equipo / carga<small>W (kg)</small></div><div class="input-box"><input id="W" type="number" value="743.02" class="user-input"></div></div>
+        <div class="row"><div class="label">Factor impacto</div><div class="input-box"><input id="Imp" type="number" value="1.5" class="user-input"></div></div>
+        <div class="row"><div class="label">Nº Orejetas</div><div class="input-box"><input id="N" type="number" value="2" class="user-input"></div></div>
+        <div class="row"><div class="label">Ángulo eslinga<small>α (grados)</small></div><div class="input-box"><input id="A" type="number" value="90" class="user-input"></div></div>
+        
         <div class="row">
-          <div class="label">Tensión Admisible (S)</div>
-          <div class="result-val" id="r-tension">140 N/mm²</div>
+          <div class="label">Material<small>Acero / Inox</small></div>
+          <div class="select-box select-blue">
+            <select id="material" class="user-input">
+              <option value="235">Acero S235JR / A36 (235 MPa)</option>
+              <option value="275">Acero S275JR (275 MPa)</option>
+              <option value="355">Acero S355JR / A572 Gr.50 (355 MPa)</option>
+              <option value="460">Acero S460 (460 MPa)</option>
+              <option value="200">Inoxidable AISI 304 / 316 (200 MPa)</option>
+              <option value="custom" selected>Personalizado...</option>
+            </select>
+          </div>
         </div>
+
+        <div class="row"><div class="label">Tensión fluencia<small>Sy (N/mm²)</small></div><div class="input-box"><input id="Sy" type="number" value="221" class="user-input"></div></div>
+        
+        <div class="row">
+          <div class="label">Factor ocasional<small>Bloqueado en 1.0 (Elevación)</small></div>
+          <div class="input-box">
+            <input id="Occ" type="number" value="1.0" class="user-input" readonly>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div class="panel">
-      <div class="panel-title">2 · Dimensiones</div>
+      <div class="panel-title">2 · Geometría (mm)</div>
       <div class="panel-body">
-        <div class="row">
-          <div class="label">Espesor de chapa<small>t (mm)</small></div>
-          <div class="input-box"><input id="t" type="number" value="12" step="any"></div>
-        </div>
-        <div class="row">
-          <div class="label">Radio Exterior<small>Ro (mm)</small></div>
-          <div class="input-box"><input id="ro" type="number" value="50" step="any"></div>
-        </div>
-        <div class="row">
-          <div class="label">Radio Interior (Agujero)<small>Ri (mm)</small></div>
-          <div class="input-box"><input id="ri" type="number" value="20" step="any"></div>
-        </div>
+        <div class="row"><div class="label">Altura total<small>w (Soldadura)</small></div><div class="input-box"><input id="w" type="number" value="200" class="user-input"></div></div>
+        <div class="row"><div class="label">Espesor orejeta<small>t</small></div><div class="input-box"><input id="t" type="number" value="15" class="user-input"></div></div>
+        <div class="row"><div class="label">Diámetro orificio<small>dh</small></div><div class="input-box"><input id="dh" type="number" value="30" class="user-input"></div></div>
+        <div class="row"><div class="label">Radio superior<small>r</small></div><div class="input-box"><input id="r" type="number" value="50" class="user-input"></div></div>
+        <div class="row"><div class="label">Desplazamiento<small>off</small></div><div class="input-box"><input id="off" type="number" value="150" class="user-input"></div></div>
+        <div class="row"><div class="label">Soldadura<small>tw</small></div><div class="input-box"><input id="tw" type="number" value="8" class="user-input"></div></div>
+        <div class="row"><div class="label">Soldadura lateral<small>wl</small></div><div class="input-box"><input id="wl" type="number" value="200" class="user-input"></div></div>
+        <div class="row"><div class="label">Soldadura canto<small>wb</small></div><div class="input-box"><input id="wb" type="number" value="30" class="user-input"></div></div>
+        <div class="row"><div class="label">Aro de refuerzo orificio (opcional)<small>tc</small></div><div class="input-box"><input id="tc" type="number" value="0" class="user-input"></div></div>
       </div>
     </div>
   </div>
 
-  <div class="svg-box">
-    <svg id="svg-lug" viewBox="0 0 400 300"></svg>
+  <div class="image-box">
+    <img src="img/oreja.png" alt="Esquema de Orejeta de Elevación">
   </div>
 
-  <div class="grid">
+  <div class="grid" style="grid-template-columns: 1fr;">
     <div class="panel">
-      <div class="panel-title">3 · Resultados de Izaje</div>
-      <div class="panel-body">
-        <div class="result-row"><div class="result-label">Sección de carga<small>(Ro - Ri)</small></div><div class="result-val" id="r-seccion">-</div></div>
-        <div class="result-row"><div class="result-label">Área transversal<small>(2 * t * (Ro - Ri))</small></div><div class="result-val" id="r-area">-</div></div>
-        
-        <!-- CARGA POR UNIDAD -->
-        <div class="result-row" style="margin-top: 10px; border-top: 2px solid var(--borde); padding-top: 10px;">
-          <div class="result-label" style="font-size: 13px; color: #0a58ca;">CARGA MÁXIMA POR UNIDAD ESTIMADA</div>
-          <div class="result-val red" id="r-carga-ud">-</div>
-        </div>
-        
-        <!-- CARGA TOTAL -->
-        <div class="result-row" style="margin-top: 10px;">
-          <div class="result-label" style="font-size: 13px; color: #198754;">CARGA TOTAL ESTIMADA</div>
-          <div class="result-val total" id="r-carga-total">-</div>
-        </div>
+      <div class="panel-title">3 · Comprobaciones de diseño (Tensiones en N/mm²)</div>
+      <div class="panel-body" style="padding: 0;">
+        <table id="tabla-resultados">
+          <thead>
+            <tr>
+              <th>Controlador</th>
+              <th>Actual</th>
+              <th>Admisible</th>
+              <th>Relación</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <div class="banner" id="banner">Calculando...</div>
+  <div class="banner" id="global-banner">Calculando...</div>
+  <div class="advice-box" id="advice-box">
+    <h4>💡 Consejos para corregir el diseño:</h4>
+    <ul id="advice-list"></ul>
+  </div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
-const fx = (v, d) => v.toFixed(d);
+const fx = (v, d) => (isFinite(v) ? v.toFixed(d) : '0.00');
+const PI = Math.PI;
 
-// ==========================================
-// GENERADOR DE SVG (Vista de Orejeta Simétrica)
-// ==========================================
-function dibujarLug(Ro, Ri) {
-  const svg = $('svg-lug');
-  const W = 400, H = 300, cx = W/2, cy = H/2 - 10;
-  
-  const anchoBase = Ro * 2.2; 
-  const altoTotal = Ro * 2.5; 
-  
-  const escW = (W - 100) / anchoBase;
-  const escH = (H - 80) / altoTotal;
-  const esc = Math.min(escW, escH);
-  
-  const r_ext = Ro * esc;
-  const r_int = Ri * esc;
-  const w_base = (anchoBase * esc) / 2;
-  const h_total = altoTotal * esc;
-  
-  const yCentro = cy - h_total/3; 
-  const yBase = yCentro + h_total * 0.7;
-  
-  let dPath = `
-    M ${cx - r_ext} ${yCentro}
-    A ${r_ext} ${r_ext} 0 1 1 ${cx + r_ext} ${yCentro}
-    L ${cx + w_base} ${yBase}
-    L ${cx - w_base} ${yBase}
-    Z
-  `;
-  
-  let inner = `
-    <defs>
-      <linearGradient id="gLug" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="#e7f1ff"/>
-        <stop offset="100%" stop-color="#b3d1ff"/>
-      </linearGradient>
-    </defs>
-    <path d="${dPath}" fill="rgba(0,0,0,0.05)" transform="translate(3, 5)"/>
-    <path d="${dPath}" fill="url(#gLug)" stroke="#0d6efd" stroke-width="2" stroke-linejoin="round" />
-    <circle cx="${cx}" cy="${yCentro}" r="${r_int}" fill="#fff" stroke="#dc3545" stroke-width="2" />
-    
-    <line x1="${cx - r_ext - 20}" y1="${yCentro}" x2="${cx + r_ext + 20}" y2="${yCentro}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="5 5"/>
-    <line x1="${cx}" y1="${yCentro - r_ext - 20}" x2="${cx}" y2="${yBase + 20}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="5 5"/>
-    
-    <line x1="${cx}" y1="${yCentro}" x2="${cx - r_ext * 0.707}" y2="${yCentro - r_ext * 0.707}" stroke="#0d6efd" stroke-width="1" />
-    <text x="${cx - r_ext * 0.4 - 10}" y="${yCentro - r_ext * 0.4}" font-size="11" font-family="monospace" font-weight="bold" fill="#0d6efd" text-anchor="end">Ro: ${Ro}</text>
+$('material').addEventListener('change', function() {
+  const val = this.value;
+  if (val !== 'custom') {
+    $('Sy').value = val;
+    $('Sy').readOnly = true;
+  } else {
+    $('Sy').readOnly = false;
+  }
+  calc();
+});
 
-    <line x1="${cx}" y1="${yCentro}" x2="${cx + r_int * 0.707}" y2="${yCentro + r_int * 0.707}" stroke="#dc3545" stroke-width="1" />
-    <text x="${cx + r_int * 0.4 + 10}" y="${yCentro + r_int * 0.4 + 5}" font-size="11" font-family="monospace" font-weight="bold" fill="#dc3545" text-anchor="start">Ri: ${Ri}</text>
-    
-    <line x1="${cx - r_ext}" y1="${yCentro}" x2="${cx - r_ext}" y2="${yBase - 20}" stroke="#adb5bd" stroke-width="1" stroke-dasharray="2 2"/>
-    <line x1="${cx - r_ext - 15}" y1="${yCentro}" x2="${cx - r_ext - 5}" y2="${yCentro}" stroke="#6c757d" stroke-width="1"/>
-    <line x1="${cx - r_ext - 15}" y1="${yCentro + r_ext - r_int}" x2="${cx - r_ext - 5}" y2="${yCentro + r_ext - r_int}" stroke="#6c757d" stroke-width="1"/>
-    <line x1="${cx - r_ext - 10}" y1="${yCentro}" x2="${cx - r_ext - 10}" y2="${yCentro + r_ext - r_int}" stroke="#6c757d" stroke-width="1"/>
-    <text x="${cx - r_ext - 15}" y="${yCentro + (r_ext - r_int)/2}" font-size="10" font-family="monospace" font-weight="bold" fill="#6c757d" text-anchor="end" dominant-baseline="middle">(Ro-Ri)</text>
-    
-    <line x1="${cx - w_base}" y1="${yBase + 15}" x2="${cx + w_base}" y2="${yBase + 15}" stroke="#6c757d" stroke-width="1" />
-    <line x1="${cx - w_base}" y1="${yBase}" x2="${cx - w_base}" y2="${yBase + 20}" stroke="#adb5bd" stroke-width="1" />
-    <line x1="${cx + w_base}" y1="${yBase}" x2="${cx + w_base}" y2="${yBase + 20}" stroke="#adb5bd" stroke-width="1" />
-    <text x="${cx}" y="${yBase + 30}" font-size="10" font-family="monospace" font-weight="bold" fill="#6c757d" text-anchor="middle">Base aprox.</text>
-  `;
-  svg.innerHTML = inner;
-}
+$('Sy').addEventListener('input', function() {
+  if ($('material').value !== 'custom') {
+    $('material').value = 'custom';
+    $('Sy').readOnly = false;
+  }
+});
 
-// ==========================================
-// LÓGICA DE CÁLCULO
-// ==========================================
 function calc() {
-  const S = parseFloat($('material').value);
-  const cant = parseInt($('cant').value) || 1;
-  const t = parseFloat($('t').value);
-  const Ro = parseFloat($('ro').value);
-  const Ri = parseFloat($('ri').value);
-  const banner = $('banner');
+  const posicion = $('posicion').value;
+  const pad = $('pad').value === "1";
+  const W = parseFloat($('W').value) || 0;
+  const Imp = parseFloat($('Imp').value) || 1;
+  const N = parseFloat($('N').value) || 1;
+  const A = parseFloat($('A').value) || 90;
+  const Sy = parseFloat($('Sy').value) || 1;
+  const Occ = parseFloat($('Occ').value) || 1;
   
-  if (isNaN(t) || isNaN(Ro) || isNaN(Ri) || t <= 0 || Ro <= 0 || Ri <= 0 || Ri >= Ro) {
-    banner.style.background = '#f8d7da'; banner.style.color = '#842029';
-    banner.innerHTML = '⚠ Error: El Radio Interior (Ri) debe ser menor que el Exterior (Ro).';
-    ['r-seccion','r-area','r-carga-ud', 'r-carga-total'].forEach(id => $(id).innerText = '–');
-    return;
+  const w = parseFloat($('w').value) || 0;
+  const t = parseFloat($('t').value) || 0;
+  const dh = parseFloat($('dh').value) || 0;
+  const r = parseFloat($('r').value) || 0;
+  const off = parseFloat($('off').value) || 0;
+  const tw = parseFloat($('tw').value) || 0;
+  const wl = parseFloat($('wl').value) || 0;
+  const wb = parseFloat($('wb').value) || 0;
+  const tc = parseFloat($('tc').value) || 0;
+
+  if (w <= 0 || t <= 0) return;
+
+  const radA = (A * PI) / 180;
+  const sinA = Math.sin(radA) <= 0 ? 0.001 : Math.sin(radA);
+  const P = (W * Imp) / (N * sinA);
+  
+  const te = 0.7071 * tw;
+  const Aw = Math.max(te * (2 * wl + wb), 0.0001);
+  const cC = t / 2 + te;
+  const xo = t / 2 + te / 2;
+  const Ilc = Math.max(2 * (te * wl * xo * xo + Math.pow(te, 3) * wl / 12) + te * Math.pow(wb, 3) / 12, 0.0001);
+  
+  const aSh = 0.4 * Sy * Occ;
+  const aBr = Math.min(0.75 * Sy * Occ, 0.9 * Sy);
+  const aBn = Math.min(0.66 * Sy * Occ, 0.75 * Sy);
+  const aTr = 0.6 * Sy * Occ; 
+  
+  const c1 = (P * 9.80665) / Aw;
+  const c2 = c1 + (P * 9.80665 * off * cC) / Ilc; 
+  const areaDesgarro = 2 * (r - dh / 2) * t;
+  const c3 = areaDesgarro > 0 ? (P * 9.80665) / areaDesgarro : Infinity;
+  const c4 = (P * 9.80665) / Math.max((t + 2 * tc) * dh, 0.0001);
+  const c5 = (P * 9.80665 * off) / Math.max((w * t * t) / 6, 0.0001);
+  const c6 = pad ? (P * 9.80665) / (0.7071 * 8 * 2 * (100 + 275)) : 0;
+  const areaTraccion = Math.max(te * wb, 0.0001);
+  const c7 = (P * 9.80665) / areaTraccion;
+
+  let checks = [];
+
+  if (posicion === 'vertical') {
+    checks = [
+      { n: "1) Corte directo soldadura (S_sw)", act: c1, adm: aSh },
+      { n: "2) Esfuerzo cortante total (S_sw + S_bw)", act: c2, adm: aSh },
+      { n: "3) Desgarro sobre el orificio", act: c3, adm: aSh },
+      { n: "4) Cojinete del orificio", act: c4, adm: aBr },
+      { n: "5) Flexión base + tensión", act: c5, adm: aBn }
+    ];
+    if (pad) { checks.push({ n: "6) Corte soldadura escudo", act: c6, adm: aSh }); }
+  } else {
+    checks = [
+      { n: "1) Tracción soldadura base (σ)", act: c7, adm: aTr },
+      { n: "2) Desgarro sobre el orificio", act: c3, adm: aSh },
+      { n: "3) Cojinete del orificio", act: c4, adm: aBr },
+      { n: "4) Flexión base + tensión", act: c5, adm: aBn }
+    ];
+    if (pad) { checks.push({ n: "5) Corte soldadura escudo", act: c6, adm: aSh }); }
   }
 
-  const seccion = Ro - Ri;
-  const area = 2 * t * seccion;
-  
-  // Fórmula de capacidad por unidad
-  const cargaMaximaUD = 0.1 * t * 2 * S * seccion;
-  
-  // Carga total multiplicada por el número de unidades
-  const cargaTotal = cargaMaximaUD * cant;
+  let html = '';
+  let maxRatio = 0;
+  let failedItems = [];
 
-  $('r-tension').innerText = S + ' N/mm²';
-  
-  banner.style.background = '#d1e7dd'; banner.style.color = '#0f5132';
-  banner.innerHTML = '✔ Cálculo completado. Mostrando resultados para ' + cant + ' ud(s).';
+  checks.forEach(c => {
+    const ratio = c.adm > 0 ? c.act / c.adm : 0;
+    if (ratio > maxRatio) maxRatio = ratio;
+    const pass = ratio <= 1.0;
+    if (!pass) failedItems.push(c.n);
+    const badgeClass = pass ? 'ok' : 'fail';
+    const badgeText = pass ? 'CORRECTO' : 'ERROR';
+    html += `<tr>
+      <td>${c.n}</td>
+      <td style="font-weight:bold; color:${pass ? '#198754' : '#dc3545'}">${fx(c.act, 2)}</td>
+      <td>${fx(c.adm, 2)}</td>
+      <td>${fx(ratio, 3)}</td>
+      <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+    </tr>`;
+  });
 
-  $('r-seccion').innerText = fx(seccion, 1) + ' mm';
-  $('r-area').innerText = fx(area, 1) + ' mm²';
-  
-  // Actualizar resultados
-  $('r-carga-ud').innerText = fx(cargaMaximaUD, 1) + ' kg / ud';
-  $('r-carga-total').innerText = fx(cargaTotal, 1) + ' kg';
+  $('tabla-resultados').querySelector('tbody').innerHTML = html;
 
-  dibujarLug(Ro, Ri);
+  const banner = $('global-banner');
+  const adviceBox = $('advice-box');
+  const adviceList = $('advice-list');
+
+  if (maxRatio > 1.0) {
+    banner.className = 'banner fail';
+    // CAMBIO AQUÍ: Mensaje dinámico entendible para profanos
+    banner.innerHTML = `<b>ALERTA: Exceso de carga</b><br>El nivel de esfuerzo actual supera el límite seguro del material. La pieza está trabajando al <b>${fx(maxRatio * 100, 0)}%</b> de su capacidad (el límite máximo es 100%).`;
+    
+    adviceBox.style.display = 'block';
+    adviceList.innerHTML = '';
+    $('t').classList.add('warn');$('wb').classList.add('warn');
+
+    let htmlAdvice = '';
+    if (failedItems.some(x => x.includes("Flexión"))) { htmlAdvice += `<li><b>Fallo por flexión:</b> Aumenta el <b>Espesor (t)</b> o la <b>Altura (wl)</b>.</li>`; }
+    if (failedItems.some(x => x.includes("Corte"))) { htmlAdvice += `<li><b>Fallo por cortante:</b> Aumenta la <b>Longitud de soldadura (wl)</b> o el <b>Cordón (tw)</b>.</li>`; }
+    if (failedItems.some(x => x.includes("Tracción"))) { htmlAdvice += `<li><b>Fallo por tracción en soldadura base:</b> Aumenta el <b>Cordón (tw)</b> o la <b>Longitud de soldadura de canto (wb)</b>.</li>`; }
+    if (failedItems.some(x => x.includes("Cojinete"))) { htmlAdvice += `<li><b>Fallo por cojinete:</b> Aumenta el <b>Espesor (t)</b> o reduce el <b>Diámetro del orificio (dh)</b>.</li>`; }
+    adviceList.innerHTML = htmlAdvice;
+  } else {
+    banner.className = 'banner ok';
+    // CAMBIO AQUÍ: Mensaje dinámico entendible para profanos
+    banner.innerHTML = `<b>✔ DISEÑO SEGURO</b><br>La pieza trabaja al <b>${fx(maxRatio * 100, 0)}%</b> de su capacidad máxima. Tiene un margen de seguridad adecuado.`;
+    
+    adviceBox.style.display = 'none';
+    $('t').classList.remove('warn');$('wb').classList.remove('warn');
+  }
 }
 
-// ==========================================
-// EVENTOS
-// ==========================================
-['t', 'ro', 'ri', 'material', 'cant'].forEach(id => {
-  $(id).addEventListener('input', calc);
-  $(id).addEventListener('change', calc);
+document.querySelectorAll('.user-input').forEach(input => {
+  if(input.id !== 'material' && input.id !== 'Occ') {
+    input.addEventListener('input', calc);
+    input.addEventListener('change', calc);
+  }
 });
+
+if ($('material').value !== 'custom') {
+    $('Sy').readOnly = true;
+} else {
+    $('Sy').readOnly = false;
+}
 
 calc();
 </script>
-<link rel="stylesheet" href="men-header.css">
 <script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>
