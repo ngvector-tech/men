@@ -60,7 +60,7 @@
     this.defs.appendChild(f);
   };
 
-  /* ---------- geometry helpers ---------- */
+  /* ----------  geometry helpers ---------- */
   p.add=function(tag,at,txt){ var e=mk(tag,at,txt); this.g.appendChild(e); return e; };
   p.path=function(d,at){ at=at||{}; at.d=d; return this.add('path',at); };
   p.centerline=function(x1,y1,x2,y2){ return this.add('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:C.mute,'stroke-width':0.9,'stroke-dasharray':'14 3 3 3'}); };
