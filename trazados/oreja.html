@@ -21,85 +21,83 @@
     body { 
       background: #eef2f5; 
       margin: 0; 
-      padding: 8px; 
-      font-size: 12px; 
+      padding: 4px; 
+      font-size: 11px; 
       color: var(--texto); 
     }
     .container { 
       max-width: 900px; 
       margin: 0 auto; 
       background: #fff; 
-      border-radius: 6px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+      border-radius: 4px; 
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08); 
       overflow: hidden; 
-      margin-bottom: 20px; 
+      margin-bottom: 10px; 
     }
     .header { 
       background: var(--azul); 
       color: #fff; 
-      padding: 8px; 
+      padding: 6px; 
       text-align: center; 
       font-weight: bold; 
-      font-size: 14px; 
+      font-size: 13px; 
     }
     .grid { 
       display: grid; 
       grid-template-columns: 1fr; 
-      gap: 8px; 
-      padding: 8px; 
+      gap: 4px; 
+      padding: 4px; 
     }
     @media (min-width: 768px) { 
       .grid { grid-template-columns: 1fr 1fr; } 
     }
     .panel { 
       border: 1px solid var(--borde); 
-      border-radius: 4px; 
+      border-radius: 3px; 
       overflow: hidden; 
       background: #fff; 
     }
     .panel-title { 
       background: var(--azul); 
       color: #fff; 
-      padding: 6px; 
-      font-size: 11px; 
+      padding: 4px; 
+      font-size: 10px; 
       text-align: center; 
       font-weight: bold; 
     }
-    .panel-body { padding: 8px; }
+    .panel-body { padding: 4px; }
     .row { 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      margin-bottom: 5px; 
+      margin-bottom: 3px; 
       border-bottom: 1px dashed #f0f0f0; 
-      padding-bottom: 5px; 
+      padding-bottom: 3px; 
+      transition: opacity 0.2s;
     }
     .row:last-child { 
       border: none; 
       margin-bottom: 0; 
       padding-bottom: 0; 
     }
+    .row.is-off { opacity: 0.4; }
     .label { 
-      font-size: 11px; 
+      font-size: 10px; 
       font-weight: 600; 
       flex: 1; 
-      padding-right: 8px; 
-      line-height: 1.2; 
+      padding-right: 4px; 
+      line-height: 1.1; 
     }
     .label small { 
-      display: block; 
-      font-size: 9px; 
-      font-weight: 400; 
-      color: #666; 
-      margin-top: 1px; 
+      display: none; /* Ocultamos subtítulos para ahorrar espacio */
     }
-    .input-box { width: 80px; flex-shrink: 0; }
+    .input-box { width: 60px; flex-shrink: 0; } 
     .input-box input { 
       width: 100%; 
-      padding: 4px 6px; 
+      padding: 2px 4px; 
       border: 1px solid #ccc; 
-      border-radius: 3px; 
-      font-size: 11px; 
+      border-radius: 2px; 
+      font-size: 10px; 
       text-align: right; 
       font-family: monospace; 
     }
@@ -111,13 +109,13 @@
       text-align: center;
     }
 
-    .select-box { width: 140px; flex-shrink: 0; }
+    .select-box { width: 120px; flex-shrink: 0; } 
     .select-box select { 
       width: 100%; 
-      padding: 4px 6px; 
+      padding: 2px 4px; 
       border: 1px solid #ccc; 
-      border-radius: 3px; 
-      font-size: 11px; 
+      border-radius: 2px; 
+      font-size: 10px; 
       font-family: inherit; 
     }
 
@@ -129,14 +127,8 @@
       cursor: pointer;
     }
     .select-blue select:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+      outline: none; 
       border-color: var(--azul-oscuro);
-    }
-    .select-blue select option {
-      background-color: #fff;
-      color: var(--texto);
-      font-weight: normal;
     }
 
     .input-box input:focus, .select-box select:focus { 
@@ -150,73 +142,75 @@
       font-weight: bold; 
     }
     .banner { 
-      padding: 10px; 
-      border-radius: 4px; 
+      padding: 6px; 
+      border-radius: 3px; 
       text-align: center; 
       font-weight: bold; 
-      font-size: 12px; 
-      margin: 8px; 
-      line-height: 1.4;
+      font-size: 11px; 
+      margin: 4px; 
+      line-height: 1.3;
     }
     .banner.ok { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
     .banner.fail { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+    
     .advice-box { 
       display: none; 
       background: #fff3cd; 
       border: 1px solid #ffecb5; 
-      border-radius: 4px; 
-      padding: 10px; 
-      margin: 8px; 
+      border-radius: 3px; 
+      padding: 6px; 
+      margin: 4px; 
       color: #664d03; 
-      font-size: 12px; 
+      font-size: 11px; 
     }
-    .advice-box h4 { margin: 0 0 6px 0; font-size: 13px; color: #856404; }
-    .advice-box ul { margin: 0; padding-left: 20px; }
-    .advice-box li { margin-bottom: 4px; }
+    .advice-box h4 { margin: 0 0 4px 0; font-size: 12px; color: #856404; }
+    .advice-box ul { margin: 0; padding-left: 15px; }
+    .advice-box li { margin-bottom: 2px; }
     
     .image-box { 
       background: #f8f9fa; 
       border: 1px solid var(--borde); 
-      border-radius: 4px; 
-      padding: 10px; 
+      border-radius: 3px; 
+      padding: 4px; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
-      margin: 0 8px 8px 8px; 
-      min-height: 200px;
+      margin: 0 4px 4px 4px; 
+      min-height: 100px; 
     }
     .image-box img { 
       max-width: 100%; 
       height: auto; 
-      max-height: 460px; 
+      max-height: 250px; 
       object-fit: contain;
     }
 
-    table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
-    th { background: #0b3b4b; color: #fff; padding: 6px; text-align: left; font-weight: bold; }
-    td { border: 1px solid var(--borde); padding: 6px; text-align: center; }
+    table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 4px; }
+    th { background: #0b3b4b; color: #fff; padding: 4px; text-align: left; font-weight: bold; }
+    td { border: 1px solid var(--borde); padding: 4px; text-align: center; }
     td:first-child { text-align: left; }
-    .badge { padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 10px; color: #fff; display: inline-block; }
+    .badge { padding: 2px 6px; border-radius: 10px; font-weight: bold; font-size: 9px; color: #fff; display: inline-block; }
     .badge.ok { background: #198754; }
     .badge.fail { background: #dc3545; }
+    .badge.na { background: #6c757d; }
+    
     .btn-volver {
       display: inline-flex; 
       align-items: center; 
-      gap: 6px; 
-      margin: 10px; 
-      padding: 8px 16px;
+      gap: 4px; 
+      margin: 6px; 
+      padding: 4px 10px;
       background-color: #ecf0f1; 
       color: #34495e; 
       border: 1px solid #bdc3c7;
-      border-radius: 6px; 
-      font-size: 13px; 
+      border-radius: 4px; 
+      font-size: 11px; 
       font-weight: bold; 
       text-decoration: none;
       cursor: pointer; 
-      transition: all 0.2s; 
       font-family: Arial, sans-serif;
     }
-    .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
+    .btn-volver:hover { background-color: #e0e6ed; }
   </style>
 </head>
 <body>
@@ -231,38 +225,48 @@
       <div class="panel-body">
         
         <div class="row">
-          <div class="label">Posición de la orejeta<small>Configuración de soldadura</small></div>
+          <div class="label">Posición de la orejeta</div>
           <div class="select-box select-blue">
             <select id="posicion" class="user-input">
-              <option value="vertical" selected>Vertical (soldadura lateral a corte)</option>
-              <option value="horizontal">Horizontal (soldadura base a tracción)</option>
+              <option value="vertical" selected>Vertical (corte)</option>
+              <option value="horizontal">Horizontal (tracción)</option>
             </select>
           </div>
         </div>
 
-        <div class="row"><div class="label">Peso equipo / carga<small>W (kg)</small></div><div class="input-box"><input id="W" type="number" value="743.02" class="user-input"></div></div>
+        <div class="row">
+          <div class="label">Escudo de refuerzo</div>
+          <div class="select-box select-blue">
+            <select id="pad" class="user-input">
+              <option value="sin" selected>Sin escudo</option>
+              <option value="con">Con escudo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row"><div class="label">Peso equipo / carga</div><div class="input-box"><input id="W" type="number" value="743.02" class="user-input"></div></div>
         <div class="row"><div class="label">Factor impacto</div><div class="input-box"><input id="Imp" type="number" value="1.5" class="user-input"></div></div>
         <div class="row"><div class="label">Nº Orejetas</div><div class="input-box"><input id="N" type="number" value="2" class="user-input"></div></div>
-        <div class="row"><div class="label">Ángulo eslinga<small>α (grados)</small></div><div class="input-box"><input id="A" type="number" value="90" class="user-input"></div></div>
+        <div class="row"><div class="label">Ángulo eslinga</div><div class="input-box"><input id="A" type="number" value="90" class="user-input"></div></div>
         
         <div class="row">
-          <div class="label">Material<small>Acero / Inox</small></div>
+          <div class="label">Material</div>
           <div class="select-box select-blue">
             <select id="material" class="user-input">
-              <option value="235">Acero S235JR / A36 (235 MPa)</option>
-              <option value="275">Acero S275JR (275 MPa)</option>
-              <option value="355">Acero S355JR / A572 Gr.50 (355 MPa)</option>
-              <option value="460">Acero S460 (460 MPa)</option>
-              <option value="200">Inoxidable AISI 304 / 316 (200 MPa)</option>
-              <option value="custom" selected>Personalizado...</option>
+              <option value="235">S235JR / A36</option>
+              <option value="275">S275JR</option>
+              <option value="355">S355JR / A572</option>
+              <option value="460">S460</option>
+              <option value="200">Inox 304/316</option>
+              <option value="custom" selected>Personalizado</option>
             </select>
           </div>
         </div>
 
-        <div class="row"><div class="label">Tensión fluencia<small>Sy (N/mm²)</small></div><div class="input-box"><input id="Sy" type="number" value="221" class="user-input"></div></div>
+        <div class="row"><div class="label">Tensión fluencia Sy</div><div class="input-box"><input id="Sy" type="number" value="221" class="user-input"></div></div>
         
         <div class="row">
-          <div class="label">Factor ocasional<small>Bloqueado en 1.0 (Elevación)</small></div>
+          <div class="label">Factor ocasional</div>
           <div class="input-box">
             <input id="Occ" type="number" value="1.0" class="user-input" readonly>
           </div>
@@ -274,15 +278,20 @@
     <div class="panel">
       <div class="panel-title">2 · Geometría (mm)</div>
       <div class="panel-body">
-        <div class="row"><div class="label">Altura total<small>w (Soldadura)</small></div><div class="input-box"><input id="w" type="number" value="200" class="user-input"></div></div>
-        <div class="row"><div class="label">Espesor orejeta<small>t</small></div><div class="input-box"><input id="t" type="number" value="15" class="user-input"></div></div>
-        <div class="row"><div class="label">Diámetro orificio<small>dh</small></div><div class="input-box"><input id="dh" type="number" value="30" class="user-input"></div></div>
-        <div class="row"><div class="label">Radio superior<small>r</small></div><div class="input-box"><input id="r" type="number" value="50" class="user-input"></div></div>
-        <div class="row"><div class="label">Desplazamiento<small>off</small></div><div class="input-box"><input id="off" type="number" value="150" class="user-input"></div></div>
-        <div class="row"><div class="label">Soldadura<small>tw</small></div><div class="input-box"><input id="tw" type="number" value="8" class="user-input"></div></div>
-        <div class="row"><div class="label">Soldadura lateral<small>wl</small></div><div class="input-box"><input id="wl" type="number" value="200" class="user-input"></div></div>
-        <div class="row"><div class="label">Soldadura canto<small>wb</small></div><div class="input-box"><input id="wb" type="number" value="30" class="user-input"></div></div>
-        <div class="row"><div class="label">Aro de refuerzo orificio (opcional)<small>tc</small></div><div class="input-box"><input id="tc" type="number" value="0" class="user-input"></div></div>
+        <div class="row"><div class="label">Altura total w</div><div class="input-box"><input id="w" type="number" value="200" class="user-input"></div></div>
+        <div class="row"><div class="label">Espesor orejeta t</div><div class="input-box"><input id="t" type="number" value="15" class="user-input"></div></div>
+        <div class="row"><div class="label">Diámetro orificio dh</div><div class="input-box"><input id="dh" type="number" value="30" class="user-input"></div></div>
+        <div class="row"><div class="label">Radio superior r</div><div class="input-box"><input id="r" type="number" value="50" class="user-input"></div></div>
+        <div class="row"><div class="label">Desplazamiento off</div><div class="input-box"><input id="off" type="number" value="150" class="user-input"></div></div>
+        <div class="row"><div class="label">Soldadura tw</div><div class="input-box"><input id="tw" type="number" value="8" class="user-input"></div></div>
+        <div class="row"><div class="label">Soldadura lateral wl</div><div class="input-box"><input id="wl" type="number" value="200" class="user-input"></div></div>
+        <div class="row"><div class="label">Soldadura canto wb</div><div class="input-box"><input id="wb" type="number" value="30" class="user-input"></div></div>
+        <div class="row"><div class="label">Aro refuerzo orificio tc</div><div class="input-box"><input id="tc" type="number" value="0" class="user-input"></div></div>
+
+        <div class="row pad-field is-off"><div class="label">Ancho escudo wpb</div><div class="input-box"><input id="wpb" type="number" value="100" class="user-input"></div></div>
+        <div class="row pad-field is-off"><div class="label">Longitud escudo wpl</div><div class="input-box"><input id="wpl" type="number" value="275" class="user-input"></div></div>
+        <div class="row pad-field is-off"><div class="label">Espesor escudo thkp</div><div class="input-box"><input id="thkp" type="number" value="10" class="user-input"></div></div>
+        <div class="row pad-field is-off"><div class="label">Cordón soldadura escudo tfp</div><div class="input-box"><input id="tfp" type="number" value="6" class="user-input"></div></div>
       </div>
     </div>
   </div>
@@ -343,8 +352,14 @@ $('Sy').addEventListener('input', function() {
 
 function calc() {
   const posicion = $('posicion').value;
-  // Eliminada la variable 'pad'
-  
+  const pad = $('pad').value;
+  const padOn = (pad === 'con');
+
+  // Atenuar/activar campos de escudo
+  document.querySelectorAll('.pad-field').forEach(el => {
+    el.classList.toggle('is-off', !padOn);
+  });
+
   const W = parseFloat($('W').value) || 0;
   const Imp = parseFloat($('Imp').value) || 1;
   const N = parseFloat($('N').value) || 1;
@@ -361,6 +376,11 @@ function calc() {
   const wl = parseFloat($('wl').value) || 0;
   const wb = parseFloat($('wb').value) || 0;
   const tc = parseFloat($('tc').value) || 0;
+
+  const wpb = parseFloat($('wpb').value) || 0;
+  const wpl = parseFloat($('wpl').value) || 0;
+  const thkp = parseFloat($('thkp').value) || 0;
+  const tfp = parseFloat($('tfp').value) || 0;
 
   if (w <= 0 || t <= 0) return;
 
@@ -385,27 +405,54 @@ function calc() {
   const c3 = areaDesgarro > 0 ? (P * 9.80665) / areaDesgarro : Infinity;
   const c4 = (P * 9.80665) / Math.max((t + 2 * tc) * dh, 0.0001);
   const c5 = (P * 9.80665 * off) / Math.max((w * t * t) / 6, 0.0001);
-  // Eliminado el cálculo c6 (escudo de refuerzo)
   const areaTraccion = Math.max(te * wb, 0.0001);
   const c7 = (P * 9.80665) / areaTraccion;
+
+  // Cálculos de escudo
+  let c6 = null; // Corte soldadura
+  let c8 = null; // Flexión chapa escudo
+  
+  if (padOn && thkp > 0) {
+    // 6. Corte de la soldadura
+    c6 = (P * 9.80665) / Math.max(0.7071 * tfp * 2 * (wpb + wpl), 0.0001);
+    
+    // 7. Flexión de la chapa de la escudo
+    const brazoPalanca = (wpl - w) / 2; 
+    if (brazoPalanca > 0) {
+      const momento = P * 9.80665 * brazoPalanca;
+      const moduloResistente = (wpb * Math.pow(thkp, 2)) / 6;
+      c8 = momento / Math.max(moduloResistente, 0.0001);
+    } else {
+      c8 = 0; // La orejeta cubre toda la escudo
+    }
+  }
 
   let checks = [];
 
   if (posicion === 'vertical') {
     checks = [
-      { n: "1) Corte directo soldadura (S_sw)", act: c1, adm: aSh },
-      { n: "2) Esfuerzo cortante total (S_sw + S_bw)", act: c2, adm: aSh },
-      { n: "3) Desgarro sobre el orificio", act: c3, adm: aSh },
+      { n: "1) Corte directo soldadura", act: c1, adm: aSh },
+      { n: "2) Esfuerzo cortante total", act: c2, adm: aSh },
+      { n: "3) Desgarro sobre orificio", act: c3, adm: aSh },
       { n: "4) Cojinete del orificio", act: c4, adm: aBr },
       { n: "5) Flexión base + tensión", act: c5, adm: aBn }
     ];
   } else {
     checks = [
-      { n: "1) Tracción soldadura base (σ)", act: c7, adm: aTr },
-      { n: "2) Desgarro sobre el orificio", act: c3, adm: aSh },
+      { n: "1) Tracción soldadura base", act: c7, adm: aTr },
+      { n: "2) Desgarro sobre orificio", act: c3, adm: aSh },
       { n: "3) Cojinete del orificio", act: c4, adm: aBr },
       { n: "4) Flexión base + tensión", act: c5, adm: aBn }
     ];
+  }
+
+  // Añadir comprobaciones de escudo
+  if (padOn) {
+    checks.push({ n: "6) Corte soldadura escudo", act: c6, adm: aSh });
+    checks.push({ n: "7) Flexión chapa escudo", act: c8, adm: aBn });
+  } else {
+    checks.push({ n: "6) Corte soldadura escudo", act: 0, adm: 0, na: true });
+    checks.push({ n: "7) Flexión chapa escudo", act: 0, adm: 0, na: true });
   }
 
   let html = '';
@@ -413,6 +460,16 @@ function calc() {
   let failedItems = [];
 
   checks.forEach(c => {
+    if (c.na) {
+      html += `<tr>
+        <td>${c.n}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="badge na">N/A</span></td>
+      </tr>`;
+      return;
+    }
     const ratio = c.adm > 0 ? c.act / c.adm : 0;
     if (ratio > maxRatio) maxRatio = ratio;
     const pass = ratio <= 1.0;
@@ -440,20 +497,50 @@ function calc() {
     
     adviceBox.style.display = 'block';
     adviceList.innerHTML = '';
-    $('t').classList.add('warn');$('wb').classList.add('warn');
+    
+    // Limpiar resaltados previos
+    ['t', 'wb', 'thkp', 'wpb', 'wpl', 'tw', 'wl', 'dh'].forEach(id => $(id).classList.remove('warn'));
 
     let htmlAdvice = '';
-    if (failedItems.some(x => x.includes("Flexión"))) { htmlAdvice += `<li><b>Fallo por flexión:</b> Aumenta el <b>Espesor (t)</b> o la <b>Altura (wl)</b>.</li>`; }
-    if (failedItems.some(x => x.includes("Corte"))) { htmlAdvice += `<li><b>Fallo por cortante:</b> Aumenta la <b>Longitud de soldadura (wl)</b> o el <b>Cordón (tw)</b>.</li>`; }
-    if (failedItems.some(x => x.includes("Tracción"))) { htmlAdvice += `<li><b>Fallo por tracción en soldadura base:</b> Aumenta el <b>Cordón (tw)</b> o la <b>Longitud de soldadura de canto (wb)</b>.</li>`; }
-    if (failedItems.some(x => x.includes("Cojinete"))) { htmlAdvice += `<li><b>Fallo por cojinete:</b> Aumenta el <b>Espesor (t)</b> o reduce el <b>Diámetro del orificio (dh)</b>.</li>`; }
+    
+    if (failedItems.some(x => x.includes("Flexión base"))) { 
+      htmlAdvice += `<li><b>Fallo por flexión en la base:</b> Aumenta el <b>Espesor orejeta (t)</b> o la <b>Altura total (w)</b>.</li>`; 
+      $('t').classList.add('warn');
+    }
+    
+    if (failedItems.some(x => x.includes("Corte"))) { 
+      htmlAdvice += `<li><b>Fallo por cortante:</b> Aumenta la <b>Longitud de soldadura (wl)</b> o el <b>Cordón (tw)</b>.</li>`; 
+      $('tw').classList.add('warn');
+      $('wl').classList.add('warn');
+    }
+    
+    if (failedItems.some(x => x.includes("Tracción"))) { 
+      htmlAdvice += `<li><b>Fallo por tracción en soldadura base:</b> Aumenta el <b>Cordón (tw)</b> o la <b>Longitud de soldadura de canto (wb)</b>.</li>`; 
+      $('tw').classList.add('warn');
+      $('wb').classList.add('warn');
+    }
+    
+    if (failedItems.some(x => x.includes("Cojinete"))) { 
+      htmlAdvice += `<li><b>Fallo por cojinete:</b> Aumenta el <b>Espesor orejeta (t)</b> o reduce el <b>Diámetro del orificio (dh)</b>.</li>`; 
+      $('t').classList.add('warn');
+      $('dh').classList.add('warn');
+    }
+    
+    if (failedItems.some(x => x.includes("Flexión chapa escudo"))) { 
+      htmlAdvice += `<li><b>Fallo por flexión de la chapa de escudo:</b> La chapa es demasiado fina o pequeña. Aumenta el <b>Espesor escudo (thkp)</b>, el <b>Ancho escudo (wpb)</b> o reduce la <b>Longitud escudo (wpl)</b>.</li>`; 
+      $('thkp').classList.add('warn');
+      $('wpb').classList.add('warn');
+      $('wpl').classList.add('warn');
+    }
+    
     adviceList.innerHTML = htmlAdvice;
   } else {
     banner.className = 'banner ok';
     banner.innerHTML = `<b>✔ DISEÑO SEGURO</b><br>La pieza trabaja al <b>${fx(maxRatio * 100, 0)}%</b> de su capacidad máxima. Tiene un margen de seguridad adecuado.`;
     
     adviceBox.style.display = 'none';
-    $('t').classList.remove('warn');$('wb').classList.remove('warn');
+    // Limpiar todos los resaltados si todo está bien
+    ['t', 'wb', 'thkp', 'wpb', 'wpl', 'tw', 'wl', 'dh'].forEach(id => $(id).classList.remove('warn'));
   }
 }
 
