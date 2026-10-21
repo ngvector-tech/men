@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Trazado de Tubería — Rotación 3D e Impresión</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: Arial, sans-serif; margin: 12px; background:#f4f4f4; }
+  h2 { margin: 4px 0; }
+  h3 { margin: 8px 0 4px; font-size:15px; }
+  
+  /* Layout Base (Escritorio) */
+  .panel { display:flex; gap:15px; align-items: flex-start; }
+  
+  /* Panel izquierdo más estrecho */
+  .col { flex: 1; min-width: 260px; max-width: 320px; }
+  
+  /* Canvas mucho más ancho */
+  .col-canvas { flex: 3.5; min-width: 900px; display: flex; flex-direction: column; gap: 8px; }
+  
+  .card { background:#fff; border:1px solid #ccc; border-radius:6px; padding:6px 8px; margin-bottom:8px; }
+  
+  /* Controles de Vista */
+  .view-controls { 
+    display: flex; gap: 5px; background: #fff; padding: 6px; border-radius: 6px; border: 1px solid #ccc; flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-view {
+    padding: 6px 10px; font-size: 12px; font-weight: bold; border: 1px solid #888; 
+    border-radius: 4px; background: #eef; cursor: pointer; white-space: nowrap;
+  }
+  .btn-view:hover { background: #dde; }
+  .btn-view.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+  .hint-text { font-size: 11px; color: #666; margin-left: auto; font-style: italic; }
+
+  /* Botones del panel más compactos */
+  .btn-dir {
+    display:inline-block; margin:1px; padding:5px 8px; font-size:12px;
+    border:1px solid #888; border-radius:4px; background:#eef; cursor:pointer;
+  }
+  .btn-dir:hover { background:#dde; }
+  .btn-dir:disabled { opacity:.4; cursor:not-allowed; }
+  
+  .btn-acc {
+    display:inline-block; margin:2px; padding:6px 10px; font-size:13px;
+    border:1px solid #444; border-radius:5px; color:#fff; cursor:pointer; font-weight:bold;
+  }
+  .codo   { background:#1f6feb; }
+  .reduc  { background:#f39c12; }
+  .te     { background:#8e44ad; }
+  .conect { background:#0ea5e9; }
+  .retomar{ background:#10b981; }
+  .editar { background:#6b7280; }
+  .borrar { background:#c0392b; }
+  .imprimir { background:#475569; }
+  
+  .btn-share { background:#4b5563; margin:2px; padding:5px 8px; font-size:11px; border-radius:4px; color:#fff; border:none; cursor:pointer; }
+  .btn-share:hover { background:#374151; }
+  .share-group { margin-top:8px; display:flex; flex-wrap:wrap; gap:4px; }
+
+  table { border-collapse: collapse; font-size:12px; width:100%; margin-bottom:10px; }
+  th, td { border:1px solid #bbb; padding:3px 5px; text-align:center; }
+  th { background:#e6e6e6; }
+  .small { font-size:12px; color:#555; }
+  input[type=number] { width:80px; }
+  canvas { 
+    display:block; background:#fff; border:1px solid #ccc; border-radius:6px; 
+    width:100%; height:auto; cursor: grab; touch-action: none; 
+  }
+  canvas:active { cursor: grabbing; }
+  .estado { font-size:12px; padding:5px; background:#fffbe6; border:1px solid #ffe58f; border-radius:4px; line-height: 1.3; }
+  .tag { display:inline-block; padding:2px 6px; border-radius:10px; font-size:11px; color:#fff; }
+  .tag-codo { background:#1f6feb; }
+  .tag-red  { background:#f39c12; }
+  .tag-te   { background:#8e44ad; }
+  .tag-rama { background:#0ea5e9; }
+  .leyenda { display:flex; flex-wrap:wrap; gap:6px; font-size:11px; margin-top:4px; }
+  .leyenda span { display:inline-flex; align-items:center; gap:4px; }
+  .swatch { width:12px; height:12px; display:inline-block; border-radius:3px; border:1px solid #333; }
+
+  .floating-bar { display: none; }
+
+  #modalLupa {
+    display: none; position: fixed; z-index: 9999;
+    left: 0; top: 0; width: 100vw; height: 100vh;
+    background-color: rgba(0,0,0,0.85);
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+  #modalLupa img { max-width: 95vw; max-height: 95vh; background: #fff; border-radius: 4px; object-fit: contain; }
+  #modalCerrar { position: absolute; top: 15px; right: 25px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; line-height: 1; text-shadow: 0 0 10px #000; }
+  #modalCerrar:hover { color: #ccc; }
+
+  @media (max-width: 768px) {
+    body { padding: 8px; padding-bottom: 80px; }
+    .panel { flex-direction: column; align-items: stretch; }
+    .col, .col-canvas { min-width: 0; width: 100%; flex: none; max-width: none; }
+    .col-canvas { order: -1; }
+    
+    .btn-dir { padding: 10px 8px; font-size: 14px; width: 48%; margin: 1%; min-height: 44px; text-align: center; }
+    .btn-acc, .btn-share { padding: 10px; font-size: 13px; width: 100%; margin: 3px 0; min-height: 44px; text-align: center; }
+    input[type=number] { width: 100%; padding: 8px; font-size: 16px; }
+    label { display: block; margin-bottom: 8px; }
+    
+    .view-controls { justify-content: center; }
+    .hint-text { display: none; }
+
+    .floating-bar {
+      display: flex; position: fixed; left:0; right:0; bottom:0;
+      background: rgba(255,255,255,0.95); border-top: 1px solid #ccc;
+      padding: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.1); z-index: 100; justify-content: space-between; gap: 8px;
+    }
+    .floating-bar button { flex: 1; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 8px; border: 1px solid #888; background: #eef; cursor: pointer; }
+    .floating-bar .fb-danger { background: #c0392b; color: #fff; border-color: #c0392b; }
+    .hide-on-mobile { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<h2>Trazo de Tubería</h2>
+<p class="small">
+  Ejes: <b>+Z fondo · −Z frente · +X derecha · −X izquierda · +Y arriba · −Y abajo</b>.<br>
+  Tubería y ramales con su color por diámetro · Accesorios en <b style="color:#c026d3">magenta</b>.<br>
+  <i><b>Arrastra</b> el dibujo para rotar la vista. <b>Haz clic/toque</b> en un punto abierto para continuar.</i>
+</p>
+
+<div id="modalLupa">
+  <span id="modalCerrar">&times;</span>
+  <img id="modalImg" src="" alt="Vista ampliada">
+</div>
+
+<div class="panel">
+  <div class="col" id="panel-control">
+    <div class="card">
+      <h3>1. Configuración inicial</h3>
+      <label>Ø codo por defecto: <input type="number" id="defDiam" value="100"></label>
+      <label>Radio codo por defecto: <input type="number" id="defRadio" value="150"></label>
+      <label>Ø Te por defecto: <input type="number" id="defTe" value="100"></label>
+      <label>Ø tubería inicial: <input type="number" id="defTub" value="100"></label>
+      <button class="btn-acc codo" id="btnAplicarDef" style="margin-top:4px; width:100%;">Aplicar y reiniciar</button>
+    </div>
+
+    <div class="card">
+      <h3>2. Añadir tramo</h3>
+      <button class="btn-dir" data-dir="z+">Fondo (+Z)</button>
+      <button class="btn-dir" data-dir="z-">Frente (−Z)</button>
+      <button class="btn-dir" data-dir="x+">Derecha (+X)</button>
+      <button class="btn-dir" data-dir="x-">Izquierda (−X)</button>
+      <button class="btn-dir" data-dir="y+">Arriba (+Y)</button>
+      <button class="btn-dir" data-dir="y-">Abajo (−Y)</button>
+    </div>
+
+    <div class="card">
+      <h3>3. Accesorios y Conexiones</h3>
+      <button class="btn-acc reduc" id="btnReduc">Reducción</button>
+      <button class="btn-acc te"    id="btnTe">Te</button><br>
+      <button class="btn-acc editar" id="btnEditarTe">✏️ Editar Te</button><br>
+      <button class="btn-acc conect" id="btnConectarTe">🔌 Conectar Ramal</button>
+      <button class="btn-acc retomar" id="btnRetomar">🔌 Retomar Tubería</button><br>
+      <button class="btn-share" id="btnLupa" style="margin-top:4px; width:100%;">🔍 Pantalla completa</button>
+      <button class="btn-acc borrar hide-on-mobile" id="btnBorrar" style="margin-top:4px; width:100%;">Deshacer último</button>
+      <div class="estado" id="estado" style="margin-top:6px"></div>
+    </div>
+
+    <div class="card">
+      <h3>4. Lista de Materiales (BOM)</h3>
+      <div class="share-group">
+        <button class="btn-share" id="btnCopiarDibujo">📋 Copiar Dibujo</button>
+        <button class="btn-share" id="btnCopiarLista">📋 Copiar Lista</button>
+        <button class="btn-share" id="btnCompartirDibujo">📤 Compartir Dibujo</button>
+        <button class="btn-share" id="btnCompartirLista">📤 Compartir Lista</button>
+      </div>
+      
+      <!-- NUEVOS BOTONES DE IMPRESIÓN -->
+      <div class="share-group" style="margin-top: 6px; border-top: 1px dashed #ccc; padding-top: 6px;">
+        <button class="btn-share imprimir" id="btnImprimirLista">🖨️ Imprimir Lista</button>
+        <button class="btn-share imprimir" id="btnImprimirGrafico">🖨️ Imprimir Gráfico</button>
+        <button class="btn-share imprimir" id="btnImprimirTodo" style="flex: 1 1 100%; background: #1f6feb; margin-top: 4px;">🖨️ Imprimir Todo</button>
+      </div>
+
+      <div id="listaMateriales" style="margin-top:8px"></div>
+      <h3 style="margin-top:8px">Leyenda de Ø</h3>
+      <div class="leyenda" id="leyenda"></div>
+    </div>
+  </div>
+
+  <div class="col col-canvas">
+    <div class="view-controls">
+      <button class="btn-view active" id="btnPerspA">⛶ Persp. A (Original)</button>
+      <button class="btn-view" id="btnPerspB">⛶ Persp. B (Opuesta)</button>
+      <span class="hint-text">Arrastra para rotar</span>
+    </div>
+    <canvas id="lienzo" width="900" height="700"></canvas>
+  </div>
+</div>
+
+<div class="floating-bar">
+  <button id="fbLupa" type="button">🔍</button>
+  <button id="fbRetomar" type="button">🔌</button>
+  <button id="fbBorrar" type="button" class="fb-danger">↶</button>
+</div>
+
+<script>
+/* =====================================================================
+   ESTADO GLOBAL Y CÁMARA ORBITAL
+   ===================================================================== */
+const estado = {
+  elementos: [],
+  posActual: { x:0, y:0, z:0 },
+  dirActual: null,
+  codoActual: { diam:100, radio:150 },
+  teActual:   { diam:100 },
+  tubActual:  { diam:100 },
+  requiereNuevoCodo: false,
+  ramalesTes: [],
+  contadorTes: 0,
+  ramaActivaId: null,
+  contadorCarretes: 0,
+  nodosInteractivos: []
+};
+
+const camara = {
+  rotX: 0,
+  rotY: Math.PI/4,
+};
+
+const VISTA_A = { rotX: 0, rotY: Math.PI/4 };
+const VISTA_B = { rotX: 0, rotY: Math.PI/4 + Math.PI };
+
+const PALETA = [
+  '#1f6feb', '#16a34a', '#dc2626', '#9333ea', '#0891b2',
+  '#ca8a04', '#db2777', '#059669', '#7c3aed', '#ea580c',
+  '#2563eb', '#65a30d', '#e11d48', '#0d9488', '#a16207'
+];
+const colorPorDiam = new Map();
+function colorDiam(d) {
+  const key = Math.round(d);
+  if (!colorPorDiam.has(key)) colorPorDiam.set(key, PALETA[colorPorDiam.size % PALETA.length]);
+  return colorPorDiam.get(key);
+}
+
+const DIRS = {
+  'z+': { x:0, y:0, z: 1 }, 'z-': { x:0, y:0, z:-1 },
+  'x+': { x:1, y:0, z: 0 }, 'x-': { x:-1,y:0, z: 0 },
+  'y+': { x:0, y:1, z: 0 }, 'y-': { x:0, y:-1,z: 0 }
+};
+const DIR_LABEL = {
+  'z+':'+Z fondo','z-':'−Z frente','x+':'+X derecha',
+  'x-':'−X izquierda','y+':'+Y arriba','y-':'−Y abajo'
+};
+function dirKey(d) {
+  if (!d) return null;
+  for (const k in DIRS) {
+    const v = DIRS[k];
+    if (v.x===d.x && v.y===d.y && v.z===d.z) return k;
+  }
+  return null;
+}
+
+/* =====================================================================
+   CÁLCULO DE CARRETES LIMPIOS
+   ===================================================================== */
+function calcularCarretesLimpios(elementos, esRama = false, teAsociada = null) {
+  const res = [];
+  for (let i = 0; i < elementos.length; i++) {
+    const el = elementos[i];
+    if (el.tipo !== 'tramo') continue;
+    const prev = elementos[i - 1];
+    const next = elementos[i + 1];
+    let descIzq = 0, descDer = 0;
+    if (prev) {
+      if (prev.tipo === 'codo') descIzq = prev.radio;
+      else if (prev.tipo === 'te') descIzq = estado.codoActual.radio;
+      else if (prev.tipo === 'reduccion') descIzq = 0;
+    } else if (esRama && teAsociada) {
+      descIzq = estado.codoActual.radio;
+    }
+    if (next) {
+      if (next.tipo === 'codo') descDer = next.radio;
+      else if (next.tipo === 'te') descDer = estado.codoActual.radio;
+      else if (next.tipo === 'reduccion') descDer = 0;
+    }
+    const descuento = descIzq + descDer;
+    const bruto     = el.largo;
+    const limpio    = Math.max(0, bruto - descuento);
+    res.push({ num: el.num, diam: el.diam, dirKey: el.dirKey, bruto, descuento, limpio });
+  }
+  return res;
+}
+
+/* =====================================================================
+   ACTUALIZAR UI / LISTA DE MATERIALES
+   ===================================================================== */
+function actualizarEstado() {
+  const e = document.getElementById('estado');
+  let txt = `<span class="tag tag-codo">CODO</span> Ø${estado.codoActual.diam} · R${estado.codoActual.radio}<br>`;
+  txt += `Ø tubería: <b>${estado.tubActual.diam}</b><br>`;
+  if (estado.ramaActivaId && estado.ramaActivaId !== 'principal') {
+    txt += `<span class="tag tag-rama">RAMAL T${estado.ramaActivaId}</span><br>`;
+  } else if (estado.requiereNuevoCodo) {
+    txt += `<span style="color:#c0392b"><b>⚠ Define codo.</b></span>`;
+  } else {
+    txt += `Dir: <b>${estado.dirActual ? DIR_LABEL[dirKey(estado.dirActual)] : '—'}</b>`;
+  }
+  e.innerHTML = txt;
+
+  document.querySelectorAll('.btn-dir').forEach(b => b.disabled = estado.requiereNuevoCodo);
+
+  const todosElementos = [...estado.elementos];
+  estado.ramalesTes.forEach(t => { if (t.ramaElementos) todosElementos.push(...t.ramaElementos); });
+
+  const accPorDiam = {};
+  todosElementos.forEach(el => {
+    if (el.tipo === 'codo' || el.tipo === 'te' || el.tipo === 'reduccion') {
+      let tipoLabel = el.tipo === 'codo' ? 'Codos' : el.tipo === 'te' ? 'Tes' : 'Reducciones';
+      let diamKey = el.tipo === 'reduccion' ? Math.max(Math.round(el.d1), Math.round(el.d2)) : Math.round(el.diam);
+      if (!accPorDiam[tipoLabel]) accPorDiam[tipoLabel] = {};
+      if (!accPorDiam[tipoLabel][diamKey]) accPorDiam[tipoLabel][diamKey] = 0;
+      accPorDiam[tipoLabel][diamKey]++;
+    }
+  });
+
+  const carretesPrincipales = calcularCarretesLimpios(estado.elementos, false);
+  const carretesRamas = [];
+  estado.ramalesTes.forEach(t => {
+    if (t.ramaElementos && t.ramaElementos.length > 0) carretesRamas.push(...calcularCarretesLimpios(t.ramaElementos, true, t));
+  });
+  const todosCarretes = [...carretesPrincipales, ...carretesRamas];
+
+  let html = '';
+  html += `<h4 style="margin: 4px 0; font-size:12px; border-bottom:1px solid #ddd;">Accesorios</h4>`;
+  html += `<table style="margin-bottom:10px;"><thead><tr><th>Tipo</th><th>Ø</th><th>Cant.</th></tr></thead><tbody>`;
+  let hayAccesorios = false;
+  for (const tipo in accPorDiam) {
+    const diametros = Object.keys(accPorDiam[tipo]).sort((a,b)=>a-b);
+    diametros.forEach(d => {
+      html += `<tr><td>${tipo}</td><td>${d}</td><td><b>${accPorDiam[tipo][d]}</b></td></tr>`;
+      hayAccesorios = true;
+    });
+  }
+  if (!hayAccesorios) html += `<tr><td colspan="3" class="small">No hay accesorios</td></tr>`;
+  html += `</tbody></table>`;
+
+  html += `<h4 style="margin: 4px 0; font-size:12px; border-bottom:1px solid #ddd;">Carretes</h4>`;
+  html += `<table><thead><tr><th>Nº</th><th>Ø</th><th>Largo</th><th>Color</th></tr></thead><tbody>`;
+  if (todosCarretes.length === 0) {
+    html += `<tr><td colspan="4" class="small">No hay carretes</td></tr>`;
+  } else {
+    todosCarretes.forEach(c => {
+      const col = colorDiam(c.diam);
+      html += `<tr><td>${c.num}</td><td>${c.diam}</td><td><b>${c.limpio.toFixed(0)}</b></td><td><span class="swatch" style="background:${col}"></span></td></tr>`;
+    });
+  }
+  html += `</tbody></table>`;
+  document.getElementById('listaMateriales').innerHTML = html;
+
+  const leg = document.getElementById('leyenda');
+  leg.innerHTML = '';
+  [...colorPorDiam.entries()].sort((a,b)=>a[0]-b[0]).forEach(([d, c]) => {
+    const s = document.createElement('span');
+    s.innerHTML = `<span class="swatch" style="background:${c}"></span>Ø${d}`;
+    leg.appendChild(s);
+  });
+  
+  // Ajustar altura del canvas tras actualizar el panel
+  setTimeout(dibujar, 50);
+}
+
+/* =====================================================================
+   SELECCIÓN POR CLIC/TOQUE
+   ===================================================================== */
+function seleccionarNodoPorCoordenadas(mx, my) {
+  const esTactil = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  const margenDeteccion = esTactil ? 25 : 15;
+  let nodoElegido = null;
+  for (const n of estado.nodosInteractivos) {
+    const dist = Math.hypot(n.x - mx, n.y - my);
+    if (dist <= margenDeteccion) { nodoElegido = n; break; }
+  }
+  if (nodoElegido) {
+    estado.ramaActivaId = nodoElegido.id;
+    estado.posActual = { ...nodoElegido.pos3D };
+    estado.dirActual = nodoElegido.dir3D;
+    estado.tubActual.diam = nodoElegido.diam;
+    if (nodoElegido.id !== 'principal') {
+      const te = estado.ramalesTes.find(t => t.id === nodoElegido.id);
+      if (te) te.usado = true;
+    }
+    dibujar();
+    actualizarEstado();
+    alert(`Has conectado al nodo: ${nodoElegido.nombre}. Puedes seguir trazando.`);
+    return true;
+  }
+  return false;
+}
+
+function conectarTe() {
+  const tesLibres = estado.ramalesTes.filter(t => !t.usado);
+  if (tesLibres.length === 0) { alert('No hay ramales laterales libres.'); return; }
+  const opciones = tesLibres.map(t => `T${t.id} (Ø${t.diam})`).join(', ');
+  const idStr = prompt(`¿A qué ramal lateral de Te te quieres conectar?\nOpciones: ${opciones}`, tesLibres[0].id);
+  if (idStr === null) return;
+  const id = parseInt(idStr);
+  const te = tesLibres.find(t => t.id === id);
+  if (!te) { alert('Número de Te inválido o ya en uso.'); return; }
+  te.usado = true;
+  estado.ramaActivaId = te.id;
+  estado.posActual = { ...te.pos };
+  estado.dirActual = te.dirRamal;
+  estado.tubActual.diam = te.diam;
+  dibujar();
+  actualizarEstado();
+}
+
+function retomarTuberia() {
+  const abiertos = [];
+  if (estado.elementos.length > 0) {
+    abiertos.push({ id: 'principal', nombre: 'Línea Principal (Tramo final)', pos: { ...estado.posActual }, dir: estado.dirActual ? { ...estado.dirActual } : null, diam: estado.tubActual.diam });
+  }
+  estado.ramalesTes.forEach(t => {
+    if (t.ramaElementos && t.ramaElementos.length > 0) {
+      let posFin = { ...t.pos }, dirFin = t.dirRamal, diamFin = t.diam;
+      t.ramaElementos.forEach(el => {
+        if (el.tipo === 'tramo') {
+          const d = DIRS[el.dirKey];
+          posFin = { x: el.inicio.x + d.x * el.largo, y: el.inicio.y + d.y * el.largo, z: el.inicio.z + d.z * el.largo };
+          dirFin = d; diamFin = el.diam;
+        } else if (el.tipo === 'reduccion') {
+          const d = el.dir;
+          posFin = { x: el.pos.x + d.x * el.altura, y: el.pos.y + d.y * el.altura, z: el.pos.z + d.z * el.altura };
+          diamFin = el.d2;
+        }
+      });
+      abiertos.push({ id: t.id, nombre: `Ramal de Te T${t.id} (Tramo final)`, pos: posFin, dir: dirFin, diam: diamFin });
+    } else {
+      abiertos.push({ id: t.id, nombre: `Ramal de Te T${t.id} (Libre)`, pos: { ...t.pos }, dir: { ...t.dirRamal }, diam: t.diam });
+    }
+  });
+  if (abiertos.length === 0) { alert('No hay tuberías abiertas.'); return; }
+  const opciones = abiertos.map((a, i) => `${i+1}. ${a.nombre}`).join('\n');
+  const selStr = prompt(`¿Qué tubería abierta quieres retomar?\n${opciones}`, '1');
+  if (selStr === null) return;
+  const idx = parseInt(selStr) - 1;
+  if (isNaN(idx) || idx < 0 || idx >= abiertos.length) { alert('Opción inválida.'); return; }
+  const seleccion = abiertos[idx];
+  estado.ramaActivaId = seleccion.id;
+  estado.posActual = { ...seleccion.pos };
+  estado.dirActual = seleccion.dir;
+  estado.tubActual.diam = seleccion.diam;
+  if (seleccion.id !== 'principal') {
+    const te = estado.ramalesTes.find(t => t.id === seleccion.id);
+    if (te) te.usado = true;
+  }
+  dibujar();
+  actualizarEstado();
+}
+
+/* =====================================================================
+   ACCIONES (AGREGAR, DESHACER)
+   ===================================================================== */
+function agregarTramo(dirKeySel) {
+  if (estado.requiereNuevoCodo) { alert('Define un nuevo codo.'); return; }
+  const largo = parseFloat(prompt(`Medida del tramo ${DIR_LABEL[dirKeySel]} (mm):`, '200'));
+  if (isNaN(largo) || largo <= 0) return;
+  const dir = DIRS[dirKeySel];
+  const targetArr = (estado.ramaActivaId && estado.ramaActivaId !== 'principal')
+    ? estado.ramalesTes.find(t=>t.id===estado.ramaActivaId).ramaElementos
+    : estado.elementos;
+  const ultimoElem = targetArr[targetArr.length - 1];
+  const dirPreviaKey = (ultimoElem && ultimoElem.tipo === 'tramo') ? ultimoElem.dirKey : dirKey(estado.dirActual);
+  if (estado.dirActual && dirPreviaKey !== dirKeySel) {
+    targetArr.push({ tipo: 'codo', diam: estado.codoActual.diam, radio: estado.codoActual.radio, pos: { ...estado.posActual } });
+  }
+  estado.contadorCarretes++;
+  targetArr.push({
+    tipo: 'tramo', num: estado.contadorCarretes, dirKey: dirKeySel, largo, diam: estado.tubActual.diam, inicio: { ...estado.posActual }
+  });
+  estado.posActual = {
+    x: estado.posActual.x + dir.x * largo,
+    y: estado.posActual.y + dir.y * largo,
+    z: estado.posActual.z + dir.z * largo
+  };
+  estado.dirActual = dir;
+  dibujar();
+  actualizarEstado();
+}
+
+function pedirDireccionRamal(mensaje, def) {
+  const opc = prompt(`${mensaje}\n1. +Z (fondo)\n2. -Z (frente)\n3. +X (derecha)\n4. -X (izquierda)\n5. +Y (arriba)\n6. -Y (abajo)`, def || '1');
+  if (opc === '1') return 'z+'; if (opc === '2') return 'z-';
+  if (opc === '3') return 'x+'; if (opc === '4') return 'x-';
+  if (opc === '5') return 'y+'; if (opc === '6') return 'y-';
+  return null;
+}
+
+function agregarTe() {
+  if (estado.requiereNuevoCodo) { alert('Primero define un nuevo codo.'); return; }
+  const diam = parseFloat(prompt('Ø de la Te (mm):', estado.teActual.diam));
+  if (isNaN(diam)) return;
+  estado.teActual.diam = diam;
+  let defOp = '1';
+  if (estado.dirActual) {
+    if (Math.abs(estado.dirActual.x) > 0.9) defOp = '1';
+    else if (Math.abs(estado.dirActual.z) > 0.9) defOp = '3';
+    else defOp = '3';
+  }
+  const dirRamalKey = pedirDireccionRamal('Dirección de salida del ramal de la Te:', defOp);
+  if (!dirRamalKey) return;
+  estado.contadorTes++;
+  const idTe = estado.contadorTes;
+  const nuevaTe = { tipo: 'te', id: idTe, diam, pos: { ...estado.posActual }, dir: estado.dirActual ? { ...estado.dirActual } : { x:0,y:0,z:1 } };
+  const targetArr = (estado.ramaActivaId && estado.ramaActivaId !== 'principal')
+    ? estado.ramalesTes.find(t=>t.id===estado.ramaActivaId).ramaElementos : estado.elementos;
+  targetArr.push(nuevaTe);
+  estado.ramalesTes.push({
+    id: idTe, pos: { ...estado.posActual }, dirPrincipal: estado.dirActual ? { ...estado.dirActual } : { x:0,y:0,z:1 },
+    dirRamal: DIRS[dirRamalKey], diam, usado: false, ramaElementos: []
+  });
+  dibujar();
+  actualizarEstado();
+}
+
+function editarOrientacionTe() {
+  const todasTes = [];
+  const extraerTes = (arr) => { for (const el of arr) if (el.tipo === 'te') todasTes.push(el.id); };
+  extraerTes(estado.elementos);
+  estado.ramalesTes.forEach(t => extraerTes(t.ramaElementos));
+  if (todasTes.length === 0) { alert('No hay Tes en el dibujo.'); return; }
+  const idStr = prompt(`¿Qué Te quieres editar? (Opciones: ${todasTes.join(', ')})`, todasTes[0]);
+  if (idStr === null) return;
+  const id = parseInt(idStr);
+  const ramal = estado.ramalesTes.find(r => r.id === id);
+  if (!ramal) return;
+  const actualKey = dirKey(ramal.dirRamal);
+  const defOp = actualKey === 'z+' ? '1' : actualKey === 'z-' ? '2' : actualKey === 'x+' ? '3' : actualKey === 'x-' ? '4' : actualKey === 'y+' ? '5' : '6';
+  const nuevaDirKey = pedirDireccionRamal(`Nueva dirección para el ramal de T${id}:`, defOp);
+  if (!nuevaDirKey) return;
+  ramal.dirRamal = DIRS[nuevaDirKey];
+  dibujar();
+  actualizarEstado();
+}
+
+function agregarReduccion() {
+  if (estado.requiereNuevoCodo) { alert('Primero define un nuevo codo.'); return; }
+  const d1 = parseFloat(prompt('Ø entrada reducción (mm):', estado.tubActual.diam));
+  if (isNaN(d1)) return;
+  const d2 = parseFloat(prompt('Ø salida reducción (mm):', Math.max(20, d1 - 20)));
+  if (isNaN(d2)) return;
+  const altura = parseFloat(prompt('Altura / longitud de la reducción (mm):', '80'));
+  if (isNaN(altura) || altura <= 0) return;
+  const dir = estado.dirActual || DIRS['z+'];
+  const targetArr = (estado.ramaActivaId && estado.ramaActivaId !== 'principal')
+    ? estado.ramalesTes.find(t=>t.id===estado.ramaActivaId).ramaElementos : estado.elementos;
+  targetArr.push({ tipo: 'reduccion', d1, d2, altura, pos: { ...estado.posActual }, dir: { ...dir } });
+  
+  // Mover la posición actual al extremo final de la reducción
+  estado.posActual = { x: estado.posActual.x + dir.x * altura, y: estado.posActual.y + dir.y * altura, z: estado.posActual.z + dir.z * altura };
+  estado.requiereNuevoCodo = true;
+  estado.tubActual.diam = d2;
+  
+  dibujar();
+  actualizarEstado();
+  pedirNuevoCodo();
+}
+
+function pedirNuevoCodo() {
+  const diam = parseFloat(prompt(`Nuevo codo tras reducción — Ø (mm):`, estado.tubActual.diam));
+  if (isNaN(diam)) return;
+  const radio = parseFloat(prompt(`Nuevo codo — Radio (mm):`, estado.codoActual.radio));
+  if (isNaN(radio)) return;
+  estado.codoActual = { diam, radio };
+  estado.requiereNuevoCodo = false;
+  actualizarEstado();
+  dibujar();
+}
+
+function deshacer() {
+  const targetArr = (estado.ramaActivaId && estado.ramaActivaId !== 'principal')
+    ? estado.ramalesTes.find(t=>t.id===estado.ramaActivaId).ramaElementos : estado.elementos;
+  if (targetArr.length === 0) {
+    if (estado.ramaActivaId && estado.ramaActivaId !== 'principal') {
+      const te = estado.ramalesTes.find(t=>t.id===estado.ramaActivaId);
+      if (te) te.usado = false;
+      estado.ramaActivaId = null;
+      reconstruirPosiciones();
+      dibujar();
+      actualizarEstado();
+    }
+    return;
+  }
+  const ultimo = targetArr[targetArr.length - 1];
+  targetArr.pop();
+  if (ultimo.tipo === 'te') { estado.ramalesTes = estado.ramalesTes.filter(t => t.id !== ultimo.id); estado.contadorTes--; }
+  if (ultimo.tipo === 'tramo') estado.contadorCarretes--;
+  if (ultimo.tipo === 'reduccion') estado.requiereNuevoCodo = false;
+  reconstruirPosiciones();
+  dibujar();
+  actualizarEstado();
+}
+
+function reconstruirPosiciones() {
+  estado.posActual = { x:0, y:0, z:0 };
+  estado.dirActual = null;
+  estado.contadorCarretes = 0;
+  const reconstruirArr = (arr) => {
+    for (const el of arr) {
+      if (el.tipo === 'tramo') {
+        const dir = DIRS[el.dirKey];
+        el.inicio = { ...estado.posActual };
+        estado.posActual = { x: estado.posActual.x + dir.x * el.largo, y: estado.posActual.y + dir.y * el.largo, z: estado.posActual.z + dir.z * el.largo };
+        estado.dirActual = dir;
+      } else if (el.tipo === 'codo') {
+        el.pos = { ...estado.posActual };
+      } else if (el.tipo === 'reduccion') {
+        el.pos = { ...estado.posActual };
+        const dir = estado.dirActual || DIRS['z+'];
+        el.dir = { ...dir };
+        estado.posActual = { x: estado.posActual.x + dir.x * el.altura, y: estado.posActual.y + dir.y * el.altura, z: estado.posActual.z + dir.z * el.altura };
+        estado.tubActual.diam = el.d2;
+      } else if (el.tipo === 'te') {
+        el.pos = { ...estado.posActual };
+        el.dir = estado.dirActual ? { ...estado.dirActual } : { x:0,y:0,z:1 };
+      }
+    }
+  };
+  reconstruirArr(estado.elementos);
+  estado.ramalesTes.forEach(te => {
+    if (te.ramaElementos.length > 0) {
+      estado.posActual = { ...te.pos };
+      estado.dirActual = null;
+      reconstruirArr(te.ramaElementos);
+    }
+  });
+}
+
+/* =====================================================================
+   PROYECCIÓN 3D CON ROTACIÓN ORBITAL
+   ===================================================================== */
+function proyectar(x, y, z) {
+  const cosX = Math.cos(camara.rotX);
+  const sinX = Math.sin(camara.rotX);
+  const y1 = y * cosX - z * sinX;
+  const z1 = y * sinX + z * cosX;
+
+  const cosY = Math.cos(camara.rotY);
+  const sinY = Math.sin(camara.rotY);
+  const x2 = x * cosY - z1 * sinY;
+  const z2 = x * sinY + z1 * cosY;
+
+  const ang = Math.PI/6;
+  const c = Math.cos(ang);
+  const s = Math.sin(ang);
+  
+  return { sx: (x2 + z2) * c, sy: -y1 + (x2 - z2) * s };
+}
+
+function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
+  ctx.clearRect(0, 0, w, h);
+  const pts = [{ x:0, y:0, z:0 }];
+  const agregarPuntos = (arr) => {
+    for (const el of arr) {
+      if (el.tipo === 'tramo') {
+        pts.push({ ...el.inicio });
+        const d = DIRS[el.dirKey];
+        pts.push({ x: el.inicio.x + d.x * el.largo, y: el.inicio.y + d.y * el.largo, z: el.inicio.z + d.z * el.largo });
+      } else if (el.pos) {
+        pts.push({ ...el.pos });
+        if (el.tipo === 'reduccion') {
+          const d = el.dir;
+          pts.push({ x: el.pos.x + d.x * el.altura, y: el.pos.y + d.y * el.altura, z: el.pos.z + d.z * el.altura });
+        }
+      }
+    }
+  };
+  agregarPuntos(estado.elementos);
+  estado.ramalesTes.forEach(t => agregarPuntos(t.ramaElementos));
+  pts.push({ ...estado.posActual });
+
+  const proy = pts.map(p => proyectar(p.x, p.y, p.z));
+  const xs = proy.map(p => p.sx), ys = proy.map(p => p.sy);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const margen = 60 * factorEscala;
+  const ancho = (maxX - minX) || 1;
+  const alto  = (maxY - minY) || 1;
+  const escala = Math.min((w - 2*margen)/ancho, (h - 2*margen)/alto);
+  const offsetX = w/2 - ((minX+maxX)/2)*escala;
+  const offsetY = h/2 - ((minY+maxY)/2)*escala;
+  
+  const toScreen = p => {
+    const q = proyectar(p.x, p.y, p.z);
+    return { x: q.sx*escala + offsetX, y: q.sy*escala + offsetY };
+  };
+
+  if (interactivo) estado.nodosInteractivos = [];
+
+  const L = 120;
+  const ejes = [
+    { v:{x:L,y:0,z:0}, c:'#e74c3c', t:'+X' }, { v:{x:-L,y:0,z:0}, c:'#e74c3c', t:'−X' },
+    { v:{x:0,y:L,z:0}, c:'#27ae60', t:'+Y' }, { v:{x:0,y:-L,z:0}, c:'#27ae60', t:'−Y' },
+    { v:{x:0,y:0,z:L}, c:'#8e44ad', t:'+Z' }, { v:{x:0,y:0,z:-L}, c:'#8e44ad', t:'−Z' },
+  ];
+  const o = toScreen({x:0,y:0,z:0});
+  ejes.forEach(e => {
+    const p = toScreen(e.v);
+    ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(p.x,p.y);
+    ctx.strokeStyle = e.c; ctx.lineWidth = 1.2 * factorEscala;
+    ctx.setLineDash([3*factorEscala, 4*factorEscala]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = `bold ${11*factorEscala}px Arial`; ctx.fillStyle = e.c;
+    ctx.textAlign='center'; ctx.fillText(e.t, p.x, p.y - 4*factorEscala);
+  });
+
+  const carretesPorNum = new Map();
+  calcularCarretesLimpios(estado.elementos, false).forEach(c => carretesPorNum.set(c.num, c));
+  estado.ramalesTes.forEach(t => {
+    calcularCarretesLimpios(t.ramaElementos, true, t).forEach(c => carretesPorNum.set(c.num, c));
+  });
+
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  const dibujarLinea = (arr, esRama) => {
+    for (const el of arr) {
+      if (el.tipo !== 'tramo') continue;
+      const d = DIRS[el.dirKey];
+      const a = toScreen(el.inicio);
+      const b = toScreen({ x: el.inicio.x + d.x * el.largo, y: el.inicio.y + d.y * el.largo, z: el.inicio.z + d.z * el.largo });
+      let col = colorDiam(el.diam);
+      let lineWidth = esRama ? 4 * factorEscala : 5 * factorEscala;
+
+      ctx.globalAlpha = esRama ? 0.85 : 1.0;
+      ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = lineWidth + (2 * factorEscala);
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      ctx.strokeStyle = col; ctx.lineWidth = lineWidth;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+
+      const info = carretesPorNum.get(el.num);
+      const limpio = info ? info.limpio : el.largo;
+      const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+      
+      ctx.beginPath(); ctx.arc(mx, my, (esRama ? 9 : 11) * factorEscala, 0, Math.PI*2);
+      ctx.fillStyle = '#fff'; ctx.fill();
+      ctx.strokeStyle = col; ctx.lineWidth = 1.5 * factorEscala; ctx.stroke();
+
+      ctx.font = `bold ${(esRama ? 9 : 10)*factorEscala}px Arial`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col;
+      ctx.fillText(el.num, mx, my - (esRama ? 2 : 3)*factorEscala);
+      ctx.font = `${(esRama ? 7 : 8)*factorEscala}px Arial`;
+      ctx.fillText(Math.round(limpio), mx, my + (esRama ? 3 : 4)*factorEscala);
+      ctx.textBaseline = 'alphabetic';
+    }
+    ctx.globalAlpha = 1.0;
+  };
+
+  dibujarLinea(estado.elementos, false);
+  estado.ramalesTes.forEach(t => dibujarLinea(t.ramaElementos, true));
+
+  const dibujarAccesorios = (arr) => {
+    for (const el of arr) {
+      if (el.tipo === 'codo') {
+        const p = toScreen(el.pos);
+        ctx.beginPath(); ctx.arc(p.x, p.y, 6*factorEscala, 0, Math.PI*2);
+        ctx.fillStyle = '#c026d3'; ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5*factorEscala; ctx.stroke();
+      }
+           if (el.tipo === 'reduccion') {
+        const dir = el.dir;
+        const a = toScreen(el.pos);
+        const b = toScreen({ x: el.pos.x + dir.x*el.altura, y: el.pos.y + dir.y*el.altura, z: el.pos.z + dir.z*el.altura });
+        
+        // Círculo grande en el inicio
+        ctx.strokeStyle = '#c026d3'; ctx.lineWidth = 2*factorEscala;
+        ctx.beginPath(); ctx.arc(a.x, a.y, 8*factorEscala, 0, Math.PI*2); ctx.stroke();
+        // Círculo pequeño en el final
+        ctx.beginPath(); ctx.arc(b.x, b.y, 4*factorEscala, 0, Math.PI*2); ctx.stroke();
+        // Línea conectora
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        
+        const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+        ctx.font = `bold ${10*factorEscala}px Arial`; 
+        ctx.fillStyle = '#c026d3';
+        ctx.textAlign = 'left'; 
+        ctx.textBaseline = 'bottom';
+        
+        // AÑADIDO: Se incluye la altura (longitud) de la reducción
+        ctx.fillText(`RED Ø${el.d1}→Ø${el.d2} (L:${el.altura}mm)`, mx + 8*factorEscala, my - 2*factorEscala);
+        
+        ctx.textBaseline = 'alphabetic';
+      }
+      if (el.tipo === 'te') {
+        const p = toScreen(el.pos);
+        const ramalInfo = estado.ramalesTes.find(r => r.id === el.id);
+        const dirRamal = ramalInfo ? ramalInfo.dirRamal : {x:0,y:0,z:1};
+
+        ctx.fillStyle = '#c026d3';
+        ctx.fillRect(p.x - 7*factorEscala, p.y - 7*factorEscala, 14*factorEscala, 14*factorEscala);
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5*factorEscala;
+        ctx.strokeRect(p.x - 7*factorEscala, p.y - 7*factorEscala, 14*factorEscala, 14*factorEscala);
+
+        const a = toScreen({ x: el.pos.x, y: el.pos.y, z: el.pos.z });
+        const b = toScreen({ x: el.pos.x + dirRamal.x * 100, y: el.pos.y + dirRamal.y * 100, z: el.pos.z + dirRamal.z * 100 });
+        const angle = Math.atan2(b.y - a.y, b.x - a.x);
+
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(angle + Math.PI/2);
+        ctx.beginPath();
+        ctx.moveTo(-4*factorEscala, -3*factorEscala); ctx.lineTo(4*factorEscala, -3*factorEscala);
+        ctx.moveTo(0, -3*factorEscala); ctx.lineTo(0, 5*factorEscala);
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5*factorEscala; ctx.stroke();
+        ctx.restore();
+
+        ctx.font = `bold ${7*factorEscala}px Arial`; ctx.fillStyle = '#fff';
+        ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+        ctx.fillText(`T${el.id}`, p.x + 7*factorEscala, p.y + 3*factorEscala);
+        ctx.textBaseline = 'alphabetic';
+      }
+    }
+  };
+  dibujarAccesorios(estado.elementos);
+  estado.ramalesTes.forEach(t => dibujarAccesorios(t.ramaElementos));
+
+  const dibujarNodoInteractivo = (pos3D, id, nombre, dir3D, diam) => {
+    const p = toScreen(pos3D);
+    const col = diam ? colorDiam(diam) : '#28a745';
+    
+    ctx.beginPath(); ctx.arc(p.x, p.y, 10*factorEscala, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; ctx.fill();
+    
+    ctx.beginPath(); ctx.arc(p.x, p.y, 5*factorEscala, 0, Math.PI*2);
+    ctx.fillStyle = col; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5*factorEscala; ctx.stroke();
+
+    if (interactivo) {
+      estado.nodosInteractivos.push({ x: p.x, y: p.y, id, nombre, pos3D, dir3D, diam });
+    }
+  };
+
+  // Nodo principal (línea principal)
+  if (estado.elementos.length > 0) {
+    // Si el último elemento es una reducción, el nodo debe estar al final de la reducción
+    const ultimoEl = estado.elementos[estado.elementos.length - 1];
+    if (ultimoEl && ultimoEl.tipo === 'reduccion') {
+      const d = ultimoEl.dir;
+      const posFinRed = {
+        x: ultimoEl.pos.x + d.x * ultimoEl.altura,
+        y: ultimoEl.pos.y + d.y * ultimoEl.altura,
+        z: ultimoEl.pos.z + d.z * ultimoEl.altura
+      };
+      dibujarNodoInteractivo(posFinRed, 'principal', 'Línea Principal (fin reducción)', d, ultimoEl.d2);
+    } else {
+      dibujarNodoInteractivo(estado.posActual, 'principal', 'Línea Principal', estado.dirActual, estado.tubActual.diam);
+    }
+  }
+
+  estado.ramalesTes.forEach(t => {
+    if (t.ramaElementos && t.ramaElementos.length > 0) {
+      let posFin = { ...t.pos }, dirFin = t.dirRamal, diamFin = t.diam;
+      t.ramaElementos.forEach(el => {
+        if (el.tipo === 'tramo') {
+          const d = DIRS[el.dirKey];
+          posFin = { x: el.inicio.x + d.x * el.largo, y: el.inicio.y + d.y * el.largo, z: el.inicio.z + d.z * el.largo };
+          dirFin = d; diamFin = el.diam;
+        } else if (el.tipo === 'reduccion') {
+          const d = el.dir;
+          posFin = { x: el.pos.x + d.x * el.altura, y: el.pos.y + d.y * el.altura, z: el.pos.z + d.z * el.altura };
+          dirFin = d; diamFin = el.d2;
+        }
+      });
+      dibujarNodoInteractivo(posFin, t.id, `Ramal T${t.id}`, dirFin, diamFin);
+    } else {
+      dibujarNodoInteractivo(t.pos, t.id, `Ramal T${t.id}`, t.dirRamal, t.diam);
+    }
+  });
+
+  const pIni = toScreen({x:0,y:0,z:0});
+  ctx.beginPath(); ctx.arc(pIni.x, pIni.y, 6*factorEscala, 0, Math.PI*2);
+  ctx.fillStyle = '#28a745'; ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5*factorEscala; ctx.stroke();
+  ctx.font = `bold ${11*factorEscala}px Arial`; ctx.fillStyle = '#28a745';
+  ctx.textAlign = 'left'; ctx.fillText('INICIO', pIni.x + 8*factorEscala, pIni.y + 18*factorEscala);
+}
+
+const canvas = document.getElementById('lienzo');
+const ctx = canvas.getContext('2d');
+
+function dibujar() {
+  const cont = canvas.parentElement;
+  const esMovil = window.innerWidth <= 768;
+  
+  const anchoPx = Math.max(300, cont.clientWidth - 4);
+  
+  let altoPx;
+  if (esMovil) {
+    altoPx = Math.max(300, Math.min(450, window.innerHeight * 0.5));
+  } else {
+    // En escritorio, igualar altura con el panel izquierdo
+    const panelControl = document.getElementById('panel-control');
+    if (panelControl) {
+      const alturaControles = 50;
+      altoPx = panelControl.offsetHeight - alturaControles;
+      altoPx = Math.max(400, Math.min(900, altoPx));
+    } else {
+      altoPx = Math.max(400, Math.min(750, window.innerHeight - 160));
+    }
+  }
+  
+  canvas.width  = anchoPx;
+  canvas.height = altoPx;
+  renderizarLienzo(ctx, anchoPx, altoPx, 1, true);
+}
+
+/* =====================================================================
+   INTERACCIÓN DE ROTACIÓN ORBITAL
+   ===================================================================== */
+let isDragging = false;
+let lastX = 0, lastY = 0;
+let hasMoved = false;
+
+canvas.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0) return;
+  isDragging = true;
+  hasMoved = false;
+  lastX = e.clientX;
+  lastY = e.clientY;
+  canvas.setPointerCapture(e.pointerId);
+});
+
+canvas.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+
+  const dx = e.clientX - lastX;
+  const dy = e.clientY - lastY;
+
+  if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+    hasMoved = true;
+  }
+
+  if (hasMoved) {
+    camara.rotY += dx * 0.01;
+    camara.rotX += dy * 0.01;
+    camara.rotX = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, camara.rotX));
+    lastX = e.clientX;
+    lastY = e.clientY;
+    dibujar();
+  }
+});
+
+canvas.addEventListener('pointerup', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+
+  if (!hasMoved) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top) * scaleY;
+    const acertado = seleccionarNodoPorCoordenadas(mx, my);
+    if (!acertado) abrirLupa();
+  }
+});
+
+canvas.addEventListener('pointercancel', () => { isDragging = false; });
+canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+/* =====================================================================
+   CONTROLES DE VISTA
+   ===================================================================== */
+document.getElementById('btnPerspA').addEventListener('click', () => {
+  camara.rotX = VISTA_A.rotX;
+  camara.rotY = VISTA_A.rotY;
+  document.getElementById('btnPerspA').classList.add('active');
+  document.getElementById('btnPerspB').classList.remove('active');
+  dibujar();
+});
+
+document.getElementById('btnPerspB').addEventListener('click', () => {
+  camara.rotX = VISTA_B.rotX;
+  camara.rotY = VISTA_B.rotY;
+  document.getElementById('btnPerspA').classList.remove('active');
+  document.getElementById('btnPerspB').classList.add('active');
+  dibujar();
+});
+
+/* =====================================================================
+   LÓGICA DEL MODAL LUPA, COPIAR Y COMPARTIR
+   ===================================================================== */
+const modalLupa = document.getElementById('modalLupa');
+const modalImg = document.getElementById('modalImg');
+const modalCerrar = document.getElementById('modalCerrar');
+
+function abrirLupa() {
+  const canvasHD = document.createElement('canvas');
+  canvasHD.width  = canvas.width * 3;
+  canvasHD.height = canvas.height * 3;
+  renderizarLienzo(canvasHD.getContext('2d'), canvasHD.width, canvasHD.height, 3, false);
+  modalImg.src = canvasHD.toDataURL('image/png');
+  modalLupa.style.display = 'flex';
+}
+
+document.getElementById('btnLupa').addEventListener('click', abrirLupa);
+document.getElementById('fbLupa').addEventListener('click', abrirLupa);
+modalCerrar.addEventListener('click', () => { modalLupa.style.display = 'none'; });
+modalLupa.addEventListener('click', (e) => { if (e.target === modalLupa) modalLupa.style.display = 'none'; });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalLupa.style.display === 'flex') modalLupa.style.display = 'none'; });
+
+function obtenerImagenBase64() {
+  const canvasHD = document.createElement('canvas');
+  canvasHD.width  = canvas.width * 2;
+  canvasHD.height = canvas.height * 2;
+  renderizarLienzo(canvasHD.getContext('2d'), canvasHD.width, canvasHD.height, 2, false);
+  return canvasHD.toDataURL('image/png');
+}
+
+function obtenerTextoLista() {
+  const todosElementos = [...estado.elementos];
+  estado.ramalesTes.forEach(t => { if (t.ramaElementos) todosElementos.push(...t.ramaElementos); });
+
+  const accPorDiam = {};
+  todosElementos.forEach(el => {
+    if (el.tipo === 'codo' || el.tipo === 'te' || el.tipo === 'reduccion') {
+      let tipoLabel = el.tipo === 'codo' ? 'Codos' : el.tipo === 'te' ? 'Tes' : 'Reducciones';
+      let diamKey = el.tipo === 'reduccion' ? Math.max(Math.round(el.d1), Math.round(el.d2)) : Math.round(el.diam);
+      if (!accPorDiam[tipoLabel]) accPorDiam[tipoLabel] = {};
+      if (!accPorDiam[tipoLabel][diamKey]) accPorDiam[tipoLabel][diamKey] = 0;
+      accPorDiam[tipoLabel][diamKey]++;
+    }
+  });
+
+  const carretesPrincipales = calcularCarretesLimpios(estado.elementos, false);
+  const carretesRamas = [];
+  estado.ramalesTes.forEach(t => {
+    if (t.ramaElementos && t.ramaElementos.length > 0) carretesRamas.push(...calcularCarretesLimpios(t.ramaElementos, true, t));
+  });
+  const todosCarretes = [...carretesPrincipales, ...carretesRamas];
+
+  let txt = `=== ACCESORIOS ===\n`;
+  let hayAcc = false;
+  for (const tipo in accPorDiam) {
+    const diametros = Object.keys(accPorDiam[tipo]).sort((a,b)=>a-b);
+    diametros.forEach(d => {
+      txt += `${accPorDiam[tipo][d]}x ${tipo} Ø${d}mm\n`;
+      hayAcc = true;
+    });
+  }
+  if (!hayAcc) txt += `Sin accesorios.\n`;
+
+  txt += `\n=== CARRETES DE TUBERÍA ===\n`;
+  if (todosCarretes.length === 0) {
+    txt += `Sin carretes.\n`;
+  } else {
+    todosCarretes.forEach(c => {
+      txt += `Carrete ${c.num}: Ø${c.diam}mm x ${c.limpio.toFixed(0)}mm\n`;
+    });
+  }
+  return txt;
+}
+
+document.getElementById('btnCopiarDibujo').addEventListener('click', async () => {
+  try {
+    const dataUrl = obtenerImagenBase64();
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    alert('¡Dibujo copiado al portapapeles!');
+  } catch (err) { alert('No se pudo copiar la imagen.'); console.error(err); }
+});
+
+document.getElementById('btnCopiarLista').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(obtenerTextoLista());
+    alert('¡Lista de materiales copiada al portapapeles!');
+  } catch (err) { alert('No se pudo copiar el texto.'); }
+});
+
+document.getElementById('btnCompartirDibujo').addEventListener('click', async () => {
+  if (!navigator.share) { alert('Tu navegador no soporta la función de compartir.'); return; }
+  try {
+    const dataUrl = obtenerImagenBase64();
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const file = new File([blob], 'dibujo_tuberia.png', { type: 'image/png' });
+    await navigator.share({ title: 'Dibujo de Tubería', text: 'Isométrico de la tubería.', files: [file] });
+  } catch (err) { console.error('Error al compartir:', err); }
+});
+
+document.getElementById('btnCompartirLista').addEventListener('click', async () => {
+  if (!navigator.share) { alert('Tu navegador no soporta la función de compartir.'); return; }
+  try {
+    await navigator.share({ title: 'Lista de Materiales', text: obtenerTextoLista() });
+  } catch (err) { console.error('Error al compartir:', err); }
+});
+
+/* =====================================================================
+   FUNCIONES DE IMPRESIÓN
+   ===================================================================== */
+function abrirVentanaImpresion(titulo, contenidoHTML) {
+  const ventana = window.open('', '_blank', 'width=900,height=700');
+  ventana.document.write(`
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <title>${titulo}</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
+        h1 { font-size: 20px; margin-bottom: 10px; border-bottom: 2px solid #333; padding-bottom: 5px; }
+        h2 { font-size: 16px; margin-top: 20px; margin-bottom: 8px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #333; padding: 6px 8px; text-align: center; font-size: 13px; }
+        th { background: #eee; }
+        .img-container { text-align: center; margin: 20px 0; }
+        .img-container img { max-width: 100%; height: auto; border: 1px solid #ccc; }
+        .swatch { display: inline-block; width: 14px; height: 14px; border: 1px solid #333; vertical-align: middle; }
+        @media print {
+          body { padding: 0; }
+          .no-print { display: none; }
+        }
+      </style>
+    </head>
+    <body>
+      ${contenidoHTML}
+      <script>
+        window.onload = function() {
+          setTimeout(function() { window.print(); }, 300);
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+  ventana.document.close();
+}
+
+function generarHTMLLista() {
+  const todosElementos = [...estado.elementos];
+  estado.ramalesTes.forEach(t => { if (t.ramaElementos) todosElementos.push(...t.ramaElementos); });
+
+  const accPorDiam = {};
+  todosElementos.forEach(el => {
+    if (el.tipo === 'codo' || el.tipo === 'te' || el.tipo === 'reduccion') {
+      let tipoLabel = el.tipo === 'codo' ? 'Codos' : el.tipo === 'te' ? 'Tes' : 'Reducciones';
+      let diamKey = el.tipo === 'reduccion' ? Math.max(Math.round(el.d1), Math.round(el.d2)) : Math.round(el.diam);
+      if (!accPorDiam[tipoLabel]) accPorDiam[tipoLabel] = {};
+      if (!accPorDiam[tipoLabel][diamKey]) accPorDiam[tipoLabel][diamKey] = 0;
+      accPorDiam[tipoLabel][diamKey]++;
+    }
+  });
+
+  const carretesPrincipales = calcularCarretesLimpios(estado.elementos, false);
+  const carretesRamas = [];
+  estado.ramalesTes.forEach(t => {
+    if (t.ramaElementos && t.ramaElementos.length > 0) carretesRamas.push(...calcularCarretesLimpios(t.ramaElementos, true, t));
+  });
+  const todosCarretes = [...carretesPrincipales, ...carretesRamas];
+
+  let html = '';
+  
+  html += `<h2>Accesorios</h2>`;
+  html += `<table><thead><tr><th>Tipo</th><th>Ø (mm)</th><th>Cantidad</th></tr></thead><tbody>`;
+  let hayAcc = false;
+  for (const tipo in accPorDiam) {
+    const diametros = Object.keys(accPorDiam[tipo]).sort((a,b)=>a-b);
+    diametros.forEach(d => {
+      html += `<tr><td>${tipo}</td><td>${d}</td><td>${accPorDiam[tipo][d]}</td></tr>`;
+      hayAcc = true;
+    });
+  }
+  if (!hayAcc) html += `<tr><td colspan="3">Sin accesorios</td></tr>`;
+  html += `</tbody></table>`;
+
+  html += `<h2>Carretes de Tubería</h2>`;
+  html += `<table><thead><tr><th>Nº</th><th>Ø (mm)</th><th>Largo limpio (mm)</th><th>Color</th></tr></thead><tbody>`;
+  if (todosCarretes.length === 0) {
+    html += `<tr><td colspan="4">Sin carretes</td></tr>`;
+  } else {
+    todosCarretes.forEach(c => {
+      const col = colorDiam(c.diam);
+      html += `<tr><td>${c.num}</td><td>${c.diam}</td><td>${c.limpio.toFixed(0)}</td><td><span class="swatch" style="background:${col}"></span></td></tr>`;
+    });
+  }
+  html += `</tbody></table>`;
+
+  return html;
+}
+
+document.getElementById('btnImprimirLista').addEventListener('click', () => {
+  const contenido = `
+    <h1>Lista de Materiales — Trazo de Tubería</h1>
+    <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+    ${generarHTMLLista()}
+  `;
+  abrirVentanaImpresion('Lista de Materiales', contenido);
+});
+
+document.getElementById('btnImprimirGrafico').addEventListener('click', () => {
+  const dataUrl = obtenerImagenBase64();
+  const contenido = `
+    <h1>Gráfico de Tubería</h1>
+    <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+    <div class="img-container">
+      <img src="${dataUrl}" alt="Gráfico de Tubería">
+    </div>
+  `;
+  abrirVentanaImpresion('Gráfico de Tubería', contenido);
+});
+
+document.getElementById('btnImprimirTodo').addEventListener('click', () => {
+  const dataUrl = obtenerImagenBase64();
+  const contenido = `
+    <h1>Trazo de Tubería — Reporte Completo</h1>
+    <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+    <div class="img-container">
+      <img src="${dataUrl}" alt="Gráfico de Tubería">
+    </div>
+    <hr>
+    ${generarHTMLLista()}
+  `;
+  abrirVentanaImpresion('Reporte Completo', contenido);
+});
+
+/* =====================================================================
+   EVENTOS PRINCIPALES
+   ===================================================================== */
+document.querySelectorAll('.btn-dir').forEach(b => {
+  b.addEventListener('click', () => agregarTramo(b.dataset.dir));
+});
+document.getElementById('btnReduc').addEventListener('click', agregarReduccion);
+document.getElementById('btnTe').addEventListener('click', agregarTe);
+document.getElementById('btnEditarTe').addEventListener('click', editarOrientacionTe);
+document.getElementById('btnConectarTe').addEventListener('click', conectarTe);
+document.getElementById('btnRetomar').addEventListener('click', retomarTuberia);
+document.getElementById('btnBorrar').addEventListener('click', deshacer);
+
+document.getElementById('fbRetomar').addEventListener('click', retomarTuberia);
+document.getElementById('fbBorrar').addEventListener('click', deshacer);
+
+document.getElementById('btnAplicarDef').addEventListener('click', () => {
+  const dDiam  = parseFloat(document.getElementById('defDiam').value) || 100;
+  const dRadio = parseFloat(document.getElementById('defRadio').value) || 150;
+  const dTe    = parseFloat(document.getElementById('defTe').value) || 100;
+  const dTub   = parseFloat(document.getElementById('defTub').value) || 100;
+
+  estado.elementos = [];
+  estado.posActual = { x:0, y:0, z:0 };
+  estado.dirActual = null;
+  estado.codoActual = { diam: dDiam, radio: dRadio };
+  estado.teActual   = { diam: dTe };
+  estado.tubActual  = { diam: dTub };
+  estado.requiereNuevoCodo = false;
+  estado.ramalesTes = [];
+  estado.contadorTes = 0;
+  estado.ramaActivaId = null;
+  estado.contadorCarretes = 0;
+  estado.nodosInteractivos = [];
+
+  camara.rotX = VISTA_A.rotX;
+  camara.rotY = VISTA_A.rotY;
+  document.getElementById('btnPerspA').classList.add('active');
+  document.getElementById('btnPerspB').classList.remove('active');
+
+  colorPorDiam.clear();
+  dibujar();
+  actualizarEstado();
+});
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(dibujar, 150);
+});
+window.addEventListener('orientationchange', () => setTimeout(dibujar, 300));
+
+dibujar();
+actualizarEstado();
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
