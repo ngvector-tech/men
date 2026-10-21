@@ -297,7 +297,8 @@
   </div>
 
   <div class="image-box">
-    <img src="img/oreja.png" alt="Esquema de Orejeta de Elevación">
+    <!-- Añadido ID a la imagen -->
+    <img id="img-oreja" src="img/oreja.png" alt="Esquema de Orejeta de Elevación">
   </div>
 
   <div class="grid" style="grid-template-columns: 1fr;">
@@ -359,6 +360,16 @@ function calc() {
   document.querySelectorAll('.pad-field').forEach(el => {
     el.classList.toggle('is-off', !padOn);
   });
+
+  // Cambiar la imagen según el escudo
+  const imgElement = $('img-oreja');
+  if (padOn) {
+    imgElement.src = 'img/oreja1.png';
+    imgElement.alt = 'Esquema de Orejeta con Escudo';
+  } else {
+    imgElement.src = 'img/oreja.png';
+    imgElement.alt = 'Esquema de Orejeta de Elevación';
+  }
 
   const W = parseFloat($('W').value) || 0;
   const Imp = parseFloat($('Imp').value) || 1;
@@ -434,14 +445,14 @@ function calc() {
       { n: "1) Corte directo soldadura", act: c1, adm: aSh },
       { n: "2) Esfuerzo cortante total", act: c2, adm: aSh },
       { n: "3) Desgarro sobre orificio", act: c3, adm: aSh },
-      { n: "4) Cojinete del orificio", act: c4, adm: aBr },
+      { n: "4) Aplastamiento del orificio", act: c4, adm: aBr },
       { n: "5) Flexión base + tensión", act: c5, adm: aBn }
     ];
   } else {
     checks = [
       { n: "1) Tracción soldadura base", act: c7, adm: aTr },
       { n: "2) Desgarro sobre orificio", act: c3, adm: aSh },
-      { n: "3) Cojinete del orificio", act: c4, adm: aBr },
+      { n: "3) Aplastamiento del orificio", act: c4, adm: aBr },
       { n: "4) Flexión base + tensión", act: c5, adm: aBn }
     ];
   }
@@ -520,8 +531,8 @@ function calc() {
       $('wb').classList.add('warn');
     }
     
-    if (failedItems.some(x => x.includes("Cojinete"))) { 
-      htmlAdvice += `<li><b>Fallo por cojinete:</b> Aumenta el <b>Espesor orejeta (t)</b> o reduce el <b>Diámetro del orificio (dh)</b>.</li>`; 
+    if (failedItems.some(x => x.includes("Aplastamiento del orificio"))) { 
+      htmlAdvice += `<li><b>Fallo por aplastamiento del orificio:</b> Aumenta el <b>Espesor orejeta (t)</b> o reduce el <b>Diámetro del orificio (dh)</b>.</li>`; 
       $('t').classList.add('warn');
       $('dh').classList.add('warn');
     }
