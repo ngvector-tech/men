@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Juntas DIN EN 1514-1</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f2; margin: 0; padding: 16px 11px 40px; color: #222; display: block !important; }
+  .container { max-width: 520px; margin: 0 auto; background: #fff; border-radius: 7px; box-shadow: 0 2px 7px rgba(0,0,0,0.08); padding: 16px 19px 21px; position: relative; }
+  h1 { text-align: center; font-size: 15px; background: #111; color: #fff; padding: 8px 11px; border-radius: 4px; margin: 0 0 4px; }
+
+  .resumen-seleccion { text-align: center; color: #a03428; font-weight: bold; font-size: 9px; margin: 4px 0 12px; min-height: 13px; letter-spacing: 0.3px; text-transform: uppercase; }
+
+  .grid-2 { display: table; width: 100%; table-layout: fixed; margin-bottom: 8px; }
+  .col { display: table-cell; width: 50%; padding-right: 5px; vertical-align: top; }
+  .col:last-child { padding-right: 0; padding-left: 5px; }
+  .field { margin-bottom: 9px; position: relative; }
+  .field label { display: block; font-size: 9px; font-weight: 600; color: #444; margin-bottom: 3px; }
+  select { width: 100%; padding: 6px 7px; font-size: 9px; border: 1px solid #c7ccd1; border-radius: 4px; background: #fff; cursor: pointer; }
+  select:focus { outline: none; border-color: #4a90d9; }
+  select:disabled { background: #f4f6f8; color: #aaa; cursor: not-allowed; }
+
+  #btnLimpiar { background: #111; color: #fff; border: none; padding: 7px 12px; font-size: 9px; font-weight: 600; border-radius: 4px; cursor: pointer; margin-top: 7px; margin-bottom: 11px; width: 100%; transition: background 0.2s; }
+  #btnLimpiar:hover { background: #333; }
+
+  .image-container { text-align: center; margin: 13px 0; padding: 10px; background: #fafafa; border: 1px dashed #ccc; border-radius: 5px; }
+  .image-container svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  .img-placeholder { font-size: 9px; color: #888; font-style: italic; }
+
+  #results { margin-top: 13px; }
+  .card-result { background: #f8f9fa; border: 1px solid #e0e3e6; border-radius: 5px; padding: 11px; margin-bottom: 8px; }
+  .card-title { font-size: 10px; font-weight: bold; color: #111; margin-bottom: 8px; border-bottom: 2px solid #4a90d9; padding-bottom: 3px; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 9px; }
+  .data-table th, .data-table td { padding: 5px 7px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+  .data-table th { background: #edf2f7; color: #4a5568; font-weight: 600; }
+  .no-results { text-align: center; color: #888; font-size: 9px; padding: 13px 0; }
+  #loadingMsg { text-align: center; color: #0284c7; font-weight: bold; padding: 9px; font-size: 9px; }
+
+  .btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    background-color: #ecf0f1;
+    color: #34495e;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover { background-color: #e0e6ed; border-color: #95a5a6; color: #2c3e50; }
+  .btn-volver:active { transform: scale(0.98); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+  <h1>Consulta de Juntas DIN EN 1514-1</h1>
+  <div class="resumen-seleccion" id="resumenSeleccion"></div>
+
+  <div id="loadingMsg">⏳ Cargando base de datos...</div>
+
+  <div id="formulario" style="display:none;">
+    <div class="grid-2">
+      <div class="col">
+        <div class="field">
+          <label for="dnSelect">1. Diámetro Nominal (DN)</label>
+          <select id="dnSelect"><option value="">-- Selecciona DN --</option></select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="field">
+          <label for="pnSelect">2. Presión (PN)</label>
+          <select id="pnSelect" disabled><option value="">-- Selecciona PN --</option></select>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" id="btnLimpiar">Nueva consulta</button>
+
+    <div class="image-container" id="imgBox">
+      <span class="img-placeholder">Selecciona DN y PN para ver el aro representativo</span>
+    </div>
+
+    <div id="results"></div>
+  </div>
+</div>
+
+<script>
+let DATA = [];
+const dnSelect = document.getElementById('dnSelect');
+const pnSelect = document.getElementById('pnSelect');
+const btnLimpiar = document.getElementById('btnLimpiar');
+const imgBox = document.getElementById('imgBox');
+const resultsDiv = document.getElementById('results');
+const resumenSeleccion = document.getElementById('resumenSeleccion');
+
+function limpiarCampo(valor) {
+  valor = String(valor == null ? '' : valor).trim();
+  valor = valor.replace(/^\[\s*/, '').replace(/\s*\]$/, '').trim();
+  if (valor === '') return '';
+  const match = valor.match(/^(-?\d+),(\d+)$/);
+  if (match) {
+    const entero = match[1];
+    let decimal = match[2];
+    if (decimal.length > 4) {
+      const num = parseFloat(`${entero}.${decimal}`);
+      decimal = num.toFixed(2).split('.')[1].replace(/0+$/, '');
+      if (decimal === '') return entero;
+    }
+    return `${entero},${decimal}`;
+  }
+  return valor;
+}
+
+function parsearCSV(text) {
+  text = text.replace(/^\uFEFF/, '');
+  const filas = [];
+  const lineas = text.split(/\r?\n/);
+  for (const linea of lineas) {
+    const l = linea.trim();
+    if (!l || l.startsWith('#')) continue;
+    const campos = [];
+    let actual = '', dentroComillas = false;
+    const sep = l.includes(';') ? ';' : ',';
+    for (let i = 0; i < l.length; i++) {
+      const ch = l[i];
+      if (ch === '"') {
+        if (dentroComillas && l[i + 1] === '"') { actual += '"'; i++; }
+        else dentroComillas = !dentroComillas;
+      } else if (ch === sep && !dentroComillas) { campos.push(limpiarCampo(actual)); actual = ''; }
+      else { actual += ch; }
+    }
+    campos.push(limpiarCampo(actual));
+    if (campos.length >= 3) filas.push(campos);
+  }
+  return filas;
+}
+
+function numero(valor) {
+  if (valor == null) return NaN;
+  return parseFloat(String(valor).replace(',', '.'));
+}
+
+function actualizarResumen() {
+  const partes = ['JUNTA'];
+  const dn = dnSelect.value;
+  const pn = pnSelect.value;
+  if (dn) partes.push('DN' + dn);
+  if (pn) partes.push(pn);
+  resumenSeleccion.textContent = partes.join(' · ');
+}
+
+async function cargarJuntas() {
+  try {
+    const res = await fetch('juntas.csv');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DATA = parsearCSV(await res.text());
+  } catch (e) {
+    console.error('❌ Error juntas.csv:', e);
+    alert('No se pudo cargar juntas.csv');
+  }
+}
+
+async function init() {
+  document.getElementById('loadingMsg').style.display = 'block';
+  document.getElementById('formulario').style.display = 'none';
+  await cargarJuntas();
+  if (DATA.length === 0) {
+    document.getElementById('loadingMsg').innerHTML = '❌ No se pudieron cargar los datos';
+    return;
+  }
+  document.getElementById('loadingMsg').style.display = 'none';
+  document.getElementById('formulario').style.display = 'block';
+  initDN();
+  actualizarResumen();
+}
+
+function initDN() {
+  // Orden CSV: 0=DI, 1=DE, 2=DN, 3=PN
+  const dns = [...new Set(DATA.map(item => item[2]))].filter(Boolean);
+  dns.sort((a, b) => {
+    const na = numero(a), nb = numero(b);
+    if (!isNaN(na) && !isNaN(nb)) return na - nb;
+    return String(a).localeCompare(String(b), 'es', { numeric: true });
+  });
+  dnSelect.innerHTML = '<option value="">-- Selecciona DN --</option>';
+  dns.forEach(dn => { dnSelect.innerHTML += `<option value="${dn}">${dn}</option>`; });
+}
+
+function rellenarSelect(select, opciones, placeholder, previo) {
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+  opciones.forEach(o => { select.innerHTML += `<option value="${o}">${o}</option>`; });
+  if (previo && opciones.includes(previo)) {
+    select.value = previo;
+    return true;
+  }
+  return false;
+}
+
+dnSelect.addEventListener('change', function() {
+  const dn = this.value;
+  const previaPN = pnSelect.value;
+  actualizarResumen();
+  pnSelect.disabled = !dn;
+  if (dn) {
+    const pns = [...new Set(
+      DATA.filter(item => item[2] === dn).map(item => item[3])
+    )].filter(Boolean);
+    pns.sort((a, b) => {
+      const na = numero(a), nb = numero(b);
+      if (!isNaN(na) && !isNaN(nb)) return na - nb;
+      return String(a).localeCompare(String(b), 'es', { numeric: true });
+    });
+    const ok = rellenarSelect(pnSelect, pns, '-- Selecciona PN --', previaPN);
+    if (ok) pnSelect.dispatchEvent(new Event('change'));
+    else { resultsDiv.innerHTML = ''; dibujarAroVacio(); actualizarResumen(); }
+  } else {
+    pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+    resultsDiv.innerHTML = '';
+    dibujarAroVacio();
+    actualizarResumen();
+  }
+});
+
+pnSelect.addEventListener('change', function() {
+  renderResults();
+  actualizarResumen();
+});
+
+function dibujarAroVacio() {
+  imgBox.innerHTML = '<span class="img-placeholder">Selecciona DN y PN para ver el aro representativo</span>';
+}
+
+// ============================================================
+// DIBUJO DE ARO PROPORCIONADO (SVG)
+// ============================================================
+function dibujarAro(diamInterior, diamExterior, etiqueta) {
+  const di = numero(diamInterior);
+  const de = numero(diamExterior);
+  if (isNaN(di) || isNaN(de) || de <= 0 || di < 0 || di >= de) {
+    dibujarAroVacio();
+    return;
+  }
+
+  // Lienzo cuadrado con margen
+  const SIZE = 220;
+  const MARGIN = 14;
+  const maxDiam = de;
+  const escala = (SIZE - 2 * MARGIN) / maxDiam;
+
+  const cx = SIZE / 2;
+  const cy = SIZE / 2;
+  const rExt = (de / 2) * escala;
+  const rInt = (di / 2) * escala;
+
+  imgBox.innerHTML = `
+    <svg viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}" role="img" aria-label="Aro junta ${etiqueta}">
+      <defs>
+        <radialGradient id="gradAro" cx="50%" cy="50%" r="50%">
+          <stop offset="60%" stop-color="#bfdbfe"/>
+          <stop offset="100%" stop-color="#60a5fa"/>
+        </radialGradient>
+      </defs>
+      <!-- Sombra -->
+      <circle cx="${cx}" cy="${cy}" r="${rExt}" fill="rgba(0,0,0,0.08)" transform="translate(2,2)"/>
+      <!-- Aro exterior -->
+      <circle cx="${cx}" cy="${cy}" r="${rExt}" fill="url(#gradAro)" stroke="#1d4ed8" stroke-width="1.6"/>
+      <!-- Agujero interior -->
+      <circle cx="${cx}" cy="${cy}" r="${rInt}" fill="#fafafa" stroke="#1d4ed8" stroke-width="1.6"/>
+      <!-- Cotas -->
+      <line x1="${cx - rExt}" y1="${cy}" x2="${cx + rExt}" y2="${cy}" stroke="#dc2626" stroke-width="0.9" stroke-dasharray="4 3"/>
+      <line x1="${cx}" y1="${cy - rExt}" x2="${cx}" y2="${cy + rExt}" stroke="#dc2626" stroke-width="0.9" stroke-dasharray="4 3"/>
+      <!-- Texto DE -->
+      <text x="${cx}" y="${cy - rExt - 6}" text-anchor="middle" font-family="Arial" font-size="9" font-weight="bold" fill="#1d4ed8">Øe ${etiqueta.de}</text>
+      <!-- Texto DI -->
+      <text x="${cx}" y="${cy + 3}" text-anchor="middle" font-family="Arial" font-size="8" font-weight="bold" fill="#dc2626">Øi ${etiqueta.di}</text>
+    </svg>
+    <div style="font-size:9px;color:#555;margin-top:4px;">Representación proporcionada (Øe / Øi)</div>
+  `;
+}
+
+// ============================================================
+// RESULTADOS (CORREGIDO PARA NO MOSTRAR DUPLICADOS)
+// ============================================================
+function renderResults() {
+  const dn = dnSelect.value;
+  const pn = pnSelect.value;
+  
+  if (!dn || !pn) {
+    resultsDiv.innerHTML = '';
+    dibujarAroVacio();
+    return;
+  }
+
+  // Usamos .find() para obtener SOLO la primera coincidencia y evitar duplicados
+  const match = DATA.find(item => item[2] === dn && item[3] === pn);
+  
+  if (!match) {
+    resultsDiv.innerHTML = '<div class="no-results">Sin datos para esa combinación.</div>';
+    dibujarAroVacio();
+    return;
+  }
+
+  // Extraemos los datos
+  const di = match[0];
+  const de = match[1];
+
+  // Dibujamos el aro
+  dibujarAro(di, de, { di: di, de: de });
+
+  // Pintamos una sola tarjeta de resultados
+  let html = `
+    <div class="card-result">
+      <div class="card-title">Junta DIN EN 1514-1 · DN${match[2]} · ${match[3]}</div>
+      <table class="data-table">
+        <tr><th>DN</th><td>${match[2]}</td></tr>
+        <tr><th>PN</th><td>${match[3]}</td></tr>
+        <tr><th>Ø Interior (DI)</th><td>${di}</td></tr>
+        <tr><th>Ø Exterior (DE)</th><td>${de}</td></tr>
+      </table>
+    </div>`;
+    
+  resultsDiv.innerHTML = html;
+}
+
+btnLimpiar.addEventListener('click', function() {
+  dnSelect.value = '';
+  pnSelect.innerHTML = '<option value="">-- Selecciona PN --</option>';
+  pnSelect.disabled = true;
+  resultsDiv.innerHTML = '';
+  dibujarAroVacio();
+  actualizarResumen();
+});
+
+// ============================================================
+// INICIO
+// ============================================================
+init();
+window.addEventListener('pageshow', function (event) { if (event.persisted) window.location.reload(); });
+</script>
+<link rel="stylesheet" href="men-header.css">
+<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+</body>
+</html>
