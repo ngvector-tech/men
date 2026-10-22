@@ -53,7 +53,9 @@
   canvas { display: block; cursor: grab; touch-action: none; }
   canvas:active { cursor: grabbing; }
 
-  .resultados-panel { display: flex; gap: 10px; flex-wrap: wrap; }
+  .resultados-panel { display: flex; gap: 10px; flex-wrap: wrap; transition: all 0.3s ease; overflow: hidden; }
+  .resultados-panel.oculto { display: none; }
+  
   .res-card { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 10px; flex: 1; min-width: 300px; }
   .res-card h3 { margin: 0 0 8px 0; font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 4px; color: #333; }
 
@@ -62,7 +64,7 @@
   th { background:#f0f0f0; }
   .inp-edit { width: 60px; padding: 2px; font-size: 12px; text-align:center; }
   
-  /* Brújula con líneas SVG cruzadas */
+  /* Brújula con colores y líneas cruzadas */
   .brujula-container { 
     position: relative; 
     width: 110px; 
@@ -87,9 +89,9 @@
     color: #fff; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; justify-content: center; align-items: center; text-align: center; transition: transform 0.1s;
   }
   .btn-brujula:hover { transform: scale(1.15); z-index: 10; }
-  .bg-verde { background: #52c41a; } 
-  .bg-rosa  { background: #eb2f96; } 
-  .bg-rojo  { background: #f5222d; } 
+  .bg-verde { background: #45E30B; } 
+  .bg-violeta  { background: #A90BE3; } 
+  .bg-rojo  { background: #E30B2F; } 
 
   .separator-line { width: 1px; height: 80px; background-color: #ccc; margin: 0 5px; }
 
@@ -136,9 +138,9 @@
       <button class="btn-tool active" id="btnPerspA">Persp. A</button>
       <button class="btn-tool" id="btnPerspB">Persp. B</button>
       <label style="font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;"><input type="checkbox" id="chkCotas" checked> Cotas</label>
+      <button class="btn-tool" id="btnToggleResultados">Ocultar Resultados</button>
     </div>
 
-    <!-- Brújula con SVG -->
     <div class="group-box" style="padding: 0; border-right: none; align-items: center; display: flex;">
        <div class="brujula-container">
           <svg class="brujula-linhas" width="100" height="100">
@@ -148,12 +150,12 @@
           </svg>
           <div class="brujula-row">
               <button class="btn-brujula bg-rojo"  data-dir="x-" title="-X Izquierda">-X</button>
-              <button class="btn-brujula bg-verde" data-dir="z+" title="+Z Arriba">+Z</button>
-              <button class="btn-brujula bg-rosa"  data-dir="y+" title="+Y Fondo">+Y</button>
+              <button class="btn-brujula bg-violeta" data-dir="z+" title="+Z Arriba">+Z</button>
+              <button class="btn-brujula bg-verde"  data-dir="y+" title="+Y Fondo">+Y</button>
           </div>
           <div class="brujula-row">
-              <button class="btn-brujula bg-rosa"  data-dir="y-" title="-Y Delante">-Y</button>
-              <button class="btn-brujula bg-verde" data-dir="z-" title="-Z Abajo">-Z</button>
+              <button class="btn-brujula bg-verde"  data-dir="y-" title="-Y Delante">-Y</button>
+              <button class="btn-brujula bg-violeta" data-dir="z-" title="-Z Abajo">-Z</button>
               <button class="btn-brujula bg-rojo"  data-dir="x+" title="+X Derecha">+X</button>
           </div>
        </div>
@@ -188,7 +190,7 @@
     <canvas id="lienzo" width="900" height="500"></canvas>
   </div>
 
-  <div class="resultados-panel">
+  <div class="resultados-panel" id="panelResultados">
     <div class="res-card" style="flex: 1;">
       <h3>Accesorios</h3>
       <div id="listaAccesorios"></div>
@@ -296,7 +298,6 @@ function actualizarEstado() {
   const todosElementos = [...estado.elementos];
   estado.ramalesTes.forEach(t => { if (t.ramaElementos) todosElementos.push(...t.ramaElementos); });
   
-  // Lógica corregida: contar solo los accesorios reales
   const accPorDiam = {};
   todosElementos.forEach(el => {
     if (el.tipo === 'codo' || el.tipo === 'te' || el.tipo === 'reduccion') {
@@ -325,7 +326,7 @@ function actualizarEstado() {
   estado.ramalesTes.forEach(t => { if (t.ramaElementos && t.ramaElementos.length > 0) carretesRamas.push(...calcularCarretesLimpios(t.ramaElementos, true, t)); });
   const todosCarretes = [...carretesPrincipales, ...carretesRamas];
 
-  let htmlCar = `<table><thead><tr><th>Nº</th><th>Ø</th><th>Largo</th><th>Limpio</th><th>C</th></tr></thead><tbody>`;
+  let htmlCar = `<table><thead><tr><th>Nº</th><th>Ø</th><th>Entre ejes</th><th>Carrete</th><th>C</th></tr></thead><tbody>`;
   if (todosCarretes.length === 0) htmlCar += `<tr><td colspan="5" class="small">No hay carretes</td></tr>`;
   else {
     todosCarretes.forEach(c => {
@@ -893,6 +894,18 @@ document.getElementById('btnPerspB').addEventListener('click', () => {
 });
 document.getElementById('chkCotas').addEventListener('change', (e) => { mostrarCotas = e.target.checked; dibujar(); });
 
+document.getElementById('btnToggleResultados').addEventListener('click', (e) => {
+  const panel = document.getElementById('panelResultados');
+  if (panel.classList.contains('oculto')) {
+    panel.classList.remove('oculto');
+    e.target.textContent = 'Ocultar Resultados';
+  } else {
+    panel.classList.add('oculto');
+    e.target.textContent = 'Mostrar Resultados';
+  }
+  setTimeout(dibujar, 50);
+});
+
 document.querySelectorAll('.btn-brujula').forEach(btn => {
   btn.addEventListener('click', () => agregarTramo(btn.dataset.dir));
 });
@@ -978,8 +991,6 @@ function agregarTramo(dirKeySel) {
   const ultimoElem = targetArr[targetArr.length - 1];
   const dirPreviaKey = (ultimoElem && ultimoElem.tipo === 'tramo') ? ultimoElem.dirKey : dirKey(estado.dirActual);
   
-  // CORRECCIÓN: Solo añadir codo si el último elemento es un tramo y cambia la dirección.
-  // Si es una te o reducción, no añadimos codo porque ya cambian la dirección intrínsecamente.
   if (ultimoElem && ultimoElem.tipo === 'tramo' && dirPreviaKey !== dirKeySel) {
     targetArr.push({ tipo: 'codo', diam: estado.codoActual.diam, radio: estado.codoActual.radio, pos: { ...estado.posActual } });
   }
