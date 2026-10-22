@@ -62,13 +62,13 @@
   th { background:#f0f0f0; }
   .inp-edit { width: 60px; padding: 2px; font-size: 12px; text-align:center; }
   
-  /* Brújula tipo "globos" agrupados */
+  /* Brújula con líneas SVG cruzadas */
   .brujula-container { 
     position: relative; 
     width: 110px; 
     height: 110px; 
-    background: #f0f0f0; /* Fondo gris claro */
-    border: 1px solid #ccc; /* Borde exterior */
+    background: #f0f0f0; 
+    border: 1px solid #ccc; 
     border-radius: 8px; 
     margin: 0 10px;
     display: flex;
@@ -76,41 +76,22 @@
     justify-content: space-between;
     padding: 5px;
   }
-  .brujula-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  .brujula-linhas {
+    position: absolute; top: 5px; left: 5px; width: 100px; height: 100px; pointer-events: none; z-index: 1;
   }
-  
+  .brujula-row {
+    display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 2;
+  }
   .btn-brujula {
-    width: 30px; 
-    height: 30px; 
-    border-radius: 50%;
-    border: 2px solid #fff; 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    color: #fff; 
-    font-weight: bold; 
-    font-size: 11px; 
-    cursor: pointer;
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    text-align: center;
-    transition: transform 0.1s;
+    width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    color: #fff; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; justify-content: center; align-items: center; text-align: center; transition: transform 0.1s;
   }
   .btn-brujula:hover { transform: scale(1.15); z-index: 10; }
-  
   .bg-verde { background: #52c41a; } 
   .bg-rosa  { background: #eb2f96; } 
   .bg-rojo  { background: #f5222d; } 
 
-  /* Línea divisoria a la derecha del grupo de la brújula */
-  .separator-line {
-    width: 1px;
-    height: 80px;
-    background-color: #ccc;
-    margin: 0 5px;
-  }
+  .separator-line { width: 1px; height: 80px; background-color: #ccc; margin: 0 5px; }
 
   .hint { font-size: 11px; color: #666; font-style: italic; margin: 0; padding-left: 5px; }
   .estado-box { font-size: 12px; padding: 4px 8px; background: #fffbe6; border: 1px solid #ffe58f; border-radius: 4px; }
@@ -130,56 +111,6 @@
     .btn-brujula { width: 38px; height: 38px; font-size: 13px; }
     .separator-line { display: none; }
   }
-  .brujula-container { 
-    position: relative; 
-    width: 110px; 
-    height: 110px; 
-    background: #f0f0f0; 
-    border: 1px solid #ccc; 
-    border-radius: 8px; 
-    margin: 0 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 5px;
-}
-
-/* Posicionar el SVG por detrás de los botones */
-.brujula-linhas {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 100px;
-    height: 100px;
-    pointer-events: none; /* Para que no interfiera con los clics de los botones */
-    z-index: 1;
-}
-
-.brujula-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    position: relative;
-    z-index: 2; /* Asegura que los botones estén sobre las líneas */
-}
-
-.btn-brujula {
-    width: 30px; 
-    height: 30px; 
-    border-radius: 50%;
-    border: 2px solid #fff; 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    color: #fff; 
-    font-weight: bold; 
-    font-size: 11px; 
-    cursor: pointer;
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    text-align: center;
-    transition: transform 0.1s;
-}
-.btn-brujula:hover { transform: scale(1.15); z-index: 10; }
 </style>
 </head>
 <body>
@@ -207,30 +138,25 @@
       <label style="font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;"><input type="checkbox" id="chkCotas" checked> Cotas</label>
     </div>
 
-    <!-- Brújula modificada con fondo gris y separador -->
+    <!-- Brújula con SVG -->
     <div class="group-box" style="padding: 0; border-right: none; align-items: center; display: flex;">
        <div class="brujula-container">
-    <!-- Líneas SVG de conexión cruzada y central -->
-    <svg class="brujula-linhas" width="100" height="100">
-        <!-- Línea Verde conectando +Z con -Z (Eje central vertical) -->
-        <line x1="50" y1="20" x2="50" y2="80" stroke="#52c41a" stroke-width="2.5" />
-        <!-- Línea Roja conectando -X con +X -->
-        <line x1="20" y1="20" x2="80" y2="80" stroke="#f5222d" stroke-width="2.5" />
-        <!-- Línea Rosa conectando -Y con +Y -->
-        <line x1="20" y1="80" x2="80" y2="20" stroke="#eb2f96" stroke-width="2.5" />
-    </svg>
-
-    <div class="brujula-row">
-        <button class="btn-brujula bg-rojo"  data-dir="x-" title="-X Izquierda">-X</button>
-        <button class="btn-brujula bg-verde" data-dir="z+" title="+Z Arriba">+Z</button>
-        <button class="btn-brujula bg-rosa"  data-dir="y+" title="+Y Fondo">+Y</button>
-    </div>
-    <div class="brujula-row">
-        <button class="btn-brujula bg-rosa"  data-dir="y-" title="-Y Delante">-Y</button>
-        <button class="btn-brujula bg-verde" data-dir="z-" title="-Z Abajo">-Z</button>
-        <button class="btn-brujula bg-rojo"  data-dir="x+" title="+X Derecha">+X</button>
-    </div>
-</div>
+          <svg class="brujula-linhas" width="100" height="100">
+              <line x1="50" y1="20" x2="50" y2="80" stroke="#52c41a" stroke-width="2.5" />
+              <line x1="20" y1="20" x2="80" y2="80" stroke="#f5222d" stroke-width="2.5" />
+              <line x1="20" y1="80" x2="80" y2="20" stroke="#eb2f96" stroke-width="2.5" />
+          </svg>
+          <div class="brujula-row">
+              <button class="btn-brujula bg-rojo"  data-dir="x-" title="-X Izquierda">-X</button>
+              <button class="btn-brujula bg-verde" data-dir="z+" title="+Z Arriba">+Z</button>
+              <button class="btn-brujula bg-rosa"  data-dir="y+" title="+Y Fondo">+Y</button>
+          </div>
+          <div class="brujula-row">
+              <button class="btn-brujula bg-rosa"  data-dir="y-" title="-Y Delante">-Y</button>
+              <button class="btn-brujula bg-verde" data-dir="z-" title="-Z Abajo">-Z</button>
+              <button class="btn-brujula bg-rojo"  data-dir="x+" title="+X Derecha">+X</button>
+          </div>
+       </div>
        <div class="separator-line"></div>
     </div>
 
@@ -255,7 +181,7 @@
 
   <div style="display: flex; gap: 10px; align-items: center; padding: 0 5px;">
     <div class="estado-box" id="estado" style="flex: 1;"></div>
-    <p class="hint" style="flex: 2;">Clic/toque en un punto abierto para continuar · Clic en una cota para editarla · Arrastra para rotar, rueda para zoom</p>
+    <p class="hint" style="flex: 2;">Clic/toque en un nodo para continuar trazo · Clic en cota para editar · Arrastra para rotar</p>
   </div>
 
   <div class="canvas-wrap">
@@ -370,6 +296,7 @@ function actualizarEstado() {
   const todosElementos = [...estado.elementos];
   estado.ramalesTes.forEach(t => { if (t.ramaElementos) todosElementos.push(...t.ramaElementos); });
   
+  // Lógica corregida: contar solo los accesorios reales
   const accPorDiam = {};
   todosElementos.forEach(el => {
     if (el.tipo === 'codo' || el.tipo === 'te' || el.tipo === 'reduccion') {
@@ -649,17 +576,14 @@ function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
   ejes.forEach(e => {
     const p = toScreen(e.v);
     
-    // 1. Línea larga punteada
     ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(p.x,p.y);
     ctx.strokeStyle = e.c; ctx.lineWidth = 1.0 * factorEscala;
     ctx.setLineDash([4*factorEscala, 6*factorEscala]); ctx.stroke(); ctx.setLineDash([]);
     
-    // 2. Línea fina sólida (unión del globo con el centro)
     const pText = { x: o.x + (p.x - o.x) * 0.65, y: o.y + (p.y - o.y) * 0.65 };
     ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(pText.x, pText.y);
     ctx.strokeStyle = e.c; ctx.lineWidth = 1.5 * factorEscala; ctx.stroke();
 
-    // 3. Texto del eje con fondo
     ctx.font = `bold ${11*factorEscala}px Arial`; 
     ctx.textAlign='center'; ctx.textBaseline='middle'; 
     
@@ -811,62 +735,37 @@ function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
     if (interactivo) estado.nodosInteractivos.push({ x: p.x, y: p.y, id, nombre, pos3D: pos3D_real || pos3D_visual, dir3D, diam, tipo });
   };
 
-  if (estado.elementos.length > 0) {
-    const ultimoEl = estado.elementos[estado.elementos.length - 1];
-    if (ultimoEl && ultimoEl.tipo === 'reduccion') {
-      const dir = ultimoEl.dir;
-      const posFinReal = { x: ultimoEl.pos.x + dir.x * ultimoEl.altura, y: ultimoEl.pos.y + dir.y * ultimoEl.altura, z: ultimoEl.pos.z + dir.z * ultimoEl.altura };
-      const { bVis } = puntosReduccion(ultimoEl, toScreen, factorEscala);
-      dibujarNodo({ __screen: bVis }, 'principal', 'Línea Principal (fin reducción)', dir, ultimoEl.d2, posFinReal, 'reduccion');
-    } else {
-      dibujarNodo(estado.posActual, 'principal', 'Línea Principal', estado.dirActual, estado.tubActual.diam);
+  // --- RENDERIZADO DE NODOS EN TODOS LOS EXTREMOS ---
+  
+  const renderNodoSiEsExtremo = (arr, idRama) => {
+    for (let i = 0; i < arr.length; i++) {
+        const el = arr[i];
+        if (el.tipo === 'tramo') {
+            // Nodo al INICIO del tramo
+            dibujarNodo(el.inicio, idRama, `Inicio Tramo ${el.num}`, el.dirKey ? DIRS[el.dirKey] : null, el.diam);
+            
+            // Nodo al FINAL del tramo (si es el último o el siguiente no es tramo)
+            const next = arr[i+1];
+            if (!next || next.tipo !== 'tramo') {
+                const d = DIRS[el.dirKey];
+                const posFin = { x: el.inicio.x + d.x * el.largo, y: el.inicio.y + d.y * el.largo, z: el.inicio.z + d.z * el.largo };
+                dibujarNodo(posFin, idRama, `Fin Tramo ${el.num}`, d, el.diam);
+            }
+        }
     }
-  }
+  };
 
+  // Nodos para la línea principal
+  renderNodoSiEsExtremo(estado.elementos, 'principal');
+  
+  // Nodos para las ramas de Te
   estado.ramalesTes.forEach(t => {
-    if (t.ramaElementos && t.ramaElementos.length > 0) {
-      const ultimoEl = t.ramaElementos[t.ramaElementos.length - 1];
-      if (ultimoEl && ultimoEl.tipo === 'reduccion') {
-        const dir = ultimoEl.dir;
-        const posFinReal = { x: ultimoEl.pos.x + dir.x * ultimoEl.altura, y: ultimoEl.pos.y + dir.y * ultimoEl.altura, z: ultimoEl.pos.z + dir.z * ultimoEl.altura };
-        const { bVis } = puntosReduccion(ultimoEl, toScreen, factorEscala);
-        dibujarNodo({ __screen: bVis }, t.id, `Ramal T${t.id} (fin reducción)`, dir, ultimoEl.d2, posFinReal, 'reduccion');
-      } else {
-        let posFin = { ...t.pos }, dirFin = t.dirRamal, diamFin = t.diam;
-        t.ramaElementos.forEach(el => {
-          if (el.tipo === 'tramo') { const d = DIRS[el.dirKey]; posFin = { x: el.inicio.x + d.x * el.largo, y: el.inicio.y + d.y * el.largo, z: el.inicio.z + d.z * el.largo }; dirFin = d; diamFin = el.diam; }
-          else if (el.tipo === 'reduccion') { const d = el.dir; posFin = { x: el.pos.x + d.x * el.altura, y: el.pos.y + d.y * el.altura, z: el.pos.z + d.z * el.altura }; dirFin = d; diamFin = el.d2; }
-        });
-        dibujarNodo(posFin, t.id, `Ramal T${t.id}`, dirFin, diamFin);
-      }
-    } else {
-      dibujarNodo(t.pos, t.id, `Ramal T${t.id}`, t.dirRamal, t.diam);
+    renderNodoSiEsExtremo(t.ramaElementos, t.id);
+    
+    // Nodo final en el ramal si está vacío
+    if (t.ramaElementos.length === 0) {
+        dibujarNodo(t.pos, t.id, `Ramal T${t.id} (Libre)`, t.dirRamal, t.diam);
     }
-  });
-
-  const todasLasTes = [];
-  const extraerTes = (arr) => { for (const el of arr) if (el.tipo === 'te') todasLasTes.push(el); };
-  extraerTes(estado.elementos);
-  estado.ramalesTes.forEach(t => extraerTes(t.ramaElementos));
-
-  todasLasTes.forEach(te => {
-    const infoTe = estado.ramalesTes.find(r => r.id === te.id);
-    if (!infoTe) return;
-
-    const posBocaRamal = {
-      x: te.pos.x + infoTe.dirRamal.x * (estado.codoActual.radio / 2),
-      y: te.pos.y + infoTe.dirRamal.y * (estado.codoActual.radio / 2),
-      z: te.pos.z + infoTe.dirRamal.z * (estado.codoActual.radio / 2)
-    };
-    dibujarNodo(posBocaRamal, te.id, `Boca Ramal T${te.id}`, infoTe.dirRamal, infoTe.diam, null, 'ramal');
-
-    const dirPrincipal = te.dir || { x:0,y:0,z:1 };
-    const posFinPrincipal = {
-      x: te.pos.x + dirPrincipal.x * (estado.codoActual.radio / 2),
-      y: te.pos.y + dirPrincipal.y * (estado.codoActual.radio / 2),
-      z: te.pos.z + dirPrincipal.z * (estado.codoActual.radio / 2)
-    };
-    dibujarNodo(posFinPrincipal, te.id, `Salida Longitudinal T${te.id}`, dirPrincipal, infoTe.diam, null, 'longitudinal');
   });
 
   const pIni = toScreen({x:0,y:0,z:0});
@@ -1078,7 +977,12 @@ function agregarTramo(dirKeySel) {
   const targetArr = (estado.ramaActivaId && estado.ramaActivaId !== 'principal') ? estado.ramalesTes.find(t=>t.id===estado.ramaActivaId).ramaElementos : estado.elementos;
   const ultimoElem = targetArr[targetArr.length - 1];
   const dirPreviaKey = (ultimoElem && ultimoElem.tipo === 'tramo') ? ultimoElem.dirKey : dirKey(estado.dirActual);
-  if (estado.dirActual && dirPreviaKey !== dirKeySel) targetArr.push({ tipo: 'codo', diam: estado.codoActual.diam, radio: estado.codoActual.radio, pos: { ...estado.posActual } });
+  
+  // CORRECCIÓN: Solo añadir codo si el último elemento es un tramo y cambia la dirección.
+  // Si es una te o reducción, no añadimos codo porque ya cambian la dirección intrínsecamente.
+  if (ultimoElem && ultimoElem.tipo === 'tramo' && dirPreviaKey !== dirKeySel) {
+    targetArr.push({ tipo: 'codo', diam: estado.codoActual.diam, radio: estado.codoActual.radio, pos: { ...estado.posActual } });
+  }
   
   estado.contadorCarretes++;
   targetArr.push({ tipo: 'tramo', num: estado.contadorCarretes, dirKey: dirKeySel, largo, diam: estado.tubActual.diam, inicio: { ...estado.posActual } });
