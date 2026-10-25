@@ -34,6 +34,7 @@
   }
   .btn-tool:hover { background: #dde; }
   .btn-tool.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+  .btn-tool.locked { background: #fbbf24; border-color: #f59e0b; color: #000; }
   
   .btn-acc {
     padding: 6px 10px; font-size: 12px; border-radius: 4px; color: #fff; cursor: pointer; font-weight: bold; border: none;
@@ -50,8 +51,7 @@
   .btn-share:hover { background:#374151; }
 
   .canvas-wrap { display: flex; justify-content: center; background: #fff; border-radius: 6px; border: 1px solid #ccc; overflow: hidden; flex: 1; min-height: 450px; position: relative;}
-  canvas { display: block; cursor: grab; touch-action: none; }
-  canvas:active { cursor: grabbing; }
+  canvas { display: block; cursor: default; touch-action: none; }
 
   .resultados-panel { display: flex; gap: 10px; flex-wrap: wrap; transition: all 0.3s ease; overflow: hidden; }
   .resultados-panel.oculto { display: none; }
@@ -64,7 +64,6 @@
   th { background:#f0f0f0; }
   .inp-edit { width: 60px; padding: 2px; font-size: 12px; text-align:center; }
   
-  /* Brújula con colores y líneas cruzadas */
   .brujula-container { 
     position: relative; 
     width: 110px; 
@@ -97,6 +96,46 @@
 
   .hint { font-size: 11px; color: #666; font-style: italic; margin: 0; padding-left: 5px; }
   .estado-box { font-size: 12px; padding: 4px 8px; background: #fffbe6; border: 1px solid #ffe58f; border-radius: 4px; }
+  .estado-camara { font-size: 11px; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+  .estado-camara.lib { background: #dcfce7; color: #166534; }
+  .estado-camara.blq { background: #fee2e2; color: #991b1b; }
+
+  .sliders-rotacion {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 8px;
+  }
+  .slider-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .slider-group label {
+    min-width: 20px;
+    color: #333;
+  }
+  .slider-group input[type="range"] {
+    width: 120px;
+    accent-color: #1f6feb;
+  }
+  .slider-group .valor-slider {
+    min-width: 40px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 11px;
+    background: #fff;
+    padding: 2px 4px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+  }
 
   #modalLupa { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; backdrop-filter: blur(2px); }
   #modalLupa img { max-width: 95vw; max-height: 95vh; background: #fff; border-radius: 4px; object-fit: contain; }
@@ -112,13 +151,14 @@
     .brujula-container { width: 140px; height: 140px; }
     .btn-brujula { width: 38px; height: 38px; font-size: 13px; }
     .separator-line { display: none; }
+    .slider-group input[type="range"] { width: 80px; }
   }
 </style>
 </head>
 <body>
 
 <div class="top-info">
-  Propiedad <b>MEN</b> &middot; creado por: J. N. G.
+  Propiedad <b>MEN</b> · creado por: J. N. G.
 </div>
 
 <div class="main-container">
@@ -135,8 +175,9 @@
     </div>
 
     <div class="group-box">
-      <button class="btn-tool active" id="btnPerspA">Persp. A</button>
-      <button class="btn-tool" id="btnPerspB">Persp. B</button>
+      <button class="btn-tool" id="btnFijarVista" title="Guardar la orientación actual como vista fija y bloquear rotación">📌 Fijar Vista</button>
+      <button class="btn-tool" id="btnIrVistaFija" title="Volver a la vista fija guardada (bloquea rotación)">🎯 Ir a Vista Fija</button>
+      <button class="btn-tool" id="btnToggleRot" title="Activar/desactivar rotación libre con sliders">🔓 Rotación Libre</button>
       <label style="font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;"><input type="checkbox" id="chkCotas" checked> Cotas</label>
       <button class="btn-tool" id="btnToggleResultados">Ocultar Resultados</button>
     </div>
@@ -181,9 +222,30 @@
     </div>
   </div>
 
+  <div class="sliders-rotacion">
+    <span style="font-size:12px; font-weight:bold; color:#555;">Rotación por eje:</span>
+    <div class="slider-group">
+      <label style="color:#e74c3c;">X</label>
+      <input type="range" id="sliderX" min="-180" max="180" value="0" step="1">
+      <span class="valor-slider" id="valorX">0°</span>
+    </div>
+    <div class="slider-group">
+      <label style="color:#27ae60;">Y</label>
+      <input type="range" id="sliderY" min="-180" max="180" value="0" step="1">
+      <span class="valor-slider" id="valorY">0°</span>
+    </div>
+    <div class="slider-group">
+      <label style="color:#8e44ad;">Z</label>
+      <input type="range" id="sliderZ" min="-180" max="180" value="0" step="1">
+      <span class="valor-slider" id="valorZ">0°</span>
+    </div>
+    <button class="btn-tool" id="btnResetSliders" style="font-size:11px; padding:4px 8px;">↺ Resetear</button>
+  </div>
+
   <div style="display: flex; gap: 10px; align-items: center; padding: 0 5px;">
     <div class="estado-box" id="estado" style="flex: 1;"></div>
-    <p class="hint" style="flex: 2;">Clic/toque en un nodo para continuar trazo · Clic en cota para editar · Arrastra para rotar</p>
+    <span id="estadoCamara" class="estado-camara blq">Rotación: BLOQUEADA</span>
+    <p class="hint" style="flex: 2;">Clic/toque en un nodo para continuar trazo · Clic en cota para editar · <b>Usa los sliders para rotar (cuando esté desbloqueado)</b> · Rueda para zoom</p>
   </div>
 
   <div class="canvas-wrap">
@@ -229,12 +291,26 @@ const estado = {
   ramaActivaId: null,
   contadorCarretes: 0,
   nodosInteractivos: [],
-  cotasInteractivas: [] 
+  cotasInteractivas: [],
+  rotacionBloqueada: false
 };
 
-const camara = { rotX: 0, rotY: Math.PI/4, zoom: 1 };
-const VISTA_A = { rotX: 0, rotY: Math.PI/4, zoom: 1 };
-const VISTA_B = { rotX: 0, rotY: Math.PI/4 + Math.PI, zoom: 1 };
+// =====================================================================
+// CONFIGURACIÓN DE CÁMARA
+// =====================================================================
+const camara = { 
+    rotX: -Math.PI / 4,
+    rotY: Math.PI / 4,
+    zoom: 1 
+};
+
+const vistaFija = { 
+    rotX: -Math.PI / 4, 
+    rotY: Math.PI / 4, 
+    zoom: 1 
+};
+
+const rotacionEjes = { x: 0, y: 0, z: 0 };
 
 const PALETA = ['#1f6feb', '#16a34a', '#dc2626', '#9333ea', '#0891b2', '#ca8a04', '#db2777', '#059669', '#7c3aed', '#ea580c', '#2563eb', '#65a30d', '#e11d48', '#0d9488', '#a16207'];
 const colorPorDiam = new Map();
@@ -736,16 +812,11 @@ function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
     if (interactivo) estado.nodosInteractivos.push({ x: p.x, y: p.y, id, nombre, pos3D: pos3D_real || pos3D_visual, dir3D, diam, tipo });
   };
 
-  // --- RENDERIZADO DE NODOS EN TODOS LOS EXTREMOS ---
-  
   const renderNodoSiEsExtremo = (arr, idRama) => {
     for (let i = 0; i < arr.length; i++) {
         const el = arr[i];
         if (el.tipo === 'tramo') {
-            // Nodo al INICIO del tramo
             dibujarNodo(el.inicio, idRama, `Inicio Tramo ${el.num}`, el.dirKey ? DIRS[el.dirKey] : null, el.diam);
-            
-            // Nodo al FINAL del tramo (si es el último o el siguiente no es tramo)
             const next = arr[i+1];
             if (!next || next.tipo !== 'tramo') {
                 const d = DIRS[el.dirKey];
@@ -756,14 +827,9 @@ function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
     }
   };
 
-  // Nodos para la línea principal
   renderNodoSiEsExtremo(estado.elementos, 'principal');
-  
-  // Nodos para las ramas de Te
   estado.ramalesTes.forEach(t => {
     renderNodoSiEsExtremo(t.ramaElementos, t.id);
-    
-    // Nodo final en el ramal si está vacío
     if (t.ramaElementos.length === 0) {
         dibujarNodo(t.pos, t.id, `Ramal T${t.id} (Libre)`, t.dirRamal, t.diam);
     }
@@ -801,11 +867,7 @@ canvas.addEventListener('pointermove', (e) => {
   if (!isDragging) return;
   const dx = e.clientX - lastX, dy = e.clientY - lastY;
   if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasMoved = true;
-  if (hasMoved) {
-    camara.rotY += dx * 0.01; camara.rotX += dy * 0.01;
-    camara.rotX = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, camara.rotX));
-    lastX = e.clientX; lastY = e.clientY; dibujar();
-  }
+  lastX = e.clientX; lastY = e.clientY;
 });
 
 canvas.addEventListener('pointerup', (e) => {
@@ -838,12 +900,9 @@ canvas.addEventListener('pointerup', (e) => {
       if (nodoElegido.nombre.includes('T') && (nodoElegido.tipo === 'ramal' || nodoElegido.tipo === 'longitudinal')) {
         const teId = nodoElegido.id;
         const opcion = prompt(`La Te T${teId} tiene dos conexiones disponibles.\n¿A cuál quieres conectarte?\n1. Continuar línea principal (longitudinal)\n2. Ramal vertical`, nodoElegido.tipo === 'ramal' ? '2' : '1');
-        
         if (opcion === null) return;
-        
         const infoTe = estado.ramalesTes.find(r => r.id === teId);
         if (!infoTe) return;
-        
         if (opcion === '1') {
           estado.ramaActivaId = null;
           estado.posActual = { ...nodoElegido.pos3D };
@@ -856,7 +915,6 @@ canvas.addEventListener('pointerup', (e) => {
           estado.tubActual.diam = infoTe.diam;
           infoTe.usado = true;
         }
-        
         dibujar(); actualizarEstado();
         alert(`Conectado a T${teId}. Puedes seguir trazando.`);
         return;
@@ -872,7 +930,7 @@ canvas.addEventListener('pointerup', (e) => {
       return;
     }
     
-    abrirLupa();
+    // Se ha eliminado la llamada a abrirLupa() aquí.
   }
 });
 canvas.addEventListener('pointercancel', () => { isDragging = false; });
@@ -884,15 +942,103 @@ canvas.addEventListener('wheel', (e) => {
   dibujar();
 }, { passive: false });
 
-document.getElementById('btnPerspA').addEventListener('click', () => {
-  camara.rotX = VISTA_A.rotX; camara.rotY = VISTA_A.rotY; camara.zoom = VISTA_A.zoom;
-  document.getElementById('btnPerspA').classList.add('active'); document.getElementById('btnPerspB').classList.remove('active'); dibujar();
+// --- CONTROLES DE CÁMARA ---
+function actualizarIndicadorCamara() {
+  const el = document.getElementById('estadoCamara');
+  if (estado.rotacionBloqueada) {
+    el.textContent = 'Rotación: BLOQUEADA';
+    el.className = 'estado-camara blq';
+  } else {
+    el.textContent = 'Rotación: LIBRE';
+    el.className = 'estado-camara lib';
+  }
+  const btnRot = document.getElementById('btnToggleRot');
+  if (estado.rotacionBloqueada) {
+    btnRot.textContent = '🔓 Rotación Libre';
+    btnRot.classList.remove('locked');
+  } else {
+    btnRot.textContent = '🔒 Bloquear Rotación';
+    btnRot.classList.add('locked');
+  }
+}
+
+function aplicarRotacionSliders() {
+  let rx = vistaFija.rotX;
+  let ry = vistaFija.rotY;
+
+  rx += rotacionEjes.x;
+  ry += rotacionEjes.y;
+  rx += rotacionEjes.z * 0.5;
+  ry += rotacionEjes.z * 0.5;
+
+  rx = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, rx));
+
+  camara.rotX = rx;
+  camara.rotY = ry;
+  dibujar();
+}
+
+function resetSliders() {
+  rotacionEjes.x = 0; rotacionEjes.y = 0; rotacionEjes.z = 0;
+  document.getElementById('sliderX').value = 0;
+  document.getElementById('sliderY').value = 0;
+  document.getElementById('sliderZ').value = 0;
+  document.getElementById('valorX').textContent = '0°';
+  document.getElementById('valorY').textContent = '0°';
+  document.getElementById('valorZ').textContent = '0°';
+}
+
+document.getElementById('sliderX').addEventListener('input', (e) => {
+  if (estado.rotacionBloqueada) { e.target.value = rotacionEjes.x * 180 / Math.PI; return; }
+  rotacionEjes.x = parseFloat(e.target.value) * Math.PI / 180;
+  document.getElementById('valorX').textContent = Math.round(parseFloat(e.target.value)) + '°';
+  aplicarRotacionSliders();
 });
-document.getElementById('btnPerspB').addEventListener('click', () => {
-  camara.rotX = VISTA_B.rotX; camara.rotY = VISTA_B.rotY; camara.zoom = VISTA_B.zoom;
-  document.getElementById('btnPerspA').classList.remove('active'); document.getElementById('btnPerspB').classList.add('active'); dibujar();
+document.getElementById('sliderY').addEventListener('input', (e) => {
+  if (estado.rotacionBloqueada) { e.target.value = rotacionEjes.y * 180 / Math.PI; return; }
+  rotacionEjes.y = parseFloat(e.target.value) * Math.PI / 180;
+  document.getElementById('valorY').textContent = Math.round(parseFloat(e.target.value)) + '°';
+  aplicarRotacionSliders();
 });
+document.getElementById('sliderZ').addEventListener('input', (e) => {
+  if (estado.rotacionBloqueada) { e.target.value = rotacionEjes.z * 180 / Math.PI; return; }
+  rotacionEjes.z = parseFloat(e.target.value) * Math.PI / 180;
+  document.getElementById('valorZ').textContent = Math.round(parseFloat(e.target.value)) + '°';
+  aplicarRotacionSliders();
+});
+
+document.getElementById('btnResetSliders').addEventListener('click', () => {
+  resetSliders();
+  aplicarRotacionSliders();
+});
+
 document.getElementById('chkCotas').addEventListener('change', (e) => { mostrarCotas = e.target.checked; dibujar(); });
+
+document.getElementById('btnFijarVista').addEventListener('click', () => {
+  vistaFija.rotX = camara.rotX;
+  vistaFija.rotY = camara.rotY;
+  vistaFija.zoom = camara.zoom;
+  resetSliders();
+  estado.rotacionBloqueada = true;
+  actualizarIndicadorCamara();
+  alert('✅ Vista fijada y rotación bloqueada.');
+});
+
+document.getElementById('btnIrVistaFija').addEventListener('click', () => {
+  camara.rotX = vistaFija.rotX;
+  camara.rotY = vistaFija.rotY;
+  camara.zoom = vistaFija.zoom;
+  resetSliders();
+  estado.rotacionBloqueada = true;
+  actualizarIndicadorCamara();
+  dibujar();
+});
+
+document.getElementById('btnToggleRot').addEventListener('click', () => {
+  estado.rotacionBloqueada = !estado.rotacionBloqueada;
+  actualizarIndicadorCamara();
+  dibujar();
+});
 
 document.getElementById('btnToggleResultados').addEventListener('click', (e) => {
   const panel = document.getElementById('panelResultados');
@@ -936,17 +1082,19 @@ document.getElementById('btnAplicarDef').addEventListener('click', () => {
   estado.contadorCarretes = 0;
   estado.nodosInteractivos = [];
 
-  camara.rotX = VISTA_A.rotX;
-  camara.rotY = VISTA_A.rotY;
-  camara.zoom = VISTA_A.zoom;
-  document.getElementById('btnPerspA').classList.add('active');
-  document.getElementById('btnPerspB').classList.remove('active');
+  camara.rotX = vistaFija.rotX;
+  camara.rotY = vistaFija.rotY;
+  camara.zoom = vistaFija.zoom;
+  resetSliders();
+  estado.rotacionBloqueada = true;
+  actualizarIndicadorCamara();
 
   colorPorDiam.clear();
   dibujar();
   actualizarEstado();
 });
 
+// Funciones de trazado
 function conectarTe() {
   const tesLibres = estado.ramalesTes.filter(t => !t.usado);
   if (tesLibres.length === 0) { alert('No hay ramales libres.'); return; }
@@ -1081,6 +1229,9 @@ document.getElementById('btnImprimirTodo').addEventListener('click', () => {
 });
 document.getElementById('btnCompartirDibujo').addEventListener('click', () => alert('Función de compartir simulada.'));
 
+// Inicialización
+estado.rotacionBloqueada = true;
+actualizarIndicadorCamara();
 dibujar(); actualizarEstado();
 window.addEventListener('resize', () => setTimeout(dibujar, 100));
 </script>
