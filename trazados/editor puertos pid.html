@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editor Visual de Puertos</title>
+    <script src="https://cdn.jsdelivr.net/npm/@joint/core@4.1.0/dist/joint.js"></script>
+    <style>
+        body { margin: 0; display: flex; height: 100vh; font-family: Arial, sans-serif; }
+        #sidebar { width: 340px; background: #2c3e50; color: white; padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+        #lienzo { flex: 1; background: #f9f9f9; position: relative; }
+        .btn { padding: 10px; background: #3498db; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        .btn:hover { background: #2980b9; }
+        .btn-success { background: #2ecc71; }
+        .btn-danger { background: #e74c3c; }
+        .btn-warning { background: #f39c12; }
+        .btn-purple { background: #8e44ad; }
+        textarea { width: 100%; height: 150px; font-family: monospace; font-size: 11px; background: #1a252f; color: #2ecc71; border: 1px solid #555; padding: 8px; box-sizing: border-box; }
+        .info { font-size: 12px; background: #34495e; padding: 10px; border-radius: 4px; line-height: 1.5; }
+        label { font-size: 12px; font-weight: bold; margin-top: 5px; }
+        input[type="text"] { padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
+        hr { border: 1px solid #555; width: 100%; margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h3>Editor de Puertos</h3>
+        <div class="info">
+            1. Carga un SVG.<br>
+            2. Los puertos del JSON se cargan solos.<br>
+            3. <b>Haz clic en el fondo</b> para añadir un puerto.<br>
+            4. Arrastra los círculos para ajustarlos.<br>
+            5. Selecciona un puerto (amarillo) y pulsa <b>Suprimir</b> para borrarlo.
+        </div>
+        
+        <button class="btn btn-warning" onclick="toggleRejilla()" id="btn-rejilla">🔲 Desactivar Rejilla</button>
+        <button class="btn" onclick="cargarSVGManual()">📁 Cargar SVG</button>
+        <input type="file" id="file-input" accept=".svg" style="display: none;" onchange="leerArchivo(event)">
+        <button class="btn btn-danger" onclick="borrarTodo()">🗑️ Limpiar Lienzo</button>
+        
+        <hr>
+        
+        <label>Nombre del Símbolo:</label>
+        <input type="text" id="nombre-simbolo" placeholder="nombre_exacto">
+        
+        <button class="btn btn-success" onclick="guardarYFusionar()">💾 Guardar y Corregir JSON</button>
+        <button class="btn btn-purple" onclick="descargarJSON()">⬇️ Descargar config_puertos.json</button>
+        
+        <label>JSON Acumulado:</label>
+        <textarea id="json-output" readonly></textarea>
+        
+        <hr>
+        <label>Cargar JSON existente:</label>
+        <input type="file" id="json-input" accept=".json" style="display: none;" onchange="cargarJSONExistente(event)">
+        <button class="btn" style="background:#7f8c8d;" onclick="document.getElementById('json-input').click()">📂 Cargar JSON Base</button>
+    </div>
+
+    <div id="lienzo"></div>
+
+    <script>
+        let gridActivado = true;
+        const graph = new joint.dia.Graph({}, { cellNamespace: joint.shapes });
+        
+        const paper = new joint.dia.Paper({
+            el: document.getElementById('lienzo'), model: graph,
+            width: '100%', height: '100%', 
+            gridSize: 10, drawGrid: true,
+            cellViewNamespace: joint.shapes,
+            interactive: { elementMove: true, labelMove: false }
+        });
+
+        paper.scale(2, 2); 
+
+        let contadorPuertos = 1;
+        let puertoSeleccionado = null; 
+        let configPuertos = {};
+        
+        let datosAcumulados = JSON.parse(localStorage.getItem('configPuertosJSON')) || {};
+        actualizarTextarea();
+
+        function actualizarTextarea() {
+            document.getElementById('json-output').value = Object.keys(datosAcumulados).length > 0 
+                ? JSON.stringify(datosAcumulados, null, 4) 
+                : "No hay símbolos guardados aún...";
+        }
+
+        window.toggleRejilla = function() {
+            gridActivado = !gridActivado;
+            const btn = document.getElementById('btn-rejilla');
+            if (gridActivado) {
+                paper.options.gridSize = 10; paper.options.drawGrid = true;
+                btn.innerHTML = "🔲 Desactivar Rejilla"; btn.className = "btn btn-warning";
+            } else {
+                paper.options.gridSize = 1; paper.options.drawGrid = false; 
+                btn.innerHTML = "✅ Rejilla Desactivada"; btn.className = "btn btn-success";
+            }
+            paper.drawGrid();
+        };
+
+        async function cargarConfigPuertos() {
+            try {
+                const res = await fetch('./config_puertos.json?t=' + new Date().getTime());
+                if (res.ok) {
+                    const datosBrutos = await res.json();
+                    for (const clave in datosBrutos) {
+                        const claveNormalizada = clave.toLowerCase().replace('.svg', '').replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        configPuertos[claveNormalizada] = datosBrutos[clave];
+                    }
+                    console.log("✅ JSON de puertos cargado.");
+                }
+            } catch (e) { console.warn("⚠️ No se encontró config_puertos.json."); }
+        }
+        cargarConfigPuertos();
+
+        function cargarSVGTexto(svgTexto, nombreArchivo) {
+            graph.clear();
+            contadorPuertos = 1;
+            puertoSeleccionado = null;
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(svgTexto, "image/svg+xml");
+            const svgElement = doc.querySelector('svg');
+            
+            let minX = 0, minY = 0, anchoReal = 100, altoReal = 100;
+            const viewBox = svgElement.getAttribute('viewBox');
+            if(viewBox) {
+                const partes = viewBox.trim().split(/\s+/);
+                if(partes.length === 4) {
+                    minX = parseFloat(partes[0]); minY = parseFloat(partes[1]);
+                    anchoReal = parseFloat(partes[2]); altoReal = parseFloat(partes[3]);
+                }
+            }
+
+            const svgLimpio = new XMLSerializer().serializeToString(svgElement);
+            const blob = new Blob([svgLimpio], {type: 'image/svg+xml'});
+            const urlLimpia = URL.createObjectURL(blob);
+
+            const escala = 2;
+            const targetWidth = anchoReal * escala;
+            const targetHeight = altoReal * escala;
+            
+            const rectLienzo = document.getElementById('lienzo').getBoundingClientRect();
+            const centroX = rectLienzo.width / 2;
+            const centroY = rectLienzo.height / 2;
+            const localPoint = paper.clientToLocalPoint({ x: rectLienzo.left + centroX, y: rectLienzo.top + centroY });
+
+            const fondo = new joint.shapes.standard.Image();
+            fondo.position(localPoint.x - (targetWidth/2), localPoint.y - (targetHeight/2));
+            fondo.resize(targetWidth, targetHeight);
+            fondo.attr('image/xlink:href', urlLimpia);
+            fondo.attr('image/preserveAspectRatio', 'xMidYMid meet');
+            fondo.attr('body/fill', 'transparent');
+            fondo.attr('body/stroke', 'red');
+            fondo.attr('body/strokeDasharray', '5,5');
+            
+            fondo.set('isFondo', true);
+            fondo.set('svgViewBox', { minX, minY, width: anchoReal, height: altoReal });
+            fondo.set('escala', escala);
+            fondo.addTo(graph);
+
+            let nombreParaBuscar = "";
+            if (nombreArchivo) {
+                nombreParaBuscar = nombreArchivo.toLowerCase().replace('.svg', '').replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                document.getElementById('nombre-simbolo').value = nombreArchivo.replace('.svg', '');
+            }
+
+            // Cargar puertos existentes o generar automáticos
+            let puertosParaDibujar = [];
+            
+            if (nombreParaBuscar && configPuertos[nombreParaBuscar]) {
+                puertosParaDibujar = configPuertos[nombreParaBuscar];
+            } else {
+                // Si no está en JSON, generamos 2 a los lados
+                puertosParaDibujar = [
+                    { id: "p_1", x: minX, y: minY + (altoReal / 2) },
+                    { id: "p_2", x: minX + anchoReal, y: minY + (altoReal / 2) }
+                ];
+            }
+
+            puertosParaDibujar.forEach(p => {
+                const posX = localPoint.x - (targetWidth/2) + (p.x - minX) * escala;
+                const posY = localPoint.y - (targetHeight/2) + (p.y - minY) * escala;
+                
+                const nuevoPuerto = new joint.shapes.standard.Circle();
+                const radio = 6;
+                
+                nuevoPuerto.position(posX - radio, posY - radio);
+                nuevoPuerto.resize(radio * 2, radio * 2);
+                nuevoPuerto.attr({
+                    body: { fill: '#3498db', stroke: 'white', strokeWidth: 2, cursor: 'move' },
+                    label: { text: contadorPuertos, fontSize: 10, fill: 'white', fontWeight: 'bold' }
+                });
+                nuevoPuerto.set('isPuerto', true);
+                nuevoPuerto.addTo(graph);
+                contadorPuertos++;
+            });
+        }
+
+        const lienzo = document.getElementById('lienzo');
+        lienzo.addEventListener('dragover', (e) => e.preventDefault());
+        lienzo.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.svg')) {
+                const reader = new FileReader();
+                reader.onload = (event) => cargarSVGTexto(event.target.result, file.name);
+                reader.readAsText(file);
+            }
+        });
+
+        function cargarSVGManual() { document.getElementById('file-input').click(); }
+        function leerArchivo(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => cargarSVGTexto(event.target.result, file.name);
+            reader.readAsText(file);
+        }
+
+        // --- CREAR PUERTO CON CLIC EN EL FONDO ---
+        paper.on('blank:pointerdown', function(evt, x, y) {
+            const nuevoPuerto = new joint.shapes.standard.Circle();
+            const radio = 6; 
+            
+            let posX = x;
+            let posY = y;
+            if (gridActivado) {
+                const grid = paper.options.gridSize;
+                posX = Math.round(x / grid) * grid;
+                posY = Math.round(y / grid) * grid;
+            }
+
+            nuevoPuerto.position(posX - radio, posY - radio); 
+            nuevoPuerto.resize(radio * 2, radio * 2);
+            nuevoPuerto.attr({
+                body: { fill: '#3498db', stroke: 'white', strokeWidth: 2, cursor: 'move' },
+                label: { text: contadorPuertos, fontSize: 10, fill: 'white', fontWeight: 'bold' }
+            });
+            nuevoPuerto.set('isPuerto', true);
+            nuevoPuerto.addTo(graph);
+            contadorPuertos++;
+
+            if (puertoSeleccionado) {
+                puertoSeleccionado.attr('body/stroke', 'white');
+                puertoSeleccionado = null;
+            }
+        });
+
+        // --- SELECCIONAR Y MOVER PUERTOS ---
+        paper.on('element:pointerdown', function(elementView, evt) {
+            const el = elementView.model;
+            if (!el.get('isPuerto')) return;
+            evt.stopPropagation();
+
+            if (puertoSeleccionado && puertoSeleccionado !== el) {
+                puertoSeleccionado.attr('body/stroke', 'white');
+            }
+            el.attr('body/stroke', '#f1c40f'); 
+            puertoSeleccionado = el;
+
+            const startPos = el.position();
+            const startEvent = evt;
+            const onMouseMove = (moveEvt) => {
+                const dx = (moveEvt.clientX - startEvent.clientX) / paper.scale().sx;
+                const dy = (moveEvt.clientY - startEvent.clientY) / paper.scale().sy;
+                
+                let newX = startPos.x + dx;
+                let newY = startPos.y + dy;
+
+                if (gridActivado) {
+                    const grid = paper.options.gridSize;
+                    const radio = 6;
+                    let centroX = newX + radio;
+                    let centroY = newY + radio;
+                    centroX = Math.round(centroX / grid) * grid;
+                    centroY = Math.round(centroY / grid) * grid;
+                    newX = centroX - radio;
+                    newY = centroY - radio;
+                }
+
+                el.position(newX, newY);
+            };
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        // --- BORRAR PUERTO CON SUPRIMIR ---
+        window.addEventListener('keydown', function(e) {
+            if ((e.key === 'Delete' || e.key === 'Backspace') && puertoSeleccionado) {
+                puertoSeleccionado.remove();
+                puertoSeleccionado = null;
+                e.preventDefault();
+            }
+        });
+
+        function borrarTodo() {
+            graph.clear();
+            contadorPuertos = 1;
+            puertoSeleccionado = null;
+        }
+
+        function obtenerPuertosActuales() {
+            const nombre = document.getElementById('nombre-simbolo').value.trim();
+            if (!nombre) { alert("Escribe el nombre del símbolo primero."); return null; }
+
+            const fondos = graph.getElements().filter(el => el.get('isFondo'));
+            if (fondos.length === 0) { alert("No hay ningún SVG en el lienzo."); return null; }
+
+            const fondo = fondos[0];
+            const posFondo = fondo.position();
+            const datosSVG = fondo.get('svgViewBox');
+            const escala = fondo.get('escala');
+            const puertos = graph.getElements().filter(el => el.get('isPuerto'));
+            
+            const puertosExportados = puertos.map(p => {
+                const posP = p.position();
+                const radio = 6;
+                const centroX = posP.x + radio;
+                const centroY = posP.y + radio;
+                
+                const relX = (centroX - posFondo.x) / escala;
+                const relY = (centroY - posFondo.y) / escala;
+                
+                const originalX = datosSVG.minX + relX;
+                const originalY = datosSVG.minY + relY;
+                
+                return {
+                    id: 'p_' + p.attr('label/text'),
+                    x: parseFloat(originalX.toFixed(2)),
+                    y: parseFloat(originalY.toFixed(2))
+                };
+            });
+
+            return { nombre, puertos: puertosExportados };
+        }
+
+        // --- GUARDAR SIN MENSAJE DE CONFIRMACIÓN ---
+        function guardarYFusionar() {
+            const datos = obtenerPuertosActuales();
+            if (!datos) return;
+            
+            datosAcumulados[datos.nombre] = datos.puertos;
+            localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
+            actualizarTextarea();
+            // El alert ha sido eliminado aquí
+        }
+
+        function descargarJSON() {
+            if (Object.keys(datosAcumulados).length === 0) {
+                return alert("No hay símbolos guardados. Primero guarda algún símbolo.");
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(datosAcumulados, null, 4));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "config_puertos.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function cargarJSONExistente(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const jsonCargado = JSON.parse(event.target.result);
+                    datosAcumulados = { ...datosAcumulados, ...jsonCargado };
+                    localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
+                    actualizarTextarea();
+                    alert(`JSON cargado. Símbolos totales: ${Object.keys(datosAcumulados).length}`);
+                } catch (err) {
+                    alert("Error al leer el JSON: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
