@@ -1,0 +1,1211 @@
+{
+    "Accesorios": [
+        {
+            "nombre": "Brida",
+            "ruta": "./svg-procesados/Accesorios/0_flange.svg"
+        },
+        {
+            "nombre": "Ciego de gafas abierto (figura de ocho)",
+            "ruta": "./svg-procesados/Accesorios/10_open_figure_8_blind.svg"
+        },
+        {
+            "nombre": "Ciego de gafas cerrado (figura de ocho)",
+            "ruta": "./svg-procesados/Accesorios/11_closed_figure_8_blind.svg"
+        },
+        {
+            "nombre": "Instrumento auxiliar discreto inaccesible",
+            "ruta": "./svg-procesados/Accesorios/12_auxilliary_inaccessible_discrete_instrument.svg"
+        },
+        {
+            "nombre": "Separador con brida",
+            "ruta": "./svg-procesados/Accesorios/12_spacer_with_flange.svg"
+        },
+        {
+            "nombre": "Sistema de control distribuido (DCS) auxiliar inaccesible",
+            "ruta": "./svg-procesados/Accesorios/13_auxilliary_inaccessible_dcs.svg"
+        },
+        {
+            "nombre": "Placa ciega con brida",
+            "ruta": "./svg-procesados/Accesorios/13_blank_with_flange.svg"
+        },
+        {
+            "nombre": "Controlador lógico programable (PLC) auxiliar inaccesible",
+            "ruta": "./svg-procesados/Accesorios/14_auxilliary_inaccessible_plc.svg"
+        },
+        {
+            "nombre": "Ciego de gafas abierto con brida",
+            "ruta": "./svg-procesados/Accesorios/14_open_figure_8_blind_with_flange.svg"
+        },
+        {
+            "nombre": "Ciego de gafas cerrado con brida",
+            "ruta": "./svg-procesados/Accesorios/15_closed_figure_8_blind_with_flange.svg"
+        },
+        {
+            "nombre": "Enclavamiento físico instalado en campo",
+            "ruta": "./svg-procesados/Accesorios/15_field_mounted_hardware_interlock.svg"
+        },
+        {
+            "nombre": "Filtro tipo Y",
+            "ruta": "./svg-procesados/Accesorios/16_y_type_strainer.svg"
+        },
+        {
+            "nombre": "Filtro cónico",
+            "ruta": "./svg-procesados/Accesorios/17_cone_strainer.svg"
+        },
+        {
+            "nombre": "Filtro tipo T",
+            "ruta": "./svg-procesados/Accesorios/18_t_type_strainer.svg"
+        },
+        {
+            "nombre": "Filtro dúplex",
+            "ruta": "./svg-procesados/Accesorios/19_duplex_strainer.svg"
+        },
+        {
+            "nombre": "Tapón terminal",
+            "ruta": "./svg-procesados/Accesorios/1_cap.svg"
+        },
+        {
+            "nombre": "Filtro tipo cesta",
+            "ruta": "./svg-procesados/Accesorios/20_basket_strainer.svg"
+        },
+        {
+            "nombre": "Filtro temporal",
+            "ruta": "./svg-procesados/Accesorios/21_temporary_strainer.svg"
+        },
+        {
+            "nombre": "Filtro",
+            "ruta": "./svg-procesados/Accesorios/22_filter.svg"
+        },
+        {
+            "nombre": "Arrestallamas para detonaciones",
+            "ruta": "./svg-procesados/Accesorios/23_detonation_arrestor.svg"
+        },
+        {
+            "nombre": "Arrestallamas",
+            "ruta": "./svg-procesados/Accesorios/24_flame_arrestor.svg"
+        },
+        {
+            "nombre": "Purgador de vapor",
+            "ruta": "./svg-procesados/Accesorios/25_steam_trap.svg"
+        },
+        {
+            "nombre": "Eyector",
+            "ruta": "./svg-procesados/Accesorios/26_ejector_eductor.svg"
+        },
+        {
+            "nombre": "Amortiguador de pulsaciones",
+            "ruta": "./svg-procesados/Accesorios/27_pulsation_dampener.svg"
+        },
+        {
+            "nombre": "Silenciador en línea",
+            "ruta": "./svg-procesados/Accesorios/28_in_line_silencer.svg"
+        },
+        {
+            "nombre": "Silenciador de venteo",
+            "ruta": "./svg-procesados/Accesorios/29_vent_silencer.svg"
+        },
+        {
+            "nombre": "Conexión para manguera",
+            "ruta": "./svg-procesados/Accesorios/2_hose_connection.svg"
+        },
+        {
+            "nombre": "Carrete desmontable",
+            "ruta": "./svg-procesados/Accesorios/30_removable_spool.svg"
+        },
+        {
+            "nombre": "Desrecalentador de vapor",
+            "ruta": "./svg-procesados/Accesorios/31_desuperheater.svg"
+        },
+        {
+            "nombre": "Manguera flexible",
+            "ruta": "./svg-procesados/Accesorios/32_flexible_hose.svg"
+        },
+        {
+            "nombre": "Junta de expansión",
+            "ruta": "./svg-procesados/Accesorios/33_expansion_joint.svg"
+        },
+        {
+            "nombre": "Compuerta reguladora",
+            "ruta": "./svg-procesados/Accesorios/34_damper.svg"
+        },
+        {
+            "nombre": "Respiradero",
+            "ruta": "./svg-procesados/Accesorios/35_breather.svg"
+        },
+        {
+            "nombre": "Cubierta de venteo",
+            "ruta": "./svg-procesados/Accesorios/36_vent_cover.svg"
+        },
+        {
+            "nombre": "Mezclador en línea",
+            "ruta": "./svg-procesados/Accesorios/37_in_line_mixer.svg"
+        },
+        {
+            "nombre": "Cabezal de escape",
+            "ruta": "./svg-procesados/Accesorios/38_exhaust_head.svg"
+        },
+        {
+            "nombre": "Brida ciega",
+            "ruta": "./svg-procesados/Accesorios/3_blind_flange.svg"
+        },
+        {
+            "nombre": "Tapón",
+            "ruta": "./svg-procesados/Accesorios/4_plug.svg"
+        },
+        {
+            "nombre": "Conexión soldada",
+            "ruta": "./svg-procesados/Accesorios/5_welded_connection.svg"
+        },
+        {
+            "nombre": "Reducción concéntrica",
+            "ruta": "./svg-procesados/Accesorios/6_concentric_reducer.svg"
+        },
+        {
+            "nombre": "Reducción excéntrica",
+            "ruta": "./svg-procesados/Accesorios/7_eccentric_reducer.svg"
+        },
+        {
+            "nombre": "Controlador lógico programable (PLC) primario inaccesible",
+            "ruta": "./svg-procesados/Accesorios/8_primary_inaccessible_plc.svg"
+        },
+        {
+            "nombre": "Separador",
+            "ruta": "./svg-procesados/Accesorios/8_spacer.svg"
+        },
+        {
+            "nombre": "Placa ciega",
+            "ruta": "./svg-procesados/Accesorios/9_blank.svg"
+        }
+    ],
+	 "Otros": [
+        {
+            "nombre": "Transmisor de presión",
+            "ruta": "./svg-procesados/Otros/transmisor_de_presion.svg"
+        },
+	 {
+            "nombre": "Indicador de temperatura",
+            "ruta": "./svg-procesados/Otros/indicador_de_temperatura.svg"
+        },
+	 {
+            "nombre": "Caudalimetro",
+            "ruta": "./svg-procesados/Otros/Caudalimetro.svg"
+        },
+	
+			{
+            "nombre": "Manómetro",
+            "ruta": "./svg-procesados/Otros/Manómetro.svg"
+        }
+	    ],
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+    "Equipos": [
+        {
+            "nombre": "Depósito con techo abovedado",
+            "ruta": "./svg-procesados/Equipos/0_tank_dome_roof.svg"
+        },
+        {
+            "nombre": "Tanque o cuba general",
+            "ruta": "./svg-procesados/Equipos/0_tank_general_basin.svg"
+        },
+        {
+            "nombre": "Báscula de plataforma de suelo",
+            "ruta": "./svg-procesados/Equipos/100_scale_weighing_platform_floor.svg"
+        },
+        {
+            "nombre": "Almacenamiento de sólidos a granel (varios)",
+            "ruta": "./svg-procesados/Equipos/101_misc_bulk_storage.svg"
+        },
+        {
+            "nombre": "Chimenea industrial (varios)",
+            "ruta": "./svg-procesados/Equipos/102_misc_stack_chimney.svg"
+        },
+        {
+            "nombre": "Antorcha de gases (varios)",
+            "ruta": "./svg-procesados/Equipos/103_misc_gas_flare.svg"
+        },
+        {
+            "nombre": "Celda de electrólisis (varios)",
+            "ruta": "./svg-procesados/Equipos/104_misc_general_electrolysis_cell.svg"
+        },
+        {
+            "nombre": "Campana industrial (varios)",
+            "ruta": "./svg-procesados/Equipos/105_misc_general_hood.svg"
+        },
+        {
+            "nombre": "Sistema de control distribuido (DCS) auxiliar accesible",
+            "ruta": "./svg-procesados/Equipos/10_auxilliary_accessible_dcs.svg"
+        },
+        {
+            "nombre": "Recipiente con fondos bombeados",
+            "ruta": "./svg-procesados/Equipos/10_vessel_dished_ends.svg"
+        },
+        {
+            "nombre": "Recipiente con serpentín tubular completo",
+            "ruta": "./svg-procesados/Equipos/10_vessel_full_tube_coil.svg"
+        },
+        {
+            "nombre": "Controlador lógico programable (PLC) auxiliar accesible",
+            "ruta": "./svg-procesados/Equipos/11_auxilliary_accessible_plc.svg"
+        },
+        {
+            "nombre": "Recipiente encamisado a presión, 1 zona",
+            "ruta": "./svg-procesados/Equipos/11_vessel_jacketed_preassure_1_zone.svg"
+        },
+        {
+            "nombre": "Recipiente con serpentín tubular semicircular",
+            "ruta": "./svg-procesados/Equipos/11_vessel_semi_tube_coil.svg"
+        },
+        {
+            "nombre": "Recipiente encamisado",
+            "ruta": "./svg-procesados/Equipos/12_vessel_jacketed.svg"
+        },
+        {
+            "nombre": "Recipiente encamisado a presión, 2 zonas",
+            "ruta": "./svg-procesados/Equipos/12_vessel_jacketed_preassure_2_zones.svg"
+        },
+        {
+            "nombre": "Contenedor de almacenamiento",
+            "ruta": "./svg-procesados/Equipos/13_storage_container.svg"
+        },
+        {
+            "nombre": "Recipiente encamisado a presión, 3 zonas",
+            "ruta": "./svg-procesados/Equipos/13_vessel_jacketed_preassure_3_zones.svg"
+        },
+        {
+            "nombre": "Horno",
+            "ruta": "./svg-procesados/Equipos/14_furnace.svg"
+        },
+        {
+            "nombre": "Saco de almacenamiento",
+            "ruta": "./svg-procesados/Equipos/14_storage_bag.svg"
+        },
+        {
+            "nombre": "Bomba centrífuga horizontal",
+            "ruta": "./svg-procesados/Equipos/15_pump_horizontal_centrifugal.svg"
+        },
+        {
+            "nombre": "Bidón o tambor de almacenamiento",
+            "ruta": "./svg-procesados/Equipos/15_storage_barrel_drum.svg"
+        },
+        {
+            "nombre": "Placa de orificio",
+            "ruta": "./svg-procesados/Equipos/16_orifice_plate.svg"
+        },
+        {
+            "nombre": "Bomba de desplazamiento positivo",
+            "ruta": "./svg-procesados/Equipos/16_pump_positive_displacement.svg"
+        },
+        {
+            "nombre": "Botella de gas",
+            "ruta": "./svg-procesados/Equipos/16_storage_gas_cylinder.svg"
+        },
+        {
+            "nombre": "Horno industrial",
+            "ruta": "./svg-procesados/Equipos/17_furnace_industrial.svg"
+        },
+        {
+            "nombre": "Equipo magnético",
+            "ruta": "./svg-procesados/Equipos/17_magnetic.svg"
+        },
+        {
+            "nombre": "Bomba vertical en línea",
+            "ruta": "./svg-procesados/Equipos/17_pump_vertical_inline.svg"
+        },
+        {
+            "nombre": "Bomba",
+            "ruta": "./svg-procesados/Equipos/18_pump.svg"
+        },
+        {
+            "nombre": "Bomba de vacío de anillo líquido",
+            "ruta": "./svg-procesados/Equipos/18_pump_liquid_ring_vacuum.svg"
+        },
+        {
+            "nombre": "Turbina de hélice",
+            "ruta": "./svg-procesados/Equipos/18_turbine_propeller.svg"
+        },
+        {
+            "nombre": "Compresor",
+            "ruta": "./svg-procesados/Equipos/19_compressor.svg"
+        },
+        {
+            "nombre": "Bomba centrífuga de sumidero",
+            "ruta": "./svg-procesados/Equipos/19_pump_centrifugal_sump.svg"
+        },
+        {
+            "nombre": "Equipo ultrasónico",
+            "ruta": "./svg-procesados/Equipos/19_ultrasonic.svg"
+        },
+        {
+            "nombre": "Tanque con techo flotante",
+            "ruta": "./svg-procesados/Equipos/1_tank_floating_roof.svg"
+        },
+        {
+            "nombre": "Tanque con techo flotante interno",
+            "ruta": "./svg-procesados/Equipos/1_tank_internal_floating_roof.svg"
+        },
+        {
+            "nombre": "Soplante",
+            "ruta": "./svg-procesados/Equipos/20_blower.svg"
+        },
+        {
+            "nombre": "Bomba vertical tipo columna",
+            "ruta": "./svg-procesados/Equipos/20_pump_vertical_can.svg"
+        },
+        {
+            "nombre": "Vórtice",
+            "ruta": "./svg-procesados/Equipos/20_vortex.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor general, tipo 1",
+            "ruta": "./svg-procesados/Equipos/21_heat_exchanger_general_1.svg"
+        },
+        {
+            "nombre": "Tubo de Pitot",
+            "ruta": "./svg-procesados/Equipos/21_pitot_tube.svg"
+        },
+        {
+            "nombre": "Bomba de cavidad progresiva",
+            "ruta": "./svg-procesados/Equipos/21_pump_progressive_cavity.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor general, tipo 2",
+            "ruta": "./svg-procesados/Equipos/22_heat_exchanger_general_2.svg"
+        },
+        {
+            "nombre": "Bomba de tornillo",
+            "ruta": "./svg-procesados/Equipos/22_pump_screw.svg"
+        },
+        {
+            "nombre": "Soplante de desplazamiento positivo",
+            "ruta": "./svg-procesados/Equipos/23_blower_positive_displacement.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor para torre de refrigeración",
+            "ruta": "./svg-procesados/Equipos/23_heat_exchanger_general_cooling_tower.svg"
+        },
+        {
+            "nombre": "Soplante centrífugo",
+            "ruta": "./svg-procesados/Equipos/24_blower_centrifugal.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor espiral",
+            "ruta": "./svg-procesados/Equipos/24_heat_exchanger_spiral.svg"
+        },
+        {
+            "nombre": "Compresor centrífugo",
+            "ruta": "./svg-procesados/Equipos/25_compressor_centrifugal.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor de doble tubo",
+            "ruta": "./svg-procesados/Equipos/25_heat_exchanger_double_pipe.svg"
+        },
+        {
+            "nombre": "Compresor alternativo",
+            "ruta": "./svg-procesados/Equipos/26_compressor_reciprocating.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor de placas",
+            "ruta": "./svg-procesados/Equipos/26_heat_exchanger_plate_type.svg"
+        },
+        {
+            "nombre": "Compresor de tornillo",
+            "ruta": "./svg-procesados/Equipos/27_compressor_screw.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor de tubos aleteados",
+            "ruta": "./svg-procesados/Equipos/27_heat_exchanger_finned_tube.svg"
+        },
+        {
+            "nombre": "Accionamiento mediante motor eléctrico",
+            "ruta": "./svg-procesados/Equipos/28_driver_electric_motor.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor con haz tubular en U",
+            "ruta": "./svg-procesados/Equipos/28_heat_exchanger_tube_bundle_u_tube.svg"
+        },
+        {
+            "nombre": "Accionamiento mediante motor diésel",
+            "ruta": "./svg-procesados/Equipos/29_driver_diesel_engine.svg"
+        },
+        {
+            "nombre": "Intercambiador de carcasa y tubos con haz en U",
+            "ruta": "./svg-procesados/Equipos/29_heat_exchanger_shell_and_tube_bundle_u_tube.svg"
+        },
+        {
+            "nombre": "Tanque con techo flotante externo",
+            "ruta": "./svg-procesados/Equipos/2_tank_external_floating_roof.svg"
+        },
+        {
+            "nombre": "Columna de proceso",
+            "ruta": "./svg-procesados/Equipos/2_vessel_general_column.svg"
+        },
+        {
+            "nombre": "Accionamiento mediante turbina",
+            "ruta": "./svg-procesados/Equipos/30_driver_turbine.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor con haz tubular de cabezal flotante",
+            "ruta": "./svg-procesados/Equipos/30_heat_exchanger_tube_bundle_floating_head.svg"
+        },
+        {
+            "nombre": "Agitador mezclador",
+            "ruta": "./svg-procesados/Equipos/31_agitator_mixer.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor con haz tubular de cabezal flotante",
+            "ruta": "./svg-procesados/Equipos/31_heat_exchanger_floating_head_tube_bundle.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor de carcasa y tubos",
+            "ruta": "./svg-procesados/Equipos/32_heat_exchanger_shell_and_tube.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor TEMA tipo BEM",
+            "ruta": "./svg-procesados/Equipos/32_heat_exchanger_tema_type_bem.svg"
+        },
+        {
+            "nombre": "Enfriador por pulverización",
+            "ruta": "./svg-procesados/Equipos/33_heat_exchanger_spray_cooler.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor TEMA tipo BEU",
+            "ruta": "./svg-procesados/Equipos/33_heat_exchanger_tema_type_beu.svg"
+        },
+        {
+            "nombre": "Caldera de vapor / intercambiador de calor",
+            "ruta": "./svg-procesados/Equipos/34_heat_exchanger_steam_boiler.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor TEMA tipo NEN",
+            "ruta": "./svg-procesados/Equipos/34_heat_exchanger_tema_type_nen.svg"
+        },
+        {
+            "nombre": "Evaporador de película",
+            "ruta": "./svg-procesados/Equipos/35_heat_exchanger_film_evaporator.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor TEMA tipo AEM",
+            "ruta": "./svg-procesados/Equipos/35_heat_exchanger_tema_type_aem.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor TEMA tipo AEL",
+            "ruta": "./svg-procesados/Equipos/36_heat_exchanger_tema_type_ael.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor con serpentín tubular",
+            "ruta": "./svg-procesados/Equipos/36_heat_exchanger_tube_coil.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor para calentamiento y refrigeración",
+            "ruta": "./svg-procesados/Equipos/37_heat_exchanger_heating_cooling.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor TEMA tipo AEL",
+            "ruta": "./svg-procesados/Equipos/37_heat_exchanger_tema_type_ael.svg"
+        },
+        {
+            "nombre": "Sistema de combustión con quemador",
+            "ruta": "./svg-procesados/Equipos/38_heat_exchanger_burner_firing_system.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor TEMA tipo BKU",
+            "ruta": "./svg-procesados/Equipos/38_heat_exchanger_tema_type_bku.svg"
+        },
+        {
+            "nombre": "Accionamiento",
+            "ruta": "./svg-procesados/Equipos/39_driver.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor refrigerado por aire",
+            "ruta": "./svg-procesados/Equipos/39_heat_exchanger_air_cooled.svg"
+        },
+        {
+            "nombre": "Tanque abierto por arriba",
+            "ruta": "./svg-procesados/Equipos/3_tank_open_top.svg"
+        },
+        {
+            "nombre": "Recipiente de proceso",
+            "ruta": "./svg-procesados/Equipos/3_vessel_general.svg"
+        },
+        {
+            "nombre": "Agitador",
+            "ruta": "./svg-procesados/Equipos/40_agitator.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor de placas y bastidor",
+            "ruta": "./svg-procesados/Equipos/40_heat_exchanger_plate_and_frame.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor de doble tubo",
+            "ruta": "./svg-procesados/Equipos/41_heat_exchanger_double_pipe.svg"
+        },
+        {
+            "nombre": "Mezclador",
+            "ruta": "./svg-procesados/Equipos/41_mixer.svg"
+        },
+        {
+            "nombre": "Filtro general",
+            "ruta": "./svg-procesados/Equipos/42_filter_general.svg"
+        },
+        {
+            "nombre": "Intercambiador de calor espiral",
+            "ruta": "./svg-procesados/Equipos/42_heat_exchanger_spiral.svg"
+        },
+        {
+            "nombre": "Filtro de líquidos",
+            "ruta": "./svg-procesados/Equipos/43_filter_liquid.svg"
+        },
+        {
+            "nombre": "Filtro de aspiración",
+            "ruta": "./svg-procesados/Equipos/44_filter_suction.svg"
+        },
+        {
+            "nombre": "Filtro de carbón activado",
+            "ruta": "./svg-procesados/Equipos/45_filter_activated_carbon.svg"
+        },
+        {
+            "nombre": "Filtro de banda para gases",
+            "ruta": "./svg-procesados/Equipos/46_filter_belt_for_gases.svg"
+        },
+        {
+            "nombre": "Filtro de intercambio iónico",
+            "ruta": "./svg-procesados/Equipos/47_filter_ion_exchange.svg"
+        },
+        {
+            "nombre": "Filtro de tambor rotativo",
+            "ruta": "./svg-procesados/Equipos/48_filter_rotary_drum.svg"
+        },
+        {
+            "nombre": "Filtro de banda para líquidos",
+            "ruta": "./svg-procesados/Equipos/49_filter_belt_fluids.svg"
+        },
+        {
+            "nombre": "Tanque con techo cónico",
+            "ruta": "./svg-procesados/Equipos/4_tank_cone_roof.svg"
+        },
+        {
+            "nombre": "Recipiente con fondo cónico",
+            "ruta": "./svg-procesados/Equipos/4_vessel_conical_head.svg"
+        },
+        {
+            "nombre": "Filtro de cartucho",
+            "ruta": "./svg-procesados/Equipos/50_filter_cartridge.svg"
+        },
+        {
+            "nombre": "Filtro de cartucho para gases",
+            "ruta": "./svg-procesados/Equipos/51_filter_gases_cartridge.svg"
+        },
+        {
+            "nombre": "Filtro prensa",
+            "ruta": "./svg-procesados/Equipos/52_filter_press.svg"
+        },
+        {
+            "nombre": "Filtro de lecho fijo",
+            "ruta": "./svg-procesados/Equipos/53_filter_fixed_bed.svg"
+        },
+        {
+            "nombre": "Filtro de aire",
+            "ruta": "./svg-procesados/Equipos/54_filter_air.svg"
+        },
+        {
+            "nombre": "Filtro HEPA",
+            "ruta": "./svg-procesados/Equipos/55_filter_hepa.svg"
+        },
+        {
+            "nombre": "Filtro de gases de lecho empacado",
+            "ruta": "./svg-procesados/Equipos/56_filter_gases_packed_bed.svg"
+        },
+        {
+            "nombre": "Separador",
+            "ruta": "./svg-procesados/Equipos/57_separator.svg"
+        },
+        {
+            "nombre": "Centrífuga general",
+            "ruta": "./svg-procesados/Equipos/58_centrifuge_general.svg"
+        },
+        {
+            "nombre": "Centrífuga de carcasa perforada",
+            "ruta": "./svg-procesados/Equipos/59_centrifuge_perforated_shell.svg"
+        },
+        {
+            "nombre": "Tanque de doble pared",
+            "ruta": "./svg-procesados/Equipos/5_tank_double_wall.svg"
+        },
+        {
+            "nombre": "Recipiente con fondo bombeado",
+            "ruta": "./svg-procesados/Equipos/5_vessel_dished_head.svg"
+        },
+        {
+            "nombre": "Centrífuga de carcasa perforada",
+            "ruta": "./svg-procesados/Equipos/60_centrifuge_perforated_shell.svg"
+        },
+        {
+            "nombre": "Centrífuga de empuje",
+            "ruta": "./svg-procesados/Equipos/61_centrifuge_pusher.svg"
+        },
+        {
+            "nombre": "Centrífuga de tornillo",
+            "ruta": "./svg-procesados/Equipos/62_centrifuge_screw.svg"
+        },
+        {
+            "nombre": "Centrífuga de tornillo con carcasa perforada",
+            "ruta": "./svg-procesados/Equipos/63_centrifuge_screw_perforated_shell.svg"
+        },
+        {
+            "nombre": "Centrífuga de carcasa sólida",
+            "ruta": "./svg-procesados/Equipos/64_centrifuge_solid_shell.svg"
+        },
+        {
+            "nombre": "Centrífuga de discos",
+            "ruta": "./svg-procesados/Equipos/65_centrifuge_disk.svg"
+        },
+        {
+            "nombre": "Equipo de cribado",
+            "ruta": "./svg-procesados/Equipos/66_screening_device.svg"
+        },
+        {
+            "nombre": "Tamizadora general",
+            "ruta": "./svg-procesados/Equipos/67_sifter_general.svg"
+        },
+        {
+            "nombre": "Equipo de clasificación",
+            "ruta": "./svg-procesados/Equipos/68_sorting_general.svg"
+        },
+        {
+            "nombre": "Secador general",
+            "ruta": "./svg-procesados/Equipos/69_dryer_general.svg"
+        },
+        {
+            "nombre": "Tanque esférico de almacenamiento",
+            "ruta": "./svg-procesados/Equipos/6_tank_sphere_storage.svg"
+        },
+        {
+            "nombre": "Recipiente con bandejas",
+            "ruta": "./svg-procesados/Equipos/6_vessel_trays.svg"
+        },
+        {
+            "nombre": "Secador de discos",
+            "ruta": "./svg-procesados/Equipos/70_dryer_disk.svg"
+        },
+        {
+            "nombre": "Secador de lecho fluidizado",
+            "ruta": "./svg-procesados/Equipos/71_dryer_fluidized_bed.svg"
+        },
+        {
+            "nombre": "Horno secador",
+            "ruta": "./svg-procesados/Equipos/72_dryer_oven.svg"
+        },
+        {
+            "nombre": "Secador de cinta transportadora de rodillos",
+            "ruta": "./svg-procesados/Equipos/73_dryer_roller_conveyor_belt.svg"
+        },
+        {
+            "nombre": "Secador de tambor rotativo",
+            "ruta": "./svg-procesados/Equipos/74_dryer_rotary_drum.svg"
+        },
+        {
+            "nombre": "Secador por pulverización",
+            "ruta": "./svg-procesados/Equipos/75_dryer_spray.svg"
+        },
+        {
+            "nombre": "Trituradora",
+            "ruta": "./svg-procesados/Equipos/76_crusher.svg"
+        },
+        {
+            "nombre": "Molino",
+            "ruta": "./svg-procesados/Equipos/77_mill.svg"
+        },
+        {
+            "nombre": "Elevador de cangilones",
+            "ruta": "./svg-procesados/Equipos/78_elevator_bucket.svg"
+        },
+        {
+            "nombre": "Transportador general",
+            "ruta": "./svg-procesados/Equipos/79_conveyor_general.svg"
+        },
+        {
+            "nombre": "Recipiente con bandejas internas",
+            "ruta": "./svg-procesados/Equipos/7_vessel_internal_trayed.svg"
+        },
+        {
+            "nombre": "Recipiente esférico",
+            "ruta": "./svg-procesados/Equipos/7_vessel_spherical.svg"
+        },
+        {
+            "nombre": "Cinta transportadora",
+            "ruta": "./svg-procesados/Equipos/80_conveyor_belt.svg"
+        },
+        {
+            "nombre": "Transportador de cadena",
+            "ruta": "./svg-procesados/Equipos/81_conveyor_chain.svg"
+        },
+        {
+            "nombre": "Transportador de tornillo sinfín",
+            "ruta": "./svg-procesados/Equipos/82_conveyor_screw.svg"
+        },
+        {
+            "nombre": "Transportador vibratorio",
+            "ruta": "./svg-procesados/Equipos/83_conveyor_vibrating.svg"
+        },
+        {
+            "nombre": "Buque de transporte",
+            "ruta": "./svg-procesados/Equipos/84_transport_ship.svg"
+        },
+        {
+            "nombre": "Vagón cisterna",
+            "ruta": "./svg-procesados/Equipos/85_transport_tank_car.svg"
+        },
+        {
+            "nombre": "Camión de caja",
+            "ruta": "./svg-procesados/Equipos/86_transport_box_truck.svg"
+        },
+        {
+            "nombre": "Carretilla industrial",
+            "ruta": "./svg-procesados/Equipos/87_transport_industrial_truck.svg"
+        },
+        {
+            "nombre": "Máquina conformadora con disco peletizador",
+            "ruta": "./svg-procesados/Equipos/88_shaping_machine_pelletizing_disk.svg"
+        },
+        {
+            "nombre": "Prensa de pistón para conformado",
+            "ruta": "./svg-procesados/Equipos/89_shaping_machine_piston_press.svg"
+        },
+        {
+            "nombre": "Recipiente de lecho fijo",
+            "ruta": "./svg-procesados/Equipos/8_vessel_fixed_bed.svg"
+        },
+        {
+            "nombre": "Recipiente seccionado",
+            "ruta": "./svg-procesados/Equipos/8_vessel_sectioned.svg"
+        },
+        {
+            "nombre": "Prensa de rodillos para conformado",
+            "ruta": "./svg-procesados/Equipos/90_shaping_machine_rollerpress.svg"
+        },
+        {
+            "nombre": "Extrusora de tornillo",
+            "ruta": "./svg-procesados/Equipos/91_shaping_machine_screw_type_extruder.svg"
+        },
+        {
+            "nombre": "Máquina de granulación / aglomeración",
+            "ruta": "./svg-procesados/Equipos/92_shaping_machine_general_coarsening.svg"
+        },
+        {
+            "nombre": "Extrusora",
+            "ruta": "./svg-procesados/Equipos/93_shaping_machine_extruder.svg"
+        },
+        {
+            "nombre": "Dosificador de sólidos",
+            "ruta": "./svg-procesados/Equipos/94_solids_proportioner_general.svg"
+        },
+        {
+            "nombre": "Distribuidor de mesa giratoria",
+            "ruta": "./svg-procesados/Equipos/95_distribution_device_rotary_table.svg"
+        },
+        {
+            "nombre": "Alimentador de válvula rotativa",
+            "ruta": "./svg-procesados/Equipos/96_feeder_rotary_valve.svg"
+        },
+        {
+            "nombre": "Distribuidor de fluidos",
+            "ruta": "./svg-procesados/Equipos/97_distribution_device_fluid.svg"
+        },
+        {
+            "nombre": "Báscula de cinta",
+            "ruta": "./svg-procesados/Equipos/98_scale_belt.svg"
+        },
+        {
+            "nombre": "Báscula general",
+            "ruta": "./svg-procesados/Equipos/99_scale_general.svg"
+        },
+        {
+            "nombre": "Instrumento auxiliar discreto accesible",
+            "ruta": "./svg-procesados/Equipos/9_auxilliary_accessible_discrete_instrument.svg"
+        },
+        {
+            "nombre": "Recipiente de lecho fluidizado",
+            "ruta": "./svg-procesados/Equipos/9_vessel_fluidized_bed.svg"
+        },
+        {
+            "nombre": "Recipiente vertical",
+            "ruta": "./svg-procesados/Equipos/9_vessel_vertical.svg"
+        }
+    ],
+    "conexiones": [
+        {
+            "nombre": "Reducción excéntrica",
+            "ruta": "./svg-procesados/conexiones/0_eccentric_reducer.svg"
+        },
+        {
+            "nombre": "Colador / filtro de cesta",
+            "ruta": "./svg-procesados/conexiones/10_strainer.svg"
+        },
+        {
+            "nombre": "Placa de orificio",
+            "ruta": "./svg-procesados/conexiones/11_orifice_plate.svg"
+        },
+        {
+            "nombre": "Purgador de vapor",
+            "ruta": "./svg-procesados/conexiones/12_steam_trap.svg"
+        },
+        {
+            "nombre": "Salida de vapor o gas",
+            "ruta": "./svg-procesados/conexiones/13_outlet_steam_gas.svg"
+        },
+        {
+            "nombre": "Compensador",
+            "ruta": "./svg-procesados/conexiones/14_compensator.svg"
+        },
+        {
+            "nombre": "Embudo",
+            "ruta": "./svg-procesados/conexiones/15_funnel.svg"
+        },
+        {
+            "nombre": "Silenciador en línea",
+            "ruta": "./svg-procesados/conexiones/16_inline_silencer.svg"
+        },
+        {
+            "nombre": "Arrestallamas",
+            "ruta": "./svg-procesados/conexiones/17_flame_arrestor.svg"
+        },
+        {
+            "nombre": "Arrestallamas resistente a detonaciones",
+            "ruta": "./svg-procesados/conexiones/18_flame_arrestor_detonation_proof.svg"
+        },
+        {
+            "nombre": "Arrestallamas antideflagrante",
+            "ruta": "./svg-procesados/conexiones/19_flame_arrestor_explosion_proof.svg"
+        },
+        {
+            "nombre": "Reducción",
+            "ruta": "./svg-procesados/conexiones/1_reducer.svg"
+        },
+        {
+            "nombre": "Disco de ruptura para alivio de presión",
+            "ruta": "./svg-procesados/conexiones/20_rupture_disc_pressure_relief.svg"
+        },
+        {
+            "nombre": "Arrestallamas resistente al fuego y a detonaciones",
+            "ruta": "./svg-procesados/conexiones/21_flame_arrestor_fire_resistant_detonation.svg"
+        },
+        {
+            "nombre": "Arrestallamas resistente al fuego",
+            "ruta": "./svg-procesados/conexiones/22_flame_arrestor_fire_resistant.svg"
+        },
+        {
+            "nombre": "Placa ciega",
+            "ruta": "./svg-procesados/conexiones/2_blank.svg"
+        },
+        {
+            "nombre": "Disco ciego",
+            "ruta": "./svg-procesados/conexiones/3_blind_disk.svg"
+        },
+        {
+            "nombre": "Conexión bridada",
+            "ruta": "./svg-procesados/conexiones/4_flange_connection.svg"
+        },
+        {
+            "nombre": "Manguera",
+            "ruta": "./svg-procesados/conexiones/5_hose.svg"
+        },
+        {
+            "nombre": "Manguito de acoplamiento",
+            "ruta": "./svg-procesados/conexiones/6_coupling.svg"
+        },
+        {
+            "nombre": "Boquilla inyectora de mezcla",
+            "ruta": "./svg-procesados/conexiones/7_mixing_nozzle_injector.svg"
+        },
+        {
+            "nombre": "Mirilla de inspección",
+            "ruta": "./svg-procesados/conexiones/8_sight_glass.svg"
+        },
+        {
+            "nombre": "Ciego de gafas",
+            "ruta": "./svg-procesados/conexiones/9_spectacle_blind.svg"
+        }
+    ],
+    "valvulas": [
+        {
+            "nombre": "Válvula de compuerta normalmente abierta",
+            "ruta": "./svg-procesados/valvulas/0_gate_valve_no.svg"
+        },
+        {
+            "nombre": "Válvula genérica normalmente abierta",
+            "ruta": "./svg-procesados/valvulas/0_general_valve_no.svg"
+        },
+        {
+            "nombre": "Válvula de bola angular",
+            "ruta": "./svg-procesados/valvulas/10_angle_ball_valve.svg"
+        },
+        {
+            "nombre": "Válvula rotativa genérica",
+            "ruta": "./svg-procesados/valvulas/10_generic_rotary_valve.svg"
+        },
+        {
+            "nombre": "Válvula de globo angular",
+            "ruta": "./svg-procesados/valvulas/11_angle_globe_valve.svg"
+        },
+        {
+            "nombre": "Válvula de macho normalmente abierta",
+            "ruta": "./svg-procesados/valvulas/11_plug_valve_no.svg"
+        },
+        {
+            "nombre": "Válvula de 3 vías",
+            "ruta": "./svg-procesados/valvulas/12_3_way_valve.svg"
+        },
+        {
+            "nombre": "Válvula de macho normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/12_plug_valve_nc.svg"
+        },
+        {
+            "nombre": "Válvula de bola de 3 vías",
+            "ruta": "./svg-procesados/valvulas/13_3_way_ball_valve.svg"
+        },
+        {
+            "nombre": "Válvula de diafragma",
+            "ruta": "./svg-procesados/valvulas/13_diaphragm_valve.svg"
+        },
+        {
+            "nombre": "Válvula de globo de 3 vías",
+            "ruta": "./svg-procesados/valvulas/14_3_way_globe_valve.svg"
+        },
+        {
+            "nombre": "Válvula de manguito (pinch)",
+            "ruta": "./svg-procesados/valvulas/14_pinch_valve.svg"
+        },
+        {
+            "nombre": "Válvula antirretorno",
+            "ruta": "./svg-procesados/valvulas/15_check_valve.svg"
+        },
+        {
+            "nombre": "Válvula de guillotina",
+            "ruta": "./svg-procesados/valvulas/15_knife_valve.svg"
+        },
+        {
+            "nombre": "Válvula de respiración",
+            "ruta": "./svg-procesados/valvulas/16_breather_valve.svg"
+        },
+        {
+            "nombre": "Válvula desviadora",
+            "ruta": "./svg-procesados/valvulas/16_diverter_valve.svg"
+        },
+        {
+            "nombre": "Válvula rotativa",
+            "ruta": "./svg-procesados/valvulas/17_rotary_valve.svg"
+        },
+        {
+            "nombre": "Válvula antirretorno de clapeta oscilante",
+            "ruta": "./svg-procesados/valvulas/17_swing_check_valve.svg"
+        },
+        {
+            "nombre": "Válvula de exceso de caudal",
+            "ruta": "./svg-procesados/valvulas/18_excess_flow_valve.svg"
+        },
+        {
+            "nombre": "Válvula antirretorno de elevación",
+            "ruta": "./svg-procesados/valvulas/18_lift_check_valve.svg"
+        },
+        {
+            "nombre": "Válvula angular",
+            "ruta": "./svg-procesados/valvulas/19_angle_valve.svg"
+        },
+        {
+            "nombre": "Válvula de seguridad",
+            "ruta": "./svg-procesados/valvulas/19_safety_valve.svg"
+        },
+        {
+            "nombre": "Válvula de compuerta normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/1_gate_valve_nc.svg"
+        },
+        {
+            "nombre": "Válvula genérica normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/1_general_valve_nc.svg"
+        },
+        {
+            "nombre": "Válvula de 3 vías",
+            "ruta": "./svg-procesados/valvulas/20_3_way_valve.svg"
+        },
+        {
+            "nombre": "Válvula de seguridad angular",
+            "ruta": "./svg-procesados/valvulas/20_angle_safety_valve.svg"
+        },
+        {
+            "nombre": "Válvula de 4 vías",
+            "ruta": "./svg-procesados/valvulas/21_4_way_valve.svg"
+        },
+        {
+            "nombre": "Válvula de seguridad angular con resorte",
+            "ruta": "./svg-procesados/valvulas/21_angle_spring_safety_valve.svg"
+        },
+        {
+            "nombre": "Válvula de diafragma equilibrado",
+            "ruta": "./svg-procesados/valvulas/22_balanced_diaphragm_valve.svg"
+        },
+        {
+            "nombre": "Válvula de control",
+            "ruta": "./svg-procesados/valvulas/22_control_valve.svg"
+        },
+        {
+            "nombre": "Válvula de accionamiento continuo",
+            "ruta": "./svg-procesados/valvulas/23_continuously_operated_valve.svg"
+        },
+        {
+            "nombre": "Válvula de control",
+            "ruta": "./svg-procesados/valvulas/23_control_valve.svg"
+        },
+        {
+            "nombre": "Válvula de accionamiento manual",
+            "ruta": "./svg-procesados/valvulas/24_manual_operated_valve.svg"
+        },
+        {
+            "nombre": "Válvula con actuador neumático",
+            "ruta": "./svg-procesados/valvulas/25_pneumatic_actuator_valve.svg"
+        },
+        {
+            "nombre": "Válvula con actuador de volante",
+            "ruta": "./svg-procesados/valvulas/26_hand_wheel_actuator_valve.svg"
+        },
+        {
+            "nombre": "Válvula accionada por pistón",
+            "ruta": "./svg-procesados/valvulas/27_piston_operated_valve.svg"
+        },
+        {
+            "nombre": "Válvula motorizada",
+            "ruta": "./svg-procesados/valvulas/28_motor_operated_valve.svg"
+        },
+        {
+            "nombre": "Válvula con accionamiento electrohidráulico",
+            "ruta": "./svg-procesados/valvulas/29_electro_hydraulic_operated_valve.svg"
+        },
+        {
+            "nombre": "Válvula angular",
+            "ruta": "./svg-procesados/valvulas/2_angle_valve.svg"
+        },
+        {
+            "nombre": "Válvula antirretorno",
+            "ruta": "./svg-procesados/valvulas/2_check_valve.svg"
+        },
+        {
+            "nombre": "Electroválvula",
+            "ruta": "./svg-procesados/valvulas/30_solenoid_valve.svg"
+        },
+        {
+            "nombre": "Electroválvula con rearme",
+            "ruta": "./svg-procesados/valvulas/31_solenoid_with_reset_valve.svg"
+        },
+        {
+            "nombre": "Disco de ruptura para alivio de presión",
+            "ruta": "./svg-procesados/valvulas/32_rupture_disc_pressure_relief.svg"
+        },
+        {
+            "nombre": "Disco de ruptura para alivio de vacío",
+            "ruta": "./svg-procesados/valvulas/33_rupture_disc_vacuum_relief.svg"
+        },
+        {
+            "nombre": "Válvula de alivio de presión",
+            "ruta": "./svg-procesados/valvulas/34_pressure_relief_valve.svg"
+        },
+        {
+            "nombre": "Válvula de alivio de vacío",
+            "ruta": "./svg-procesados/valvulas/35_vacuum_relief_valve.svg"
+        },
+        {
+            "nombre": "Válvula de alivio de presión y vacío",
+            "ruta": "./svg-procesados/valvulas/36_pressure_and_vacuum_relief_valve.svg"
+        },
+        {
+            "nombre": "Válvula de alivio con pasador de pandeo",
+            "ruta": "./svg-procesados/valvulas/37_buckling_pin_relief_valve.svg"
+        },
+        {
+            "nombre": "Válvula de alivio pilotada",
+            "ruta": "./svg-procesados/valvulas/38_pilot_operated_relief_valve.svg"
+        },
+        {
+            "nombre": "Regulador reductor de presión",
+            "ruta": "./svg-procesados/valvulas/39_pressure_reducing_regulator.svg"
+        },
+        {
+            "nombre": "Válvula de globo normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/3_globe_valve_nc.svg"
+        },
+        {
+            "nombre": "Válvula de retención y cierre",
+            "ruta": "./svg-procesados/valvulas/3_stop_check_valve.svg"
+        },
+        {
+            "nombre": "Regulador de contrapresión",
+            "ruta": "./svg-procesados/valvulas/40_back_pressure_regulator.svg"
+        },
+        {
+            "nombre": "Regulador reductor de presión con toma externa",
+            "ruta": "./svg-procesados/valvulas/41_pressure_reducing_regulator_with_external_tap.svg"
+        },
+        {
+            "nombre": "Regulador de contrapresión con toma externa",
+            "ruta": "./svg-procesados/valvulas/42_back_pressure_regulator_with_external_tap.svg"
+        },
+        {
+            "nombre": "Regulador reductor de presión diferencial",
+            "ruta": "./svg-procesados/valvulas/43_differential_pressure_reducing_regulator.svg"
+        },
+        {
+            "nombre": "Regulador de temperatura de sistema de expansión lleno",
+            "ruta": "./svg-procesados/valvulas/44_temperature_regulator_filled_system_type.svg"
+        },
+        {
+            "nombre": "Válvula de globo normalmente abierta",
+            "ruta": "./svg-procesados/valvulas/4_globe_valve_no.svg"
+        },
+        {
+            "nombre": "Válvula de bola normalmente abierta",
+            "ruta": "./svg-procesados/valvulas/5_ball_valve_no.svg"
+        },
+        {
+            "nombre": "Válvula de globo normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/5_globe_valve_nc.svg"
+        },
+        {
+            "nombre": "Válvula de bola normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/6_ball_valve_nc.svg"
+        },
+        {
+            "nombre": "Válvula de mariposa",
+            "ruta": "./svg-procesados/valvulas/6_butterfly_valve.svg"
+        },
+        {
+            "nombre": "Válvula de mariposa",
+            "ruta": "./svg-procesados/valvulas/7_butterfly_valve.svg"
+        },
+        {
+            "nombre": "Válvula de aguja",
+            "ruta": "./svg-procesados/valvulas/7_needle_valve.svg"
+        },
+        {
+            "nombre": "Válvula de bola normalmente abierta",
+            "ruta": "./svg-procesados/valvulas/8_ball_valve_no.svg"
+        },
+        {
+            "nombre": "Válvula de compuerta normalmente abierta",
+            "ruta": "./svg-procesados/valvulas/8_gate_valve_no.svg"
+        },
+        {
+            "nombre": "Válvula de bola normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/9_ball_valve_nc.svg"
+        },
+        {
+            "nombre": "Válvula de compuerta normalmente cerrada",
+            "ruta": "./svg-procesados/valvulas/9_gate_valve_nc.svg"
+        }
+    ]
+}
