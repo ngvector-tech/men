@@ -180,20 +180,20 @@
 	 "Otros": [
         {
             "nombre": "Transmisor de presión",
-            "ruta": "./svg-procesados/Otros/transmisor_de_presion.svg"
+            "ruta": ".svg-procesados/Otros/transmisor_de_presion.svg"
         },
 	 {
             "nombre": "Indicador de temperatura",
-            "ruta": "./svg-procesados/Otros/indicador_de_temperatura.svg"
+            "ruta": ".svg-procesados/Otros/indicador_de_temperatura.svg"
         },
 	 {
             "nombre": "Caudalimetro",
-            "ruta": "./svg-procesados/Otros/Caudalimetro.svg"
+            "ruta": ".svg-procesados/Otros/Caudalimetro.svg"
         },
 	
 			{
             "nombre": "Manómetro",
-            "ruta": "./svg-procesados/Otros/Manómetro.svg"
+            "ruta": ".svg-procesados/Otros/Manómetro.svg"
         }
 	    ],
 	
