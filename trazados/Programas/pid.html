@@ -57,6 +57,8 @@
         .btn-success:hover { background: #27ae60; }
         .btn-archivo { background: #8e44ad; }
         .btn-archivo:hover { background: #71368a; }
+        .btn-svg { background: #0284c7; color: white; }
+        .btn-svg:hover { background: #0369a1; }
         .color-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; cursor: pointer; transition: transform 0.1s; }
         .color-btn:hover { transform: scale(1.15); }
         .color-btn.seleccionado { border: 3px solid #f1c40f; transform: scale(1.2); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
@@ -262,25 +264,25 @@
         <span class="empresa-text">Montajes Industriales S. L.</span>
         <span class="autor-text">Creado por: J.N.G</span>
         <div class="nav-links">
-            <a href="isometrico.html" class="btn-navegacion">📐 Isométrico</a>
-            <a href="editor puertos pid.html" class="btn-navegacion">🔌 Editor Puertos P&ID</a>
+            <a href="s_pid.html" class="btn-navegacion">📶 Esquemas</a>
+            <a href="isometrico.html" class="btn-navegacion">📶 Isométrico</a>
+            <a href="editor puertos pid.html" class="btn-navegacion">📶 Editor Puertos</a>
         </div>
     </div>
 
     <div id="toolbar">
-        <!-- Grupo Archivo: Nuevo, Abrir, Guardar y Guardar Como -->
         <div class="tool-group">
-            <button class="btn-tool btn-archivo" style="background: #27ae60;" onclick="nuevoProyecto()">📄 Nuevo</button>
-            <button class="btn-tool btn-archivo" onclick="abrirProyecto()">📂 Abrir</button>
-            <button class="btn-tool btn-archivo" onclick="guardarProyecto()">💾 Guardar</button>
-            <button class="btn-tool btn-archivo" onclick="guardarComoProyecto()">💾 Guardar como...</button>
+            <button class="btn-tool btn-archivo"  onclick="nuevoProyecto()">📄 Nuevo proyecto</button>
+            <button class="btn-tool btn-archivo" onclick="abrirProyecto()">📂 Abrir proyecto</button>
+            <button class="btn-tool btn-archivo" onclick="guardarProyecto()">💾 Guardar proyecto</button>
+            <button class="btn-tool btn-archivo" onclick="prepararImpresion()">🖨️ Imprimir</button>
+            <button class="btn-tool btn-archivo" onclick="guardarSVG()">🖼️ Exportar SVG</button>
             <input type="file" id="input-archivo" accept=".json,.pid" style="display: none;" onchange="cargarArchivoProyecto(event)">
         </div>
 
         <div class="tool-group">
             <button class="btn-tool btn-danger" onclick="eliminarSeleccionado()">🗑️ Borrar</button>
             <button class="btn-tool btn-warning" onclick="rotar90()">🔄 Girar 90°</button>
-            <button class="btn-tool" onclick="prepararImpresion()" style="background: #16a085;">🖨️ Guardar / Imprimir PDF</button>
         </div>
         
         <div class="tool-group">
@@ -305,13 +307,13 @@
         </div>
 
         <div class="tool-group">
-            <button class="btn-tool" id="btn-linea" onclick="toggleLinea()">📐 Línea Ortogonal</button>
+            <button class="btn-tool" id="btn-linea" onclick="toggleLinea()">📐 Dibujar linea libre</button>
             <button class="btn-tool" id="btn-texto" onclick="toggleTexto()">📝 Añadir Texto</button>
-            <button class="btn-tool btn-success" onclick="toggleNombreSimbolo()">🏷️ Nombre Símbolo</button>
+            <button class="btn-tool" onclick="toggleNombreSimbolo()">🏷️ Nombre Símbolo</button>
         </div>
         <div class="tool-group">
-            <button class="btn-tool" style="background: #27ae60;" onclick="centrarDibujo()">🎯 Centrar Dibujo</button>
-            <button class="btn-tool" style="background: #8e44ad;" onclick="toggleRejilla(this)" id="btn-rejilla">📐 Rejilla ON</button>
+            <button class="btn-tool"  onclick="centrarDibujo()">🎯 Centrar Dibujo</button>
+            <button class="btn-tool"  onclick="toggleRejilla(this)" id="btn-rejilla">📐 Rejilla ON</button>
         </div>
     </div>
 
@@ -452,7 +454,7 @@
             size: { width: 100, height: 60 },
             attrs: {
                 body: { refWidth: '100%', refHeight: '100%', fill: 'transparent', stroke: 'none' },
-                image: { refWidth: '100%', refHeight: '100%', 'xlink:href': '' }
+                image: { refWidth: '100%', refHeight: '100%', 'xlink:href': '', preserveAspectRatio: 'xMidYMid meet' }
             },
             ports: {
                 groups: {
@@ -482,7 +484,7 @@
         let configPuertos = {};
 
         async function cargarConfigPuertos() {
-            const urlSinCache = './config_puertos.json?t=' + new Date().getTime();
+            const urlSinCache = '/config_puertos.json?t=' + new Date().getTime();
             try {
                 const res = await fetch(urlSinCache);
                 if (res.ok) {
@@ -591,6 +593,8 @@
             const doc = parser.parseFromString(svgTexto, "image/svg+xml");
             const svgElement = doc.querySelector('svg');
             
+            if (!svgElement) return { dataUri: ruta, minX: 0, minY: 0, anchoReal: 100, altoReal: 60 };
+
             if (svgElement.getAttribute('fill') === '#fff' || svgElement.getAttribute('fill') === '#ffffff') {
                 svgElement.setAttribute('fill', 'none');
             }
@@ -599,23 +603,35 @@
             let minX = 0, minY = 0, anchoReal = 100, altoReal = 60;
             const viewBox = svgElement.getAttribute('viewBox');
             if (viewBox) {
-                const partes = viewBox.trim().split(/\s+/);
+                const partes = viewBox.trim().split(/[\s,]+/);
                 if (partes.length === 4) {
-                    minX = parseFloat(partes[0]);
-                    minY = parseFloat(partes[1]);
-                    anchoReal = parseFloat(partes[2]);
-                    altoReal = parseFloat(partes[3]);
+                    minX = parseFloat(partes[0]) || 0;
+                    minY = parseFloat(partes[1]) || 0;
+                    anchoReal = parseFloat(partes[2]) || 100;
+                    altoReal = parseFloat(partes[3]) || 60;
                 }
+            } else {
+                const wAttr = parseFloat(svgElement.getAttribute('width'));
+                const hAttr = parseFloat(svgElement.getAttribute('height'));
+                if (wAttr && hAttr) {
+                    anchoReal = wAttr;
+                    altoReal = hAttr;
+                }
+                svgElement.setAttribute('viewBox', `0 0 ${anchoReal} ${altoReal}`);
             }
 
             svgElement.setAttribute('width', anchoReal);
             svgElement.setAttribute('height', altoReal);
             svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            if (!svgElement.getAttribute('xmlns')) {
+                svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            }
 
             const svgLimpio = new XMLSerializer().serializeToString(svgElement);
-            const blob = new Blob([svgLimpio], {type: 'image/svg+xml'});
+            const base64Data = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgLimpio)));
+            
             return {
-                url: URL.createObjectURL(blob),
+                dataUri: base64Data,
                 minX, minY, anchoReal, altoReal
             };
         }
@@ -666,7 +682,8 @@
                 elemento.position(posX, posY);
                 elemento.resize(targetWidth, targetHeight);
                 
-                elemento.attr('image/xlink:href', datosSvg.url);
+                elemento.attr('image/xlink:href', datosSvg.dataUri);
+                elemento.attr('image/href', datosSvg.dataUri);
                 elemento.prop('ports/items', puertosItems);
                 
                 elemento.set('rutaOriginal', ruta);
@@ -680,8 +697,6 @@
                 console.error("Error al cargar SVG: ", err);
             }
         }
-
-        // --- FUNCIONALIDAD: NUEVO, ABRIR, GUARDAR Y GUARDAR COMO ---
 
         function nuevoProyecto() {
             if (cambiosSinGuardar && graph.getCells().length > 0) {
@@ -697,12 +712,12 @@
             currentScale = 1;
         }
 
-        async function guardarComoProyecto() {
+        async function guardarProyecto() {
             const data = JSON.stringify(graph.toJSON(), null, 2);
             
             if ('showSaveFilePicker' in window) {
                 try {
-                    const handle = await window.showSaveFilePicker({
+                    const handle = archivoHandleActual || await window.showSaveFilePicker({
                         suggestedName: 'esquema_PID.pid.json',
                         types: [{
                             description: 'Archivo P&ID (*.pid.json)',
@@ -718,7 +733,6 @@
                     return;
                 } catch (err) {
                     if (err.name === 'AbortError') return;
-                    console.warn("Fallo al usar showSaveFilePicker, recurriendo a descarga clásica:", err);
                 }
             }
 
@@ -734,22 +748,62 @@
             cambiosSinGuardar = false;
         }
 
-        async function guardarProyecto() {
-            if (archivoHandleActual && 'showSaveFilePicker' in window) {
-                try {
-                    const data = JSON.stringify(graph.toJSON(), null, 2);
-                    const writable = await archivoHandleActual.createWritable();
-                    await writable.write(data);
-                    await writable.close();
-                    cambiosSinGuardar = false;
-                    alert("Proyecto guardado.");
-                    return;
-                } catch (err) {
-                    console.warn("No se pudo sobrescribir directamente el archivo, guardando como nuevo...", err);
-                }
-            }
-            guardarComoProyecto();
-        }
+        /* Exportación SVG idéntica a la del ejemplo que centra perfectamente */
+        function guardarSVG() {
+    const bbox = graph.getBBox();
+    if (!bbox || bbox.width === 0 || bbox.height === 0) {
+        alert("No hay elementos en el lienzo para exportar.");
+        return;
+    }
+
+    // Definir un margen estético alrededor del dibujo (igual que en el ejemplo funcional)
+    const padding = 80;
+    const minX = bbox.x - padding;
+    const minY = bbox.y - padding;
+    const w = bbox.width + padding * 2;
+    const h = bbox.height + padding * 2;
+
+    // Clonar el SVG principal de JointJS
+    const svgClon = paper.svg.cloneNode(true);
+    
+    // Configurar el viewBox exactamente con los límites del dibujo para forzar el centrado
+    svgClon.setAttribute('viewBox', `${minX} ${minY} ${w} ${h}`);
+    svgClon.setAttribute('width', '100%');
+    svgClon.setAttribute('height', '100%');
+    svgClon.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svgClon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+    // Limpiar elementos de interfaz que no deben salir en la exportación
+    svgClon.querySelectorAll('.joint-grid').forEach(el => el.remove());
+    svgClon.querySelectorAll('.joint-port').forEach(el => el.remove());
+    svgClon.querySelectorAll('.joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
+    
+    svgClon.querySelectorAll('.joint-link path').forEach(el => { 
+        if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
+    });
+
+    // Insertar un fondo blanco limpio que cubra exactamente el área del viewBox centrado
+    const rectFondo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rectFondo.setAttribute('x', minX);
+    rectFondo.setAttribute('y', minY);
+    rectFondo.setAttribute('width', w);
+    rectFondo.setAttribute('height', h);
+    rectFondo.setAttribute('fill', '#ffffff');
+    svgClon.insertBefore(rectFondo, svgClon.firstChild);
+
+    // Generar y descargar el archivo SVG centrado
+    const svgTexto = new XMLSerializer().serializeToString(svgClon);
+    const blob = new Blob([svgTexto], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'esquema_PID.svg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
 
         function abrirProyecto() {
             if (cambiosSinGuardar && graph.getCells().length > 0) {
@@ -776,7 +830,8 @@
                         if (ruta) {
                             try {
                                 const datosSvg = await procesarImagenSVG(ruta);
-                                el.attr('image/xlink:href', datosSvg.url);
+                                el.attr('image/xlink:href', datosSvg.dataUri);
+                                el.attr('image/href', datosSvg.dataUri);
                             } catch (err) {
                                 console.error("No se pudo volver a cargar la imagen SVG desde:", ruta, err);
                             }
@@ -845,8 +900,8 @@
         document.getElementById('lienzo').addEventListener('contextmenu', e => e.preventDefault());
 
         window.centrarDibujo = function() {
-            const elementos = graph.getElements();
-            if (elementos.length === 0) { paper.scale(1, 1); paper.translate(0, 0); currentScale = 1; return; }
+            const bbox = graph.getBBox();
+            if (!bbox || bbox.width === 0 || bbox.height === 0) { paper.scale(1, 1); paper.translate(0, 0); currentScale = 1; return; }
             paper.scaleContentToFit({ padding: 50, minScale: 0.2, maxScale: 2 });
             currentScale = paper.scale().sx;
         };
@@ -888,7 +943,9 @@
             document.querySelectorAll('#toolbar .color-btn').forEach(b => b.classList.remove('seleccionado'));
             btn.classList.add('seleccionado');
             const seleccionados = paper.model.getElements().filter(el => el.get('selected'));
-            seleccionados.forEach(el => { el.attr('image/style', colorActual === '#000000' ? '' : `filter: drop-shadow(0 0 0 ${colorActual}) saturate(10);`); });
+            seleccionados.forEach(el => { 
+                el.attr('image/style', colorActual === '#000000' ? '' : `filter: drop-shadow(0 0 0 ${colorActual}) saturate(10);`); 
+            });
             const lineas = paper.model.getLinks().filter(link => link.get('selected'));
             lineas.forEach(link => link.attr('line/stroke', colorActual));
         };
@@ -1101,7 +1158,7 @@
             evt.stopPropagation();
             
             const localPoint = paper.clientToLocalPoint({ x: evt.clientX, y: evt.clientY });
-            const elementos = paper.model.getElements();
+            const elementos = graph.getElements();
             elementoBajoClicDerecho = null;
             for (let i = elementos.length - 1; i >= 0; i--) {
                 const bbox = elementos[i].getBBox();
@@ -1186,99 +1243,95 @@
             }
         };
 
-// Hacer la ventana modal movible y redimensionable por los bordes
-(function configurarModalInteractivo() {
-    const modal = document.getElementById('modal-simbolos');
-    const header = document.getElementById('modal-header');
+        (function configurarModalInteractivo() {
+            const modal = document.getElementById('modal-simbolos');
+            const header = document.getElementById('modal-header');
 
-    // 1. Mover la ventana desde el header
-    let isDragging = false, startX, startY, initialLeft, initialTop;
+            let isDragging = false, startX, startY, initialLeft, initialTop;
 
-    header.addEventListener('mousedown', (e) => {
-        if (e.target.tagName === 'BUTTON') return;
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        initialLeft = modal.offsetLeft;
-        initialTop = modal.offsetTop;
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    });
+            header.addEventListener('mousedown', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = modal.offsetLeft;
+                initialTop = modal.offsetTop;
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
 
-    function onMouseMove(e) {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        modal.style.left = `${initialLeft + dx}px`;
-        modal.style.top = `${initialTop + dy}px`;
-    }
+            function onMouseMove(e) {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                modal.style.left = `${initialLeft + dx}px`;
+                modal.style.top = `${initialTop + dy}px`;
+            }
 
-    function onMouseUp() {
-        isDragging = false;
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-    }
+            function onMouseUp() {
+                isDragging = false;
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
 
-    // 2. Redimensionar desde los bordes (Detectando proximidad al borde inferior/derecho/esquina)
-    let isResizing = false, resizeDir = '', startW, startH, startClientX, startClientY;
-    const borderThreshold = 10; // Margen en píxeles para detectar el borde
+            let isResizing = false, resizeDir = '', startW, startH, startClientX, startClientY;
+            const borderThreshold = 10;
 
-    modal.addEventListener('mousemove', (e) => {
-        if (isResizing) return;
-        const rect = modal.getBoundingClientRect();
-        const edgeRight = rect.right - e.clientX;
-        const edgeBottom = rect.bottom - e.clientY;
+            modal.addEventListener('mousemove', (e) => {
+                if (isResizing) return;
+                const rect = modal.getBoundingClientRect();
+                const edgeRight = rect.right - e.clientX;
+                const edgeBottom = rect.bottom - e.clientY;
 
-        if (edgeRight < borderThreshold && edgeBottom < borderThreshold) {
-            modal.style.cursor = 'se-resize';
-            resizeDir = 'se';
-        } else if (edgeRight < borderThreshold) {
-            modal.style.cursor = 'e-resize';
-            resizeDir = 'e';
-        } else if (edgeBottom < borderThreshold) {
-            modal.style.cursor = 's-resize';
-            resizeDir = 's';
-        } else {
-            modal.style.cursor = 'default';
-            resizeDir = '';
-        }
-    });
+                if (edgeRight < borderThreshold && edgeBottom < borderThreshold) {
+                    modal.style.cursor = 'se-resize';
+                    resizeDir = 'se';
+                } else if (edgeRight < borderThreshold) {
+                    modal.style.cursor = 'e-resize';
+                    resizeDir = 'e';
+                } else if (edgeBottom < borderThreshold) {
+                    modal.style.cursor = 's-resize';
+                    resizeDir = 's';
+                } else {
+                    modal.style.cursor = 'default';
+                    resizeDir = '';
+                }
+            });
 
-    modal.addEventListener('mousedown', (e) => {
-        if (!resizeDir) return;
-        isResizing = true;
-        startClientX = e.clientX;
-        startClientY = e.clientY;
-        startW = modal.offsetWidth;
-        startH = modal.offsetHeight;
+            modal.addEventListener('mousedown', (e) => {
+                if (!resizeDir) return;
+                isResizing = true;
+                startClientX = e.clientX;
+                startClientY = e.clientY;
+                startW = modal.offsetWidth;
+                startH = modal.offsetHeight;
 
-        document.addEventListener('mousemove', onResizeMove);
-        document.addEventListener('mouseup', onResizeUp);
-        e.preventDefault();
-    });
+                document.addEventListener('mousemove', onResizeMove);
+                document.addEventListener('mouseup', onResizeUp);
+                e.preventDefault();
+            });
 
-    function onResizeMove(e) {
-        if (!isResizing) return;
-        const dx = e.clientX - startClientX;
-        const dy = e.clientY - startClientY;
+            function onResizeMove(e) {
+                if (!isResizing) return;
+                const dx = e.clientX - startClientX;
+                const dy = e.clientY - startClientY;
 
-        if (resizeDir === 'se' || resizeDir === 'e') {
-            modal.style.width = `${Math.max(250, startW + dx)}px`;
-        }
-        if (resizeDir === 'se' || resizeDir === 's') {
-            modal.style.height = `${Math.max(200, startH + dy)}px`;
-        }
-    }
+                if (resizeDir === 'se' || resizeDir === 'e') {
+                    modal.style.width = `${Math.max(250, startW + dx)}px`;
+                }
+                if (resizeDir === 'se' || resizeDir === 's') {
+                    modal.style.height = `${Math.max(200, startH + dy)}px`;
+                }
+            }
 
-    function onResizeUp() {
-        isResizing = false;
-        document.removeEventListener('mousemove', onResizeMove);
-        document.removeEventListener('mouseup', onResizeUp);
-        modal.style.cursor = 'default';
-    }
-})();
+            function onResizeUp() {
+                isResizing = false;
+                document.removeEventListener('mousemove', onResizeMove);
+                document.removeEventListener('mouseup', onResizeUp);
+                modal.style.cursor = 'default';
+            }
+        })();
 
-        // --- INICIALIZACIÓN ---
         cargarPaleta();
     </script>
 </body>

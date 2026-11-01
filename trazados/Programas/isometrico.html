@@ -5,24 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Trazo de Tubería — MEN</title>
 <style>
-
-  /* Botones de navegación en el header */
-  .btn-nav {
-      padding: 6px 12px;
-      background: #3498db;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: bold;
-      transition: background 0.2s;
-  }
-  .btn-nav:hover { background: #2980b9; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: Arial, sans-serif; margin: 0; background:#f4f4f4; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
   
-  /* Estilos Header Superior IDÉNTICO al PID.html */
+  /* Header Superior */
   #header-nativo {
       background-color: #1a252f;
       color: white;
@@ -39,25 +25,39 @@
   #header-nativo .empresa-text { font-size: 13px; font-weight: bold; color: #ecf0f1; margin-right: 20px; }
   #header-nativo .autor-text { font-size: 10px; color: #7f8c8d; }
   
-  .main-container { display: flex; flex-direction: column; flex: 1; padding: 10px; gap: 8px; max-width: 100%; overflow-x: hidden; }
-
-  .toolbar { 
-    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #fff; 
-    padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; 
+  .btn-nav {
+      padding: 4px 10px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      transition: background 0.2s;
   }
-  .group-box { display: flex; gap: 6px; align-items: center; padding-right: 10px; border-right: 1px solid #ddd; }
-  .group-box:last-child { border-right: none; padding-right: 0; margin-left: auto; }
+  .btn-nav:hover { background: #2980b9; }
+
+  .main-container { display: flex; flex-direction: column; flex: 1; padding: 6px 10px; gap: 6px; max-width: 100%; overflow-x: hidden; }
+
+  /* Barra de herramientas compacta de dos filas */
+  .toolbar { 
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: #fff; 
+    padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; 
+  }
+  .group-box { display: flex; gap: 5px; align-items: center; padding-right: 8px; border-right: 1px solid #ddd; }
+  .group-box:last-child { border-right: none; padding-right: 0; margin-left: 0; width: 100%; }
   
   .conf-group {
-    display: flex; gap: 8px; align-items: center; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; border: 1px solid #e0e0e0; flex-wrap: wrap;
+    display: flex; gap: 6px; align-items: center; background: #f8f9fa; padding: 3px 6px; border-radius: 4px; border: 1px solid #e0e0e0; flex-wrap: wrap;
   }
   .conf-group label { font-size: 11px; font-weight: bold; color: #555; display: flex; flex-direction: column; align-items: center; }
-  .conf-group input { width: 55px; padding: 2px; font-size: 12px; text-align: center; border: 1px solid #ccc; border-radius: 3px; }
-  .btn-apply { background: #1f6feb; color: #fff; border: none; padding: 5px 10px; font-size: 11px; font-weight: bold; border-radius: 3px; cursor: pointer; height: 100%; }
+  .conf-group input { width: 50px; padding: 2px; font-size: 11px; text-align: center; border: 1px solid #ccc; border-radius: 3px; }
+  .btn-apply { background: #1f6feb; color: #fff; border: none; padding: 4px 8px; font-size: 11px; font-weight: bold; border-radius: 3px; cursor: pointer; height: 100%; }
   .btn-apply:hover { background: #1557b0; }
 
   .btn-tool {
-    padding: 6px 10px; font-size: 12px; border-radius: 4px; cursor: pointer;
+    padding: 5px 8px; font-size: 11px; border-radius: 4px; cursor: pointer;
     border: 1px solid #888; background: #eef; font-weight: bold; white-space: nowrap;
   }
   .btn-tool:hover { background: #dde; }
@@ -65,106 +65,60 @@
   .btn-tool.locked { background: #fbbf24; border-color: #f59e0b; color: #000; }
   
   .btn-acc {
-    padding: 6px 10px; font-size: 12px; border-radius: 4px; color: #fff; cursor: pointer; font-weight: bold; border: none;
+    padding: 5px 8px; font-size: 11px; border-radius: 4px; color: #fff; cursor: pointer; font-weight: bold; border: none;
   }
-  .codo   { background:#1f6feb; }
-  .reduc  { background:#f39c12; }
-  .te     { background:#8e44ad; }
-  .conect { background:#0ea5e9; }
-  .retomar{ background:#10b981; }
-  .editar { background:#6b7280; }
+  .codo   { background:#277DF5; }
+  .reduc  { background:#277DF5; }
+  .te     { background:#277DF5; }
+  .conect { background:#f39c12; }
+  .retomar{ background:#f39c12; }
+  .editar { background:#27D3F5; }
   .borrar { background:#c0392b; }
   .imprimir { background:#475569; }
-  .btn-share { background:#4b5563; padding: 6px 10px; font-size: 12px; border-radius: 4px; color: #fff; border:none; cursor: pointer; }
+  .btn-svg { background: #0284c7; color: #fff; }
+  .btn-svg:hover { background: #0369a1; }
+  .btn-share { background:#4b5563; padding: 5px 8px; font-size: 11px; border-radius: 4px; color: #fff; border:none; cursor: pointer; }
   .btn-share:hover { background:#374151; }
-  .btn-archivo { background: #8e44ad; color: #fff; }
-  .btn-archivo:hover { background: #71368a; }
+  .btn-archivo { background: #27ae60; color: #fff; }
+  .btn-archivo:hover { background: #219653; }
 
-  .canvas-wrap { display: flex; justify-content: center; background: #fff; border-radius: 6px; border: 1px solid #ccc; overflow: hidden; flex: 1; min-height: 450px; position: relative;}
+  .canvas-wrap { display: flex; justify-content: center; background: #fff; border-radius: 6px; border: 1px solid #ccc; overflow: hidden; flex: 1; min-height: 480px; position: relative;}
   canvas { display: block; cursor: default; touch-action: none; }
 
-  .resultados-panel { display: flex; gap: 10px; flex-wrap: wrap; transition: all 0.3s ease; overflow: hidden; }
+  .resultados-panel { display: flex; gap: 8px; flex-wrap: wrap; transition: all 0.3s ease; overflow: hidden; }
   .resultados-panel.oculto { display: none; }
   
-  .res-card { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 10px; flex: 1; min-width: 300px; }
-  .res-card h3 { margin: 0 0 8px 0; font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 4px; color: #333; }
+  .res-card { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 8px; flex: 1; min-width: 280px; }
+  .res-card h3 { margin: 0 0 6px 0; font-size: 12px; border-bottom: 1px solid #eee; padding-bottom: 3px; color: #333; }
 
-  table { border-collapse: collapse; font-size: 12px; width:100%; margin-bottom: 10px; }
-  th, td { border:1px solid #ddd; padding:4px; text-align:center; }
+  table { border-collapse: collapse; font-size: 11px; width:100%; margin-bottom: 6px; }
+  th, td { border:1px solid #ddd; padding:3px; text-align:center; }
   th { background:#f0f0f0; }
-  .inp-edit { width: 60px; padding: 2px; font-size: 12px; text-align:center; }
-  
-  .brujula-container { 
-    position: relative; 
-    width: 110px; 
-    height: 110px; 
-    background: #f0f0f0; 
-    border: 1px solid #ccc; 
-    border-radius: 8px; 
-    margin: 0 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 5px;
-  }
-  .brujula-linhas {
-    position: absolute; top: 5px; left: 5px; width: 100px; height: 100px; pointer-events: none; z-index: 1;
-  }
-  .brujula-row {
-    display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 2;
-  }
-  .btn-brujula {
-    width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    color: #fff; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; justify-content: center; align-items: center; text-align: center; transition: transform 0.1s;
-  }
-  .btn-brujula:hover { transform: scale(1.15); z-index: 10; }
-  .bg-verde { background: #45E30B; } 
-  .bg-violeta  { background: #A90BE3; } 
-  .bg-rojo  { background: #E30B2F; } 
-
-  .separator-line { width: 1px; height: 80px; background-color: #ccc; margin: 0 5px; }
-
-  .hint { font-size: 11px; color: #666; font-style: italic; margin: 0; padding-left: 5px; }
-  .estado-box { font-size: 12px; padding: 4px 8px; background: #fffbe6; border: 1px solid #ffe58f; border-radius: 4px; }
-  .estado-camara { font-size: 11px; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
-  .estado-camara.lib { background: #dcfce7; color: #166534; }
-  .estado-camara.blq { background: #fee2e2; color: #991b1b; }
+  .inp-edit { width: 50px; padding: 1px; font-size: 11px; text-align:center; }
 
   .sliders-rotacion {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     background: #f8f9fa;
-    padding: 8px 12px;
+    padding: 5px 10px;
     border-radius: 6px;
     border: 1px solid #e0e0e0;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
   .slider-group {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
+    gap: 5px;
+    font-size: 11px;
     font-weight: bold;
   }
-  .slider-group label {
-    min-width: 20px;
-    color: #333;
-  }
-  .slider-group input[type="range"] {
-    width: 120px;
-    accent-color: #1f6feb;
-  }
+  .slider-group label { min-width: 15px; color: #333; }
+  .slider-group input[type="range"] { width: 100px; accent-color: #1f6feb; }
   .slider-group .valor-slider {
-    min-width: 40px;
-    text-align: center;
-    font-family: monospace;
-    font-size: 11px;
-    background: #fff;
-    padding: 2px 4px;
-    border-radius: 3px;
-    border: 1px solid #ccc;
+    min-width: 35px; text-align: center; font-family: monospace; font-size: 10px;
+    background: #fff; padding: 1px 3px; border-radius: 3px; border: 1px solid #ccc;
   }
 
   #modalLupa { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; backdrop-filter: blur(2px); }
@@ -173,15 +127,10 @@
 
   @media (max-width: 900px) {
     .toolbar { flex-direction: column; align-items: stretch; }
-    .group-box { border-right: none; border-bottom: 1px solid #ddd; padding-bottom: 8px; padding-right: 0; justify-content: center; flex-wrap: wrap; }
-    .group-box:last-child { border-bottom: none; margin-left: 0; }
-    .btn-tool, .btn-acc, .btn-share { flex: 1; text-align: center; padding: 8px; }
+    .group-box { border-right: none; border-bottom: 1px solid #ddd; padding-bottom: 6px; padding-right: 0; justify-content: center; flex-wrap: wrap; width: 100%; }
+    .btn-tool, .btn-acc, .btn-share { flex: 1; text-align: center; padding: 6px; }
     .conf-group { justify-content: center; width: 100%; }
     .resultados-panel { flex-direction: column; }
-    .brujula-container { width: 140px; height: 140px; }
-    .btn-brujula { width: 38px; height: 38px; font-size: 13px; }
-    .separator-line { display: none; }
-    .slider-group input[type="range"] { width: 80px; }
   }
 </style>
 </head>
@@ -192,9 +141,10 @@
     <span class="empresa-text">Montajes Industriales S. L.</span>
     <span class="autor-text">Creado por: J.N.G</span>
 
-    <!-- Botón de navegación al editor P&ID -->
+    <!-- Botones de navegación -->
     <div style="margin-left: auto; display: flex; gap: 8px;">
-        <button class="btn-nav" onclick="navegarA('index.html')">📐 P&ID</button>
+        <button class="btn-nav" onclick="window.location.href='s_pid.html'">📶 Esquemas</button>
+        <button class="btn-nav" onclick="window.location.href='pid.html'">📶 P&ID</button>
     </div>
 </div>
 
@@ -202,10 +152,13 @@
   
   <div class="toolbar">
     <div class="group-box">
-      <button class="btn-acc btn-archivo" style="background: #27ae60;" onclick="nuevoProyecto()">📄 Nuevo</button>
-      <button class="btn-acc btn-archivo" onclick="abrirProyecto()">📂 Abrir</button>
-      <button class="btn-acc btn-archivo" onclick="guardarProyecto()">💾 Guardar</button>
-      <button class="btn-acc btn-archivo" onclick="guardarComoProyecto()">💾 Guardar como...</button>
+      <button class="btn-acc btn-archivo" onclick="nuevoProyecto()">📄 Nuevo proyecto</button>
+      <button class="btn-acc btn-archivo" onclick="abrirProyecto()">📂 Abrir proyecto</button>
+      <button class="btn-acc btn-archivo" onclick="guardarProyecto()">💾 Guardar proyecto</button>
+	    <button class="btn-acc btn-archivo" id="btnGuardarSVG">🖼️ Exportar SVG</button>
+      <button class="btn-acc btn-archivo" id="btnImprimirTodo">🖨️ Imprimir</button>
+      <button class="btn-acc btn-archivo" id="btnCompartirDibujo">📤 Compartir</button>
+	  <button class="btn-acc btn-archivo" id="btnLupa">🔍 Zoom</button>
       <input type="file" id="input-archivo" accept=".json,.isoin" style="display: none;" onchange="cargarArchivoProyecto(event)">
     </div>
 
@@ -219,52 +172,22 @@
       </div>
     </div>
 
-    <div class="group-box">
+    <!-- Segunda línea alineada estrictamente a la izquierda con el espacio entre Ocultar Resultados y Reducción -->
+    <div class="group-box" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; justify-content: flex-start;">
       <button class="btn-tool" id="btnFijarVista" title="Guardar la orientación actual como vista fija y bloquear rotación">📌 Fijar Vista</button>
-      <button class="btn-tool" id="btnIrVistaFija" title="Volver a la vista fija guardada (bloquea rotación)">🎯 Ir a Vista Fija</button>
-      <button class="btn-tool" id="btnToggleRot" title="Activar/desactivar rotación libre con sliders">🔓 Rotación Libre</button>
+      <button class="btn-tool" id="btnIrVistaFija" title="Volver a la vista fija guardada">🎯 Ir a Vista Fija</button>
       <label style="font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;"><input type="checkbox" id="chkCotas" checked> Cotas</label>
       <button class="btn-tool" id="btnToggleResultados">Ocultar Resultados</button>
-    </div>
-
-    <div class="group-box" style="padding: 0; border-right: none; align-items: center; display: flex;">
-       <div class="brujula-container">
-          <svg class="brujula-linhas" width="100" height="100">
-              <line x1="50" y1="20" x2="50" y2="80" stroke="#52c41a" stroke-width="2.5" />
-              <line x1="20" y1="20" x2="80" y2="80" stroke="#f5222d" stroke-width="2.5" />
-              <line x1="20" y1="80" x2="80" y2="20" stroke="#eb2f96" stroke-width="2.5" />
-          </svg>
-          <div class="brujula-row">
-              <button class="btn-brujula bg-rojo"  data-dir="x-" title="-X Izquierda">-X</button>
-              <button class="btn-brujula bg-violeta" data-dir="z+" title="+Z Arriba">+Z</button>
-              <button class="btn-brujula bg-verde"  data-dir="y+" title="+Y Fondo">+Y</button>
-          </div>
-          <div class="brujula-row">
-              <button class="btn-brujula bg-verde"  data-dir="y-" title="-Y Delante">-Y</button>
-              <button class="btn-brujula bg-violeta" data-dir="z-" title="-Z Abajo">-Z</button>
-              <button class="btn-brujula bg-rojo"  data-dir="x+" title="+X Derecha">+X</button>
-          </div>
-       </div>
-       <div class="separator-line"></div>
-    </div>
-
-    <div class="group-box">
-      <button class="btn-acc reduc" id="btnReduc">Reducción</button>
+      
+      <!-- Espacio añadido aquí -->
+      <button class="btn-acc reduc" id="btnReduc" style="margin-left: 12px;">Reducción</button>
       <button class="btn-acc te" id="btnTe">Te</button>
       <button class="btn-acc editar" id="btnEditarTe">✏️ Editar Te</button>
-    </div>
-
-    <div class="group-box">
       <button class="btn-acc conect" id="btnConectarTe">🔌 Conectar Ramal</button>
       <button class="btn-acc retomar" id="btnRetomar">🔌 Retomar</button>
       <button class="btn-acc borrar" id="btnBorrar">↶ Deshacer</button>
     </div>
 
-    <div class="group-box">
-      <button class="btn-share" id="btnLupa">🔍 Lupa</button>
-      <button class="btn-share imprimir" id="btnImprimirTodo">🖨️ Imprimir Todo</button>
-      <button class="btn-share" id="btnCompartirDibujo">📤 Compartir</button>
-    </div>
   </div>
 
   <div class="sliders-rotacion">
@@ -285,12 +208,7 @@
       <span class="valor-slider" id="valorZ">0°</span>
     </div>
     <button class="btn-tool" id="btnResetSliders" style="font-size:11px; padding:4px 8px;">↺ Resetear</button>
-  </div>
-
-  <div style="display: flex; gap: 10px; align-items: center; padding: 0 5px;">
-    <div class="estado-box" id="estado" style="flex: 1;"></div>
-    <span id="estadoCamara" class="estado-camara blq">Rotación: BLOQUEADA</span>
-    <p class="hint" style="flex: 2;">Clic/toque en un nodo para continuar trazo · Clic en cota para editar · <b>Usa los sliders para rotar (cuando esté desbloqueado)</b> · Rueda para zoom</p>
+    <button class="btn-tool" id="btnToggleRot" title="Activar/desactivar rotación libre con sliders">🔓 Activar rotacion</button>
   </div>
 
   <div class="canvas-wrap">
@@ -320,9 +238,6 @@
 </div>
 
 <script>
-/* =====================================================================
-   ESTADO GLOBAL
-   ===================================================================== */
 const estado = {
   elementos: [],
   posActual: { x:0, y:0, z:0 },
@@ -337,6 +252,7 @@ const estado = {
   contadorCarretes: 0,
   nodosInteractivos: [],
   cotasInteractivas: [],
+  ejesInteractivos: [],
   rotacionBloqueada: false
 };
 
@@ -350,18 +266,8 @@ window.addEventListener('beforeunload', function (e) {
   }
 });
 
-const camara = { 
-    rotX: -Math.PI / 4,
-    rotY: Math.PI / 4,
-    zoom: 1 
-};
-
-const vistaFija = { 
-    rotX: -Math.PI / 4, 
-    rotY: Math.PI / 4, 
-    zoom: 1 
-};
-
+const camara = { rotX: -Math.PI / 4, rotY: Math.PI / 4, zoom: 1 };
+const vistaFija = { rotX: -Math.PI / 4, rotY: Math.PI / 4, zoom: 1 };
 const rotacionEjes = { x: 0, y: 0, z: 0 };
 
 const PALETA = ['#1f6feb', '#16a34a', '#dc2626', '#9333ea', '#0891b2', '#ca8a04', '#db2777', '#059669', '#7c3aed', '#ea580c', '#2563eb', '#65a30d', '#e11d48', '#0d9488', '#a16207'];
@@ -413,14 +319,6 @@ function calcularCarretesLimpios(elementos, esRama = false, teAsociada = null) {
 
 function actualizarEstado() {
   cambiosSinGuardar = true;
-
-  const e = document.getElementById('estado');
-  let txt = `<b>CODO</b> Ø${estado.codoActual.diam} · R${estado.codoActual.radio} | `;
-  txt += `Ø tubería: <b>${estado.tubActual.diam}</b> | `;
-  if (estado.ramaActivaId && estado.ramaActivaId !== 'principal') txt += `Ramal T${estado.ramaActivaId} | `;
-  if (estado.requiereNuevoCodo) txt += `<span style="color:#c0392b"><b>⚠ Define codo.</b></span>`;
-  else txt += `Dir: <b>${estado.dirActual ? DIR_LABEL[dirKey(estado.dirActual)] : '—'}</b>`;
-  e.innerHTML = txt;
 
   const todosElementos = [...estado.elementos];
   estado.ramalesTes.forEach(t => { if (t.ramaElementos) todosElementos.push(...t.ramaElementos); });
@@ -671,10 +569,10 @@ function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
   if (ancho < 50) ancho = 150; 
   if (alto < 50) alto = 150;
 
-  const escalaBase = Math.min((w - 2*margen)/ancho, (h - 2*margen)/alto);
-  const escala = escalaBase * camara.zoom;
-  const offsetX = w/2 - ((minX+maxX)/2)*escala;
-  const offsetY = h/2 - ((minY+maxY)/2)*escala;
+  const escalaBase = Math.min((w - 2 * margen) / ancho, (h - 2 * margen) / alto);
+  const escala = interactivo ? escalaBase * camara.zoom : escalaBase;
+  const offsetX = w / 2 - ((minX + maxX) / 2) * escala;
+  const offsetY = h / 2 - ((minY + maxY) / 2) * escala;
 
   const toScreen = p => {
     const q = proyectar(p.x, p.y, p.z);
@@ -684,13 +582,17 @@ function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
   if (interactivo) {
     estado.nodosInteractivos = [];
     estado.cotasInteractivas = [];
+    estado.ejesInteractivos = [];
   }
 
   const L = 150; 
   const ejes = [
-    { v:{x:L,y:0,z:0}, c:'#e74c3c', t:'+X' }, { v:{x:-L,y:0,z:0}, c:'#e74c3c', t:'−X' },
-    { v:{x:0,y:L,z:0}, c:'#27ae60', t:'+Y' }, { v:{x:0,y:-L,z:0}, c:'#27ae60', t:'−Y' },
-    { v:{x:0,y:0,z:L}, c:'#8e44ad', t:'+Z' }, { v:{x:0,y:0,z:-L}, c:'#8e44ad', t:'−Z' },
+    { v:{x:L,y:0,z:0}, c:'#e74c3c', t:'+X', dirKey:'x+' },
+    { v:{x:-L,y:0,z:0}, c:'#e74c3c', t:'−X', dirKey:'x-' },
+    { v:{x:0,y:L,z:0}, c:'#27ae60', t:'+Y', dirKey:'y+' },
+    { v:{x:0,y:-L,z:0}, c:'#27ae60', t:'−Y', dirKey:'y-' },
+    { v:{x:0,y:0,z:L}, c:'#8e44ad', t:'+Z', dirKey:'z+' },
+    { v:{x:0,y:0,z:-L}, c:'#8e44ad', t:'−Z', dirKey:'z-' },
   ];
   const o = toScreen({x:0,y:0,z:0});
   
@@ -705,15 +607,24 @@ function renderizarLienzo(ctx, w, h, factorEscala, interactivo) {
     ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(pText.x, pText.y);
     ctx.strokeStyle = e.c; ctx.lineWidth = 1.5 * factorEscala; ctx.stroke();
 
-    ctx.font = `bold ${11*factorEscala}px Arial`; 
+    ctx.font = `bold ${12*factorEscala}px Arial`; 
     ctx.textAlign='center'; ctx.textBaseline='middle'; 
     
     const wText = ctx.measureText(e.t).width;
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.fillRect(pText.x - wText/2 - 2*factorEscala, pText.y - 8*factorEscala, wText + 4*factorEscala, 14*factorEscala);
+    const hText = 16 * factorEscala;
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.fillRect(pText.x - wText/2 - 4*factorEscala, pText.y - hText/2, wText + 8*factorEscala, hText);
     
+    ctx.strokeStyle = e.c;
+    ctx.lineWidth = 1 * factorEscala;
+    ctx.strokeRect(pText.x - wText/2 - 4*factorEscala, pText.y - hText/2, wText + 8*factorEscala, hText);
+
     ctx.fillStyle = e.c;
     ctx.fillText(e.t, pText.x, pText.y);
+
+    if (interactivo) {
+      estado.ejesInteractivos.push({ x: pText.x, y: pText.y, dirKey: e.dirKey, etiqueta: e.t });
+    }
   });
 
   const carretesPorNum = new Map();
@@ -921,7 +832,16 @@ canvas.addEventListener('pointerup', (e) => {
     const my = (e.clientY - rect.top) * (canvas.height / rect.height);
     
     const esTactil = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    const margen = esTactil ? 30 : 20;
+    const margen = esTactil ? 25 : 18;
+
+    if (estado.ejesInteractivos) {
+      for (const eje of estado.ejesInteractivos) {
+        if (Math.hypot(eje.x - mx, eje.y - my) <= margen) {
+          agregarTramo(eje.dirKey);
+          return;
+        }
+      }
+    }
     
     let cotaElegida = null;
     for (const c of estado.cotasInteractivas) {
@@ -1005,7 +925,6 @@ function nuevoProyecto() {
   camara.zoom = vistaFija.zoom;
   resetSliders();
   estado.rotacionBloqueada = true;
-  actualizarIndicadorCamara();
 
   colorPorDiam.clear();
   dibujar();
@@ -1042,7 +961,6 @@ async function guardarComoProyecto() {
       return;
     } catch (err) {
       if (err.name === 'AbortError') return;
-      console.warn("Fallo al usar showSaveFilePicker, recurriendo a descarga clásica:", err);
     }
   }
 
@@ -1077,9 +995,7 @@ async function guardarProyecto() {
       cambiosSinGuardar = false;
       alert("Proyecto guardado.");
       return;
-    } catch (err) {
-      console.warn("No se pudo sobrescribir directamente el archivo, guardando como nuevo...", err);
-    }
+    } catch (err) {}
   }
   guardarComoProyecto();
 }
@@ -1125,31 +1041,11 @@ function cargarArchivoProyecto(event) {
       archivoHandleActual = null;
       alert("Proyecto cargado con éxito.");
     } catch (err) {
-      alert("Error al leer el archivo. Asegúrate de que sea un archivo de tubería válido.");
-      console.error(err);
+      alert("Error al leer el archivo.");
     }
     event.target.value = '';
   };
   reader.readAsText(file);
-}
-
-function actualizarIndicadorCamara() {
-  const el = document.getElementById('estadoCamara');
-  if (estado.rotacionBloqueada) {
-    el.textContent = 'Rotación: BLOQUEADA';
-    el.className = 'estado-camara blq';
-  } else {
-    el.textContent = 'Rotación: LIBRE';
-    el.className = 'estado-camara lib';
-  }
-  const btnRot = document.getElementById('btnToggleRot');
-  if (estado.rotacionBloqueada) {
-    btnRot.textContent = '🔓 Rotación Libre';
-    btnRot.classList.remove('locked');
-  } else {
-    btnRot.textContent = '🔒 Bloquear Rotación';
-    btnRot.classList.add('locked');
-  }
 }
 
 function aplicarRotacionSliders() {
@@ -1210,7 +1106,6 @@ document.getElementById('btnFijarVista').addEventListener('click', () => {
   vistaFija.zoom = camara.zoom;
   resetSliders();
   estado.rotacionBloqueada = true;
-  actualizarIndicadorCamara();
   alert('✅ Vista fijada y rotación bloqueada.');
 });
 
@@ -1220,13 +1115,19 @@ document.getElementById('btnIrVistaFija').addEventListener('click', () => {
   camara.zoom = vistaFija.zoom;
   resetSliders();
   estado.rotacionBloqueada = true;
-  actualizarIndicadorCamara();
   dibujar();
 });
 
 document.getElementById('btnToggleRot').addEventListener('click', () => {
   estado.rotacionBloqueada = !estado.rotacionBloqueada;
-  actualizarIndicadorCamara();
+  const btnRot = document.getElementById('btnToggleRot');
+  if (estado.rotacionBloqueada) {
+    btnRot.textContent = '🔓 Rotación Libre';
+    btnRot.classList.remove('locked');
+  } else {
+    btnRot.textContent = '🔒 Bloquear Rotación';
+    btnRot.classList.add('locked');
+  }
   dibujar();
 });
 
@@ -1240,10 +1141,6 @@ document.getElementById('btnToggleResultados').addEventListener('click', (e) => 
     e.target.textContent = 'Mostrar Resultados';
   }
   setTimeout(dibujar, 50);
-});
-
-document.querySelectorAll('.btn-brujula').forEach(btn => {
-  btn.addEventListener('click', () => agregarTramo(btn.dataset.dir));
 });
 
 document.getElementById('btnReduc').addEventListener('click', agregarReduccion);
@@ -1277,7 +1174,6 @@ document.getElementById('btnAplicarDef').addEventListener('click', () => {
   camara.zoom = vistaFija.zoom;
   resetSliders();
   estado.rotacionBloqueada = true;
-  actualizarIndicadorCamara();
 
   colorPorDiam.clear();
   dibujar();
@@ -1384,13 +1280,6 @@ function agregarReduccion() {
   estado.codoActual = { diam, radio }; estado.requiereNuevoCodo = false; actualizarEstado(); dibujar();
 }
 
-/* Navegación a otros editores con confirmación de cambios */
-function navegarA(url) {
-  if (cambiosSinGuardar && (estado.elementos.length > 0 || estado.ramalesTes.length > 0)) {
-    if (!confirm("Tienes cambios sin guardar. ¿Deseas salir igualmente?")) return;
-  }
-  window.location.href = url;
-}
 function deshacer() {
   const targetArr = (estado.ramaActivaId && estado.ramaActivaId !== 'principal') ? estado.ramalesTes.find(t=>t.id===estado.ramaActivaId).ramaElementos : estado.elementos;
   if (targetArr.length === 0) return;
@@ -1412,22 +1301,69 @@ document.getElementById('btnLupa').addEventListener('click', abrirLupa);
 document.getElementById('modalCerrar').addEventListener('click', () => modalLupa.style.display = 'none');
 modalLupa.addEventListener('click', (e) => { if (e.target === modalLupa) modalLupa.style.display = 'none'; });
 
+function guardarSVG() {
+  const w = canvas.width;
+  const h = canvas.height;
+  const factorHD = 2; 
+
+  const cAux = document.createElement('canvas');
+  cAux.width = w * factorHD;
+  cAux.height = h * factorHD;
+  const ctxAux = cAux.getContext('2d');
+
+  renderizarLienzo(ctxAux, w * factorHD, h * factorHD, factorHD, false);
+
+  const imgData = cAux.toDataURL('image/png');
+  const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w * factorHD} ${h * factorHD}">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <image href="${imgData}" width="${w * factorHD}" height="${h * factorHD}"/>
+</svg>`;
+
+  const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'esquema_tuberia.svg';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+document.getElementById('btnGuardarSVG').addEventListener('click', guardarSVG);
+
 function abrirVentanaImpresion(titulo, contenidoHTML) {
   const v = window.open('', '_blank');
-  v.document.write(`<html><head><title>${titulo}</title><style>body{font-family:Arial;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #333;padding:5px;text-align:center}img{max-width:100%}</style></head><body>${contenidoHTML}<script>setTimeout(()=>window.print(),300);<\/script></body></html>`);
+  v.document.write(`<html><head><title>${titulo}</title><style>body{font-family:Arial;padding:15px;color:#222}h1{font-size:16px;margin:0 0 4px 0}p{font-size:11px;margin:0 0 10px 0}h2{font-size:13px;margin:12px 0 4px 0}table{border-collapse:collapse;width:100%;font-size:10px;margin-bottom:8px}th,td{border:1px solid #333;padding:3px;text-align:center}th{background:#f0f0f0}img{max-width:100%;height:auto;display:block;margin:0 auto}hr{border:0;border-top:1px solid #ccc;margin:10px 0}</style></head><body>${contenidoHTML}<script>setTimeout(()=>window.print(),300);<\/script></body></html>`);
   v.document.close();
 }
+
 document.getElementById('btnImprimirTodo').addEventListener('click', () => {
   const cHD = document.createElement('canvas'); cHD.width = canvas.width * 2; cHD.height = canvas.height * 2;
   renderizarLienzo(cHD.getContext('2d'), cHD.width, cHD.height, 2, false);
   const dataUrl = cHD.toDataURL('image/png');
-  let htmlTabla = document.getElementById('listaMateriales').innerHTML.replace(/<input[^>]*>/g, (m) => m.match(/value="([^"]*)"/)[1]);
-  abrirVentanaImpresion('Reporte', `<h1>Trazo de Tubería</h1><p>Propiedad MEN - J.N.G.</p><img src="${dataUrl}"><hr><h2>Materiales</h2>${htmlTabla}`);
+  
+  let htmlAccesorios = document.getElementById('listaAccesorios').innerHTML;
+  let htmlMateriales = document.getElementById('listaMateriales').innerHTML.replace(/<input[^>]*>/g, (m) => {
+    const match = m.match(/value="([^"]*)"/);
+    return match ? match[1] : '';
+  });
+
+  abrirVentanaImpresion('Reporte de Tubería', `
+    <h1>Trazo de Tubería</h1>
+    <p>Propiedad MEN - Montajes Industriales S. L. | Creado por: J.N.G</p>
+    <img src="${dataUrl}">
+    <hr>
+    <h2>Accesorios</h2>
+    ${htmlAccesorios}
+    <h2>Lista de Materiales (Carretes)</h2>
+    ${htmlMateriales}
+  `);
 });
+
 document.getElementById('btnCompartirDibujo').addEventListener('click', () => alert('Función de compartir simulada.'));
 
 estado.rotacionBloqueada = true;
-actualizarIndicadorCamara();
 dibujar(); 
 cambiosSinGuardar = false;
 window.addEventListener('resize', () => setTimeout(dibujar, 100));
