@@ -1,12 +1,19 @@
 @echo off
 cd /d "%~dp0"
 
-echo Iniciando servidor local en http://localhost:8000 ...
-start "" /min cmd /c "python -m http.server 8000"
+:: Crear un script temporal en VBScript
+echo Set WshShell = CreateObject("WScript.Shell") > "%temp%\servidor_oculto.vbs"
+echo WshShell.Run "cmd /c python -m http.server 8000", 0, False >> "%temp%\servidor_oculto.vbs"
 
-timeout /t 2 /nobreak >nul
+:: Ejecutar el script oculto y borrarlo
+cscript //nologo "%temp%\servidor_oculto.vbs"
+del "%temp%\servidor_oculto.vbs"
 
+:: Esperar a que arranque el servidor
+timeout /t 1 /nobreak >nul
+
+:: Abrir el navegador
 start "" "http://localhost:8000/index.html"
 
-echo Servidor iniciado. Cierra la ventana minimizada para detenerlo.
-pause
+:: Salir de este archivo bat inmediatamente
+exit

@@ -3,277 +3,307 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel Principal - MEN</title>
+<title>Panel de Consultas - MEN</title>
 <style>
-    * {
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
+  /* ============ ESTILOS BASE ============ */
+  * {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
 
-    body {
-        margin: 0;
-        padding: 20px;
-        background-color: #f4f7f6;
-        color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
+  body {
+    margin: 0;
+    padding: 16px 11px 40px;
+    background-color: #eef0f2;
+    color: #222;
+  }
 
-    .menu-container {
-        background: white;
-        padding: 25px 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        width: 100%;
-        max-width: 750px; /* Aumentado para que quepan más columnas de cuadrados */
-        text-align: center;
-    }
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
+  .container {
+    max-width: 850px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
 
-    /* Logo MEN */
-    .logo-men {
-        color: #2980b9;
-        font-size: 32px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        letter-spacing: 2px;
-    }
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
 
-    /* Contenedor de los botones (Grid adaptable) */
+  /* ============ CONTENEDOR DE BOTONES ============ */
+  .botones {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 25px;
+  }
+
+  /* Botones cuadrados */
+  .btn-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 6px;
+    border: none;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    line-height: 1.1;
+    overflow: hidden;
+  }
+
+  .btn-menu:active {
+    transform: scale(0.96);
+  }
+
+  /* Estilo para las imágenes dentro de los botones */
+  .btn-menu img {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    margin-bottom: 2px;
+  }
+
+  /* Texto del botón */
+  .btn-menu span {
+    display: block;
+    width: 100%;
+    word-wrap: break-word;
+  }
+
+  /* ============================================================
+     COLORES POR CATEGORÍA
+     ============================================================ */
+  .btn-azul-oscuro { background-color: #34495e; }
+  .btn-azul-oscuro:hover { background-color: #2c3e50; }
+
+  .btn-naranja { background-color: #e67e22; }
+  .btn-naranja:hover { background-color: #d35400; }
+
+  .btn-azul { background-color: #2980b9; }
+  .btn-azul:hover { background-color: #1f6391; }
+
+  .btn-verde { background-color: #16a085; }
+  .btn-verde:hover { background-color: #12876f; }
+
+  .btn-rojo { background-color: #c0392b; }
+  .btn-rojo:hover { background-color: #a93226; }
+
+  .btn-gris { background-color: #7f8c8d; }
+  .btn-gris:hover { background-color: #6b7778; }
+
+  .btn-turquesa { background-color: #17a2b8; }
+  .btn-turquesa:hover { background-color: #138496; }
+
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 480px) {
     .botones {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        gap: 12px;
-        justify-content: center;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 8px;
+      margin-bottom: 20px;
     }
-
-    /* Botones del menú (Cuadrados) */
     .btn-menu {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        width: 100%;
-        aspect-ratio: 1 / 1; /* Fuerza a que sea un cuadrado */
-        padding: 6px;
-        border: none;
-        border-radius: 8px;
-        font-size: 9px; /* Texto pequeño */
-        font-weight: bold;
-        text-transform: uppercase;
-        color: white;
-        text-decoration: none;
-        cursor: pointer;
-        transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        text-align: center;
-        line-height: 1.1;
-        overflow: hidden;
+      font-size: 8px;
+      padding: 4px;
     }
-
-    .btn-menu:active {
-        transform: scale(0.96);
-    }
-
-    /* Estilo para las imágenes dentro de los botones */
     .btn-menu img {
-        width: 75%;
-        height: 75%;
-        object-fit: contain;
-        margin-bottom: 2px;
+      width: 70%;
+      height: 70%;
     }
-
-    /* Texto del botón */
-    .btn-menu span {
-        display: block;
-        width: 100%;
-        word-wrap: break-word;
-    }
-
-    /* ============================================================
-       COLORES POR CATEGORÍA (Se mantienen)
-       ============================================================ */
-
-    .btn-azul-oscuro { background-color: #34495e; }
-    .btn-azul-oscuro:hover { background-color: #2c3e50; }
-
-    .btn-naranja { background-color: #e67e22; }
-    .btn-naranja:hover { background-color: #d35400; }
-
-    .btn-azul { background-color: #2980b9; }
-    .btn-azul:hover { background-color: #1f6391; }
-
-    .btn-verde { background-color: #16a085; }
-    .btn-verde:hover { background-color: #12876f; }
-
-    .btn-morado { background-color: #8e44ad; }
-    .btn-morado:hover { background-color: #71368a; }
-
-    .btn-rojo { background-color: #c0392b; }
-    .btn-rojo:hover { background-color: #a93226; }
-
-    .btn-gris { background-color: #7f8c8d; }
-    .btn-gris:hover { background-color: #6b7778; }
-
-    .btn-turquesa { background-color: #17a2b8; }
-    .btn-turquesa:hover { background-color: #138496; }
-
-    /* ============================================================
-       RESPONSIVE: Ajustes para móviles
-       ============================================================ */
-    @media (max-width: 480px) {
-        .menu-container {
-            padding: 15px 10px;
-        }
-
-        .logo-men {
-            font-size: 28px;
-            margin-bottom: 18px;
-        }
-
-        .botones {
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 8px;
-        }
-
-        .btn-menu {
-            padding: 4px;
-            font-size: 8px; /* Texto aún más pequeño en móvil */
-        }
-        
-        .btn-menu img {
-            width: 70%;
-            height: 70%;
-        }
-    }
-      /* ============================================================
-       ESTILODEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
-
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">? Volver atrás</a>
-
-    <div class="logo-men">MEN</div>
-
-    <div class="botones">
-
-        <!-- ===== Cálculos de materiales ===== -->
-        <a href="calc_perfil.html" class="btn-menu btn-azul-oscuro">
-            <img src="img/perfil.png" alt="Peso perfil">
-            <span>Peso perfil y chapa</span>
-        </a>
-        
-        <a href="calc-pulgadas.html" class="btn-menu btn-turquesa">
-            <img src="img/pulgadas.png" alt="Pulgadas">
-            <span>Tuberia pulgadas a mm</span>
-        </a>
-        
-        <a href="esp_tuberia.html" class="btn-menu btn-turquesa">
-            <img src="img/espesores.png" alt="Espesores">
-            <span>Tuberia espesore SCH</span>
-        </a>
-		  <a href="volumen tanque.html" class="btn-menu btn-turquesa">
-            <img src="img/volumen.png" alt="Espesores">
-            <span>Volumen tanque</span>
-        </a>
-		  <a href="fondo.html" class="btn-menu btn-turquesa">
-            <img src="img/fondo.png" alt="Espesores">
-            <span>Fondos</span>
-        </a>
-
-        <!-- ===== Válvulas ===== -->
-        <a href="valvulas.html" class="btn-menu btn-naranja">
-            <img src="img/valvula_compuerta_serie14.png" alt="Válvulas">
-            <span>Valvulas-Entre caras</span>
-        </a>
-        
-        <a href="valvuladiafragma.html" class="btn-menu btn-naranja">
-            <img src="img/diafragma.png" alt="Diafragma">
-            <span>Valvulas diafragma-Inclinacion</span>
-        </a>
-
-        <!-- ===== Cálculos varios ===== -->
-        <a href="bridas.html" class="btn-menu btn-azul-oscuro">
-            <img src="img/DE CUELLO.png" alt="Bridas">
-            <span>Bridas datos y conf. Tornillos</span>
-        </a>
-        
-		 <a href="juntas.html" class="btn-menu btn-azul-oscuro">
-            <img src="img/juntas1.png" alt="Bridas">
-            <span>Juntas diametros</span>
-        </a>
-		 <a href="compatibilidadjuntas.html" class="btn-menu btn-verde">
-            <img src="img/juntas.png" alt="Juntas">
-            <span>Juntas-Compatibilidad</span>
-        </a>
-        
-        <a href="clamp.html" class="btn-menu btn-azul-oscuro">
-            <img src="img/clamp.png" alt="Clamp">
-            <span>Clamp localizar</span>
-        </a>
-
-        <!-- ===== Compatibilidades ===== -->
-       
-        
-        <a href="compatibilidpolipropileno.html" class="btn-menu btn-verde">
-            <img src="img/polipropileno.png" alt="Polipropileno">
-            <span>Polipropileno-Compatibilidad</span>
-        </a>
-        
-        <a href="compatibilidad_recipiente.html" class="btn-menu btn-verde">
-            <img src="img/recipientes.png" alt="Recipientes">
-            <span>Tuberias y recipientes--Compatibilidad</span>
-        </a>
-
-        <!-- ===== Dilatación y vapor ===== -->
-        <a href="carac_vapor.html" class="btn-menu btn-rojo">
-            <img src="img/vapor.png" alt="Vapor">
-            <span>Caracteristica vapor segun presion</span>
-        </a>
-
-        <!-- ===== Colores y símbolos ===== -->
-        <a href="color_tuberia.html" class="btn-menu btn-gris">
-            <img src="img/colores.png" alt="Colores">
-            <span>Codigo color de tuberia</span>
-        </a>
-        
-        <a href="simbolos.html" class="btn-menu btn-gris">
-            <img src="img/simbolos.png" alt="Símbolos">
-            <span>Simbolos</span>
-        </a>
-
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
     </div>
+    <div class="header-right">
+      <h1>Panel de Consultas</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+
+  <div class="botones">
+
+    <!-- ===== Cálculos de materiales ===== -->
+    <a href="calc_perfil.html" class="btn-menu btn-azul-oscuro">
+      <img src="img/perfil.png" alt="Peso perfil">
+      <span>Peso perfil y chapa</span>
+    </a>
+    
+    <a href="calc-pulgadas.html" class="btn-menu btn-turquesa">
+      <img src="img/pulgadas.png" alt="Pulgadas">
+      <span>Tuberia pulgadas a mm</span>
+    </a>
+    
+    <a href="esp_tuberia.html" class="btn-menu btn-turquesa">
+      <img src="img/espesores.png" alt="Espesores">
+      <span>Tuberia espesore SCH</span>
+    </a>
+    
+    <a href="volumen tanque.html" class="btn-menu btn-turquesa">
+      <img src="img/volumen.png" alt="Volumen">
+      <span>Volumen tanque</span>
+    </a>
+    
+    <a href="fondo.html" class="btn-menu btn-turquesa">
+      <img src="img/fondo.png" alt="Fondos">
+      <span>Fondos</span>
+    </a>
+
+    <!-- ===== Válvulas ===== -->
+    <a href="valvulas.html" class="btn-menu btn-naranja">
+      <img src="img/valvula_compuerta_serie14.png" alt="Válvulas">
+      <span>Valvulas-Entre caras</span>
+    </a>
+    
+    <a href="valvuladiafragma.html" class="btn-menu btn-naranja">
+      <img src="img/diafragma.png" alt="Diafragma">
+      <span>Valvulas diafragma-Inclinacion</span>
+    </a>
+
+    <!-- ===== Cálculos varios ===== -->
+    <a href="bridas.html" class="btn-menu btn-azul-oscuro">
+      <img src="img/DE CUELLO.png" alt="Bridas">
+      <span>Bridas datos y conf. Tornillos</span>
+    </a>
+    
+    <a href="juntas.html" class="btn-menu btn-azul-oscuro">
+      <img src="img/juntas1.png" alt="Juntas">
+      <span>Juntas diametros</span>
+    </a>
+    
+    <a href="compatibilidadjuntas.html" class="btn-menu btn-verde">
+      <img src="img/juntas.png" alt="Juntas">
+      <span>Juntas-Compatibilidad</span>
+    </a>
+    
+    <a href="clamp.html" class="btn-menu btn-azul-oscuro">
+      <img src="img/clamp.png" alt="Clamp">
+      <span>Clamp localizar</span>
+    </a>
+
+    <!-- ===== Compatibilidades ===== -->
+    <a href="compatibilidpolipropileno.html" class="btn-menu btn-verde">
+      <img src="img/polipropileno.png" alt="Polipropileno">
+      <span>Polipropileno-Compatibilidad</span>
+    </a>
+    
+    <a href="compatibilidad_recipiente.html" class="btn-menu btn-verde">
+      <img src="img/recipientes.png" alt="Recipientes">
+      <span>Tuberias y recipientes--Compatibilidad</span>
+    </a>
+
+    <!-- ===== Dilatación y vapor ===== -->
+    <a href="carac_vapor.html" class="btn-menu btn-rojo">
+      <img src="img/vapor.png" alt="Vapor">
+      <span>Caracteristica vapor segun presion</span>
+    </a>
+
+    <!-- ===== Colores y símbolos ===== -->
+    <a href="color_tuberia.html" class="btn-menu btn-gris">
+      <img src="img/colores.png" alt="Colores">
+      <span>Codigo color de tuberia</span>
+    </a>
+    
+    <a href="simbolos.html" class="btn-menu btn-gris">
+      <img src="img/simbolos.png" alt="Símbolos">
+      <span>Simbolos</span>
+    </a>
+
+  </div>
 
 </div>
 

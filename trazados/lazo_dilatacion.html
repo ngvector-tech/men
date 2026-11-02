@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lazo de Dilatación — Cálculo y Esquema</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
 
   body {
@@ -15,6 +16,7 @@
     color: #222;
   }
 
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
     max-width: 640px;
     margin: 0 auto;
@@ -24,15 +26,54 @@
     padding: 16px 19px 21px;
   }
 
-  h1 {
-    text-align: center;
-    font-size: 13px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
-    border-radius: 4px;
-    margin: 0 0 5px;
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
   .subtitulo {
     text-align: center;
     font-size: 9px;
@@ -180,42 +221,29 @@
     margin-top: 3px;
     font-weight: 600;
   }
-   .btn-volver:hover { background: #f4f6f8; }
+
   .btn-avanzado {
-  display: block;
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  background: #F5D627;
-  color: #050505;
-  font-size: 11px;
-  font-weight: 700;
-  
-  letter-spacing: 0.5px;
-  padding: 9px 12px;
-  border-radius: 5px;
-  margin: 0 0 14px;
-  box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  cursor: pointer;
-}
-   .btn-volver {
     display: block;
     width: 100%;
     text-align: center;
     text-decoration: none;
-    background: #4DF527;
-    color: #111;
-    border: 1px solid #c7ccd1;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 8px 12px;
-    border-radius: 4px;
-    margin-top: 12px;
+    background: #F5D627;
+    color: #050505;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 9px 12px;
+    border-radius: 5px;
+    margin: 14px 0;
+    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
     cursor: pointer;
-    transition: background 0.15s;
   }
-  .btn-volver:hover { background: #f4f6f8; }
+  .btn-avanzado:hover {
+    background: #e0c110;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(30, 95, 168, 0.45);
+  }
 
   /* ====== LIGHTBOX ====== */
   .lightbox {
@@ -247,50 +275,60 @@
     font-weight: 700;
     cursor: pointer;
   }
-  
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Cálculo y Esquema del Lazo de Dilatación</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Lazo de<br>Dilatación</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+  
   <p class="subtitulo">Lazo en U · uno o varios lazos según el espacio disponible</p>
 
   <!-- Modo de entrada -->
   <div class="modo-toggle" id="modoToggle">
-    <button type="button" data-modo="directo" class="active">Introducir ΔL directamente (Dilatacion)</button>
-    <button type="button" data-modo="calc">Calcular ΔL (T y L) (Dilatacion)</button>
+    <button type="button" data-modo="directo" class="active">Introducir ΔL directamente</button>
+    <button type="button" data-modo="calc">Calcular ΔL (T y L)</button>
   </div>
 
   <!-- Material -->
@@ -434,7 +472,7 @@
   </div>
 
   <a href="dilatacion_avanzada.html" class="btn-avanzado">← Volver a cálculos avanzados</a>
-  <a href="dilatacion_termica.html" class="btn-volver">Volver a la calculadora básica</a>
+  <a href="dilatacion_termica.html" class="btn-volver" style="width:100%; justify-content:center; margin-bottom:0;">Volver a la calculadora básica</a>
   
 </div>
 
@@ -524,7 +562,7 @@ function dibujarEsquema(dL, n, Llazo, W, H, Ltramo, Ltotal, Ldisp) {
   const baseY = 160;
   const usableW = VB_W - padX * 2;
 
-  // Escala: usamos la longitud real total del tramo (Ldisp si existe, si no Ltotal)
+  // Escala: usamos la longitud real total del tramo
   const Lref = Ldisp && Ldisp > 0 ? Ldisp : (Ltotal > 0 ? Ltotal : 1);
   const escala = usableW / Lref;
 
@@ -633,7 +671,6 @@ function calcular() {
     }
     const dT = tMax - tMin;
     dL = mat.alfa * Ltot * dT;
-    if (Ldisp <= 0) LdispFallback = Ltot; // usamos el tramo como disponible
   }
 
   /* 2) L_lazo mínimo para absorber TODA la ΔL con 1 solo lazo */
@@ -643,7 +680,6 @@ function calcular() {
   let n;
   if (nSel === 'auto') {
     if (Ldisp > 0 && LlazoMin1 > Ldisp) {
-      // No cabe 1 lazo → repartimos
       n = Math.ceil(LlazoMin1 / Ldisp);
     } else {
       n = 1;
@@ -669,10 +705,7 @@ function calcular() {
     Ltramo = 0;
   }
 
-  /* 6) Tensión axial estimada
-        σ ≈ E·α·ΔT · (L_lazo_ref / L_lazo_min)
-        Aquí, por construcción cada lazo tiene su L_lazo = mínimo → σ = σ_adm
-        Si el usuario fuerza MENOS lazos que los mínimos, σ > σ_adm */
+  /* 6) Tensión axial estimada */
   let sigma;
   if (LlazoMin1 > 0) {
     sigma = mat.sigma_adm * (LlazoMin1 / (n * Llazo));
@@ -769,9 +802,6 @@ document.addEventListener('keydown', e => {
 /* ============ Inicializar ============ */
 calcular();
 </script>
-
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 
 </body>
 </html>

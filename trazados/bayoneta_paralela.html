@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora peine</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   :root{
     --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
     --borde:#e0e3e6; --texto:#1f2937; --ok:#137a3f; --error:#b42318;
@@ -18,9 +19,9 @@
     margin: 0;
     padding: 16px 11px 40px;
     color: #222;
-    display: block !important;
   }
 
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
     max-width: 733px;
     margin: 0 auto;
@@ -30,24 +31,77 @@
     padding: 16px 19px 21px;
   }
 
-  h1 {
-    text-align: center;
-    font-size: 13px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
-    border-radius: 4px;
-    margin: 0 0 5px;
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+  button.print-btn {
+    background: #263442;
+    border: 1px solid #4a5c6e;
+    color: #fff;
+    padding: 6px 11px;
+    font-size: 11px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: filter 0.2s;
+  }
+  button.print-btn:hover { filter: brightness(.96); }
 
+  /* ============ TEXTOS Y BOTONES ============ */
   .subtitulo {
     text-align: center;
-    font-size: 9px;
+    font-size: 10px;
     color: #666;
     margin: 0 0 12px;
   }
 
-  /* ============ BOTÓN ============ */
   .btn-bayoneta {
     display: block;
     width: 100%;
@@ -75,6 +129,7 @@
     box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
   }
 
+  /* ============ LAYOUT Y PANELES ============ */
   .layout {
     display: grid;
     grid-template-columns: 253px 1fr;
@@ -250,7 +305,7 @@
     letter-spacing: 0.5px;
   }
 
-  /* ============ LIGHTBOX (ventana flotante) ============ */
+  /* ============ LIGHTBOX ============ */
   .lightbox {
     display: none;
     position: fixed;
@@ -300,56 +355,65 @@
     from { transform: scale(0.85); opacity: 0; }
     to   { transform: scale(1);    opacity: 1; }
   }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Calculadora peine</h1>
+  
+  <!-- BARRA OSCURA (Única cabecera) -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Calculadora<br>peine</h1>
+
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+  
   <p class="subtitulo">Cálculo de la distancia B a partir de separacion A y el ángulo α del peine</p>
 
-  <!-- Botón único: Calcular bayoneta -->
   <a href="bayoneta.html" class="btn-bayoneta">🔧 Calcular bayoneta</a>
 
   <div class="layout">
-
     <!-- PANEL DE ENTRADA -->
     <section class="panel">
       <h2>Datos de entrada</h2>
 
       <div class="esquema" id="esquemaEntrada">
-        <!-- Imagen del peine (clic para ampliar) -->
         <img src="img/peine.png" alt="Esquema del peine de tuberías" id="imgPeine">
       </div>
 
@@ -367,10 +431,6 @@
       <button id="btnCalcular">Calcular B</button>
       <button id="btnCSV" class="sec">Exportar CSV</button>
       <div class="aviso" id="aviso"></div>
-
-      <p class="nota">
-       <strong></strong>.
-      </p>
     </section>
 
     <!-- PANEL DE RESULTADOS -->
@@ -388,12 +448,9 @@
           <div class="dato destacado" id="out_B">B = —</div>
         </div>
       </div>
-
-      <p class="nota">
-      </p>
     </section>
-
   </div>
+
 </div>
 
 <!-- ============ LIGHTBOX ============ -->
@@ -406,7 +463,6 @@
 (function(){
   "use strict";
 
-  // Referencias DOM
   const inA       = document.getElementById('in_A');
   const inAlpha   = document.getElementById('in_alpha');
   const btnCalcular = document.getElementById('btnCalcular');
@@ -417,40 +473,31 @@
   const outAlpha  = document.getElementById('out_alpha');
   const outB      = document.getElementById('out_B');
 
-  // Lightbox
   const imgPeine       = document.getElementById('imgPeine');
   const lightbox       = document.getElementById('lightbox');
   const cerrarLightbox = document.getElementById('cerrarLightbox');
 
-  // Estado del último cálculo (para CSV)
   let ultimoCalculo = null;
 
-  // Utilidades
   function deg2rad(deg){ return deg * Math.PI / 180; }
-
   function formatear(valor, decimales = 2){
     if (!isFinite(valor)) return '—';
     return Number(valor.toFixed(decimales)).toString();
   }
-
   function mostrarAviso(mensaje, tipo){
     aviso.textContent = mensaje;
     aviso.className = 'aviso ' + tipo;
   }
-
   function ocultarAviso(){
     aviso.className = 'aviso';
     aviso.textContent = '';
   }
 
-  // Cálculo principal
   function calcular(){
     ocultarAviso();
-
     const A     = parseFloat(inA.value);
     const alpha = parseFloat(inAlpha.value);
 
-    // Validaciones
     if (isNaN(A) || isNaN(alpha)) {
       mostrarAviso('Introduce valores numéricos válidos para A y α.', 'error');
       return null;
@@ -464,28 +511,23 @@
       return null;
     }
 
-    // Fórmula: B = A * tan(alpha/2)
     const mitadRad = deg2rad(alpha / 2);
     const B = A * Math.tan(mitadRad);
 
-    // Mostrar resultados (2 decimales)
     outA.textContent     = `A = ${formatear(A, 2)} mm`;
     outAlpha.textContent = `α = ${formatear(alpha, 2)}°`;
     outB.textContent     = `B = ${formatear(B, 2)} mm`;
 
     ultimoCalculo = { A: A, alpha: alpha, B: B };
-
     mostrarAviso('Cálculo realizado correctamente.', 'ok');
     return ultimoCalculo;
   }
 
-  // Exportar CSV
   function exportarCSV(){
     if (!ultimoCalculo) {
       mostrarAviso('Primero realiza un cálculo antes de exportar.', 'error');
       return;
     }
-
     const c = ultimoCalculo;
     const sep = ';';
     const filas = [
@@ -495,7 +537,6 @@
       ['Resultado B', formatear(c.B, 2), 'mm'],
       ['Fórmula', 'B = A * tan(alpha/2)', '']
     ];
-
     const contenido = filas.map(f => f.join(sep)).join('\n');
     const blob = new Blob(['\uFEFF' + contenido], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -508,7 +549,6 @@
     URL.revokeObjectURL(url);
   }
 
-  // ====== LIGHTBOX: abrir / cerrar ======
   function abrirLightbox(){
     lightbox.classList.add('activo');
     document.body.style.overflow = 'hidden';
@@ -529,7 +569,6 @@
     }
   });
 
-  // Eventos
   btnCalcular.addEventListener('click', calcular);
   btnCSV.addEventListener('click', exportarCSV);
 
@@ -539,14 +578,9 @@
     });
   });
 
-  // Cálculo inicial al cargar
   calcular();
 })();
 </script>
-
-<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 
 </body>
 </html>

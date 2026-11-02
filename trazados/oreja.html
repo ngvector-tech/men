@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Orejetas de Elevación</title>
-  <link rel="stylesheet" href="men-header.css">
   <style>
+    /* ============ ESTILOS BASE ============ */
     :root { 
       --azul: #0d6efd; 
       --azul-oscuro: #0b5ed7;
@@ -16,63 +16,107 @@
     }
     * { 
       box-sizing: border-box; 
-      font-family: system-ui, -apple-system, sans-serif; 
+      font-family: 'Segoe UI', Arial, sans-serif; 
     }
     body { 
       background: #eef2f5; 
       margin: 0; 
-      padding: 4px; 
-      font-size: 11px; 
+      padding: 16px 11px 40px; 
+      font-size: 12px; 
       color: var(--texto); 
     }
+
+    /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
     .container { 
       max-width: 900px; 
       margin: 0 auto; 
       background: #fff; 
-      border-radius: 4px; 
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08); 
-      overflow: hidden; 
-      margin-bottom: 10px; 
+      border-radius: 7px; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+      padding: 16px 19px 21px;
     }
-    .header { 
-      background: var(--azul); 
-      color: #fff; 
-      padding: 6px; 
-      text-align: center; 
-      font-weight: bold; 
-      font-size: 13px; 
+
+    /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #17212b;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e5fa8;
+      background: #fff;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .brand-sub {
+      font-size: 13px;
+      color: #d9e1e7;
+      font-weight: 600;
+    }
+    .brand-author {
+      font-size: 11px;
+      color: #89949e;
+    }
+    .header-right h1 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #e8f0fa;
+      background: transparent;
+      padding: 0;
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    /* ============ CONTENIDO INTERNO ============ */
     .grid { 
       display: grid; 
       grid-template-columns: 1fr; 
       gap: 4px; 
-      padding: 4px; 
     }
     @media (min-width: 768px) { 
       .grid { grid-template-columns: 1fr 1fr; } 
     }
+    
     .panel { 
       border: 1px solid var(--borde); 
       border-radius: 3px; 
       overflow: hidden; 
       background: #fff; 
+      margin-bottom: 6px;
     }
     .panel-title { 
       background: var(--azul); 
       color: #fff; 
-      padding: 4px; 
-      font-size: 10px; 
+      padding: 6px; 
+      font-size: 11px; 
       text-align: center; 
       font-weight: bold; 
     }
-    .panel-body { padding: 4px; }
+    .panel-body { padding: 6px; }
+    
     .row { 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      margin-bottom: 3px; 
+      margin-bottom: 4px; 
       border-bottom: 1px dashed #f0f0f0; 
-      padding-bottom: 3px; 
+      padding-bottom: 4px; 
       transition: opacity 0.2s;
     }
     .row:last-child { 
@@ -82,26 +126,23 @@
     }
     .row.is-off { opacity: 0.4; }
     .label { 
-      font-size: 10px; 
+      font-size: 11px; 
       font-weight: 600; 
       flex: 1; 
       padding-right: 4px; 
-      line-height: 1.1; 
+      line-height: 1.2; 
     }
-    .label small { 
-      display: none; /* Ocultamos subtítulos para ahorrar espacio */
-    }
-    .input-box { width: 60px; flex-shrink: 0; } 
+    
+    .input-box { width: 70px; flex-shrink: 0; } 
     .input-box input { 
       width: 100%; 
-      padding: 2px 4px; 
+      padding: 4px 6px; 
       border: 1px solid #ccc; 
-      border-radius: 2px; 
-      font-size: 10px; 
+      border-radius: 3px; 
+      font-size: 11px; 
       text-align: right; 
       font-family: monospace; 
     }
-    
     .input-box input[readonly] {
       background-color: #e9ecef;
       color: #6c757d;
@@ -109,13 +150,13 @@
       text-align: center;
     }
 
-    .select-box { width: 120px; flex-shrink: 0; } 
+    .select-box { width: 130px; flex-shrink: 0; } 
     .select-box select { 
       width: 100%; 
-      padding: 2px 4px; 
+      padding: 4px 6px; 
       border: 1px solid #ccc; 
-      border-radius: 2px; 
-      font-size: 10px; 
+      border-radius: 3px; 
+      font-size: 11px; 
       font-family: inherit; 
     }
 
@@ -141,14 +182,15 @@
       color: #dc3545; 
       font-weight: bold; 
     }
+    
     .banner { 
-      padding: 6px; 
-      border-radius: 3px; 
+      padding: 8px; 
+      border-radius: 4px; 
       text-align: center; 
       font-weight: bold; 
       font-size: 11px; 
-      margin: 4px; 
-      line-height: 1.3;
+      margin: 8px 0; 
+      line-height: 1.4;
     }
     .banner.ok { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
     .banner.fail { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
@@ -157,25 +199,25 @@
       display: none; 
       background: #fff3cd; 
       border: 1px solid #ffecb5; 
-      border-radius: 3px; 
-      padding: 6px; 
-      margin: 4px; 
+      border-radius: 4px; 
+      padding: 8px; 
+      margin: 8px 0; 
       color: #664d03; 
       font-size: 11px; 
     }
-    .advice-box h4 { margin: 0 0 4px 0; font-size: 12px; color: #856404; }
-    .advice-box ul { margin: 0; padding-left: 15px; }
-    .advice-box li { margin-bottom: 2px; }
+    .advice-box h4 { margin: 0 0 6px 0; font-size: 12px; color: #856404; }
+    .advice-box ul { margin: 0; padding-left: 18px; }
+    .advice-box li { margin-bottom: 4px; }
     
     .image-box { 
       background: #f8f9fa; 
       border: 1px solid var(--borde); 
-      border-radius: 3px; 
-      padding: 4px; 
+      border-radius: 4px; 
+      padding: 8px; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
-      margin: 0 4px 4px 4px; 
+      margin: 8px 0; 
       min-height: 100px; 
     }
     .image-box img { 
@@ -185,39 +227,61 @@
       object-fit: contain;
     }
 
-    table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 4px; }
-    th { background: #0b3b4b; color: #fff; padding: 4px; text-align: left; font-weight: bold; }
-    td { border: 1px solid var(--borde); padding: 4px; text-align: center; }
+    table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 8px; }
+    th { background: #0b3b4b; color: #fff; padding: 6px; text-align: left; font-weight: bold; }
+    td { border: 1px solid var(--borde); padding: 6px; text-align: center; }
     td:first-child { text-align: left; }
     .badge { padding: 2px 6px; border-radius: 10px; font-weight: bold; font-size: 9px; color: #fff; display: inline-block; }
     .badge.ok { background: #198754; }
     .badge.fail { background: #dc3545; }
     .badge.na { background: #6c757d; }
     
+    /* ============ BOTÓN VOLVER ============ */
     .btn-volver {
-      display: inline-flex; 
-      align-items: center; 
-      gap: 4px; 
-      margin: 6px; 
-      padding: 4px 10px;
-      background-color: #ecf0f1; 
-      color: #34495e; 
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
       border: 1px solid #bdc3c7;
-      border-radius: 4px; 
-      font-size: 11px; 
-      font-weight: bold; 
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
       text-decoration: none;
-      cursor: pointer; 
+      cursor: pointer;
+      transition: all 0.2s;
       font-family: Arial, sans-serif;
     }
-    .btn-volver:hover { background-color: #e0e6ed; }
+    .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+    }
+    .btn-volver:active {
+      transform: scale(0.98);
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Orejetas de<br>Elevación</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
   <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <div class="header">Cálculo de Orejetas de Elevación</div>
   
   <div class="grid">
     <div class="panel">
@@ -297,7 +361,6 @@
   </div>
 
   <div class="image-box">
-    <!-- Añadido ID a la imagen -->
     <img id="img-oreja" src="img/oreja.png" alt="Esquema de Orejeta de Elevación">
   </div>
 
@@ -570,6 +633,6 @@ if ($('material').value !== 'custom') {
 
 calc();
 </script>
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
 </body>
 </html>

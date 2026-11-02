@@ -2,18 +2,74 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Transición Cuadrada a Redonda</title>
 <style>
-  /* CSS COMPACTO */
+  /* ============ ESTILOS BASE ============ */
   :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; }
-  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+  * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   
-  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
-  .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
-  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 13px; }
-  
-  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  body { background: #eef2f5; margin: 0; padding: 16px 11px 40px; font-size: 12px; color: var(--texto); }
+
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
   @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
 
   .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; }
@@ -34,19 +90,19 @@
   .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
   .result-val.big { font-size: 13px; background: #e7f1ff; }
 
-  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px 0; }
 
   /* Gráficos en la página */
   .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; min-height: 180px; cursor: zoom-in; }
   .svg-box svg { width: 100%; max-width: 350px; height: auto; max-height: 220px; }
 
-  .table-wrap { overflow-x: auto; margin: 8px; }
+  .table-wrap { overflow-x: auto; margin: 8px 0; }
   table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 350px; }
   th { background: var(--azul); color: #fff; padding: 5px; text-align: center; }
   td { border: 1px solid var(--borde); padding: 4px; text-align: center; font-family: monospace; }
   tr:nth-child(even) { background: var(--gris); }
 
-  /* ============ LIGHTBOX CORREGIDO ============ */
+  /* ============ LIGHTBOX ============ */
   .lightbox {
     display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92);
     z-index: 99999; justify-content: center; align-items: center; padding: 10px;
@@ -54,11 +110,10 @@
   }
   .lightbox.activo { display: flex; }
   
-  /* La imagen se expande al 95% de la pantalla */
   .lightbox img {
     width: 95vw; 
     height: 95vh; 
-    object-fit: contain; /* Mantiene la proporción */
+    object-fit: contain;
     background: #fff; 
     padding: 10px;
     border-radius: 4px;
@@ -69,44 +124,54 @@
     position: absolute; top: 15px; right: 22px; color: #fff; font-size: 32px;
     font-weight: 700; cursor: pointer; user-select: none;
   }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <div class="header">Calculadora de Transición</div>
   
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Transición Cuadrada<br>a Redonda</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+
   <div class="grid">
     <div class="panel">
       <div class="panel-title">1 · La Pieza</div>
@@ -175,17 +240,13 @@ function abrirLightbox(svgId) {
   const svgElement = document.getElementById(svgId);
   if (!svgElement) return;
 
-  // Clonar el SVG para no alterar el original
   const clone = svgElement.cloneNode(true);
   
-  // Asegurar que el SVG clonado tenga los namespaces correctos para renderizar
   if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   
-  // IMPORTANTE: Forzar un tamaño grande al clonar el SVG para que no herede el tamaño pequeño
   clone.setAttribute('width', '1200'); 
   clone.setAttribute('height', '900');
 
-  // Convertir el SVG a un DataURL (imagen)
   const xml = new XMLSerializer().serializeToString(clone);
   const svg64 = btoa(unescape(encodeURIComponent(xml)));
   const image64 = 'data:image/svg+xml;base64,' + svg64;
@@ -193,7 +254,6 @@ function abrirLightbox(svgId) {
   const lightbox = document.getElementById('lightbox');
   const imgLightbox = document.getElementById('imgLightbox');
   
-  // Asignar la imagen y activar el lightbox
   imgLightbox.src = image64;
   lightbox.classList.add('activo');
 }
@@ -202,20 +262,18 @@ function cerrarLightbox() {
   document.getElementById('lightbox').classList.remove('activo');
 }
 
-// Cerrar al hacer clic fuera de la imagen o en la X
 document.getElementById('lightbox').addEventListener('click', function(e) {
   if (e.target === this || e.target.className === 'cerrar') {
     cerrarLightbox();
   }
 });
 
-// Cerrar con la tecla ESC
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') cerrarLightbox();
 });
 
 // =========================================================================
-// LIBRERÍA DE DIBUJO (Igual que antes)
+// LIBRERÍA DE DIBUJO
 // =========================================================================
 const S = (el, W, H) => {
   el.innerHTML = `<defs><pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e7eef3" stroke-width="1"/></pattern><filter id="s"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.2"/></filter></defs><rect width="${W}" height="${H}" fill="#f7fafc"/><rect width="${W}" height="${H}" fill="url(#g)"/>`;
@@ -383,7 +441,6 @@ calc();
   $(id).addEventListener('change', calc);
 });
 </script>
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
 </body>
 </html>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Selector de Clamp - Medidas</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -13,6 +14,8 @@
     padding: 16px 11px 40px;
     color: #222;
   }
+
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
     max-width: 373px;
     margin: 0 auto;
@@ -21,15 +24,55 @@
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
     padding: 16px 19px 21px;
   }
-  h1 {
-    text-align: center;
-    font-size: 13px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
-    border-radius: 4px;
-    margin: 0 0 15px;
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
   .field { margin-bottom: 11px; }
   .field label {
     display: block;
@@ -114,43 +157,53 @@
     margin-top: 10px;
     display: none;
   }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Selector de Clamp</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Selector de<br>Clamp</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
 
   <div class="field">
     <label for="selectDiametroTubo">Diámetro Tubo</label>
@@ -193,12 +246,6 @@
 // ============================================================
 // CONFIGURACIÓN DE LA RUTA AL INDEX PRINCIPAL
 // ============================================================
-// Ajusta esta ruta según donde esté tu index.html respecto a este clamp.html
-// Ejemplos:
-//   - Si clamp.html y index.html están en la MISMA carpeta: 'index.html'
-//   - Si clamp.html está en una subcarpeta (ej: consulta/) e index.html en la raíz: '../index.html'
-//   - Si clamp.html está en consulta/calculos/ e index.html en 'Pedidos desde obra/': '../../Pedidos%20desde%20obra/index.html'
-// ============================================================
 const URL_INDEX_ARTICULOS = '../Pedidos%20desde%20obra/index.html';
 
 // Variables globales para almacenar los datos del CSV
@@ -215,7 +262,7 @@ const copyBtn = document.getElementById('copyBtn');
 const btnIrArticulo = document.getElementById('btnIrArticulo');
 const errorMsg = document.getElementById('errorMsg');
 
-// Función para parsear una línea del CSV (maneja comillas y separadores)
+// Función para parsear una línea del CSV
 function parsearLineaCSV(linea) {
     const separador = (linea.split(';').length > linea.split(',').length) ? ';' : ',';
     
@@ -409,8 +456,6 @@ function onAlturaChange() {
 // ============================================================
 // FUNCIÓN PARA EXTRAER EL NOMBRE DE LA NORMA
 // ============================================================
-// Corta en el primer carácter que NO sea letra, número, espacio, guion, barra o punto.
-// Esto elimina el emoji ✅ (o cualquier versión corrupta como âś…) y lo que venga después.
 function extraerNombreNorma(normaCompleta) {
     if (!normaCompleta) return '';
     const match = normaCompleta.match(/^[\w\s\-\/\.]+/);
@@ -438,10 +483,7 @@ function irABuscarArticulo() {
         return;
     }
     
-    // Construir la URL con el parámetro de búsqueda
     const url = `${URL_INDEX_ARTICULOS}?buscar=${encodeURIComponent(nombreNorma)}`;
-    
-    // Redirigir en la misma pestaña
     window.location.href = url;
 }
 
@@ -482,7 +524,5 @@ btnIrArticulo.addEventListener('click', irABuscarArticulo);
 window.addEventListener('DOMContentLoaded', cargarCSV);
 </script>
 
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

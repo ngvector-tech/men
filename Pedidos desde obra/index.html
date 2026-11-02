@@ -6,10 +6,68 @@
     <title>Gestión de Pedidos - MEN</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #0f172a; font-size: 14px; }
-        .contenedor { max-width: 900px; margin: 0 auto; }
-        .cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; }
-        .titulo-men { font-size: 1.2rem; font-weight: bold; color: #0284c7; margin: 0; letter-spacing: 1px; }
+        /* ============ ESTILOS BASE ============ */
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #eef0f2; margin: 0; padding: 16px 11px 40px; color: #0f172a; font-size: 14px; }
+        
+        /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
+        .contenedor {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 7px;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            padding: 16px 19px 21px;
+        }
+
+        /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #17212b;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-left {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .brand-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e5fa8;
+            background: #fff;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .brand-sub {
+            font-size: 13px;
+            color: #d9e1e7;
+            font-weight: 600;
+        }
+        .brand-author {
+            font-size: 11px;
+            color: #89949e;
+        }
+        .header-right h1 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e8f0fa;
+            background: transparent;
+            padding: 0;
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        /* ============ RESTO DE ESTILOS ============ */
         .vista { display: none; }
         .vista.activa { display: block !important; }
 
@@ -29,11 +87,10 @@
         .tarjeta > * { text-align: center; width: 100%; }
         .tarjeta img { max-width: 100%; max-height: 50px; height: auto; object-fit: contain; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
 
-        .badge-norma { position: absolute; top: 4px; right: 4px; background-color: #ff0000; color: F5F7F7; font-size: 0.45rem; font-weight: bold; padding: 4px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
+        .badge-norma { position: absolute; top: 4px; right: 4px; background-color: #0077FF; color: #FCFCFC; font-size: 0.45rem; font-weight: bold; padding: 4px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
+        .badge-norma.badge-azul { background-color: #F57927; }
+        
         .globo-info { position: fixed; background-color: F5F7F7; color: #3858F8; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; max-width: 250px; text-align: center; pointer-events: none; border: 1px solid #38bdf8; }
-		
-		.badge-norma { position: absolute; top: 4px; right: 4px; background-color: #0077FF; color: #FCFCFC; font-size: 0.45rem; font-weight: bold; padding: 4px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; z-index: 2; }
-.badge-norma.badge-azul { background-color: #F57927; }  /* ← NUEVA LÍNEA: badge azul */
 
         .ficha-box { background: #ffffff; padding: 7px; border-radius: 6px; border: 1px solid #cbd5e1; max-width: 300px; margin: 0 auto; }
         .ficha-top { display: flex; gap: 6px; align-items: flex-start; justify-content: center; flex-wrap: wrap; margin-bottom: 5px; }
@@ -183,7 +240,7 @@
         /* ============ BOTÓN NO LO ENCUENTRO (INTEGRADO) ============ */
         #btnNoEncuentro {
             background: #C3C6C6;
-            color: #F54927; /* Corregido: añadido # */
+            color: #F54927;
             border: none;
             border-radius: 6px;
             padding: 6px 12px;
@@ -217,1431 +274,1411 @@
             font-weight: bold;
             color: #0f172a;
         }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
-</style>
+        /* ============ BOTÓN VOLVER ============ */
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background-color: #ecf0f1;
+            color: #34495e;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: Arial, sans-serif;
+        }
+        .btn-volver:hover {
+            background-color: #e0e6ed;
+            border-color: #95a5a6;
+            color: #2c3e50;
+        }
+        .btn-volver:active {
+            transform: scale(0.98);
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+<div class="contenedor">
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Gestión de Pedidos</h1>
+    </div>
+  </div>
 
-        <div class="cabecera">
-		
-            <h1 class="titulo-men">MEN</h1>
-        </div>
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
 
-        <div id="globoNorma" class="globo-info"></div>
-	
-        <!-- CAJA CABECERA MODIFICADA: Botón a la izquierda de los inputs -->
-        <div class="caja-cabecera">
-            <button id="btnNoEncuentro" onclick="abrirModalNoEncuentro()">
-                No encuentro el articulo ❓ 
-            </button>
-            <div>
-                <label><strong>Nombre del Operario:</strong></label>
-                <input type="text" id="nombreUsuario" placeholder="Introduce tu nombre...">
+  <div id="globoNorma" class="globo-info"></div>
+  
+  <!-- CAJA CABECERA MODIFICADA: Botón a la izquierda de los inputs -->
+  <div class="caja-cabecera">
+      <button id="btnNoEncuentro" onclick="abrirModalNoEncuentro()">
+          No encuentro el articulo ❓ 
+      </button>
+      <div>
+          <label><strong>Nombre del Operario:</strong></label>
+          <input type="text" id="nombreUsuario" placeholder="Introduce tu nombre...">
+      </div>
+      <div>
+          <label><strong>OT Activa: <span class="obligatorio">*</span></strong></label>
+          <input type="text" id="obraUsuario" placeholder="Ej: OT-2026/145" required>
+      </div>
+  </div>
+
+  <div class="caja-busqueda">
+      <input type="text" id="inputBuscador" placeholder="🔍 Buscar por artículo, categoría o referencia..." oninput="buscarArticulos()">
+  </div>
+
+  <div id="nav">
+      <button class="btn btn-sec" onclick="atras()">⬅ Paso Atrás</button>
+      <button class="btn" onclick="irInicio()">🏠 Inicio</button>
+      <h3 id="breadcrumb"></h3>
+  </div>
+
+  <div id="v-cat" class="vista activa">
+      <h2 style="font-size: 15px;">Categorías</h2>
+      <div id="leyenda-familias"></div>
+      <div id="grid-cat" class="grid" style="display:none;"></div>
+  </div>
+  
+  <div id="v-art" class="vista"><div id="grid-art" class="grid"></div></div>
+  <div id="v-dim" class="vista"><div id="grid-dim" class="grid"></div></div>
+  <div id="v-pres" class="vista"><div id="grid-pres" class="grid"></div></div>
+  <div id="v-mat" class="vista"><div id="grid-mat" class="grid"></div></div>
+  <div id="v-busqueda" class="vista"><h2 id="tituloBusqueda" style="font-size: 15px;">Resultados de Búsqueda</h2><div id="grid-busqueda" class="grid"></div></div>
+
+  <div id="v-ficha" class="vista">
+      <div class="ficha-box">
+          <div class="ficha-top">
+              <div class="col-img">
+                  <img id="imgArt" src="" onerror="this.src='pr.png'" alt="Artículo">
+              </div>
+              <div class="col-esquema">
+                  <div id="bloqueEsquema" class="esquema-pr" style="display:none;">
+                      <img id="imgEsquema" src="pr.png" alt="Esquema de dimensiones">
+                      <div class="cotas">
+                          COTAS:
+                          <span id="cotaA" style="display:none;">A: <span id="dimA">-</span></span>
+                          <span id="cotaB" style="display:none;"> | B: <span id="dimB">-</span></span>
+                          <span id="cotaC" style="display:none;"> | C: <span id="dimC">-</span></span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="ficha-titulo">
+              <h2 id="lblArt"></h2>
+              <div id="lblRef"></div>
+          </div>
+
+          <div class="box-info-azul">
+              <p id="filaCat" style="display: none;"><strong>Categoría:</strong> <span id="lblCat"></span></p>
+              <p id="filaDim" style="display: none;"><strong>Dimensión:</strong> <span id="lblD"></span></p>
+              <p id="filaPres" style="display: none;"><strong>Presión/SCH:</strong> <span id="lblP"></span></p>
+              <p id="filaMat" style="display: none;"><strong>Material base:</strong> <span id="lblM"></span></p>
+          </div>
+
+          <div style="margin-top: 5px;">
+              <button class="btn btn-add" onclick="abrirModalAnadir()">➕ Añadir a Mi Lista</button>
+              <div id="msgConfirmacion" class="notif-flotante">✓ Añadido a tu lista</div>
+          </div>
+      </div>
+  </div>
+
+  <div class="box-lista">
+      <div class="acciones-lista">
+          <div>
+              <h3 style="margin: 0;">Mi Lista
+                  <span id="contadorLista" style="color:#0284c7; font-weight:bold;"></span>
+                  <span id="labelObra" style="color:#0284c7; font-weight:normal; font-size:0.8rem;"></span>
+              </h3>
+              <span class="texto-ayuda-ot">Puedes introducir nuevas OT</span>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button id="btnBorrarTodo" class="btn-borrar-todo" onclick="borrarMiLista()" disabled>🗑️ Borrar Toda Mi Lista</button>
+              <button class="btn-borrar-todo" onclick="borrarObraActual()">🗑️ Borrar OT Actual</button>
+              <button class="btn-nueva-ot" onclick="nuevaOT()">➕ Nueva OT</button>
+              <button class="btn-compartir" onclick="compartirLista()">📤 Compartir</button>
+          </div>
+      </div>
+      <div class="aviso-envio">⚠️ No olvides borrar la lista tras enviar</div>
+      <div id="listaItems"><p class="estado-msg">Cargando tu lista...</p></div>
+
+      <div id="promptNombre" style="display:none; background: #fef9c3; border: 1px solid #facc15;">
+          <label style="display:block; font-weight:bold; color:#854d0e;">
+              Introduce tus datos para ver tu lista <span class="obligatorio">(* obligatorio)</span>
+          </label>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <input type="text" id="nombreUsuarioInline" placeholder="Tu nombre..."
+                     onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
+                     style="flex:1; border:1px solid #cbd5e1; border-radius:4px;">
+              <input type="text" id="obraUsuarioInline" placeholder="Nº de OT (obligatorio) *" required
+                     onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
+                     style="flex:1; border:1px solid #cbd5e1; border-radius:4px;">
+              <button class="btn" onclick="guardarDatosInline()" style="background:#0284c7;">
+                  Guardar
+              </button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- ================= BOTÓN FLOTANTE VER LISTA ================= -->
+<button id="btnFlotanteLista" onclick="toggleLista()">
+    📋 Ocultar Lista
+    <span class="contador-flotante" id="contadorFlotante">0</span>
+</button>
+
+<!-- ================= MODAL AÑADIR A LISTA ================= -->
+<div id="modalAnadir" class="modal-overlay">
+    <div class="modal-caja">
+        <h3>➕ Añadir a Mi Lista</h3>
+        <div class="modal-sub" id="modalSubTitulo">Artículo</div>
+
+        <label for="modalOpcion">Opción:</label>
+        <select id="modalOpcion"></select>
+
+        <div id="modalBloquePlancha" class="modal-bloque-plancha" style="display:none;">
+            <div class="titulo-plancha">📐 Medidas de la plancha/chapa</div>
+            <label>Dimensiones (Largo × Ancho en mm):</label>
+            <div class="fila-xy">
+                <input type="number" id="modalLargo" placeholder="Largo" min="0" step="1">
+                <span>×</span>
+                <input type="number" id="modalAncho" placeholder="Ancho" min="0" step="1">
             </div>
-            <div>
-                <label><strong>OT Activa: <span class="obligatorio">*</span></strong></label>
-                <input type="text" id="obraUsuario" placeholder="Ej: OT-2026/145" required>
-            </div>
+            <label for="modalUnidadesPlancha">Unidades:</label>
+            <input type="number" id="modalUnidadesPlancha" value="1" min="1" step="1">
         </div>
 
-        <div class="caja-busqueda">
-            <input type="text" id="inputBuscador" placeholder="🔍 Buscar por artículo, categoría o referencia..." oninput="buscarArticulos()">
+        <div id="modalBloqueCantidad">
+            <label for="modalCantidad">Cantidad:</label>
+            <input type="number" id="modalCantidad" value="1" min="1" step="1">
         </div>
 
-        <div id="nav">
-            <button class="btn btn-sec" onclick="atras()">⬅ Paso Atrás</button>
-            <button class="btn" onclick="irInicio()">🏠 Inicio</button>
-            <h3 id="breadcrumb"></h3>
-        </div>
-
-        <div id="v-cat" class="vista activa">
-		
-            <h2 style="font-size: 15px;">Categorías</h2>
-            <div id="leyenda-familias"></div>
-            <div id="grid-cat" class="grid" style="display:none;"></div>
-        </div>
-		
-		
-        <div id="v-art" class="vista"><div id="grid-art" class="grid"></div></div>
-        <div id="v-dim" class="vista"><div id="grid-dim" class="grid"></div></div>
-        <div id="v-pres" class="vista"><div id="grid-pres" class="grid"></div></div>
-        <div id="v-mat" class="vista"><div id="grid-mat" class="grid"></div></div>
-        <div id="v-busqueda" class="vista"><h2 id="tituloBusqueda" style="font-size: 15px;">Resultados de Búsqueda</h2><div id="grid-busqueda" class="grid"></div></div>
-
-        <div id="v-ficha" class="vista">
-            <div class="ficha-box">
-                <div class="ficha-top">
-                    <div class="col-img">
-                        <img id="imgArt" src="" onerror="this.src='pr.png'" alt="Artículo">
-                    </div>
-                    <div class="col-esquema">
-                        <div id="bloqueEsquema" class="esquema-pr" style="display:none;">
-                            <img id="imgEsquema" src="pr.png" alt="Esquema de dimensiones">
-                            <div class="cotas">
-                                COTAS:
-                                <span id="cotaA" style="display:none;">A: <span id="dimA">-</span></span>
-                                <span id="cotaB" style="display:none;"> | B: <span id="dimB">-</span></span>
-                                <span id="cotaC" style="display:none;"> | C: <span id="dimC">-</span></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ficha-titulo">
-                    <h2 id="lblArt"></h2>
-                    <div id="lblRef"></div>
-                </div>
-
-                <div class="box-info-azul">
-                    <p id="filaCat" style="display: none;"><strong>Categoría:</strong> <span id="lblCat"></span></p>
-                    <p id="filaDim" style="display: none;"><strong>Dimensión:</strong> <span id="lblD"></span></p>
-                    <p id="filaPres" style="display: none;"><strong>Presión/SCH:</strong> <span id="lblP"></span></p>
-                    <p id="filaMat" style="display: none;"><strong>Material base:</strong> <span id="lblM"></span></p>
-                </div>
-
-                <div style="margin-top: 5px;">
-                    <button class="btn btn-add" onclick="abrirModalAnadir()">➕ Añadir a Mi Lista</button>
-                    <div id="msgConfirmacion" class="notif-flotante">✓ Añadido a tu lista</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="box-lista">
-            <div class="acciones-lista">
-                <div>
-                    <h3 style="margin: 0;">Mi Lista
-                        <span id="contadorLista" style="color:#0284c7; font-weight:bold;"></span>
-                        <span id="labelObra" style="color:#0284c7; font-weight:normal; font-size:0.8rem;"></span>
-                    </h3>
-                    <span class="texto-ayuda-ot">Puedes introducir nuevas OT</span>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button id="btnBorrarTodo" class="btn-borrar-todo" onclick="borrarMiLista()" disabled>🗑️ Borrar Toda Mi Lista</button>
-                    <button class="btn-borrar-todo" onclick="borrarObraActual()">🗑️ Borrar OT Actual</button>
-                    <button class="btn-nueva-ot" onclick="nuevaOT()">➕ Nueva OT</button>
-                    <button class="btn-compartir" onclick="compartirLista()">📤 Compartir</button>
-                </div>
-            </div>
-            <div class="aviso-envio">⚠️ No olvides borrar la lista tras enviar</div>
-            <div id="listaItems"><p class="estado-msg">Cargando tu lista...</p></div>
-
-            <div id="promptNombre" style="display:none; background: #fef9c3; border: 1px solid #facc15;">
-                <label style="display:block; font-weight:bold; color:#854d0e;">
-                    Introduce tus datos para ver tu lista <span class="obligatorio">(* obligatorio)</span>
-                </label>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <input type="text" id="nombreUsuarioInline" placeholder="Tu nombre..."
-                           onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
-                           style="flex:1; border:1px solid #cbd5e1; border-radius:4px;">
-                    <input type="text" id="obraUsuarioInline" placeholder="Nº de OT (obligatorio) *" required
-                           onkeydown="if(event.key==='Enter'){event.preventDefault(); guardarDatosInline();}"
-                           style="flex:1; border:1px solid #cbd5e1; border-radius:4px;">
-                    <button class="btn" onclick="guardarDatosInline()" style="background:#0284c7;">
-                        Guardar
-                    </button>
-                </div>
-            </div>
+        <div class="modal-botones">
+            <button class="modal-btn-cancelar" onclick="cerrarModalAnadir()">Cancelar</button>
+            <button class="modal-btn-confirmar" id="modalBtnConfirmar" onclick="confirmarAnadir()">Añadir</button>
         </div>
     </div>
+</div>
 
-    <!-- ================= BOTÓN FLOTANTE VER LISTA ================= -->
-    <button id="btnFlotanteLista" onclick="toggleLista()">
-        📋 Ocultar Lista
-        <span class="contador-flotante" id="contadorFlotante">0</span>
-    </button>
+<!-- ================= MODAL NO LO ENCUENTRO ================= -->
+<div id="modalNoEncuentro" class="modal-overlay">
+    <div class="modal-caja">
+        <h3>No encuentro el articulo❓</h3>
+        <div class="modal-sub">Descríbelo con la máxima precisión posible</div>
 
-    <!-- ================= MODAL AÑADIR A LISTA ================= -->
-    <div id="modalAnadir" class="modal-overlay">
-        <div class="modal-caja">
-            <h3>➕ Añadir a Mi Lista</h3>
-            <div class="modal-sub" id="modalSubTitulo">Artículo</div>
+        <label for="noEncDescripcion">Descripción:</label>
+        <input type="text" id="noEncDescripcion" placeholder="Ej: Codo inox 90º 2 pulgadas..." autocomplete="off">
 
-            <label for="modalOpcion">Opción:</label>
-            <select id="modalOpcion"></select>
+        <label for="noEncCantidad">Cantidad:</label>
+        <input type="number" id="noEncCantidad" value="1" min="1" step="1">
 
-            <div id="modalBloquePlancha" class="modal-bloque-plancha" style="display:none;">
-                <div class="titulo-plancha">📐 Medidas de la plancha/chapa</div>
-                <label>Dimensiones (Largo × Ancho en mm):</label>
-                <div class="fila-xy">
-                    <input type="number" id="modalLargo" placeholder="Largo" min="0" step="1">
-                    <span>×</span>
-                    <input type="number" id="modalAncho" placeholder="Ancho" min="0" step="1">
-                </div>
-                <label for="modalUnidadesPlancha">Unidades:</label>
-                <input type="number" id="modalUnidadesPlancha" value="1" min="1" step="1">
-            </div>
+        <label for="noEncTipo">Tipo / Unidad:</label>
+        <select id="noEncTipo"></select>
 
-            <div id="modalBloqueCantidad">
-                <label for="modalCantidad">Cantidad:</label>
-                <input type="number" id="modalCantidad" value="1" min="1" step="1">
-            </div>
-
-            <div class="modal-botones">
-                <button class="modal-btn-cancelar" onclick="cerrarModalAnadir()">Cancelar</button>
-                <button class="modal-btn-confirmar" id="modalBtnConfirmar" onclick="confirmarAnadir()">Añadir</button>
-            </div>
+        <div class="modal-botones">
+            <button class="modal-btn-cancelar" onclick="cerrarModalNoEncuentro()">Cancelar</button>
+            <button class="modal-btn-confirmar" id="noEncBtnConfirmar" onclick="confirmarNoEncuentro()">Añadir a Lista</button>
         </div>
     </div>
+</div>
 
-    <!-- ================= MODAL NO LO ENCUENTRO ================= -->
-    <div id="modalNoEncuentro" class="modal-overlay">
-        <div class="modal-caja">
-            <h3>No encuentro el articulo❓</h3>
-            <div class="modal-sub">Descríbelo con la máxima precisión posible</div>
+<script>
+    // ============ CONFIG SUPABASE ============
+    const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
 
-            <label for="noEncDescripcion">Descripción:</label>
-            <input type="text" id="noEncDescripcion" placeholder="Ej: Codo inox 90º 2 pulgadas..." autocomplete="off">
+    let _supabase = null;
+    try { _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
+    catch (e) { console.error("Error Supabase:", e); }
 
-            <label for="noEncCantidad">Cantidad:</label>
-            <input type="number" id="noEncCantidad" value="1" min="1" step="1">
+    let registrosLista = [];
 
-            <label for="noEncTipo">Tipo / Unidad:</label>
-            <select id="noEncTipo"></select>
+    // ⚙️ CONFIGURACIÓN DEL MODAL — EDITA AQUÍ TUS OPCIONES
+    const OPCIONES_MODAL = [
+        { valor: "",            etiqueta: "— Selecciona una opción —" },
+        { valor: "Unidades",    etiqueta: "Unidades" },
+        { valor: "mm",          etiqueta: "mm" },
+        { valor: "Barra",       etiqueta: "Barra" },
+        { valor: "Bolsa",       etiqueta: "Bolsa" },
+        { valor: "Bote",       etiqueta: "Bote" },
+        { valor: "Botella",       etiqueta: "Botella" },
+        { valor: "Caja",        etiqueta: "Caja" },
+        { valor: "Garrafa",        etiqueta: "Garrafa" },
+        { valor: "Kilos",       etiqueta: "Kilos" },
+        { valor: "Lata",       etiqueta: "Lata" },
+        { valor: "Litros",      etiqueta: "Litros" },
+        { valor: "Paquete",     etiqueta: "Paquete" }
+    ];
 
-            <div class="modal-botones">
-                <button class="modal-btn-cancelar" onclick="cerrarModalNoEncuentro()">Cancelar</button>
-                <button class="modal-btn-confirmar" id="noEncBtnConfirmar" onclick="confirmarNoEncuentro()">Añadir a Lista</button>
-            </div>
-        </div>
-    </div>
+    // Palabras que activan el bloque PLANCHA/CHAPA
+    const PALABRAS_PLANCHA = ["PLANCHA", "CHAPA"];
 
-    <script>
-        // ============ CONFIG SUPABASE ============
-        const SUPABASE_URL = 'https://qjyyvobhzybugiqlmdyp.supabase.co';
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+    const NORMAS_INFO = [
+        { claves: ["DIN118", "DIN 118", "DIN-118"], texto: "Alimentaria" },
+        { claves: ["ASME BPE"], texto: "Alimentaria" },
+        { claves: ["CODO SMS 3008_3017"], texto: "Alimentaria" },
+        { claves: ["DIN EN 1514-1"], texto: "Uso comun" },
+        { claves: ["R EN 1092-1"], texto: "Uso comun" },
+        { claves: ["CC DIN"], texto: "Uso comun" },
+        { claves: ["ASME B36.10M", "ASME B36.10","ASME B16-9"], texto: "Actual fuera de uso" },
+        { claves: ["ASTM A312","ASTM 403","ASTM A403"], texto: "Schedule (inox)" },
+        { claves: ["DIN EN 10357"], texto: "Alimentaria actual" },
+        { claves: ["EN10216-2 SERIE"], texto: "Vapor  actual" },
+        { claves: ["P265GH"], texto: "Compa. con P235GH" },
+        { claves: ["TE RECORTADA ISO5251"], texto: "No alimentaria" },
+        { claves: ["TE REDUCIDA EN10253-3"], texto: "No alimentaria" },
+        { claves: ["EN10253-3_EN10253-4"], texto: "No alimentaria" },
+        { claves: ["TUBERIA EN10312"], texto: "Pressfitting" },
+        { claves: ["EN-10217-1 P-235TR1"], texto: "Agua y red incendio" },
+        { claves: ["CODO EN10217-1"], texto: "agua y red incendio" },
+        { claves: ["CODO EN10253-1 TIPO5"], texto: "No apto vapor/altas presiones" },
+        { claves: ["EN10217-7", "EN10296-2","EN10253-3 EN10253-4"], texto: "Milimetrica" },
+        { claves: ["EN10253-2 TIPO3 P235GH","CONCENTRICA P235GH","EXCENTRICA P235GH","P235GH DIN2615"], texto: "Vapor actual"},
+        { claves: ["ASIENTO CLAMP"], texto: "Alimentaria" },
+        { claves: ["CLAMP"], texto: "Alimentaria" },
+        { claves: ["HOUSING"], texto: "Alimentaria" },
+        { claves: ["EN-1092"], texto: "Norma actual" },
+        { claves: ["CONCENTRICA EN10253-1"], texto: "No apta presion/temperatura" }
+    ];
 
-        let _supabase = null;
-        try { _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
-        catch (e) { console.error("Error Supabase:", e); }
+    const FAMILIAS = [
+        { nombre: "Automóvil / taller", categorias: ["AUTOMOVIL","AUTOMÓVIL","COCHE","TALLER","MOTOR","ACEITE","BUJIAS","BUJÍAS"], claves: ["AUTOMOVIL","AUTOMÓVIL","COCHE","TALLER","MOTOR","ACEITE","BUJIA","BUJÍA"], fondo:"#e2e8f0", borde:"#64748b" },
+        { nombre: "Consumibles", categorias: ["ELECTRODOS","CORTE Y PULIDO","SOLDADURA","DISCOS","CORTE","PULIDO","LIJAS","ABRASIVOS","BROCAS","MACHOS","TERRAJAS","SIERRAS","HOJAS","PUNTAS","BOCALES","GASES","OXIGENO","OXÍGENO","ACETILENO","ARGON","ARGÓN","CONSUMIBLES"], claves: ["ELECTRODO","CORTE Y PULIDO","SOLDADURA","DISCO","CORTE","PULIDO","LIJA","ABRASIVO","BROCA","MACHO","TERRAJA","SIERRA","HOJA","PUNTA","BOCAL","GASES","OXIGENO","OXÍGENO","ACETILENO","ARGON","ARGÓN","ABRASIVOS"], fondo:"#ffedd5", borde:"#f97316" },
+        { nombre: "Drogueria", categorias: ["CINTAS Y ADHESIVOS","MARCADORES","DROGUERIA","DROGUERÍA","AEROSOLES"], claves: ["CINTAS Y ADHESIVOS","MARCADOR","DROGUERIA","DROGUERÍA","AEROSOL"], fondo:"#F1A99A", borde:"#C0361A" },
+        { nombre: "Electricidad", categorias: ["ELECTRICIDAD","ELECTRICOS","ELÉCTRICOS","CABLE ELECTRICO","CUADROS","MAGNETOTERMICOS","MAGNETOTÉRMICOS","DIFERENCIALES","CONTACTORES","RELES","RELÉS","PULSADORES","PILOTOS","BORNERAS"], claves: ["ELECTRICIDAD","ELECTRICO","ELÉCTRICO","CABLE ELECTRICO","CUADRO","MAGNETOTERMICO","MAGNETOTÉRMICO","DIFERENCIAL","CONTACTOR","RELE","RELÉ","PULSADOR","PILOTO","BORNERA"], fondo:"#EEC2F7", borde:"#831599" },
+        { nombre: "EPIs y seguridad", categorias: ["EPIS Y SEGURIDAD","EPIS","CASCOS","GUANTES","BOTAS","GAFAS","PANTALLAS","MASCARILLAS","ARNESES","ARNÉS","PROTECCION","PROTECCIÓN"], claves: ["EPIS Y SEGURIDAD","EPI","EPIS","CASCO","GUANTE","BOTA","GAFAS","PANTALLA","MASCARILLA","ARNES","ARNÉS","PROTECCION","PROTECCIÓN"], fondo:"#fef9c3", borde:"#eab308" },
+        { nombre: "Fijaciones y anclajes", categorias: ["BISAGRAS","POMOS Y MANETAS","MUELLES","ELEMENTOS DE CARGA Y NIVELACION","CIERRES","CABLES","ESLINGAS","CINCHAS","GANCHOS","MOSQUETONES","MOSQUETON"], claves: ["BISAGRA","POMOS Y MANETAS","MUELLE","ELEMENTOS DE CARGA Y NIVELACION","CIERRE","CABLE","ESLINGA","CINCHA","GANCHO","MOSQUETON","MOSQUETÓN"], fondo:"#cffafe", borde:"#06b6d4" },
+        { nombre: "Herramientas", categorias: ["HERRAMIENTAS","MAQUINAS","ESCALERAS","EXTRACCION HUMOS","LLAVES","DESTORNILLADORES","MARTILLOS","ALICATES","TENAZAS","TALADROS","AMOLADORAS","RADIALES","SOPLETES","SOLDADORES"], claves: ["HERRAMIENTA","MAQUINA","ESCALERA","EXTRACCION HUMOS","LLAVE","DESTORNILLADOR","MARTILLO","ALICATE","TENAZA","TALADRO","AMOLADORA","RADIAL","SOPLETE","SOLDADOR"], fondo:"#e0e7ff", borde:"#6366f1" },
+        { nombre: "Instrumentación", categorias: ["MANOMETROS","MANÓMETROS","TERMOMETROS","TERMÓMETROS","PRESOSTATOS","TERMOSTATOS","CAUDALIMETROS","CAUDALÍMETROS","SENSORES","SONDAS","INSTRUMENTOS","INSTRUMENTACION"], claves: ["MANOMETRO","MANÓMETRO","TERMOMETRO","TERMÓMETRO","PRESOSTATO","TERMOSTATO","CAUDALIMETRO","CAUDALÍMETRO","SENSOR","SONDA","INSTRUMENT"], fondo:"#f3e8ff", borde:"#a855f7" },
+        { nombre: "Mecanizados", categorias: ["MECANIZADOS"], claves: ["MECANIZADOS"], fondo:"#DFD7E0", borde:"#A189A4" },
+        { nombre: "Perfiles y chapa", categorias: ["PERFILES T","CONTERAS","LASER","PERFILES","PERFILES U","PERFILES REDONDOS","PERFILES ANGULARES","PERFILES RECTANGULARES","PERFILES H","CHAPAS","PLETINAS","ANGULOS","ÁNGULOS","TUBO CUADRADO","TUBO REDONDO","TUBO RECTANGULAR","PERFILES CUADRADOS","PERFILES MACIZOS CUADRADOS","PERFILES MACIZOS REDONDOS","REDONDOS","CUADRADOS","RECTANGULARES","VIGAS","IPN","UPN","HEB","HEA"], claves: ["PERFILES T","CONTERAS","LASER","PERFIL","PERFILES U","PERFILES REDONDOS","PERFILES RECTANGULARES","CHAPA","PLETINA","ANGULO","ÁNGULO","PERFILES H","TUBO CUADRADO","TUBO REDONDO","TUBO RECTANGULAR","PERFILES CUADRADOS","PERFILES MACIZOS CUADRADOS","PERFILES MACIZOS REDONDOS","REDONDO","CUADRADO","RECTANGULAR","VIGA","IPN","UPN","HEB","HEA"], fondo:"#dcfce7", borde:"#22c55e" },
+        { nombre: "Recambio maquina", categorias: ["RECAMBIO SOLDADURA","RECAMBIOS GASES","RECAMBIOS SOLDADURA","RECAMBIO MAQUINA","RECAMBIOS PLASMA","RECAMBIOS MAQUINA","RECAMBIO PLASMA"], claves: ["RECAMBIO SOLDADURA","RECAMBIOS GASES","RECAMBIOS SOLDADURA","RECAMBIO MAQUINA","RECAMBIOS PLASMA","RECAMBIOS MAQUINA","RECAMBIO PLASMA"], fondo:"#C2F7F5", borde:"#159995" },
+        { nombre: "Tornillería", categorias: ["TORNILLOS","TUERCAS","ARRANDELAS","ARANDELAS","ESPARRAGOS","VARILLAS","TIRAFONDOS","ANCLAJES","TACOS","CLAVOS","GRAPAS","PASADORES","REMACHES"], claves: ["TORNILLO","TUERCA","ARRANDELA","ARANDELA","ESPARRAGO","ESPÁRRAGO","VARILLA","TIRAFONDO","TACO","CLAVO","GRAPA","PASADOR","REMACHE"], fondo:"#fef3c7", borde:"#f59e0b" },
+        { nombre: "Tubería y accesorios", categorias: ["TUBERIA","TUBERÍAS","TUBOS","CODOS","TES","REDUCCIONES","BRIDAS","CONTENEDORES","MANGAS","MANGUITOS","ACOPLAMIENTOS","UNIONES","RACORES","BOCAS DE HOMBRE","CASQUILLOS","TAPONES","CONOS","CURVAS","PASAMUROS","CONEXIONES TUBERIA","CONEXIONES TUBERÍA","CRUCES","JUNTAS","ABRAZADERAS","ABARCONES","CAPS","ELECTROSOLDABLES","FIGURAS","MANGUERAS","PATINES","POLIPROPILENO","PRESSFITING","PVC","PVDF","RAMIFICACIONES","VALONAS","LIRAS","REDUCCIONES CONCENTRICAS","REDUCCIONES EXCENTRICAS"], claves: ["TUBERIA","TUBERÍA","TUBO","CODO","CODOS","TE ","TES","REDUCCION","REDUCCIÓN","BRIDA","BRIDAS","CONTENER","CONTENEDOR","MANGA","MANGUITO","ACOPLAMIENTO","UNION","UNIÓN","RACOR","CASQUILLO","TAPON","TAPÓN","CONO","CURVA","PASAMUROS","CONEXIONES TUBERIA","CONEXIONES TUBERÍA","CRUCES","JUNTAS","ABRAZADERA","ABARCONES","CAPS","ELECTROSOLDABLES","FIGURAS","MANGUERAS","PATINES","POLIPROPILENO","PRESSFITING","PVC","PVDF","RAMIFICACIONES","VALONAS","LIRAS","REDUCCIONES CONCENTRICAS","REDUCCIONES EXCENTRICAS"], fondo:"#dbeafe", borde:"#3b82f6" },
+        { nombre: "Válvulas y accesorios", categorias: ["VALVULAS REDUCTORA DE PRESION","VALVULAS DE PURGA Y TRAMPAS","VALVULAS SELENOIDES","VALVULAS DE VACIO","VALVULAS DE MEMBRANA","VALVULAS DE GLOBO","VALVULAS DE BOLA","VALVULAS DE AGUJA","VALVULAS DE ASIENTO","RECAMBIO VALVULAS","VALVULAS","VÁLVULAS","BRIDAS VALVULA","COMPENSADORES","MIRILLAS","BOLAS DE LIMPIEZA","MARIPOSAS","RETENCIONES","DIAFRAGMAS","VALVULAS DE SEGURIDAD","VÁLVULAS DE SEGURIDAD","VALVULA DE SEGURIDAD","VÁLVULA DE SEGURIDAD","REGULADORAS","SOLENOIDES","FILTROS"], claves: ["VALVULAS REDUCTORA DE PRESION","VALVULAS DE PURGA Y TRAMPAS","VALVULAS SELENOIDES","VALVULAS DE VACIO","VALVULAS DE MEMBRANA","VALVULAS DE GLOBO","VALVULAS DE BOLA","VALVULAS DE AGUJA","VALVULAS DE ASIENTO","RECAMBIO VALVULAS","VALVULA","VÁLVULA","BRIDAS VALVULA","COMPENSADORES","MIRILLAS","BOLAS DE LIMPIEZA","MARIPOSA","RETENCION","RETENCIÓN","DIAFRAGMA","VALVULA DE SEGURIDAD","VÁLVULA DE SEGURIDAD","VALVULAS DE SEGURIDAD","VÁLVULAS DE SEGURIDAD","REGULADORA","SOLENOIDE","FILTRO","FILTROS"], fondo:"#ffe4e6", borde:"#ef4444" }
+    ];
 
-        let registrosLista = [];
+    function normalizar(txt) {
+        return String(txt || '')
+            .toUpperCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[-_/,.]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
 
-        // ⚙️ CONFIGURACIÓN DEL MODAL — EDITA AQUÍ TUS OPCIONES
-        const OPCIONES_MODAL = [
-            { valor: "",            etiqueta: "— Selecciona una opción —" },
-            { valor: "Unidades",    etiqueta: "Unidades" },
-            { valor: "mm",          etiqueta: "mm" },
-            { valor: "Barra",       etiqueta: "Barra" },
-            { valor: "Bolsa",       etiqueta: "Bolsa" },
-            { valor: "Bote",       etiqueta: "Bote" },
-            { valor: "Botella",       etiqueta: "Botella" },
-            { valor: "Caja",        etiqueta: "Caja" },
-            { valor: "Garrafa",        etiqueta: "Garrafa" },
-            { valor: "Kilos",       etiqueta: "Kilos" },
-            { valor: "Lata",       etiqueta: "Lata" },
-            { valor: "Litros",      etiqueta: "Litros" },
-            { valor: "Paquete",     etiqueta: "Paquete" }
-        ];
-
-        // Palabras que activan el bloque PLANCHA/CHAPA
-        const PALABRAS_PLANCHA = ["PLANCHA", "CHAPA"];
-
-        const NORMAS_INFO = [
-            { claves: ["DIN118", "DIN 118", "DIN-118"], texto: "Alimentaria" },
-            { claves: ["ASME BPE"], texto: "Alimentaria" },
-            { claves: ["CODO SMS 3008_3017"], texto: "Alimentaria" },
-			{ claves: ["DIN EN 1514-1"], texto: "Uso comun" },
-			{ claves: ["R EN 1092-1"], texto: "Uso comun" },
-			{ claves: ["CC DIN"], texto: "Uso comun" },
-            { claves: ["ASME B36.10M", "ASME B36.10","ASME B16-9"], texto: "Actual fuera de uso" },
-            { claves: ["ASTM A312","ASTM 403","ASTM A403"], texto: "Schedule (inox)" },
-            { claves: ["DIN EN 10357"], texto: "Alimentaria actual" },
-            { claves: ["EN10216-2 SERIE"], texto: "Vapor  actual" },
-            { claves: ["P265GH"], texto: "Compa. con P235GH" },
-            { claves: ["TE RECORTADA ISO5251"], texto: "No alimentaria" },
-            { claves: ["TE REDUCIDA EN10253-3"], texto: "No alimentaria" },
-            { claves: ["EN10253-3_EN10253-4"], texto: "No alimentaria" },
-            { claves: ["TUBERIA EN10312"], texto: "Pressfitting" },
-            { claves: ["EN-10217-1 P-235TR1"], texto: "Agua y red incendio" },
-            { claves: ["CODO EN10217-1"], texto: "agua y red incendio" },
-            { claves: ["CODO EN10253-1 TIPO5"], texto: "No apto vapor/altas presiones" },
-            { claves: ["EN10217-7", "EN10296-2","EN10253-3 EN10253-4"], texto: "Milimetrica" },
-            { claves: ["EN10253-2 TIPO3 P235GH","CONCENTRICA P235GH","EXCENTRICA P235GH","P235GH DIN2615"], texto: "Vapor actual"},
-            { claves: ["ASIENTO CLAMP"], texto: "Alimentaria" },
-            { claves: ["CLAMP"], texto: "Alimentaria" },
-            { claves: ["HOUSING"], texto: "Alimentaria" },
-            { claves: ["EN-1092"], texto: "Norma actual" },
-            { claves: ["CONCENTRICA EN10253-1"], texto: "No apta presion/temperatura" }
-        ];
-
-        const FAMILIAS = [
-            { nombre: "Automóvil / taller", categorias: ["AUTOMOVIL","AUTOMÓVIL","COCHE","TALLER","MOTOR","ACEITE","BUJIAS","BUJÍAS"], claves: ["AUTOMOVIL","AUTOMÓVIL","COCHE","TALLER","MOTOR","ACEITE","BUJIA","BUJÍA"], fondo:"#e2e8f0", borde:"#64748b" },
-            { nombre: "Consumibles", categorias: ["ELECTRODOS","CORTE Y PULIDO","SOLDADURA","DISCOS","CORTE","PULIDO","LIJAS","ABRASIVOS","BROCAS","MACHOS","TERRAJAS","SIERRAS","HOJAS","PUNTAS","BOCALES","GASES","OXIGENO","OXÍGENO","ACETILENO","ARGON","ARGÓN","CONSUMIBLES"], claves: ["ELECTRODO","CORTE Y PULIDO","SOLDADURA","DISCO","CORTE","PULIDO","LIJA","ABRASIVO","BROCA","MACHO","TERRAJA","SIERRA","HOJA","PUNTA","BOCAL","GASES","OXIGENO","OXÍGENO","ACETILENO","ARGON","ARGÓN","ABRASIVOS"], fondo:"#ffedd5", borde:"#f97316" },
-            { nombre: "Drogueria", categorias: ["CINTAS Y ADHESIVOS","MARCADORES","DROGUERIA","DROGUERÍA","AEROSOLES"], claves: ["CINTAS Y ADHESIVOS","MARCADOR","DROGUERIA","DROGUERÍA","AEROSOL"], fondo:"#F1A99A", borde:"#C0361A" },
-            { nombre: "Electricidad", categorias: ["ELECTRICIDAD","ELECTRICOS","ELÉCTRICOS","CABLE ELECTRICO","CUADROS","MAGNETOTERMICOS","MAGNETOTÉRMICOS","DIFERENCIALES","CONTACTORES","RELES","RELÉS","PULSADORES","PILOTOS","BORNERAS"], claves: ["ELECTRICIDAD","ELECTRICO","ELÉCTRICO","CABLE ELECTRICO","CUADRO","MAGNETOTERMICO","MAGNETOTÉRMICO","DIFERENCIAL","CONTACTOR","RELE","RELÉ","PULSADOR","PILOTO","BORNERA"], fondo:"#EEC2F7", borde:"#831599" },
-            { nombre: "EPIs y seguridad", categorias: ["EPIS Y SEGURIDAD","EPIS","CASCOS","GUANTES","BOTAS","GAFAS","PANTALLAS","MASCARILLAS","ARNESES","ARNÉS","PROTECCION","PROTECCIÓN"], claves: ["EPIS Y SEGURIDAD","EPI","EPIS","CASCO","GUANTE","BOTA","GAFAS","PANTALLA","MASCARILLA","ARNES","ARNÉS","PROTECCION","PROTECCIÓN"], fondo:"#fef9c3", borde:"#eab308" },
-            { nombre: "Fijaciones y anclajes", categorias: ["BISAGRAS","POMOS Y MANETAS","MUELLES","ELEMENTOS DE CARGA Y NIVELACION","CIERRES","CABLES","ESLINGAS","CINCHAS","GANCHOS","MOSQUETONES","MOSQUETON"], claves: ["BISAGRA","POMOS Y MANETAS","MUELLE","ELEMENTOS DE CARGA Y NIVELACION","CIERRE","CABLE","ESLINGA","CINCHA","GANCHO","MOSQUETON","MOSQUETÓN"], fondo:"#cffafe", borde:"#06b6d4" },
-            { nombre: "Herramientas", categorias: ["HERRAMIENTAS","MAQUINAS","ESCALERAS","EXTRACCION HUMOS","LLAVES","DESTORNILLADORES","MARTILLOS","ALICATES","TENAZAS","TALADROS","AMOLADORAS","RADIALES","SOPLETES","SOLDADORES"], claves: ["HERRAMIENTA","MAQUINA","ESCALERA","EXTRACCION HUMOS","LLAVE","DESTORNILLADOR","MARTILLO","ALICATE","TENAZA","TALADRO","AMOLADORA","RADIAL","SOPLETE","SOLDADOR"], fondo:"#e0e7ff", borde:"#6366f1" },
-            { nombre: "Instrumentación", categorias: ["MANOMETROS","MANÓMETROS","TERMOMETROS","TERMÓMETROS","PRESOSTATOS","TERMOSTATOS","CAUDALIMETROS","CAUDALÍMETROS","SENSORES","SONDAS","INSTRUMENTOS","INSTRUMENTACION"], claves: ["MANOMETRO","MANÓMETRO","TERMOMETRO","TERMÓMETRO","PRESOSTATO","TERMOSTATO","CAUDALIMETRO","CAUDALÍMETRO","SENSOR","SONDA","INSTRUMENT"], fondo:"#f3e8ff", borde:"#a855f7" },
-            { nombre: "Mecanizados", categorias: ["MECANIZADOS"], claves: ["MECANIZADOS"], fondo:"#DFD7E0", borde:"#A189A4" },
-            { nombre: "Perfiles y chapa", categorias: ["PERFILES T","CONTERAS","LASER","PERFILES","PERFILES U","PERFILES REDONDOS","PERFILES ANGULARES","PERFILES RECTANGULARES","PERFILES H","CHAPAS","PLETINAS","ANGULOS","ÁNGULOS","TUBO CUADRADO","TUBO REDONDO","TUBO RECTANGULAR","PERFILES CUADRADOS","PERFILES MACIZOS CUADRADOS","PERFILES MACIZOS REDONDOS","REDONDOS","CUADRADOS","RECTANGULARES","VIGAS","IPN","UPN","HEB","HEA"], claves: ["PERFILES T","CONTERAS","LASER","PERFIL","PERFILES U","PERFILES REDONDOS","PERFILES RECTANGULARES","CHAPA","PLETINA","ANGULO","ÁNGULO","PERFILES H","TUBO CUADRADO","TUBO REDONDO","TUBO RECTANGULAR","PERFILES CUADRADOS","PERFILES MACIZOS CUADRADOS","PERFILES MACIZOS REDONDOS","REDONDO","CUADRADO","RECTANGULAR","VIGA","IPN","UPN","HEB","HEA"], fondo:"#dcfce7", borde:"#22c55e" },
-            { nombre: "Recambio maquina", categorias: ["RECAMBIO SOLDADURA","RECAMBIOS GASES","RECAMBIOS SOLDADURA","RECAMBIO MAQUINA","RECAMBIOS PLASMA","RECAMBIOS MAQUINA","RECAMBIO PLASMA"], claves: ["RECAMBIO SOLDADURA","RECAMBIOS GASES","RECAMBIOS SOLDADURA","RECAMBIO MAQUINA","RECAMBIOS PLASMA","RECAMBIOS MAQUINA","RECAMBIO PLASMA"], fondo:"#C2F7F5", borde:"#159995" },
-            { nombre: "Tornillería", categorias: ["TORNILLOS","TUERCAS","ARRANDELAS","ARANDELAS","ESPARRAGOS","VARILLAS","TIRAFONDOS","ANCLAJES","TACOS","CLAVOS","GRAPAS","PASADORES","REMACHES"], claves: ["TORNILLO","TUERCA","ARRANDELA","ARANDELA","ESPARRAGO","ESPÁRRAGO","VARILLA","TIRAFONDO","TACO","CLAVO","GRAPA","PASADOR","REMACHE"], fondo:"#fef3c7", borde:"#f59e0b" },
-            { nombre: "Tubería y accesorios", categorias: ["TUBERIA","TUBERÍAS","TUBOS","CODOS","TES","REDUCCIONES","BRIDAS","CONTENEDORES","MANGAS","MANGUITOS","ACOPLAMIENTOS","UNIONES","RACORES","BOCAS DE HOMBRE","CASQUILLOS","TAPONES","CONOS","CURVAS","PASAMUROS","CONEXIONES TUBERIA","CONEXIONES TUBERÍA","CRUCES","JUNTAS","ABRAZADERAS","ABARCONES","CAPS","ELECTROSOLDABLES","FIGURAS","MANGUERAS","PATINES","POLIPROPILENO","PRESSFITING","PVC","PVDF","RAMIFICACIONES","VALONAS","LIRAS","REDUCCIONES CONCENTRICAS","REDUCCIONES EXCENTRICAS"], claves: ["TUBERIA","TUBERÍA","TUBO","CODO","CODOS","TE ","TES","REDUCCION","REDUCCIÓN","BRIDA","BRIDAS","CONTENER","CONTENEDOR","MANGA","MANGUITO","ACOPLAMIENTO","UNION","UNIÓN","RACOR","CASQUILLO","TAPON","TAPÓN","CONO","CURVA","PASAMUROS","CONEXIONES TUBERIA","CONEXIONES TUBERÍA","CRUCES","JUNTAS","ABRAZADERA","ABARCONES","CAPS","ELECTROSOLDABLES","FIGURAS","MANGUERAS","PATINES","POLIPROPILENO","PRESSFITING","PVC","PVDF","RAMIFICACIONES","VALONAS","LIRAS","REDUCCIONES CONCENTRICAS","REDUCCIONES EXCENTRICAS"], fondo:"#dbeafe", borde:"#3b82f6" },
-            { nombre: "Válvulas y accesorios", categorias: ["VALVULAS REDUCTORA DE PRESION","VALVULAS DE PURGA Y TRAMPAS","VALVULAS SELENOIDES","VALVULAS DE VACIO","VALVULAS DE MEMBRANA","VALVULAS DE GLOBO","VALVULAS DE BOLA","VALVULAS DE AGUJA","VALVULAS DE ASIENTO","RECAMBIO VALVULAS","VALVULAS","VÁLVULAS","BRIDAS VALVULA","COMPENSADORES","MIRILLAS","BOLAS DE LIMPIEZA","MARIPOSAS","RETENCIONES","DIAFRAGMAS","VALVULAS DE SEGURIDAD","VÁLVULAS DE SEGURIDAD","VALVULA DE SEGURIDAD","VÁLVULA DE SEGURIDAD","REGULADORAS","SOLENOIDES","FILTROS"], claves: ["VALVULAS REDUCTORA DE PRESION","VALVULAS DE PURGA Y TRAMPAS","VALVULAS SELENOIDES","VALVULAS DE VACIO","VALVULAS DE MEMBRANA","VALVULAS DE GLOBO","VALVULAS DE BOLA","VALVULAS DE AGUJA","VALVULAS DE ASIENTO","RECAMBIO VALVULAS","VALVULA","VÁLVULA","BRIDAS VALVULA","COMPENSADORES","MIRILLAS","BOLAS DE LIMPIEZA","MARIPOSA","RETENCION","RETENCIÓN","DIAFRAGMA","VALVULA DE SEGURIDAD","VÁLVULA DE SEGURIDAD","VALVULAS DE SEGURIDAD","VÁLVULAS DE SEGURIDAD","REGULADORA","SOLENOIDE","FILTRO","FILTROS"], fondo:"#ffe4e6", borde:"#ef4444" }
-        ];
-
-        function normalizar(txt) {
-            return String(txt || '')
-                .toUpperCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .replace(/[-_/,.]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
+    function obtenerImagenEsquema(nombreArticulo) {
+        if (!nombreArticulo) return 'pr.png';
+        const art = normalizar(nombreArticulo);
+        
+        if (art.includes('CLAMP')) {
+            return 'clamp.png';
         }
-
-        // ============ NUEVA FUNCIÓN PARA DECIDIR LA IMAGEN DEL ESQUEMA ============
-        function obtenerImagenEsquema(nombreArticulo) {
-            if (!nombreArticulo) return 'pr.png';
-            const art = normalizar(nombreArticulo);
-            
-            // Si contiene CLAMP, mostrar clamp.png
-            if (art.includes('CLAMP')) {
-                return 'clamp.png';
-            }
-            // Si contiene CODO, mostrar codo.png
-            if (art.includes('CODO')) {
-                return 'codo.png';
-            }
-            // Por defecto, mostrar pr.png
-            return 'pr.png';
+        if (art.includes('CODO')) {
+            return 'codo.png';
         }
-        // =========================================================================
+        return 'pr.png';
+    }
 
-        function obtenerFamilia(texto) {
-            if (!texto) return null;
-            const t = normalizar(texto);
-            for (const fam of FAMILIAS) {
-                if (!fam.categorias) continue;
-                for (const cat of fam.categorias) {
-                    if (normalizar(cat) === t) return fam;
-                }
+    function obtenerFamilia(texto) {
+        if (!texto) return null;
+        const t = normalizar(texto);
+        for (const fam of FAMILIAS) {
+            if (!fam.categorias) continue;
+            for (const cat of fam.categorias) {
+                if (normalizar(cat) === t) return fam;
             }
-            const todasClaves = [];
-            FAMILIAS.forEach(fam => {
-                (fam.claves || []).forEach(clave => {
-                    const k = ' ' + normalizar(clave) + ' ';
-                    todasClaves.push({ fam, clave: k });
-                });
+        }
+        const todasClaves = [];
+        FAMILIAS.forEach(fam => {
+            (fam.claves || []).forEach(clave => {
+                const k = ' ' + normalizar(clave) + ' ';
+                todasClaves.push({ fam, clave: k });
             });
-            todasClaves.sort((a, b) => b.clave.length - a.clave.length);
+        });
+        todasClaves.sort((a, b) => b.clave.length - a.clave.length);
+        const tEsp = ' ' + t + ' ';
+        for (const item of todasClaves) {
+            if (tEsp.includes(item.clave)) return item.fam;
+        }
+        return null;
+    }
+
+    function estiloFamilia(texto) {
+        const fam = obtenerFamilia(texto);
+        if (!fam) return '';
+        return `style="background:${fam.fondo}; border-color:${fam.borde};"`;
+    }
+
+    function categoriaPerteneceAFamilia(cat, fam) {
+        const t = normalizar(cat);
+        if (fam.categorias) {
+            for (const c of fam.categorias) {
+                if (normalizar(c) === t) return true;
+            }
+        }
+        if (fam.claves) {
+            const claves = fam.claves.map(c => ' ' + normalizar(c) + ' ').sort((a, b) => b.length - a.length);
             const tEsp = ' ' + t + ' ';
-            for (const item of todasClaves) {
-                if (tEsp.includes(item.clave)) return item.fam;
+            for (const k of claves) {
+                if (tEsp.includes(k)) return true;
             }
-            return null;
         }
+        return false;
+    }
 
-        function estiloFamilia(texto) {
-            const fam = obtenerFamilia(texto);
-            if (!fam) return '';
-            return `style="background:${fam.fondo}; border-color:${fam.borde};"`;
-        }
+    let baseDatos = [];
+    let dbTecnica = {};
+    let historialNavegacion = [];
+    let selCat="", selArt="", selDim="", selPres="", artSel=null;
+    let temporizadorBusqueda = null;
 
-        function categoriaPerteneceAFamilia(cat, fam) {
-            const t = normalizar(cat);
-            if (fam.categorias) {
-                for (const c of fam.categorias) {
-                    if (normalizar(c) === t) return true;
-                }
-            }
-            if (fam.claves) {
-                const claves = fam.claves.map(c => ' ' + normalizar(c) + ' ').sort((a, b) => b.length - a.length);
-                const tEsp = ' ' + t + ' ';
-                for (const k of claves) {
-                    if (tEsp.includes(k)) return true;
-                }
-            }
-            return false;
-        }
+    function obtenerOperarioActivo() { return (sessionStorage.getItem('operarioNombre') || '').trim(); }
+    function obtenerObraActiva() { return (sessionStorage.getItem('operarioObra') || '').trim(); }
 
-        let baseDatos = [];
-        let dbTecnica = {};
-        let historialNavegacion = [];
-        let selCat="", selArt="", selDim="", selPres="", artSel=null;
-        let temporizadorBusqueda = null;
+    window.addEventListener('DOMContentLoaded', async () => {
+        const nombreGuardado = sessionStorage.getItem('operarioNombre') || '';
+        const obraGuardada = sessionStorage.getItem('operarioObra') || '';
+        document.getElementById('nombreUsuario').value = nombreGuardado;
+        document.getElementById('obraUsuario').value = obraGuardada;
 
-        function obtenerOperarioActivo() { return (sessionStorage.getItem('operarioNombre') || '').trim(); }
-        function obtenerObraActiva() { return (sessionStorage.getItem('operarioObra') || '').trim(); }
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            const nombreGuardado = sessionStorage.getItem('operarioNombre') || '';
-            const obraGuardada = sessionStorage.getItem('operarioObra') || '';
-            document.getElementById('nombreUsuario').value = nombreGuardado;
-            document.getElementById('obraUsuario').value = obraGuardada;
-
-            document.getElementById('nombreUsuario').addEventListener('input', (e) => {
-                sessionStorage.setItem('operarioNombre', e.target.value.trim());
-                cargarMiLista();
-            });
-            document.getElementById('obraUsuario').addEventListener('input', (e) => {
-                sessionStorage.setItem('operarioObra', e.target.value.trim());
-                cargarMiLista();
-            });
-
-            await cargarBaseDatos();
-            await cargarDatosTecnicos();
-
-            const cargadoPorRef = cargarDesdeRefSiExiste();
-            if (!cargadoPorRef) {
-                iniciarCategorias();
-            }
-
-            const params = new URLSearchParams(location.search);
-            if (params.get('operario')) sessionStorage.setItem('operarioNombre', params.get('operario'));
-            if (params.get('obra'))     sessionStorage.setItem('operarioObra',    params.get('obra'));
-            if (params.get('operario')) document.getElementById('nombreUsuario').value = params.get('operario');
-            if (params.get('obra'))     document.getElementById('obraUsuario').value   = params.get('obra');
-
-            const busquedaURL = params.get('buscar');
-            if (busquedaURL) {
-                document.getElementById('inputBuscador').value = busquedaURL;
-                setTimeout(() => buscarArticulos(), 150);
-            }
-
-            await cargarMiLista();
-
-            if (params.get('scrollToBottom') === '1') {
-                let intentos = 0;
-                const maxIntentos = 15;
-                const intervalo = setInterval(() => {
-                    intentos++;
-                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                    const y = window.scrollY + window.innerHeight;
-                    const total = document.documentElement.scrollHeight;
-                    if (y >= total - 5 || intentos >= maxIntentos) clearInterval(intervalo);
-                }, 300);
-            }
-
-            // Rellenar opciones del modal
-            rellenarOpcionesModal();
-
-            // Cerrar el modal al pulsar fuera o con Escape
-            document.getElementById('modalAnadir').addEventListener('click', (ev) => {
-                if (ev.target.id === 'modalAnadir') cerrarModalAnadir();
-            });
-            document.addEventListener('keydown', (ev) => {
-                if (ev.key === 'Escape') {
-                    const m = document.getElementById('modalAnadir');
-                    if (m && m.classList.contains('activo')) cerrarModalAnadir();
-                    const m2 = document.getElementById('modalNoEncuentro');
-                    if (m2 && m2.classList.contains('activo')) cerrarModalNoEncuentro();
-                }
-            });
-
-            // Inicializar contador del botón flotante
-            actualizarContadorFlotante();
+        document.getElementById('nombreUsuario').addEventListener('input', (e) => {
+            sessionStorage.setItem('operarioNombre', e.target.value.trim());
+            cargarMiLista();
+        });
+        document.getElementById('obraUsuario').addEventListener('input', (e) => {
+            sessionStorage.setItem('operarioObra', e.target.value.trim());
+            cargarMiLista();
         });
 
-        // ====== BOTÓN FLOTANTE VER LISTA ======
-        function toggleLista() {
-            const box = document.querySelector('.box-lista');
-            if (!box) return;
+        await cargarBaseDatos();
+        await cargarDatosTecnicos();
 
-            const estaOculto = box.classList.toggle('oculto');
-            const btn = document.getElementById('btnFlotanteLista');
-            btn.innerHTML = (estaOculto ? '📋 Ver Lista' : '📋 Ocultar Lista') +
-                            ' <span class="contador-flotante" id="contadorFlotante">' +
-                            (registrosLista.length || 0) + '</span>';
+        const cargadoPorRef = cargarDesdeRefSiExiste();
+        if (!cargadoPorRef) {
+            iniciarCategorias();
+        }
 
-            if (!estaOculto) {
-                setTimeout(() => {
-                    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 50);
+        const params = new URLSearchParams(location.search);
+        if (params.get('operario')) sessionStorage.setItem('operarioNombre', params.get('operario'));
+        if (params.get('obra'))     sessionStorage.setItem('operarioObra',    params.get('obra'));
+        if (params.get('operario')) document.getElementById('nombreUsuario').value = params.get('operario');
+        if (params.get('obra'))     document.getElementById('obraUsuario').value   = params.get('obra');
+
+        const busquedaURL = params.get('buscar');
+        if (busquedaURL) {
+            document.getElementById('inputBuscador').value = busquedaURL;
+            setTimeout(() => buscarArticulos(), 150);
+        }
+
+        await cargarMiLista();
+
+        if (params.get('scrollToBottom') === '1') {
+            let intentos = 0;
+            const maxIntentos = 15;
+            const intervalo = setInterval(() => {
+                intentos++;
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                const y = window.scrollY + window.innerHeight;
+                const total = document.documentElement.scrollHeight;
+                if (y >= total - 5 || intentos >= maxIntentos) clearInterval(intervalo);
+            }, 300);
+        }
+
+        rellenarOpcionesModal();
+
+        document.getElementById('modalAnadir').addEventListener('click', (ev) => {
+            if (ev.target.id === 'modalAnadir') cerrarModalAnadir();
+        });
+        document.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Escape') {
+                const m = document.getElementById('modalAnadir');
+                if (m && m.classList.contains('activo')) cerrarModalAnadir();
+                const m2 = document.getElementById('modalNoEncuentro');
+                if (m2 && m2.classList.contains('activo')) cerrarModalNoEncuentro();
             }
-        }
+        });
 
-        function actualizarContadorFlotante() {
-            const cont = document.getElementById('contadorFlotante');
-            if (cont) cont.textContent = registrosLista.length || 0;
-        }
+        actualizarContadorFlotante();
+    });
 
-        // ====== MODAL ======
-        function rellenarOpcionesModal() {
-            const sel = document.getElementById('modalOpcion');
-            if (!sel) return;
-            sel.innerHTML = '';
+    function toggleLista() {
+        const box = document.querySelector('.box-lista');
+        if (!box) return;
+
+        const estaOculto = box.classList.toggle('oculto');
+        const btn = document.getElementById('btnFlotanteLista');
+        btn.innerHTML = (estaOculto ? '📋 Ver Lista' : '📋 Ocultar Lista') +
+                        ' <span class="contador-flotante" id="contadorFlotante">' +
+                        (registrosLista.length || 0) + '</span>';
+
+        if (!estaOculto) {
+            setTimeout(() => {
+                box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+        }
+    }
+
+    function actualizarContadorFlotante() {
+        const cont = document.getElementById('contadorFlotante');
+        if (cont) cont.textContent = registrosLista.length || 0;
+    }
+
+    function rellenarOpcionesModal() {
+        const sel = document.getElementById('modalOpcion');
+        if (!sel) return;
+        sel.innerHTML = '';
+        OPCIONES_MODAL.forEach(o => {
+            const opt = document.createElement('option');
+            opt.value = o.valor;
+            opt.textContent = o.etiqueta;
+            sel.appendChild(opt);
+        });
+        const selNoEnc = document.getElementById('noEncTipo');
+        if (selNoEnc) {
+            selNoEnc.innerHTML = '';
             OPCIONES_MODAL.forEach(o => {
                 const opt = document.createElement('option');
                 opt.value = o.valor;
                 opt.textContent = o.etiqueta;
-                sel.appendChild(opt);
+                selNoEnc.appendChild(opt);
             });
-            const selNoEnc = document.getElementById('noEncTipo');
-            if (selNoEnc) {
-                selNoEnc.innerHTML = '';
-                OPCIONES_MODAL.forEach(o => {
-                    const opt = document.createElement('option');
-                    opt.value = o.valor;
-                    opt.textContent = o.etiqueta;
-                    selNoEnc.appendChild(opt);
-                });
-                selNoEnc.selectedIndex = 1; // seleccionar "Barra" o el primero útil
-            }
+            selNoEnc.selectedIndex = 1;
+        }
+    }
+
+    function esArticuloPlanchaOChapa(art) {
+        if (!art) return false;
+        const a = normalizar(art);
+        return PALABRAS_PLANCHA.some(p => a.includes(normalizar(p)));
+    }
+
+    function abrirModalAnadir() {
+        if (!artSel) return;
+
+        const nombre = document.getElementById('nombreUsuario').value.trim();
+        const obra   = document.getElementById('obraUsuario').value.trim();
+        if (!nombre) { alert("Introduce tu nombre antes de añadir."); return; }
+        if (!obra)   { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de añadir."); return; }
+
+        const modal = document.getElementById('modalAnadir');
+        const sub = document.getElementById('modalSubTitulo');
+        sub.textContent = `${artSel.ref || ''} — ${artSel.art || ''}`;
+
+        const bloquePlancha = document.getElementById('modalBloquePlancha');
+        const bloqueCantidad = document.getElementById('modalBloqueCantidad');
+
+        const esPlancha = esArticuloPlanchaOChapa(artSel.art);
+
+        if (esPlancha) {
+            bloquePlancha.style.display = 'block';
+            bloqueCantidad.style.display = 'none';
+            document.getElementById('modalLargo').value = '';
+            document.getElementById('modalAncho').value = '';
+            document.getElementById('modalUnidadesPlancha').value = 1;
+        } else {
+            bloquePlancha.style.display = 'none';
+            bloqueCantidad.style.display = 'block';
+            document.getElementById('modalCantidad').value = 1;
         }
 
-        function esArticuloPlanchaOChapa(art) {
-            if (!art) return false;
-            const a = normalizar(art);
-            return PALABRAS_PLANCHA.some(p => a.includes(normalizar(p)));
-        }
+        document.getElementById('modalOpcion').selectedIndex = 0;
+        modal.classList.add('activo');
 
-        function abrirModalAnadir() {
-            if (!artSel) return;
+        setTimeout(() => {
+            if (esPlancha) document.getElementById('modalLargo').focus();
+            else document.getElementById('modalCantidad').focus();
+        }, 50);
+    }
 
-            const nombre = document.getElementById('nombreUsuario').value.trim();
-            const obra   = document.getElementById('obraUsuario').value.trim();
-            if (!nombre) { alert("Introduce tu nombre antes de añadir."); return; }
-            if (!obra)   { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de añadir."); return; }
+    function cerrarModalAnadir() {
+        document.getElementById('modalAnadir').classList.remove('activo');
+    }
 
-            const modal = document.getElementById('modalAnadir');
-            const sub = document.getElementById('modalSubTitulo');
-            sub.textContent = `${artSel.ref || ''} — ${artSel.art || ''}`;
+    async function confirmarAnadir() {
+        if (!artSel) return;
 
-            const bloquePlancha = document.getElementById('modalBloquePlancha');
-            const bloqueCantidad = document.getElementById('modalBloqueCantidad');
-
-            const esPlancha = esArticuloPlanchaOChapa(artSel.art);
-
-            if (esPlancha) {
-                bloquePlancha.style.display = 'block';
-                bloqueCantidad.style.display = 'none';
-                document.getElementById('modalLargo').value = '';
-                document.getElementById('modalAncho').value = '';
-                document.getElementById('modalUnidadesPlancha').value = 1;
-            } else {
-                bloquePlancha.style.display = 'none';
-                bloqueCantidad.style.display = 'block';
-                document.getElementById('modalCantidad').value = 1;
-            }
-
-            document.getElementById('modalOpcion').selectedIndex = 0;
-            modal.classList.add('activo');
-
-            setTimeout(() => {
-                if (esPlancha) document.getElementById('modalLargo').focus();
-                else document.getElementById('modalCantidad').focus();
-            }, 50);
-        }
-
-        function cerrarModalAnadir() {
-            document.getElementById('modalAnadir').classList.remove('activo');
-        }
-
-        async function confirmarAnadir() {
-            if (!artSel) return;
-
-            const nombre = document.getElementById('nombreUsuario').value.trim();
-            const obra   = document.getElementById('obraUsuario').value.trim();
-            if (!nombre || !obra) {
-                alert("Falta el nombre o la OT.");
-                cerrarModalAnadir();
-                return;
-            }
-
-            const opcion = document.getElementById('modalOpcion').value;
-            if (!opcion) {
-                alert("⚠️ Debes seleccionar una opción (Bolsa, Caja, Paquete, etc.) antes de añadir.");
-                document.getElementById('modalOpcion').focus();
-                return;
-            }
-            const etiquetaOpcion = OPCIONES_MODAL.find(o => o.valor === opcion)?.etiqueta || opcion;
-
-            const esPlancha = esArticuloPlanchaOChapa(artSel.art);
-
-            let detalleExtra = '';
-            let cantidadFinal = 1;
-
-            if (esPlancha) {
-                const largo  = parseFloat(document.getElementById('modalLargo').value);
-                const ancho  = parseFloat(document.getElementById('modalAncho').value);
-                const unid   = parseInt(document.getElementById('modalUnidadesPlancha').value) || 1;
-
-                if (!largo || !ancho || largo <= 0 || ancho <= 0) {
-                    alert("Introduce el Largo y el Ancho (mm) correctamente.");
-                    return;
-                }
-                if (unid < 1) { alert("Las unidades deben ser 1 o más."); return; }
-
-                detalleExtra = ` [${largo}x${ancho}] — ${etiquetaOpcion}`;
-                cantidadFinal = unid;
-            } else {
-                const cant = parseInt(document.getElementById('modalCantidad').value) || 1;
-                if (cant < 1) { alert("La cantidad debe ser 1 o más."); return; }
-                detalleExtra = ` — ${etiquetaOpcion}`;
-                cantidadFinal = cant;
-            }
-
-            const partes = [
-                limpiarDetalle(artSel.dim),
-                limpiarDetalle(artSel.pres),
-                limpiarDetalle(artSel.mat)
-            ].filter(p => p !== '');
-            const detalleBase = partes.length > 0 ? ` (${partes.join(' - ')})` : '';
-            const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalleBase}${detalleExtra}`;
-
-            const { error } = await _supabase.from('pedidos').insert([{
-                operario: nombre, obra: obra,
-                referencia: artSel.ref,
-                detalle_linea: lineaFormateada,
-                cantidad: cantidadFinal
-            }]);
-
-            if (error) { alert("Error al añadir: " + error.message); return; }
-
-            const msg = document.getElementById('msgConfirmacion');
-            msg.style.display = 'block';
-            setTimeout(() => { msg.style.display = 'none'; }, 2000);
-
+        const nombre = document.getElementById('nombreUsuario').value.trim();
+        const obra   = document.getElementById('obraUsuario').value.trim();
+        if (!nombre || !obra) {
+            alert("Falta el nombre o la OT.");
             cerrarModalAnadir();
-            cargarMiLista();
+            return;
         }
 
-        // ====== MODAL NO LO ENCUENTRO ======
-        function abrirModalNoEncuentro() {
-            const nombre = document.getElementById('nombreUsuario').value.trim();
-            const obra = document.getElementById('obraUsuario').value.trim();
-            if (!nombre) { alert("Introduce tu nombre antes de continuar."); return; }
-            if (!obra) { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de continuar."); return; }
-
-            document.getElementById('noEncDescripcion').value = '';
-            document.getElementById('noEncCantidad').value = 1;
-            document.getElementById('noEncTipo').selectedIndex = 1; // por defecto Barra
-            document.getElementById('modalNoEncuentro').classList.add('activo');
-            setTimeout(() => document.getElementById('noEncDescripcion').focus(), 50);
+        const opcion = document.getElementById('modalOpcion').value;
+        if (!opcion) {
+            alert("⚠️ Debes seleccionar una opción (Bolsa, Caja, Paquete, etc.) antes de añadir.");
+            document.getElementById('modalOpcion').focus();
+            return;
         }
+        const etiquetaOpcion = OPCIONES_MODAL.find(o => o.valor === opcion)?.etiqueta || opcion;
 
-        function cerrarModalNoEncuentro() {
-            document.getElementById('modalNoEncuentro').classList.remove('activo');
-        }
+        const esPlancha = esArticuloPlanchaOChapa(artSel.art);
 
-        async function confirmarNoEncuentro() {
-            const nombre = document.getElementById('nombreUsuario').value.trim();
-            const obra = document.getElementById('obraUsuario').value.trim();
-            const desc = document.getElementById('noEncDescripcion').value.trim();
-            const cant = parseInt(document.getElementById('noEncCantidad').value) || 1;
-            const tipo = document.getElementById('noEncTipo').value;
-            const etiquetaTipo = OPCIONES_MODAL.find(o => o.valor === tipo)?.etiqueta || tipo;
+        let detalleExtra = '';
+        let cantidadFinal = 1;
 
-            if (!nombre || !obra) { alert("Falta el nombre o la OT. Rellénalos primero."); cerrarModalNoEncuentro(); return; }
-            if (!desc) { alert("Escribe una descripción lo más precisa posible."); return; }
+        if (esPlancha) {
+            const largo  = parseFloat(document.getElementById('modalLargo').value);
+            const ancho  = parseFloat(document.getElementById('modalAncho').value);
+            const unid   = parseInt(document.getElementById('modalUnidadesPlancha').value) || 1;
+
+            if (!largo || !ancho || largo <= 0 || ancho <= 0) {
+                alert("Introduce el Largo y el Ancho (mm) correctamente.");
+                return;
+            }
+            if (unid < 1) { alert("Las unidades deben ser 1 o más."); return; }
+
+            detalleExtra = ` [${largo}x${ancho}] — ${etiquetaOpcion}`;
+            cantidadFinal = unid;
+        } else {
+            const cant = parseInt(document.getElementById('modalCantidad').value) || 1;
             if (cant < 1) { alert("La cantidad debe ser 1 o más."); return; }
-            if (!tipo) { alert("Selecciona el tipo (Bolsa, Kilos, etc.)."); return; }
-
-            // Construir línea: [Solicitud] Descripción — Tipo
-            const linea = `[Solicitud] ${desc} — ${etiquetaTipo}`;
-
-            const { error } = await _supabase.from('pedidos').insert([{
-                operario: nombre,
-                obra: obra,
-                referencia: '', // <--- CORREGIDO: Enviar cadena vacía en lugar de null para evitar error NOT NULL
-                detalle_linea: linea,
-                cantidad: cant
-            }]);
-
-            if (error) {
-                alert("Error al añadir: " + error.message);
-                return;
-            }
-
-            cerrarModalNoEncuentro();
-            cargarMiLista();
+            detalleExtra = ` — ${etiquetaOpcion}`;
+            cantidadFinal = cant;
         }
 
-        // ====== resto de la lógica ======
+        const partes = [
+            limpiarDetalle(artSel.dim),
+            limpiarDetalle(artSel.pres),
+            limpiarDetalle(artSel.mat)
+        ].filter(p => p !== '');
+        const detalleBase = partes.length > 0 ? ` (${partes.join(' - ')})` : '';
+        const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalleBase}${detalleExtra}`;
 
-        function obtenerTextoNorma(texto) {
-            if (!texto) return null;
-            const t = texto.toUpperCase();
-            for (const item of NORMAS_INFO) {
-                for (const clave of item.claves) {
-                    if (t.includes(clave.toUpperCase())) return item.texto;
+        const { error } = await _supabase.from('pedidos').insert([{
+            operario: nombre, obra: obra,
+            referencia: artSel.ref,
+            detalle_linea: lineaFormateada,
+            cantidad: cantidadFinal
+        }]);
+
+        if (error) { alert("Error al añadir: " + error.message); return; }
+
+        const msg = document.getElementById('msgConfirmacion');
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 2000);
+
+        cerrarModalAnadir();
+        cargarMiLista();
+    }
+
+    function abrirModalNoEncuentro() {
+        const nombre = document.getElementById('nombreUsuario').value.trim();
+        const obra = document.getElementById('obraUsuario').value.trim();
+        if (!nombre) { alert("Introduce tu nombre antes de continuar."); return; }
+        if (!obra) { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de continuar."); return; }
+
+        document.getElementById('noEncDescripcion').value = '';
+        document.getElementById('noEncCantidad').value = 1;
+        document.getElementById('noEncTipo').selectedIndex = 1;
+        document.getElementById('modalNoEncuentro').classList.add('activo');
+        setTimeout(() => document.getElementById('noEncDescripcion').focus(), 50);
+    }
+
+    function cerrarModalNoEncuentro() {
+        document.getElementById('modalNoEncuentro').classList.remove('activo');
+    }
+
+    async function confirmarNoEncuentro() {
+        const nombre = document.getElementById('nombreUsuario').value.trim();
+        const obra = document.getElementById('obraUsuario').value.trim();
+        const desc = document.getElementById('noEncDescripcion').value.trim();
+        const cant = parseInt(document.getElementById('noEncCantidad').value) || 1;
+        const tipo = document.getElementById('noEncTipo').value;
+        const etiquetaTipo = OPCIONES_MODAL.find(o => o.valor === tipo)?.etiqueta || tipo;
+
+        if (!nombre || !obra) { alert("Falta el nombre o la OT. Rellénalos primero."); cerrarModalNoEncuentro(); return; }
+        if (!desc) { alert("Escribe una descripción lo más precisa posible."); return; }
+        if (cant < 1) { alert("La cantidad debe ser 1 o más."); return; }
+        if (!tipo) { alert("Selecciona el tipo (Bolsa, Kilos, etc.)."); return; }
+
+        const linea = `[Solicitud] ${desc} — ${etiquetaTipo}`;
+
+        const { error } = await _supabase.from('pedidos').insert([{
+            operario: nombre,
+            obra: obra,
+            referencia: '',
+            detalle_linea: linea,
+            cantidad: cant
+        }]);
+
+        if (error) {
+            alert("Error al añadir: " + error.message);
+            return;
+        }
+
+        cerrarModalNoEncuentro();
+        cargarMiLista();
+    }
+
+    function obtenerTextoNorma(texto) {
+        if (!texto) return null;
+        const t = texto.toUpperCase();
+        for (const item of NORMAS_INFO) {
+            for (const clave of item.claves) {
+                if (t.includes(clave.toUpperCase())) return item.texto;
+            }
+        }
+        return null;
+    }
+
+    function crearBadgeHTML(texto) {
+        const n = obtenerTextoNorma(texto);
+        if (!n) return '';
+        const claseExtra = (n.toLowerCase() === 'uso comun') ? ' badge-azul' : '';
+        return `<div class="badge-norma${claseExtra}">${n}</div>`;
+    }
+
+    function mostrarGlobo(e, texto) {
+        const g = document.getElementById('globoNorma');
+        g.innerText = "ℹ️ " + texto;
+        g.style.display = 'block';
+        const x = e.clientX || (e.touches && e.touches[0].clientX);
+        const y = e.clientY || (e.touches && e.touches[0].clientY);
+        g.style.left = (x - 80) + 'px';
+        g.style.top = (y - 45) + 'px';
+        setTimeout(() => { g.style.display = 'none'; }, 2000);
+    }
+
+    async function cargarBaseDatos() {
+        try {
+            const res = await fetch('articulos.txt');
+            if (!res.ok) throw new Error("No se encontró articulos.txt");
+            const text = await res.text();
+            const lineas = text.split(/\r?\n/);
+            baseDatos = [];
+            for (const linea of lineas) {
+                const l = linea.trim();
+                if (!l) continue;
+                const c = l.split(';').map(x => x.replace(/"/g, '').trim());
+                if (c.length >= 6) {
+                    baseDatos.push({ cat: c[0], art: c[1], dim: c[2], pres: c[3], mat: c[4], ref: c[5] });
                 }
             }
-            return null;
-        }
-       function crearBadgeHTML(texto) {
-    const n = obtenerTextoNorma(texto);
-    if (!n) return '';
-    // Si el texto es "Uso comun", usamos la clase azul; si no, la roja (por defecto)
-    const claseExtra = (n.toLowerCase() === 'uso comun') ? ' badge-azul' : '';
-    return `<div class="badge-norma${claseExtra}">${n}</div>`;
-}
-        function mostrarGlobo(e, texto) {
-            const g = document.getElementById('globoNorma');
-            g.innerText = "ℹ️ " + texto;
-            g.style.display = 'block';
-            const x = e.clientX || (e.touches && e.touches[0].clientX);
-            const y = e.clientY || (e.touches && e.touches[0].clientY);
-            g.style.left = (x - 80) + 'px';
-            g.style.top = (y - 45) + 'px';
-            setTimeout(() => { g.style.display = 'none'; }, 2000);
-        }
+        } catch (e) { console.error("❌ cargarBaseDatos:", e); }
+    }
 
-        async function cargarBaseDatos() {
-            try {
-                const res = await fetch('articulos.txt');
-                if (!res.ok) throw new Error("No se encontró articulos.txt");
-                const text = await res.text();
-                const lineas = text.split(/\r?\n/);
-                baseDatos = [];
-                for (const linea of lineas) {
-                    const l = linea.trim();
-                    if (!l) continue;
-                    const c = l.split(';').map(x => x.replace(/"/g, '').trim());
-                    if (c.length >= 6) {
-                        baseDatos.push({ cat: c[0], art: c[1], dim: c[2], pres: c[3], mat: c[4], ref: c[5] });
-                    }
-                }
-            } catch (e) { console.error("❌ cargarBaseDatos:", e); }
-        }
+    async function cargarDatosTecnicos() {
+        try {
+            const res = await fetch('Datos.txt');
+            if (!res.ok) return;
+            const text = await res.text();
+            const lineas = text.split(/\r?\n/);
+            dbTecnica = {};
+            for (const l of lineas) {
+                const limpia = l.trim();
+                if (!limpia) continue;
+                const c = limpia.split(/[,;]/).map(x => x.trim());
+                if (c[0]) dbTecnica[c[0].toUpperCase()] = { a: c[1] || '-', b: c[2] || '-', c: c[3] || '-' };
+            }
+        } catch (e) { console.warn("⚠️ Datos.txt no cargado"); }
+    }
 
-        async function cargarDatosTecnicos() {
-            try {
-                const res = await fetch('Datos.txt');
-                if (!res.ok) return;
-                const text = await res.text();
-                const lineas = text.split(/\r?\n/);
-                dbTecnica = {};
-                for (const l of lineas) {
-                    const limpia = l.trim();
-                    if (!limpia) continue;
-                    const c = limpia.split(/[,;]/).map(x => x.trim());
-                    if (c[0]) dbTecnica[c[0].toUpperCase()] = { a: c[1] || '-', b: c[2] || '-', c: c[3] || '-' };
-                }
-            } catch (e) { console.warn("⚠️ Datos.txt no cargado"); }
+    function cargarDesdeRefSiExiste() {
+        const params = new URLSearchParams(location.search);
+        const ref = params.get('ref');
+        if (!ref) return false;
+        const articulo = baseDatos.find(x => String(x.ref).trim() === String(ref).trim());
+        if (!articulo) {
+            alert('No se encontró la referencia ' + ref + ' en la base de artículos.');
+            return false;
         }
+        const op = params.get('operario');
+        const obra = params.get('obra');
+        if (op) {
+            sessionStorage.setItem('operarioNombre', op);
+            document.getElementById('nombreUsuario').value = op;
+        }
+        if (obra) {
+            sessionStorage.setItem('operarioObra', obra);
+            document.getElementById('obraUsuario').value = obra;
+        }
+        cargarFicha(articulo.ref);
 
-        function cargarDesdeRefSiExiste() {
-            const params = new URLSearchParams(location.search);
-            const ref = params.get('ref');
-            if (!ref) return false;
-            const articulo = baseDatos.find(x => String(x.ref).trim() === String(ref).trim());
-            if (!articulo) {
-                alert('No se encontró la referencia ' + ref + ' en la base de artículos.');
-                return false;
-            }
-            const op = params.get('operario');
-            const obra = params.get('obra');
-            if (op) {
-                sessionStorage.setItem('operarioNombre', op);
-                document.getElementById('nombreUsuario').value = op;
-            }
-            if (obra) {
-                sessionStorage.setItem('operarioObra', obra);
-                document.getElementById('obraUsuario').value = obra;
-            }
-            cargarFicha(articulo.ref);
+        const fichaBox = document.querySelector('#v-ficha .ficha-box');
+        if (fichaBox) {
+            const aviso = document.createElement('div');
+            aviso.style.cssText = 'background:#fef9c3; border:1px solid #facc15; color:#854d0e; padding:6px 10px; border-radius:5px; margin-bottom:8px; text-align:center; font-weight:bold; font-size:11px;';
+            aviso.innerHTML = '🔩 Este artículo se ha pedido desde la calculadora de bridas. Comprueba la cantidad y añádelo a tu lista.';
+            fichaBox.insertBefore(aviso, fichaBox.firstChild);
+        }
+        return true;
+    }
 
-            const fichaBox = document.querySelector('#v-ficha .ficha-box');
-            if (fichaBox) {
-                const aviso = document.createElement('div');
-                aviso.style.cssText = 'background:#fef9c3; border:1px solid #facc15; color:#854d0e; padding:6px 10px; border-radius:5px; margin-bottom:8px; text-align:center; font-weight:bold; font-size:11px;';
-                aviso.innerHTML = '🔩 Este artículo se ha pedido desde la calculadora de bridas. Comprueba la cantidad y añádelo a tu lista.';
-                fichaBox.insertBefore(aviso, fichaBox.firstChild);
-            }
-            return true;
-        }
-
-        function cambiarVista(idVista, titulo) {
-            document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
-            const obj = document.getElementById(idVista);
-            if (obj) obj.classList.add('activa');
-            const nav = document.getElementById('nav');
-            if (nav) {
-                if (idVista === 'v-cat') {
-                    nav.classList.remove('activa');
-                } else {
-                    nav.classList.add('activa');
-                }
-            }
-            const bc = document.getElementById('breadcrumb');
-            if (bc) bc.innerText = titulo || '';
-        }
-        function irInicio() {
-            document.getElementById('inputBuscador').value = '';
-            historialNavegacion = [];
-            iniciarCategorias();
-        }
-        function atras() {
-            if (historialNavegacion.length > 0) {
-                const paso = historialNavegacion.pop();
-                restaurarPaso(paso);
+    function cambiarVista(idVista, titulo) {
+        document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
+        const obj = document.getElementById(idVista);
+        if (obj) obj.classList.add('activa');
+        const nav = document.getElementById('nav');
+        if (nav) {
+            if (idVista === 'v-cat') {
+                nav.classList.remove('activa');
             } else {
-                irInicio();
+                nav.classList.add('activa');
             }
         }
+        const bc = document.getElementById('breadcrumb');
+        if (bc) bc.innerText = titulo || '';
+    }
+    function irInicio() {
+        document.getElementById('inputBuscador').value = '';
+        historialNavegacion = [];
+        iniciarCategorias();
+    }
+    function atras() {
+        if (historialNavegacion.length > 0) {
+            const paso = historialNavegacion.pop();
+            restaurarPaso(paso);
+        } else {
+            irInicio();
+        }
+    }
 
-        function pushHistorial(vista, extra = {}) {
-            historialNavegacion.push({
-                vista,
-                cat: extra.cat !== undefined ? extra.cat : selCat,
-                art: extra.art !== undefined ? extra.art : selArt,
-                dim: extra.dim !== undefined ? extra.dim : selDim,
-                pres: extra.pres !== undefined ? extra.pres : selPres,
-                query: extra.query !== undefined ? extra.query : null
+    function pushHistorial(vista, extra = {}) {
+        historialNavegacion.push({
+            vista,
+            cat: extra.cat !== undefined ? extra.cat : selCat,
+            art: extra.art !== undefined ? extra.art : selArt,
+            dim: extra.dim !== undefined ? extra.dim : selDim,
+            pres: extra.pres !== undefined ? extra.pres : selPres,
+            query: extra.query !== undefined ? extra.query : null
+        });
+    }
+
+    function restaurarPaso(paso) {
+        if (!paso) { irInicio(); return; }
+        switch (paso.vista) {
+            case 'categorias': iniciarCategorias(); break;
+            case 'categorias-familia': filtrarPorFamilia(paso.familiaIndice); break;
+            case 'articulos':
+                selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
+                mostrarArticulos(paso.cat); break;
+            case 'dimensiones':
+                selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
+                mostrarDimensiones(paso.art); break;
+            case 'presiones':
+                selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
+                mostrarPresiones(paso.art, paso.dim); break;
+            case 'materiales':
+                selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
+                mostrarMateriales(paso.art, paso.dim, paso.pres); break;
+            case 'busqueda':
+                document.getElementById('inputBuscador').value = paso.query || '';
+                buscarArticulos(); break;
+            default: irInicio();
+        }
+    }
+
+    function iniciarCategorias() {
+        cambiarVista('v-cat', 'Categorías');
+        const leyenda = document.getElementById('leyenda-familias');
+        if (leyenda) {
+            const familiasOrdenadas = FAMILIAS.map((f, i) => ({ ...f, indiceOriginal: i }))
+                .sort((a, b) => a.nombre.localeCompare(b.nombre));
+            let lh = '';
+            familiasOrdenadas.forEach((f) => {
+                lh += `<span class="chip-familia" style="background:${f.fondo}; border-color:${f.borde};" onclick="filtrarPorFamilia(${f.indiceOriginal})" title="Ver categorías de: ${f.nombre}">${f.nombre}</span>`;
             });
+            leyenda.innerHTML = lh;
         }
+    }
 
-        function restaurarPaso(paso) {
-            if (!paso) { irInicio(); return; }
-            switch (paso.vista) {
-                case 'categorias': iniciarCategorias(); break;
-                case 'categorias-familia': filtrarPorFamilia(paso.familiaIndice); break;
-                case 'articulos':
-                    selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
-                    mostrarArticulos(paso.cat); break;
-                case 'dimensiones':
-                    selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
-                    mostrarDimensiones(paso.art); break;
-                case 'presiones':
-                    selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
-                    mostrarPresiones(paso.art, paso.dim); break;
-                case 'materiales':
-                    selCat = paso.cat; selArt = paso.art; selDim = paso.dim; selPres = paso.pres;
-                    mostrarMateriales(paso.art, paso.dim, paso.pres); break;
-                case 'busqueda':
-                    document.getElementById('inputBuscador').value = paso.query || '';
-                    buscarArticulos(); break;
-                default: irInicio();
+    function filtrarPorFamilia(indice) {
+        const fam = FAMILIAS[indice];
+        if (!fam) return;
+        pushHistorial('categorias');
+        mostrarCategoriasDeFamilia(indice, fam);
+    }
+
+    function mostrarCategoriasDeFamilia(indice, fam) {
+        const todasLasCats = [...new Set(baseDatos.map(x => x.cat))];
+        const catsFiltradas = todasLasCats.filter(cat => categoriaPerteneceAFamilia(cat, fam))
+            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+
+        const titulo = `${fam.nombre} (${catsFiltradas.length} categorías)`;
+        cambiarVista('v-busqueda', titulo);
+        document.getElementById('tituloBusqueda').innerText = titulo;
+
+        const grid = document.getElementById('grid-busqueda');
+        if (catsFiltradas.length === 0) {
+            grid.innerHTML = `<p style="grid-column: 1/-1; color:#64748b;">No hay categorías en la familia "${fam.nombre}".</p>`;
+            return;
+        }
+        let html = '';
+        catsFiltradas.forEach(c => {
+            html += `<div class="tarjeta" ${estiloFamilia(c)} onclick="gestionarClick(event, '${escapeQuotes(c)}', () => pasoArticulos('${escapeQuotes(c)}', ${indice}))">
+                ${crearBadgeHTML(c)}<div>${c}</div>
+            </div>`;
+        });
+        grid.innerHTML = html;
+    }
+
+    function pasoArticulos(cat, familiaIndice) {
+        selCat = cat;
+        if (familiaIndice === undefined || familiaIndice === null) {
+            for (let i = 0; i < FAMILIAS.length; i++) {
+                if (categoriaPerteneceAFamilia(cat, FAMILIAS[i])) { familiaIndice = i; break; }
             }
         }
-
-        function iniciarCategorias() {
-            cambiarVista('v-cat', 'Categorías');
-            const leyenda = document.getElementById('leyenda-familias');
-            if (leyenda) {
-                const familiasOrdenadas = FAMILIAS.map((f, i) => ({ ...f, indiceOriginal: i }))
-                    .sort((a, b) => a.nombre.localeCompare(b.nombre));
-                let lh = '';
-                familiasOrdenadas.forEach((f) => {
-                    lh += `<span class="chip-familia" style="background:${f.fondo}; border-color:${f.borde};" onclick="filtrarPorFamilia(${f.indiceOriginal})" title="Ver categorías de: ${f.nombre}">${f.nombre}</span>`;
-                });
-                leyenda.innerHTML = lh;
-            }
-        }
-
-        function filtrarPorFamilia(indice) {
-            const fam = FAMILIAS[indice];
-            if (!fam) return;
+        if (familiaIndice !== undefined && familiaIndice !== null) {
+            historialNavegacion.push({ vista: 'categorias-familia', familiaIndice: familiaIndice });
+        } else {
             pushHistorial('categorias');
-            mostrarCategoriasDeFamilia(indice, fam);
         }
+        mostrarArticulos(cat);
+    }
 
-        function mostrarCategoriasDeFamilia(indice, fam) {
-            const todasLasCats = [...new Set(baseDatos.map(x => x.cat))];
-            const catsFiltradas = todasLasCats.filter(cat => categoriaPerteneceAFamilia(cat, fam))
-                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+    function mostrarArticulos(cat) {
+        cambiarVista('v-art', `${cat} > Selecciona Artículo`);
+        const arts = [...new Set(baseDatos.filter(x => x.cat === cat).map(x => x.art))]
+            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+        const grid = document.getElementById('grid-art');
+        let html = '';
+        arts.forEach(a => {
+            html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(a)}', () => pasoDimensiones('${escapeQuotes(a)}'))">
+                ${crearBadgeHTML(a)}<img src="imagenes/${a}.png" onerror="this.src='${obtenerImagenEsquema(a)}'"><div>${a}</div>
+            </div>`;
+        });
+        grid.innerHTML = html;
+    }
 
-            const titulo = `${fam.nombre} (${catsFiltradas.length} categorías)`;
-            cambiarVista('v-busqueda', titulo);
-            document.getElementById('tituloBusqueda').innerText = titulo;
+    function pasoDimensiones(art) {
+        selArt = art;
+        pushHistorial('articulos', { art: art });
+        const dims = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art).map(x => x.dim).filter(d => !esValorSeguir(d)))]
+            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base', numeric: true }));
 
-            const grid = document.getElementById('grid-busqueda');
-            if (catsFiltradas.length === 0) {
-                grid.innerHTML = `<p style="grid-column: 1/-1; color:#64748b;">No hay categorías en la familia "${fam.nombre}".</p>`;
-                return;
-            }
-            let html = '';
-            catsFiltradas.forEach(c => {
-                html += `<div class="tarjeta" ${estiloFamilia(c)} onclick="gestionarClick(event, '${escapeQuotes(c)}', () => pasoArticulos('${escapeQuotes(c)}', ${indice}))">
-                    ${crearBadgeHTML(c)}<div>${c}</div>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        function pasoArticulos(cat, familiaIndice) {
-            selCat = cat;
-            if (familiaIndice === undefined || familiaIndice === null) {
-                for (let i = 0; i < FAMILIAS.length; i++) {
-                    if (categoriaPerteneceAFamilia(cat, FAMILIAS[i])) { familiaIndice = i; break; }
-                }
-            }
-            if (familiaIndice !== undefined && familiaIndice !== null) {
-                historialNavegacion.push({ vista: 'categorias-familia', familiaIndice: familiaIndice });
-            } else {
-                pushHistorial('categorias');
-            }
-            mostrarArticulos(cat);
-        }
-
-        function mostrarArticulos(cat) {
-            cambiarVista('v-art', `${cat} > Selecciona Artículo`);
-            const arts = [...new Set(baseDatos.filter(x => x.cat === cat).map(x => x.art))]
-                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
-            const grid = document.getElementById('grid-art');
-            let html = '';
-            arts.forEach(a => {
-                // MODIFICADO: Ahora usa obtenerImagenEsquema(a) como respaldo
-                html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(a)}', () => pasoDimensiones('${escapeQuotes(a)}'))">
-                    ${crearBadgeHTML(a)}<img src="imagenes/${a}.png" onerror="this.src='${obtenerImagenEsquema(a)}'"><div>${a}</div>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        function pasoDimensiones(art) {
-            selArt = art;
-            pushHistorial('articulos', { art: art });
-            const dims = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art).map(x => x.dim).filter(d => !esValorSeguir(d)))]
+        if (dims.length === 0) {
+            selDim = '';
+            const presValidas = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art).map(x => x.pres).filter(p => !esValorSeguir(p)))]
                 .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base', numeric: true }));
-
-            if (dims.length === 0) {
-                selDim = '';
-                const presValidas = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art).map(x => x.pres).filter(p => !esValorSeguir(p)))]
-                    .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base', numeric: true }));
-                if (presValidas.length > 0) {
-                    historialNavegacion.pop();
-                    pushHistorial('articulos', { art: art });
-                    mostrarPresiones(art, '');
-                    return;
-                }
+            if (presValidas.length > 0) {
                 historialNavegacion.pop();
                 pushHistorial('articulos', { art: art });
-                mostrarMateriales(art, '', '');
+                mostrarPresiones(art, '');
                 return;
             }
-            mostrarDimensiones(art);
+            historialNavegacion.pop();
+            pushHistorial('articulos', { art: art });
+            mostrarMateriales(art, '', '');
+            return;
         }
+        mostrarDimensiones(art);
+    }
 
-        function mostrarDimensiones(art) {
-            const dims = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art).map(x => x.dim).filter(d => !esValorSeguir(d)))]
-                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base', numeric: true }));
-            cambiarVista('v-dim', `${selCat} > ${art} > Selecciona Dimensión`);
-            const grid = document.getElementById('grid-dim');
-            let html = '';
-            dims.forEach(d => {
-                html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(d)}', () => pasoPresion('${escapeQuotes(d)}'))">
-                    ${crearBadgeHTML(d)}<div>${d}</div>
-                </div>`;
-            });
-            grid.innerHTML = html;
+    function mostrarDimensiones(art) {
+        const dims = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art).map(x => x.dim).filter(d => !esValorSeguir(d)))]
+            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base', numeric: true }));
+        cambiarVista('v-dim', `${selCat} > ${art} > Selecciona Dimensión`);
+        const grid = document.getElementById('grid-dim');
+        let html = '';
+        dims.forEach(d => {
+            html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(d)}', () => pasoPresion('${escapeQuotes(d)}'))">
+                ${crearBadgeHTML(d)}<div>${d}</div>
+            </div>`;
+        });
+        grid.innerHTML = html;
+    }
+
+    function pasoPresion(dim) {
+        selDim = dim;
+        pushHistorial('dimensiones', { dim: dim });
+        mostrarPresiones(selArt, dim);
+    }
+
+    function mostrarPresiones(art, dim) {
+        const pres = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art && (dim === '' || x.dim === dim)).map(x => x.pres).filter(p => !esValorSeguir(p)))]
+            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base', numeric: true }));
+        if (pres.length === 0) {
+            historialNavegacion.pop();
+            if (dim === '') pushHistorial('articulos', { art: art });
+            else pushHistorial('dimensiones', { art: art, dim: dim });
+            mostrarMateriales(art, dim, '');
+            return;
         }
+        const tituloDim = dim ? ` (${dim})` : '';
+        cambiarVista('v-pres', `${selCat} > ${art}${tituloDim} > Selecciona Presión / SCH`);
+        const grid = document.getElementById('grid-pres');
+        let html = '';
+        pres.forEach(p => {
+            html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(p)}', () => pasoMaterial('${escapeQuotes(p)}'))">
+                ${crearBadgeHTML(p)}<div>${p}</div>
+            </div>`;
+        });
+        grid.innerHTML = html;
+    }
 
-        function pasoPresion(dim) {
-            selDim = dim;
-            pushHistorial('dimensiones', { dim: dim });
-            mostrarPresiones(selArt, dim);
-        }
+    function pasoMaterial(pres) {
+        selPres = pres;
+        pushHistorial('presiones', { pres: pres });
+        mostrarMateriales(selArt, selDim, pres);
+    }
 
-        function mostrarPresiones(art, dim) {
-            const pres = [...new Set(baseDatos.filter(x => x.cat === selCat && x.art === art && (dim === '' || x.dim === dim)).map(x => x.pres).filter(p => !esValorSeguir(p)))]
-                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base', numeric: true }));
-            if (pres.length === 0) {
-                historialNavegacion.pop();
-                if (dim === '') pushHistorial('articulos', { art: art });
-                else pushHistorial('dimensiones', { art: art, dim: dim });
-                mostrarMateriales(art, dim, '');
-                return;
-            }
-            const tituloDim = dim ? ` (${dim})` : '';
-            cambiarVista('v-pres', `${selCat} > ${art}${tituloDim} > Selecciona Presión / SCH`);
-            const grid = document.getElementById('grid-pres');
-            let html = '';
-            pres.forEach(p => {
-                html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(p)}', () => pasoMaterial('${escapeQuotes(p)}'))">
-                    ${crearBadgeHTML(p)}<div>${p}</div>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        function pasoMaterial(pres) {
-            selPres = pres;
-            pushHistorial('presiones', { pres: pres });
-            mostrarMateriales(selArt, selDim, pres);
-        }
-
-        function mostrarMateriales(art, dim, pres) {
-            const mats = baseDatos.filter(x => x.cat === selCat && x.art === art && (dim === '' || x.dim === dim) && (pres === '' || x.pres === pres) && !esValorSeguir(x.mat));
-            if (mats.length === 0) {
-                const candidato = baseDatos.find(x => x.cat === selCat && x.art === art && (dim === '' || x.dim === dim) && (pres === '' || x.pres === pres));
-                if (candidato) {
-                    selDim = esValorSeguir(candidato.dim) ? '' : candidato.dim;
-                    selPres = esValorSeguir(candidato.pres) ? '' : candidato.pres;
-                    cargarFicha(candidato.ref);
-                } else {
-                    alert("No se encontró ninguna referencia válida para este artículo.");
-                }
-                return;
-            }
-            if (mats.length === 1) { cargarFicha(mats[0].ref); return; }
-            mats.sort((a, b) => a.mat.localeCompare(b.mat, 'es', { sensitivity: 'base' }));
-            const partesTitulo = [];
-            if (dim) partesTitulo.push(dim);
-            if (pres) partesTitulo.push(pres);
-            const titulo = partesTitulo.length ? ` (${partesTitulo.join(' - ')})` : '';
-            cambiarVista('v-mat', `${selCat} > ${art}${titulo} > Selecciona Material`);
-            const grid = document.getElementById('grid-mat');
-            let html = '';
-            mats.forEach(m => {
-                html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(m.mat)}', () => cargarFicha('${m.ref}'))">
-                    ${crearBadgeHTML(m.mat)}<div>${m.mat}</div><small style="color:#dc2626;">${m.ref}</small>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        function buscarArticulos() {
-            clearTimeout(temporizadorBusqueda);
-            temporizadorBusqueda = setTimeout(() => {
-                const query = document.getElementById('inputBuscador').value.trim();
-                const grid = document.getElementById('grid-busqueda');
-                if (query === '') { irInicio(); return; }
-
-                const q = query.toLowerCase();
-                let coincidentes;
-
-                if (q.length <= 2) {
-                    const regex = new RegExp(`\\b${q}\\b`, 'i');
-                    coincidentes = baseDatos.filter(item =>
-                        regex.test(item.art) || regex.test(item.cat) || regex.test(item.ref || '')
-                    );
-                } else {
-                    coincidentes = baseDatos.filter(item =>
-                        item.art.toLowerCase().includes(q) ||
-                        item.cat.toLowerCase().includes(q) ||
-                        (item.ref || '').toLowerCase().includes(q)
-                    );
-                }
-
-                const articulosUnicos = [];
-                const set = new Set();
-                for (const item of coincidentes) {
-                    if (!set.has(item.art)) { set.add(item.art); articulosUnicos.push(item); }
-                }
-                articulosUnicos.sort((a, b) => a.art.localeCompare(b.art));
-
-                const catsUnicas = [...new Set(coincidentes.map(x => x.cat))]
-                    .filter(c => c.toLowerCase().includes(q) || q.length <= 2)
-                    .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
-
-                const total = catsUnicas.length + articulosUnicos.length;
-
-                cambiarVista('v-busqueda', `Búsqueda: "${query}" (${total} resultados)`);
-                document.getElementById('tituloBusqueda').innerText = `Búsqueda: "${query}" (${total} resultados)`;
-
-                if (total === 0) {
-                    grid.innerHTML = '<p style="grid-column: 1/-1; color:#64748b;">No se encontraron artículos, categorías ni referencias.</p>';
-                    return;
-                }
-
-                let html = '';
-
-                if (catsUnicas.length > 0) {
-                    html += `<div style="grid-column: 1/-1; margin-top: 6px; margin-bottom: 2px; font-size: 11px; font-weight: bold; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px;">📁 Categorías (${catsUnicas.length})</div>`;
-                    catsUnicas.forEach(cat => {
-                        html += `<div class="tarjeta" ${estiloFamilia(cat)} onclick="gestionarClick(event, '${escapeQuotes(cat)}', () => pasoArticulos('${escapeQuotes(cat)}'))">
-                            ${crearBadgeHTML(cat)}<div>${cat}</div>
-                        </div>`;
-                    });
-                }
-
-                if (articulosUnicos.length > 0) {
-                    html += `<div style="grid-column: 1/-1; margin-top: 10px; margin-bottom: 2px; font-size: 11px; font-weight: bold; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px;">🔧 Artículos (${articulosUnicos.length})</div>`;
-                    articulosUnicos.forEach(item => {
-                        // MODIFICADO: Ahora usa obtenerImagenEsquema(item.art) como respaldo
-                        html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(item.art)}', () => seleccionarDesdeBusqueda('${escapeQuotes(item.cat)}', '${escapeQuotes(item.art)}'))">
-                            ${crearBadgeHTML(item.art)}
-                            <img src="imagenes/${item.art}.png" onerror="this.src='${obtenerImagenEsquema(item.art)}'">
-                            <div>${item.art}</div>
-                            <small style="color:#0284c7; display:block; margin-top: 4px;">Categoría: ${item.cat}</small>
-                        </div>`;
-                    });
-                }
-
-                grid.innerHTML = html;
-            }, 300);
-        }
-
-        function seleccionarDesdeBusqueda(cat, art) {
-            const query = document.getElementById('inputBuscador').value;
-            historialNavegacion.push({ vista: 'busqueda', query: query });
-            selCat = cat;
-            pasoDimensiones(art);
-        }
-
-        function gestionarClick(e, texto, fn) {
-            const info = obtenerTextoNorma(texto);
-            if (info) mostrarGlobo(e, info);
-            fn();
-        }
-
-        function cargarFicha(ref) {
-            artSel = baseDatos.find(x => x.ref === ref);
-            if (!artSel) return;
-            const snap = { cat: selCat, art: selArt, dim: selDim, pres: selPres };
-            const ultimo = historialNavegacion[historialNavegacion.length - 1];
-            if (!ultimo) pushHistorial('articulos', snap);
-            cambiarVista('v-ficha', 'Ficha Técnica de Producto');
-
-            function mostrarFila(idFila, idValor, valor) {
-                const fila = document.getElementById(idFila);
-                const span = document.getElementById(idValor);
-                const texto = mostrarValor(valor);
-                if (texto && texto !== '—' && texto.trim() !== '') {
-                    span.innerText = texto;
-                    fila.style.display = 'block';
-                } else {
-                    fila.style.display = 'none';
-                }
-            }
-            document.getElementById('lblArt').innerText = artSel.art;
-            document.getElementById('lblRef').innerText = artSel.ref;
-            document.getElementById('imgArt').src = `imagenes/${artSel.art}.png`;
-            mostrarFila('filaCat', 'lblCat', artSel.cat);
-            mostrarFila('filaDim', 'lblD', artSel.dim);
-            mostrarFila('filaPres', 'lblP', artSel.pres);
-            mostrarFila('filaMat', 'lblM', artSel.mat);
-
-            const nomArt = (artSel.art || '').toUpperCase();
-            const catArt = (artSel.cat || '').toUpperCase();
-            const bloque = document.getElementById('bloqueEsquema');
-            const esCodoOClamp = nomArt.includes('CODO') || nomArt.includes('ASIENTO CLAMP') || catArt.includes('CODO') || catArt.includes('ASIENTO CLAMP');
-
-            if (esCodoOClamp) {
-                bloque.style.display = 'block';
-                
-                // --- NUEVA LÍNEA: Asignar la imagen correcta dinámicamente ---
-                const imgEsquema = document.getElementById('imgEsquema');
-                if (imgEsquema) {
-                    imgEsquema.src = obtenerImagenEsquema(artSel.art);
-                }
-                // -------------------------------------------------------------
-
-                const dt = dbTecnica[artSel.ref.toUpperCase()] || { a: '-', b: '-', c: '-' };
-                function mostrarCota(idCota, idValor, valor) {
-                    const spanCota = document.getElementById(idCota);
-                    const spanValor = document.getElementById(idValor);
-                    const texto = String(valor).trim();
-                    if (texto && texto !== '-' && texto !== '') {
-                        spanValor.innerText = texto;
-                        spanCota.style.display = 'inline';
-                    } else {
-                        spanCota.style.display = 'none';
-                    }
-                }
-                mostrarCota('cotaA', 'dimA', dt.a);
-                mostrarCota('cotaB', 'dimB', dt.b);
-                mostrarCota('cotaC', 'dimC', dt.c);
+    function mostrarMateriales(art, dim, pres) {
+        const mats = baseDatos.filter(x => x.cat === selCat && x.art === art && (dim === '' || x.dim === dim) && (pres === '' || x.pres === pres) && !esValorSeguir(x.mat));
+        if (mats.length === 0) {
+            const candidato = baseDatos.find(x => x.cat === selCat && x.art === art && (dim === '' || x.dim === dim) && (pres === '' || x.pres === pres));
+            if (candidato) {
+                selDim = esValorSeguir(candidato.dim) ? '' : candidato.dim;
+                selPres = esValorSeguir(candidato.pres) ? '' : candidato.pres;
+                cargarFicha(candidato.ref);
             } else {
-                bloque.style.display = 'none';
+                alert("No se encontró ninguna referencia válida para este artículo.");
             }
+            return;
         }
+        if (mats.length === 1) { cargarFicha(mats[0].ref); return; }
+        mats.sort((a, b) => a.mat.localeCompare(b.mat, 'es', { sensitivity: 'base' }));
+        const partesTitulo = [];
+        if (dim) partesTitulo.push(dim);
+        if (pres) partesTitulo.push(pres);
+        const titulo = partesTitulo.length ? ` (${partesTitulo.join(' - ')})` : '';
+        cambiarVista('v-mat', `${selCat} > ${art}${titulo} > Selecciona Material`);
+        const grid = document.getElementById('grid-mat');
+        let html = '';
+        mats.forEach(m => {
+            html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(m.mat)}', () => cargarFicha('${m.ref}'))">
+                ${crearBadgeHTML(m.mat)}<div>${m.mat}</div><small style="color:#dc2626;">${m.ref}</small>
+            </div>`;
+        });
+        grid.innerHTML = html;
+    }
 
-        function mostrarValor(v) {
-            if (esValorSeguir(v)) return '—';
-            return String(v).trim();
-        }
-        function esValorSeguir(v) {
-            if (v === null || v === undefined) return true;
-            const low = String(v).trim().toLowerCase();
-            return low === '' || low === 'seguir' || low === '>' || low === '-' || low === 'seguir >';
-        }
-        function limpiarDetalle(v) {
-            if (esValorSeguir(v)) return '';
-            return String(v).trim();
-        }
+    function buscarArticulos() {
+        clearTimeout(temporizadorBusqueda);
+        temporizadorBusqueda = setTimeout(() => {
+            const query = document.getElementById('inputBuscador').value.trim();
+            const grid = document.getElementById('grid-busqueda');
+            if (query === '') { irInicio(); return; }
 
-        // La función antigua se mantiene por compatibilidad (por si se llama desde algún sitio)
-        async function agregarALista() {
-            if (!artSel) return;
-            const nombre = document.getElementById('nombreUsuario').value.trim();
-            const obra = document.getElementById('obraUsuario').value.trim();
-            if (!nombre) { alert("Introduce tu nombre antes de añadir."); return; }
-            if (!obra)   { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de añadir."); return; }
-            if (!_supabase) { alert("Error Supabase."); return; }
-            const cant = 1;
-            const partes = [limpiarDetalle(artSel.dim), limpiarDetalle(artSel.pres), limpiarDetalle(artSel.mat)].filter(p => p !== '');
-            const detalle = partes.length > 0 ? ` (${partes.join(' - ')})` : '';
-            const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
-            const { error } = await _supabase.from('pedidos').insert([{
-                operario: nombre, obra: obra, referencia: artSel.ref, detalle_linea: lineaFormateada, cantidad: cant
-            }]);
-            if (error) { alert("Error al añadir: " + error.message); return; }
-            const msg = document.getElementById('msgConfirmacion');
-            msg.style.display = 'block';
-            setTimeout(() => { msg.style.display = 'none'; }, 2000);
-            cargarMiLista();
-        }
+            const q = query.toLowerCase();
+            let coincidentes;
 
-        async function cargarMiLista() {
-            const div = document.getElementById('listaItems');
-            const prompt = document.getElementById('promptNombre');
-            const operario = obtenerOperarioActivo();
-            const obraActual = obtenerObraActiva();
-            if (!operario) {
-                div.innerHTML = '';
-                prompt.style.display = 'block';
-                actualizarBotonBorrarTodo(0);
-                document.getElementById('contadorLista').innerText = '';
-                document.getElementById('labelObra').innerText = '';
-                actualizarContadorFlotante();
+            if (q.length <= 2) {
+                const regex = new RegExp(`\\b${q}\\b`, 'i');
+                coincidentes = baseDatos.filter(item =>
+                    regex.test(item.art) || regex.test(item.cat) || regex.test(item.ref || '')
+                );
+            } else {
+                coincidentes = baseDatos.filter(item =>
+                    item.art.toLowerCase().includes(q) ||
+                    item.cat.toLowerCase().includes(q) ||
+                    (item.ref || '').toLowerCase().includes(q)
+                );
+            }
+
+            const articulosUnicos = [];
+            const set = new Set();
+            for (const item of coincidentes) {
+                if (!set.has(item.art)) { set.add(item.art); articulosUnicos.push(item); }
+            }
+            articulosUnicos.sort((a, b) => a.art.localeCompare(b.art));
+
+            const catsUnicas = [...new Set(coincidentes.map(x => x.cat))]
+                .filter(c => c.toLowerCase().includes(q) || q.length <= 2)
+                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+
+            const total = catsUnicas.length + articulosUnicos.length;
+
+            cambiarVista('v-busqueda', `Búsqueda: "${query}" (${total} resultados)`);
+            document.getElementById('tituloBusqueda').innerText = `Búsqueda: "${query}" (${total} resultados)`;
+
+            if (total === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; color:#64748b;">No se encontraron artículos, categorías ni referencias.</p>';
                 return;
             }
-            prompt.style.display = 'none';
-            if (!_supabase) {
-                div.innerHTML = '<p class="estado-msg" style="color:#ef4444;">Error Supabase.</p>';
-                return;
-            }
-            div.innerHTML = '<p class="estado-msg">Cargando...</p>';
-            document.getElementById('labelObra').innerText = obraActual ? `(OT activa: ${obraActual})` : '';
-            const { data, error } = await _supabase.from('pedidos').select('*').ilike('operario', operario).order('obra', { ascending: true }).order('created_at', { ascending: false });
-            if (error) {
-                div.innerHTML = `<p class="estado-msg" style="color:#ef4444;">Error: ${error.message}</p>`;
-                return;
-            }
-            registrosLista = data || [];
-            if (registrosLista.length === 0) {
-                div.innerHTML = '<p class="estado-msg">No hay elementos en tu lista.</p>';
-                actualizarBotonBorrarTodo(0);
-                document.getElementById('contadorLista').innerText = '';
-                actualizarContadorFlotante();
-                return;
-            }
-            const grupos = {};
-            registrosLista.forEach(p => {
-                const o = p.obra || '(sin OT)';
-                if (!grupos[o]) grupos[o] = [];
-                grupos[o].push(p);
-            });
+
             let html = '';
-            Object.keys(grupos).sort().forEach(obraKey => {
-                const lineas = grupos[obraKey];
-                const esObraActual = obraKey.toLowerCase() === (obraActual || '').toLowerCase();
-                const estiloHeader = esObraActual
-                    ? 'background:#e0f2fe; color:#0369a1; border-left:3px solid #0284c7;'
-                    : 'background:#f1f5f9; color:#475569; border-left:3px solid #94a3b8;';
-                html += `<div style="margin-top:8px; padding:5px 9px; border-radius:5px; font-weight:bold; font-size:11px; ${estiloHeader}">📋 OT: ${obraKey} ${esObraActual ? '(activa)' : ''} — ${lineas.length} línea(s)</div>`;
-                lineas.forEach(p => {
-                    const fecha = p.created_at ? new Date(p.created_at).toLocaleString('es-ES') : '-';
 
-                    // Extraer unidad/opción del final del detalle (después del último " — ")
-                    let unidad = '';
-                    let detalleSinUnidad = p.detalle_linea || '';
-                    const idx = detalleSinUnidad.lastIndexOf(' — ');
-                    if (idx !== -1) {
-                        unidad = detalleSinUnidad.substring(idx + 3).trim();
-                        detalleSinUnidad = detalleSinUnidad.substring(0, idx);
-                    }
-
-                    // Quitar los paréntesis del detalle
-                    detalleSinUnidad = detalleSinUnidad.replace(/\s*\(([^)]*)\)/g, ' $1');
-
-                    // CORREGIDO: Si la referencia está vacía, mostrar solo el detalle
-                    const refHTML = (p.referencia && p.referencia.trim() !== '')
-                        ? `<strong style="color:#dc2626;">${p.referencia}</strong> — ${detalleSinUnidad}`
-                        : `<span style="color:#dc2626; font-weight:bold;">${detalleSinUnidad}</span>`;
-
-                    // Badge azul: "6000 mm" en lugar de "x6000"
-                    const cantidadTexto = (p.cantidad || 1) + (unidad ? ' ' + unidad : '');
-
-                    html += `<div class="item-lista"><span>${refHTML}<br><small style="color:#64748b;">${fecha}</small></span><span class="badge-cantidad">${cantidadTexto}</span><button class="btn-borrar-linea" onclick="eliminarLinea(${p.id})" title="Eliminar línea">✕</button></div>`;
+            if (catsUnicas.length > 0) {
+                html += `<div style="grid-column: 1/-1; margin-top: 6px; margin-bottom: 2px; font-size: 11px; font-weight: bold; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px;">📁 Categorías (${catsUnicas.length})</div>`;
+                catsUnicas.forEach(cat => {
+                    html += `<div class="tarjeta" ${estiloFamilia(cat)} onclick="gestionarClick(event, '${escapeQuotes(cat)}', () => pasoArticulos('${escapeQuotes(cat)}'))">
+                        ${crearBadgeHTML(cat)}<div>${cat}</div>
+                    </div>`;
                 });
-            });
-            div.innerHTML = html;
-            actualizarBotonBorrarTodo(registrosLista.length);
-            document.getElementById('contadorLista').innerText = `(${registrosLista.length})`;
+            }
+
+            if (articulosUnicos.length > 0) {
+                html += `<div style="grid-column: 1/-1; margin-top: 10px; margin-bottom: 2px; font-size: 11px; font-weight: bold; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px;">🔧 Artículos (${articulosUnicos.length})</div>`;
+                articulosUnicos.forEach(item => {
+                    html += `<div class="tarjeta" onclick="gestionarClick(event, '${escapeQuotes(item.art)}', () => seleccionarDesdeBusqueda('${escapeQuotes(item.cat)}', '${escapeQuotes(item.art)}'))">
+                        ${crearBadgeHTML(item.art)}
+                        <img src="imagenes/${item.art}.png" onerror="this.src='${obtenerImagenEsquema(item.art)}'">
+                        <div>${item.art}</div>
+                        <small style="color:#0284c7; display:block; margin-top: 4px;">Categoría: ${item.cat}</small>
+                    </div>`;
+                });
+            }
+
+            grid.innerHTML = html;
+        }, 300);
+    }
+
+    function seleccionarDesdeBusqueda(cat, art) {
+        const query = document.getElementById('inputBuscador').value;
+        historialNavegacion.push({ vista: 'busqueda', query: query });
+        selCat = cat;
+        pasoDimensiones(art);
+    }
+
+    function gestionarClick(e, texto, fn) {
+        const info = obtenerTextoNorma(texto);
+        if (info) mostrarGlobo(e, info);
+        fn();
+    }
+
+    function cargarFicha(ref) {
+        artSel = baseDatos.find(x => x.ref === ref);
+        if (!artSel) return;
+        const snap = { cat: selCat, art: selArt, dim: selDim, pres: selPres };
+        const ultimo = historialNavegacion[historialNavegacion.length - 1];
+        if (!ultimo) pushHistorial('articulos', snap);
+        cambiarVista('v-ficha', 'Ficha Técnica de Producto');
+
+        function mostrarFila(idFila, idValor, valor) {
+            const fila = document.getElementById(idFila);
+            const span = document.getElementById(idValor);
+            const texto = mostrarValor(valor);
+            if (texto && texto !== '—' && texto.trim() !== '') {
+                span.innerText = texto;
+                fila.style.display = 'block';
+            } else {
+                fila.style.display = 'none';
+            }
+        }
+        document.getElementById('lblArt').innerText = artSel.art;
+        document.getElementById('lblRef').innerText = artSel.ref;
+        document.getElementById('imgArt').src = `imagenes/${artSel.art}.png`;
+        mostrarFila('filaCat', 'lblCat', artSel.cat);
+        mostrarFila('filaDim', 'lblD', artSel.dim);
+        mostrarFila('filaPres', 'lblP', artSel.pres);
+        mostrarFila('filaMat', 'lblM', artSel.mat);
+
+        const nomArt = (artSel.art || '').toUpperCase();
+        const catArt = (artSel.cat || '').toUpperCase();
+        const bloque = document.getElementById('bloqueEsquema');
+        const esCodoOClamp = nomArt.includes('CODO') || nomArt.includes('ASIENTO CLAMP') || catArt.includes('CODO') || catArt.includes('ASIENTO CLAMP');
+
+        if (esCodoOClamp) {
+            bloque.style.display = 'block';
+            const imgEsquema = document.getElementById('imgEsquema');
+            if (imgEsquema) {
+                imgEsquema.src = obtenerImagenEsquema(artSel.art);
+            }
+            const dt = dbTecnica[artSel.ref.toUpperCase()] || { a: '-', b: '-', c: '-' };
+            function mostrarCota(idCota, idValor, valor) {
+                const spanCota = document.getElementById(idCota);
+                const spanValor = document.getElementById(idValor);
+                const texto = String(valor).trim();
+                if (texto && texto !== '-' && texto !== '') {
+                    spanValor.innerText = texto;
+                    spanCota.style.display = 'inline';
+                } else {
+                    spanCota.style.display = 'none';
+                }
+            }
+            mostrarCota('cotaA', 'dimA', dt.a);
+            mostrarCota('cotaB', 'dimB', dt.b);
+            mostrarCota('cotaC', 'dimC', dt.c);
+        } else {
+            bloque.style.display = 'none';
+        }
+    }
+
+    function mostrarValor(v) {
+        if (esValorSeguir(v)) return '—';
+        return String(v).trim();
+    }
+    function esValorSeguir(v) {
+        if (v === null || v === undefined) return true;
+        const low = String(v).trim().toLowerCase();
+        return low === '' || low === 'seguir' || low === '>' || low === '-' || low === 'seguir >';
+    }
+    function limpiarDetalle(v) {
+        if (esValorSeguir(v)) return '';
+        return String(v).trim();
+    }
+
+    async function agregarALista() {
+        if (!artSel) return;
+        const nombre = document.getElementById('nombreUsuario').value.trim();
+        const obra = document.getElementById('obraUsuario').value.trim();
+        if (!nombre) { alert("Introduce tu nombre antes de añadir."); return; }
+        if (!obra)   { alert("⚠️ El Nº de OT es obligatorio. Rellénalo antes de añadir."); return; }
+        if (!_supabase) { alert("Error Supabase."); return; }
+        const cant = 1;
+        const partes = [limpiarDetalle(artSel.dim), limpiarDetalle(artSel.pres), limpiarDetalle(artSel.mat)].filter(p => p !== '');
+        const detalle = partes.length > 0 ? ` (${partes.join(' - ')})` : '';
+        const lineaFormateada = `${artSel.ref} - ${artSel.art}${detalle}`;
+        const { error } = await _supabase.from('pedidos').insert([{
+            operario: nombre, obra: obra, referencia: artSel.ref, detalle_linea: lineaFormateada, cantidad: cant
+        }]);
+        if (error) { alert("Error al añadir: " + error.message); return; }
+        const msg = document.getElementById('msgConfirmacion');
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 2000);
+        cargarMiLista();
+    }
+
+    async function cargarMiLista() {
+        const div = document.getElementById('listaItems');
+        const prompt = document.getElementById('promptNombre');
+        const operario = obtenerOperarioActivo();
+        const obraActual = obtenerObraActiva();
+        if (!operario) {
+            div.innerHTML = '';
+            prompt.style.display = 'block';
+            actualizarBotonBorrarTodo(0);
+            document.getElementById('contadorLista').innerText = '';
+            document.getElementById('labelObra').innerText = '';
             actualizarContadorFlotante();
+            return;
         }
-
-        function actualizarBotonBorrarTodo(cant) {
-            const btn = document.getElementById('btnBorrarTodo');
-            if (cant > 0) {
-                btn.disabled = false;
-                btn.innerText = `🗑️ Borrar Toda Mi Lista (${cant})`;
-            } else {
-                btn.disabled = true;
-                btn.innerText = `🗑️ Borrar Toda Mi Lista`;
-            }
+        prompt.style.display = 'none';
+        if (!_supabase) {
+            div.innerHTML = '<p class="estado-msg" style="color:#ef4444;">Error Supabase.</p>';
+            return;
         }
-
-        function guardarDatosInline() {
-            const inputN = document.getElementById('nombreUsuarioInline');
-            const inputO = document.getElementById('obraUsuarioInline');
-            const nombre = inputN.value.trim();
-            const obra = inputO.value.trim();
-            if (!nombre) { alert("Escribe un nombre."); inputN.focus(); return; }
-            if (!obra)   { alert("⚠️ El Nº de OT es obligatorio."); inputO.focus(); return; }
-            document.getElementById('nombreUsuario').value = nombre;
-            document.getElementById('obraUsuario').value = obra;
-            sessionStorage.setItem('operarioNombre', nombre);
-            sessionStorage.setItem('operarioObra', obra);
-            inputN.value = '';
-            inputO.value = '';
-            cargarMiLista();
+        div.innerHTML = '<p class="estado-msg">Cargando...</p>';
+        document.getElementById('labelObra').innerText = obraActual ? `(OT activa: ${obraActual})` : '';
+        const { data, error } = await _supabase.from('pedidos').select('*').ilike('operario', operario).order('obra', { ascending: true }).order('created_at', { ascending: false });
+        if (error) {
+            div.innerHTML = `<p class="estado-msg" style="color:#ef4444;">Error: ${error.message}</p>`;
+            return;
         }
-
-        function nuevaOT() {
-            const actual = obtenerObraActiva() || '';
-            const nueva = prompt(`Introduce el Nº de la nueva OT:\n\n(OT actual: ${actual || 'ninguna'})`, '');
-            if (nueva === null) return;
-            const limpia = nueva.trim();
-            if (!limpia) { alert("No has introducido ninguna OT."); return; }
-            const inputObra = document.getElementById('obraUsuario');
-            inputObra.value = limpia;
-            inputObra.dispatchEvent(new Event('input', { bubbles: true }));
-            const msg = document.createElement('div');
-            msg.textContent = `✅ OT activa cambiada a: ${limpia}`;
-            msg.style.cssText = `position:fixed; bottom:20px; right:20px; z-index:10000;background:#16a34a; color:#fff; padding:8px 12px;border-radius:5px; font-weight:bold; font-size:12px;box-shadow:0 4px 12px rgba(0,0,0,0.2);`;
-            document.body.appendChild(msg);
-            setTimeout(() => msg.remove(), 2500);
+        registrosLista = data || [];
+        if (registrosLista.length === 0) {
+            div.innerHTML = '<p class="estado-msg">No hay elementos en tu lista.</p>';
+            actualizarBotonBorrarTodo(0);
+            document.getElementById('contadorLista').innerText = '';
+            actualizarContadorFlotante();
+            return;
         }
+        const grupos = {};
+        registrosLista.forEach(p => {
+            const o = p.obra || '(sin OT)';
+            if (!grupos[o]) grupos[o] = [];
+            grupos[o].push(p);
+        });
+        let html = '';
+        Object.keys(grupos).sort().forEach(obraKey => {
+            const lineas = grupos[obraKey];
+            const esObraActual = obraKey.toLowerCase() === (obraActual || '').toLowerCase();
+            const estiloHeader = esObraActual
+                ? 'background:#e0f2fe; color:#0369a1; border-left:3px solid #0284c7;'
+                : 'background:#f1f5f9; color:#475569; border-left:3px solid #94a3b8;';
+            html += `<div style="margin-top:8px; padding:5px 9px; border-radius:5px; font-weight:bold; font-size:11px; ${estiloHeader}">📋 OT: ${obraKey} ${esObraActual ? '(activa)' : ''} — ${lineas.length} línea(s)</div>`;
+            lineas.forEach(p => {
+                const fecha = p.created_at ? new Date(p.created_at).toLocaleString('es-ES') : '-';
 
-        async function eliminarLinea(id) {
-            const operario = obtenerOperarioActivo();
-            if (!operario) return;
-            if (!confirm("¿Eliminar esta línea de tu lista?")) return;
-            const { error } = await _supabase.from('pedidos').delete().eq('id', id).ilike('operario', operario);
-            if (error) alert("Error: " + error.message);
-            else cargarMiLista();
-        }
-
-        async function borrarMiLista() {
-            const operario = obtenerOperarioActivo();
-            if (!operario) { alert("No hay operario activo."); return; }
-            if (registrosLista.length === 0) { alert("No hay líneas para borrar."); return; }
-            if (!confirm(`¿Borrar TODAS las ${registrosLista.length} líneas de "${operario}" (todas las OT)?\n\nEsta acción no se puede deshacer.`)) return;
-            const ids = registrosLista.map(r => r.id);
-            const { error } = await _supabase.from('pedidos').delete().in('id', ids);
-            if (error) { alert("Error al borrar: " + error.message); }
-            else { alert(`✅ Borradas ${ids.length} líneas.`); cargarMiLista(); }
-        }
-
-        async function borrarObraActual() {
-            const operario = obtenerOperarioActivo();
-            const obra = obtenerObraActiva();
-            if (!operario || !obra) { alert("Falta operario u OT."); return; }
-            const deEstaObra = registrosLista.filter(r => (r.obra || '').toLowerCase() === obra.toLowerCase());
-            if (deEstaObra.length === 0) { alert(`No hay líneas de la OT "${obra}".`); return; }
-            if (!confirm(`¿Borrar solo las ${deEstaObra.length} líneas de la OT "${obra}"?\n\nEsta acción no se puede deshacer.`)) return;
-            const ids = deEstaObra.map(r => r.id);
-            const { error } = await _supabase.from('pedidos').delete().in('id', ids);
-            if (error) { alert("Error: " + error.message); }
-            else { alert(`✅ Borradas ${ids.length} líneas de la OT "${obra}".`); cargarMiLista(); }
-        }
-
-        async function compartirLista() {
-            const operario = obtenerOperarioActivo();
-            if (!operario) { alert("No hay operario activo."); return; }
-            if (registrosLista.length === 0) { alert("No hay líneas para compartir."); return; }
-            const grupos = {};
-            registrosLista.forEach(p => {
-                const o = p.obra || '(sin OT)';
-                if (!grupos[o]) grupos[o] = [];
-                grupos[o].push(p);
-            });
-            let texto = `*LISTA DE PEDIDOS MEN - ${operario.toUpperCase()}*\n`;
-            Object.keys(grupos).sort().forEach(obraKey => {
-                texto += `\n*📋 OT: ${obraKey}*\n`;
-                grupos[obraKey].forEach((p, i) => {
-                    let unidad = '';
-                    let detalleSinUnidad = p.detalle_linea || '';
-                    const idx = detalleSinUnidad.lastIndexOf(' — ');
-                    if (idx !== -1) {
-                        unidad = detalleSinUnidad.substring(idx + 3).trim();
-                        detalleSinUnidad = detalleSinUnidad.substring(0, idx);
-                    }
-                    detalleSinUnidad = detalleSinUnidad.replace(/\s*\(([^)]*)\)/g, ' $1');
-                    const cantidadTexto = (p.cantidad || 1) + (unidad ? ' ' + unidad : '');
-                    texto += `${i + 1}. ${detalleSinUnidad} | CANT: ${cantidadTexto}\n`;
-                });
-            });
-            let copiado = false;
-            try {
-                await navigator.clipboard.writeText(texto);
-                copiado = true;
-            } catch (err) {
-                try {
-                    const ta = document.createElement('textarea');
-                    ta.value = texto;
-                    ta.style.position = 'fixed';
-                    ta.style.opacity = '0';
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
-                    copiado = true;
-                } catch (e2) { console.warn("No se pudo copiar al portapapeles:", e2); }
-            }
-            if (navigator.share) {
-                try {
-                    await navigator.share({ title: `Pedido MEN - ${operario}`, text: texto });
-                    if (copiado) alert("✅ Compartido y copiado al portapapeles.");
-                    return;
-                } catch (err) {
-                    if (err && err.name === 'AbortError') {
-                        if (copiado) alert("📋 Lista copiada al portapapeles.");
-                        return;
-                    }
-                    console.log("Share falló, se usará solo el portapapeles:", err);
+                let unidad = '';
+                let detalleSinUnidad = p.detalle_linea || '';
+                const idx = detalleSinUnidad.lastIndexOf(' — ');
+                if (idx !== -1) {
+                    unidad = detalleSinUnidad.substring(idx + 3).trim();
+                    detalleSinUnidad = detalleSinUnidad.substring(0, idx);
                 }
-            }
-            if (copiado) alert("📋 Lista copiada al portapapeles.");
-            else alert("No se pudo copiar automáticamente. Copia manualmente:\n\n" + texto);
-        }
 
-        function escapeQuotes(str) {
-            return str ? str.replace(/'/g, "\\'") : '';
-        }
+                detalleSinUnidad = detalleSinUnidad.replace(/\s*\(([^)]*)\)/g, ' $1');
 
-        window.addEventListener('message', async (event) => {
-            if (!event.data || event.data.type !== 'INSERT_LINEAS') return;
-            const { operario, obra, lineas } = event.data;
-            if (!operario || !obra || !Array.isArray(lineas) || lineas.length === 0) return;
-            if (!_supabase) return;
-            sessionStorage.setItem('operarioNombre', operario);
-            sessionStorage.setItem('operarioObra', obra);
-            const insertos = lineas.map(l => ({
-                operario: operario, obra: obra,
-                referencia: l.referencia || null,
-                detalle_linea: l.detalle_linea,
-                cantidad: l.cantidad
-            }));
-            const { error } = await _supabase.from('pedidos').insert(insertos);
-            if (error) console.error('❌ Error insertando tornillería:', error.message);
-            else {
-                console.log(`✓ ${insertos.length} líneas insertadas para ${operario} / ${obra}`);
-                if (typeof cargarMiLista === 'function') cargarMiLista();
+                const refHTML = (p.referencia && p.referencia.trim() !== '')
+                    ? `<strong style="color:#dc2626;">${p.referencia}</strong> — ${detalleSinUnidad}`
+                    : `<span style="color:#dc2626; font-weight:bold;">${detalleSinUnidad}</span>`;
+
+                const cantidadTexto = (p.cantidad || 1) + (unidad ? ' ' + unidad : '');
+
+                html += `<div class="item-lista"><span>${refHTML}<br><small style="color:#64748b;">${fecha}</small></span><span class="badge-cantidad">${cantidadTexto}</span><button class="btn-borrar-linea" onclick="eliminarLinea(${p.id})" title="Eliminar línea">✕</button></div>`;
+            });
+        });
+        div.innerHTML = html;
+        actualizarBotonBorrarTodo(registrosLista.length);
+        document.getElementById('contadorLista').innerText = `(${registrosLista.length})`;
+        actualizarContadorFlotante();
+    }
+
+    function actualizarBotonBorrarTodo(cant) {
+        const btn = document.getElementById('btnBorrarTodo');
+        if (cant > 0) {
+            btn.disabled = false;
+            btn.innerText = `🗑️ Borrar Toda Mi Lista (${cant})`;
+        } else {
+            btn.disabled = true;
+            btn.innerText = `🗑️ Borrar Toda Mi Lista`;
+        }
+    }
+
+    function guardarDatosInline() {
+        const inputN = document.getElementById('nombreUsuarioInline');
+        const inputO = document.getElementById('obraUsuarioInline');
+        const nombre = inputN.value.trim();
+        const obra = inputO.value.trim();
+        if (!nombre) { alert("Escribe un nombre."); inputN.focus(); return; }
+        if (!obra)   { alert("⚠️ El Nº de OT es obligatorio."); inputO.focus(); return; }
+        document.getElementById('nombreUsuario').value = nombre;
+        document.getElementById('obraUsuario').value = obra;
+        sessionStorage.setItem('operarioNombre', nombre);
+        sessionStorage.setItem('operarioObra', obra);
+        inputN.value = '';
+        inputO.value = '';
+        cargarMiLista();
+    }
+
+    function nuevaOT() {
+        const actual = obtenerObraActiva() || '';
+        const nueva = prompt(`Introduce el Nº de la nueva OT:\n\n(OT actual: ${actual || 'ninguna'})`, '');
+        if (nueva === null) return;
+        const limpia = nueva.trim();
+        if (!limpia) { alert("No has introducido ninguna OT."); return; }
+        const inputObra = document.getElementById('obraUsuario');
+        inputObra.value = limpia;
+        inputObra.dispatchEvent(new Event('input', { bubbles: true }));
+        const msg = document.createElement('div');
+        msg.textContent = `✅ OT activa cambiada a: ${limpia}`;
+        msg.style.cssText = `position:fixed; bottom:20px; right:20px; z-index:10000;background:#16a34a; color:#fff; padding:8px 12px;border-radius:5px; font-weight:bold; font-size:12px;box-shadow:0 4px 12px rgba(0,0,0,0.2);`;
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 2500);
+    }
+
+    async function eliminarLinea(id) {
+        const operario = obtenerOperarioActivo();
+        if (!operario) return;
+        if (!confirm("¿Eliminar esta línea de tu lista?")) return;
+        const { error } = await _supabase.from('pedidos').delete().eq('id', id).ilike('operario', operario);
+        if (error) alert("Error: " + error.message);
+        else cargarMiLista();
+    }
+
+    async function borrarMiLista() {
+        const operario = obtenerOperarioActivo();
+        if (!operario) { alert("No hay operario activo."); return; }
+        if (registrosLista.length === 0) { alert("No hay líneas para borrar."); return; }
+        if (!confirm(`¿Borrar TODAS las ${registrosLista.length} líneas de "${operario}" (todas las OT)?\n\nEsta acción no se puede deshacer.`)) return;
+        const ids = registrosLista.map(r => r.id);
+        const { error } = await _supabase.from('pedidos').delete().in('id', ids);
+        if (error) { alert("Error al borrar: " + error.message); }
+        else { alert(`✅ Borradas ${ids.length} líneas.`); cargarMiLista(); }
+    }
+
+    async function borrarObraActual() {
+        const operario = obtenerOperarioActivo();
+        const obra = obtenerObraActiva();
+        if (!operario || !obra) { alert("Falta operario u OT."); return; }
+        const deEstaObra = registrosLista.filter(r => (r.obra || '').toLowerCase() === obra.toLowerCase());
+        if (deEstaObra.length === 0) { alert(`No hay líneas de la OT "${obra}".`); return; }
+        if (!confirm(`¿Borrar solo las ${deEstaObra.length} líneas de la OT "${obra}"?\n\nEsta acción no se puede deshacer.`)) return;
+        const ids = deEstaObra.map(r => r.id);
+        const { error } = await _supabase.from('pedidos').delete().in('id', ids);
+        if (error) { alert("Error: " + error.message); }
+        else { alert(`✅ Borradas ${ids.length} líneas de la OT "${obra}".`); cargarMiLista(); }
+    }
+
+    async function compartirLista() {
+        const operario = obtenerOperarioActivo();
+        if (!operario) { alert("No hay operario activo."); return; }
+        if (registrosLista.length === 0) { alert("No hay líneas para compartir."); return; }
+        const grupos = {};
+        registrosLista.forEach(p => {
+            const o = p.obra || '(sin OT)';
+            if (!grupos[o]) grupos[o] = [];
+            grupos[o].push(p);
+        });
+        let texto = `*LISTA DE PEDIDOS MEN - ${operario.toUpperCase()}*\n`;
+        Object.keys(grupos).sort().forEach(obraKey => {
+            texto += `\n*📋 OT: ${obraKey}*\n`;
+            grupos[obraKey].forEach((p, i) => {
+                let unidad = '';
+                let detalleSinUnidad = p.detalle_linea || '';
+                const idx = detalleSinUnidad.lastIndexOf(' — ');
+                if (idx !== -1) {
+                    unidad = detalleSinUnidad.substring(idx + 3).trim();
+                    detalleSinUnidad = detalleSinUnidad.substring(0, idx);
+                }
+                detalleSinUnidad = detalleSinUnidad.replace(/\s*\(([^)]*)\)/g, ' $1');
+                const cantidadTexto = (p.cantidad || 1) + (unidad ? ' ' + unidad : '');
+                texto += `${i + 1}. ${detalleSinUnidad} | CANT: ${cantidadTexto}\n`;
+            });
+        });
+        let copiado = false;
+        try {
+            await navigator.clipboard.writeText(texto);
+            copiado = true;
+        } catch (err) {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = texto;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                copiado = true;
+            } catch (e2) { console.warn("No se pudo copiar al portapapeles:", e2); }
+        }
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: `Pedido MEN - ${operario}`, text: texto });
+                if (copiado) alert("✅ Compartido y copiado al portapapeles.");
+                return;
+            } catch (err) {
+                if (err && err.name === 'AbortError') {
+                    if (copiado) alert("📋 Lista copiada al portapapeles.");
+                    return;
+                }
+                console.log("Share falló, se usará solo el portapapeles:", err);
             }
-        });
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted) window.location.reload();
-        });
-    </script>
+        }
+        if (copiado) alert("📋 Lista copiada al portapapeles.");
+        else alert("No se pudo copiar automáticamente. Copia manualmente:\n\n" + texto);
+    }
+
+    function escapeQuotes(str) {
+        return str ? str.replace(/'/g, "\\'") : '';
+    }
+
+    window.addEventListener('message', async (event) => {
+        if (!event.data || event.data.type !== 'INSERT_LINEAS') return;
+        const { operario, obra, lineas } = event.data;
+        if (!operario || !obra || !Array.isArray(lineas) || lineas.length === 0) return;
+        if (!_supabase) return;
+        sessionStorage.setItem('operarioNombre', operario);
+        sessionStorage.setItem('operarioObra', obra);
+        const insertos = lineas.map(l => ({
+            operario: operario, obra: obra,
+            referencia: l.referencia || null,
+            detalle_linea: l.detalle_linea,
+            cantidad: l.cantidad
+        }));
+        const { error } = await _supabase.from('pedidos').insert(insertos);
+        if (error) console.error('❌ Error insertando tornillería:', error.message);
+        else {
+            console.log(`✓ ${insertos.length} líneas insertadas para ${operario} / ${obra}`);
+            if (typeof cargarMiLista === 'function') cargarMiLista();
+        }
+    });
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) window.location.reload();
+    });
+</script>
 
 </body>
 </html>

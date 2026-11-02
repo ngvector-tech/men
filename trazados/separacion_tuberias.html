@@ -5,81 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Separación entre Tuberías</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 16px 11px 40px;             /* ⬅️ antes 24 16 60 */
+    padding: 16px 11px 40px;
     color: #222;
   }
+
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
-    max-width: 413px;                   /* ⬅️ antes 620 (≈ 2/3) */
+    max-width: 413px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 7px;                 /* ⬅️ antes 10 */
+    border-radius: 7px;
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-    padding: 16px 19px 21px;            /* ⬅️ antes 24 28 32 */
+    padding: 16px 19px 21px;
   }
-  h1 {
-    text-align: center;
-    font-size: 13px;                    /* ⬅️ antes 20 */
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;                  /* ⬅️ antes 12 16 */
-    border-radius: 4px;                 /* ⬅️ antes 6 */
-    margin: 0 0 15px;                   /* ⬅️ antes 22 */
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
   .tubo-block {
     background: #f9fafb;
     border: 1px solid #e6e9eb;
-    border-radius: 5px;                 /* ⬅️ antes 8 */
-    padding: 11px 12px;                 /* ⬅️ antes 16 18 */
-    margin-bottom: 11px;                /* ⬅️ antes 16 */
+    border-radius: 5px;
+    padding: 11px 12px;
+    margin-bottom: 11px;
   }
   .tubo-block h2 {
-    font-size: 9px;                     /* ⬅️ antes 14 */
-    margin: 0 0 8px;                    /* ⬅️ antes 12 */
+    font-size: 9px;
+    margin: 0 0 8px;
     color: #444;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  .fields-row { display: flex; gap: 9px; flex-wrap: wrap; }  /* ⬅️ antes 14 */
-  .field { flex: 1; margin-bottom: 9px; min-width: 93px; }    /* ⬅️ antes 14 / 140 */
+  .fields-row { display: flex; gap: 9px; flex-wrap: wrap; }
+  .field { flex: 1; margin-bottom: 9px; min-width: 93px; }
   .field label {
     display: block;
-    font-size: 9px;                     /* ⬅️ antes 13 */
+    font-size: 9px;
     font-weight: 600;
     color: #444;
-    margin-bottom: 3px;                 /* ⬅️ antes 5 */
+    margin-bottom: 3px;
   }
   select, input[type="number"] {
     width: 100%;
-    padding: 6px 7px;                   /* ⬅️ antes 9 10 */
-    font-size: 10px;                    /* ⬅️ antes 15 */
+    padding: 6px 7px;
+    font-size: 10px;
     border: 1px solid #c7ccd1;
-    border-radius: 4px;                 /* ⬅️ antes 6 */
+    border-radius: 4px;
     background: #fff;
   }
   select:focus, input:focus { outline: none; border-color: #4a90d9; }
 
   .radio-group {
     display: flex;
-    gap: 7px;                           /* ⬅️ antes 10 */
+    gap: 7px;
   }
   .radio-group label {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;                           /* ⬅️ antes 6 */
-    padding: 6px 7px;                   /* ⬅️ antes 9 10 */
+    gap: 4px;
+    padding: 6px 7px;
     background: #fff;
     border: 2px solid #cbd5e1;
-    border-radius: 4px;                 /* ⬅️ antes 6 */
+    border-radius: 4px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 9px;                     /* ⬅️ antes 14 */
+    font-size: 9px;
     color: #0f172a;
     transition: all 0.15s;
   }
@@ -91,73 +134,83 @@
   }
 
   .sub-bloque {
-    padding-left: 8px;                  /* ⬅️ antes 12 */
+    padding-left: 8px;
     border-left: 3px solid #e2e8f0;
-    margin-top: 5px;                    /* ⬅️ antes 8 */
+    margin-top: 5px;
   }
 
   #resultBox {
-    margin-top: 15px;                   /* ⬅️ antes 22 */
-    padding: 12px;                      /* ⬅️ antes 18 */
-    border-radius: 5px;                 /* ⬅️ antes 8 */
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 5px;
     background: #eef7ee;
     border: 1px solid #cfe8cf;
     text-align: center;
   }
   #resultBox .label {
-    font-size: 9px;                     /* ⬅️ antes 13 */
+    font-size: 9px;
     color: #5a8a5a;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;                 /* ⬅️ antes 6 */
+    margin-bottom: 4px;
   }
   #resultBox .value {
-    font-size: 20px;                    /* ⬅️ antes 30 */
+    font-size: 20px;
     font-weight: 700;
     color: #1c5c1c;
   }
   #notaCalculo {
-    margin-top: 7px;                    /* ⬅️ antes 10 */
-    font-size: 8px;                     /* ⬅️ antes 12 */
+    margin-top: 7px;
+    font-size: 8px;
     color: #64748b;
   }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Separación entre Tuberías (eje a eje)</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Separación entre<br>Tuberías</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
 
   <!-- ================= TUBERÍA 1 ================= -->
   <div class="tubo-block">
@@ -435,7 +488,6 @@ alCambiarBrida(1);
 alCambiarBrida(2);
 calcular();
 </script>
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
 </body>
 </html>

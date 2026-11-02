@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Compatibilidad de Juntas</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
 
   body {
@@ -15,6 +16,7 @@
     color: #222;
   }
 
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
     max-width: 427px;
     margin: 0 auto;
@@ -24,16 +26,54 @@
     padding: 16px 19px 21px;
   }
 
-  h1 {
-    text-align: center;
-    font-size: 13px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
     border-radius: 4px;
-    margin: 0 0 12px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
   }
 
+  /* ============ CONTENIDO INTERNO ============ */
   .legend {
     font-size: 9px;
     line-height: 1.5;
@@ -56,7 +96,6 @@
     margin-bottom: 3px;
   }
 
-  /* Casillas y desplegables */
   select, input[type="text"] {
     width: 100%;
     padding: 6px 7px;
@@ -67,13 +106,12 @@
     color: #222;
   }
 
-  /* Opciones del desplegable de temperatura */
   select option {
     font-size: 10px;
     padding: 2px 4px;
   }
 
-  /* --- NUEVO DESPLEGABLE PERSONALIZADO PARA FLUIDOS --- */
+  /* --- DESPLEGABLE PERSONALIZADO PARA FLUIDOS --- */
   .custom-select-container {
     position: relative;
     width: 100%;
@@ -110,7 +148,7 @@
 
   .custom-select-option {
     padding: 6px 8px;
-    font-size: 10px; /* ⬅️ AQUÍ REDUCES EL TAMAÑO DE LOS TEXTOS DE LOS ACEITES */
+    font-size: 10px;
     color: #333;
     cursor: pointer;
     transition: background 0.1s;
@@ -182,6 +220,7 @@
     margin: 12px 0 5px;
   }
 
+  /* ============ BOTÓN VOLVER ============ */
   .btn-volver {
       display: inline-flex;
       align-items: center;
@@ -206,8 +245,21 @@
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Compatibilidad de Juntas</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Compatibilidad<br>de Juntas</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
 
   <div class="legend">
     <b>A</b> Buen comportamiento · 
@@ -247,8 +299,6 @@ const DESCRIPCIONES = {
 };
 const ORDEN = {"A":0, "B":1, "C":2, "D":3, "E":4};
 
-// (Aquí va tu array DATA completo, no lo repito para no hacer el mensaje eterno,
-// asegúrate de mantener el tuyo original con todos los fluidos)
 const DATA = [["ÁCIDO SULFÚRICO/ÁCIDO NÍTRICO/AGUA 10/87/3%","20","C","A","A","C","","B","C","",""],["ÁCIDO SULFÚRICO/ÁCIDO NÍTRICO/AGUA 48/49/3%","20","C","A","A","C","","B","C","","A"],["ÁCIDO SULFÚRICO/ÁCIDO NÍTRICO/AGUA 48/49/3%","40","C","A","B","C","","B","C","","A"],["ÁCIDO SULFÚRICO/ÁCIDO NÍTRICO/AGUA 50/50/0%","40","C","A","A","C","","B","C","","A"],["ÁCIDOSULFÚRICO/ÁCIDOFOSFÓRICO/AGUA 30/60/1","40","C","A","A","E","","A","E","","A"],["ÁCIDOSULFÚRICO/ÁCIDONÍTRICO/AGUA 10/20/70%","50","C","A","A","C","","B","C","","A"],["ÁCIDOSULFÚRICO/ÁCIDONÍTRICO/AGUA 50/31/19%","30","C","A","B","C","","B","C","","A"],["BASE PETROLEO","","A","A","C","B","","B","A","",""],["ACEITE DE HÍGADO","20","A","A","A","A","","A","A","","A"],["ACEITE DE LAVANDA","20","B","A","C","C","A","C","B","B","A"],["ACEITE DE LINAZA","100","B","A","C","A","","C","D","","A"],["ACEITE DE LINAZA","60","A","A","C","A","","A","D","","A"],["ACEITE DE MADERA","","A","A","C","C","","B","B","",""],["ACEITE DE MADERA DE CHINA (TUNG)","","A","A","C","C","","B","B","",""],["ACEITE DE MAIZ","60","A","A","C","A","A","B","A","A","A"],["ACEITE DE MÁQUINAS, MINERAL","80","A","A","C","B","A","B","A","A","A"],["ACEITE DE MOTOR","100","A","A","C","B","A","B","A","A","A"],["ACEITE DE MOTOR (ESSO)","","A","A","C","C","","B","A","",""],["ACEITE DE MOTOR GULF","","A","A","C","C","","C","A","",""],["ACEITE DE OLIVA","100","B","A","C","B","","C","B","","A"],["ACEITE DE OLIVA","60","A","A","B","A","A","A","A","A","A"],["ACEITE DE PARAFINA","20","A","A","A","A","","A","A","","A"],["ACEITE DE PARAFINA","60","A","A","C","A","A","A","A","A","A"],["ACEITE DE PESCADO","20","A","A","B","A","A","A","A","A","A"],["ACEITE DE PESCADO","60","A","A","C","A","","A","A","","A"],["ACEITE DE PETROLEO, CRUDO","","A","A","C","C","","B","A","",""],["ACEITE DE PETROLEO, CRUDO < 120ºC","","A","A","C","B","","B","B","",""],["ACEITE DE PETROLEO, CRUDO > 120ºC","","C","B","C","C","","C","C","",""],["ACEITE DE PINO","","A","A","C","C","","C","A","",""],["ACEITE DE PINO BLANCO","","B","A","C","C","","C","A","",""],["ACEITE DE PIÑONES","20","B","A","E","E","A","C","D","B","A"],["ACEITE DE PIÑONES","60","B","A","C","B","A","C","A","B","A"],["ACEITE DE PYRIDINA","","C","C","B","C","","C","C","",""],["ACEITE DE SEMILLA DE ALGODÓN","20","A","A","B","A","A","B","A","A","A"],["ACEITE DE SEMILLA DE LINO","60","A","A","B","A","A","A","D","A","A"],["ACEITE DE SEMILLA DE MAIZ","20","A","A","B","D","","A","D","","A"],["ACEITE DE SEMILLA DE MAIZ","60","A","A","C","D","","B","D","","A"],["ACEITE DE SEMILLA DE SOJA","","A","A","B","A","","B","A","",""],["ACEITE DE SEMILLAS","","A","A","B","A","","B","A","",""],["ACEITE DE SILICONA","20","A","A","A","C","A","A","A","A","A"],["ACEITE DE SILICONA","20","A","A","A","A","","A","A","","A"],["ACEITE DE TRANSFORMADOR","60","A","B","C","B","","C","A","","A"],["ACEITE DE TRANSMISIÓN TEXAMATIC \"A\"","","A","A","C","C","","B","B","",""],["ACEITE DE TREMENTINA","20","B","A","C","E","A","C","E","B","A"],["ACEITE DE TUNG (ACEITE DE MADERA CHINA)","","A","A","C","C","","B","B","",""],["ACEITE DE TURBINAS","","A","A","C","C","","C","A","",""],["ACEITE DE TURBINAS #15 (MIL-L-7808A)","","B","A","C","C","","C","B","",""],["ACEITE DE TURBO #35","","A","A","C","C","","B","A","",""],["ACEITE DE VASELINA","20","A","A","A","D","","A","D","","A"],["ACEITE DE VASELINA","60","A","A","C","B","A","A","A","A","A"],["ACEITE DIESEL","","A","A","C","C","","B","A","",""],["ACEITE ESENCIAL","20","C","B","C","E","A","C","E","C","A"],["ACEITE ETÉRICO","20","C","B","C","E","","C","E","","A"],["ACEITE FLUOROCARBONADO","100","D","D","D","A","D","D","D","D","A"],["ACEITE HALOWAX","","C","A","C","C","","C","A","",""],["ACEITE HIDRÁULICO (BASE PETROLEO)","","A","A","C","B","","B","A","",""],["ACEITE HIDRÁULICO DE ALTA TEMPERATURA PRL","","B","A","C","B","","B","A","",""],["ACEITE LB-385 UCON","","A","A","A","A","","A","A","",""],["ACEITE LB-400 X UCON","","A","A","A","A","","A","A","",""],["ACEITE LIGERO DTE","","A","A","C","C","","B","A","",""],["ACEITE LUBRICANTE, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE LUBRICANTE, DI-ESTER","","B","A","C","C","","B","B","",""],["ACEITE MIL-C-4339","","A","A","C","","","C","A","",""],["ACEITE MIL-F-16884, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-H-5606, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-H-6083, BASE PETROLEO","","A","A","C","C","","A","A","",""],["ACEITE MIL-L-15016","","A","A","C","C","","B","B","",""],["ACEITE MIL-L-15017, BASE PETROLEO","","A","A","C","C","","B","B","",""],["ACEITE MIL-L-17331, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-L-2104, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-L-21260, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-L-23699","","B","A","C","C","","B","B","",""],["ACEITE MIL-L-25681","","B","A","A","C","","B","B","",""],["ACEITE MIL-L-3150, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-L-6081, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-L-6082, BASE PETROLEO","","A","A","C","A","","B","A","",""],["ACEITE MIL-L-7870, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MIL-L-9000, BASE PETROLEO","","A","A","C","C","","B","B","",""],["ACEITE MIL-O-3503, BASE PETROLEO","","A","A","C","C","","B","A","",""],["ACEITE MINERAL","100","A","A","C","B","A","C","A","A","A"],["ACEITE MINERAL","20","A","A","C","A","","A","A","","A"],["ACEITE MINERAL UNIVOLT #35","","A","A","C","C","","B","A","","A"],["ACEITE PARA HUSOS","20","A","A","B","A","","A","A","","A"],["ACEITE PARA HUSOS","60","A","A","C","A","","B","A","","A"],["ACEITE PARA MOTORES","100","A","A","C","B","","A","A","",""],["ACEITE RED LINE 100","","A","A","C","C","","B","A","",""],["ACEITE ROJO (MIL-H-6506)","","A","A","C","C","","B","A","",""],["ACEITE STANDARD MOBILUBE GX90-EP LUBE","","A","A","C","C","","B","A","A","A"],["ACEITE TÉRMICO, CON BASE MINERAL","60","A","A","C","B","A","B","A","",""],["ACEITE TEXAS 1500","","A","A","C","B","","B","A","",""],["ACEITE TIDEWATER BEEDOL","","A","A","C","B","","B","A","",""],["ACEITE TIDEWATER MULTIGEAR 140 EP LUBE","","A","A","C","C","","B","A","",""],["ACEITE TIPO IV MIL-S-3136, BAJO HINCHAMIENTO","","A","A","C","A","","A","A","",""],["ACEITE TIPO V MIL-S-3136, MEDIO HINCHAMIENTO","","A","A","C","B","","B","A","",""],["ACEITE TIPO VI MIL-S-3136, ALTO HINCHAMIENTO","","A","A","C","B","","C","A","",""],["ACEITE VEGETAL","","A","A","B","A","","B","A","",""],["ACEITES LUBRICANTES SAE 10, 20, 30, 40, 50","","A","A","C","C","","B","A","","A"],["AGUA","100","A","A","A","B","A","B","D","A","A"],["AGUA","40","A","A","A","A","","A","D","","A"],["AGUA DE MAR","20","A","A","A","A","A","B","A","A","A"],["AGUA POTABLE","","A","A","A","A","","B","A","",""],["AIRE PURO","80","A","A","A","A","A","A","A","A","A"],["GAS NATURAL","20","A","A","C","A","A","A","C","A","A"],["HIDRÓGENO","60","A","A","A","A","","A","A","","A"],["NITRÓGENO","20","A","A","A","A","A","A","A","A","A"],["OXÍGENO FRIO","","B","A","A","A","","A","A","",""],["VAPOR","110","B","B","A","A","","C","A","C","A"]];
 
 const fluidosUnicos = [...new Set(DATA.map(r => r[0]))].sort((a,b) => a.localeCompare(b, 'es'));
@@ -273,7 +323,6 @@ function renderDropdown(filtro = "") {
     const div = document.createElement('div');
     div.className = 'custom-select-option';
     div.textContent = f;
-    // Usamos mousedown y preventDefault para evitar que el input pierda el foco antes de procesar el clic
     div.addEventListener('mousedown', (e) => {
       e.preventDefault(); 
       fluidoInput.value = f;
@@ -405,7 +454,6 @@ document.getElementById('btnLimpiar').addEventListener('click', function() {
   fluidoInput.focus();
 });
 </script>
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
 </body>
 </html>

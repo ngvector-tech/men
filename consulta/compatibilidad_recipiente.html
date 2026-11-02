@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Compatibilidad de Metales</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -13,6 +14,8 @@
     padding: 16px 11px 40px;
     color: #222;
   }
+
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
     max-width: 427px;
     margin: 0 auto;
@@ -21,15 +24,55 @@
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
     padding: 16px 19px 21px;
   }
-  h1 {
-    text-align: center;
-    font-size: 15px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
-    border-radius: 4px;
-    margin: 0 0 12px;
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
   .legend {
     font-size: 9px;
     line-height: 1.5;
@@ -59,7 +102,7 @@
   }
   input:focus { outline: none; border-color: #4a90d9; }
 
-  /* --- NUEVO DESPLEGABLE PERSONALIZADO --- */
+  /* --- DESPLEGABLE PERSONALIZADO --- */
   .custom-select-container {
     position: relative;
     width: 100%;
@@ -95,13 +138,12 @@
 
   .custom-select-option {
     padding: 6px 8px;
-    font-size: 10px; /* ⬅️ AQUÍ REDUCES EL TAMAÑO DEL TEXTO DEL DESPLEGABLE */
+    font-size: 10px;
     color: #333;
     cursor: pointer;
     transition: background 0.1s;
   }
   .custom-select-option:hover { background: #eef0f2; }
-  /* ------------------------------------------ */
 
   #results { margin-top: 15px; }
   .result-row {
@@ -156,6 +198,8 @@
   #btnLimpiar:hover {
     background: #333;
   }
+
+  /* ============ BOTÓN VOLVER ============ */
   .btn-volver {
       display: inline-flex;
       align-items: center;
@@ -180,8 +224,22 @@
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Compatibilidad de Metales</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Compatibilidad<br>de Metales</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+
   <div class="legend">
     <b>Excelente</b> · <b>Bueno</b> · <b>Pobre</b> · <b>No usar</b><br>
     Selecciona un ingrediente para ver la compatibilidad con cada metal.
@@ -347,7 +405,6 @@ document.getElementById('btnLimpiar').addEventListener('click', function() {
   ingredienteInput.focus();
 });
 </script>
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
 </body>
 </html>

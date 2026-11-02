@@ -2,16 +2,73 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora de Conos Excéntricos</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; --naranja: #c2410c; }
-  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
-  .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
-  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 13px; }
+  * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #eef2f5; margin: 0; padding: 16px 11px 40px; font-size: 12px; color: var(--texto); }
 
-  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
   @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
 
   .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; }
@@ -32,21 +89,21 @@
   .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
   .result-val.big { font-size: 12px; background: #e7f1ff; }
 
-  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px 0; }
   .banner.warn { background: #fdf1dc; color: #9a6a12; border-color: #e7c98f; }
 
   .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; min-height: 200px; cursor: zoom-in; }
   .svg-box svg { width: 100%; max-width: 500px; height: auto; max-height: 300px; }
   .cap { font-size: 10px; color: #69707a; font-style: italic; text-align: center; margin: 2px 0 0; }
 
-  .table-wrap { overflow-x: auto; margin: 8px; max-height: 400px; overflow-y: auto; }
+  .table-wrap { overflow-x: auto; margin: 8px 0; max-height: 400px; overflow-y: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 400px; }
   th { background: var(--azul); color: #fff; padding: 5px; text-align: center; position: sticky; top: 0; }
   td { border: 1px solid var(--borde); padding: 3px; text-align: center; font-family: monospace; }
   tr:nth-child(even) { background: var(--gris); }
   tr.key td { background: #fff3d6; font-weight: 700; }
 
-  .actions { display: flex; gap: 6px; justify-content: flex-end; padding: 8px; flex-wrap: wrap; }
+  .actions { display: flex; gap: 6px; justify-content: flex-end; padding: 8px 0; flex-wrap: wrap; }
   .btn { background: var(--azul); color: #fff; border: none; border-radius: 3px; font-weight: 700; font-size: 11px; padding: 6px 12px; cursor: pointer; }
   .btn.ghost { background: #fff; color: var(--azul); border: 2px solid var(--azul); padding: 4px 12px; }
   .btn:hover { opacity: 0.9; }
@@ -55,43 +112,53 @@
   .lightbox.activo { display: flex; }
   .lightbox img { width: 95vw; height: 95vh; object-fit: contain; background: #fff; padding: 10px; border-radius: 4px; cursor: default; }
   .lightbox .cerrar { position: absolute; top: 15px; right: 22px; color: #fff; font-size: 32px; font-weight: 700; cursor: pointer; user-select: none; }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <div class="header">Calculadora de Conos Excéntricos</div>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Calculadora de<br>Conos Excéntricos</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
 
   <div class="grid">
     <div class="panel">
@@ -146,7 +213,7 @@
   <div class="table-wrap">
     <table id="ecTbl">
       <thead><tr>
-        <th>Estación</th><th>Ángulo</th><th>Línea lateral<small>de abajo hacia arriba</small></th><th>Diagonal</small></th><th>Radio 1</th><th>Radio 2</th>
+        <th>Estación</th><th>Ángulo</th><th>Línea lateral<small>de abajo hacia arriba</small></th><th>Diagonal</th><th>Radio 1</th><th>Radio 2</th>
       </tr></thead>
       <tbody></tbody>
     </table>
@@ -155,7 +222,6 @@
   <div class="actions">
     <button class="btn" id="ecCopy">Copiar tabla</button>
     <button class="btn" id="ecCsv">Descargar CSV</button>
-    <button class="btn ghost" id="ecPrint">Imprimir</button>
   </div>
 </div>
 
@@ -427,8 +493,6 @@ $('ecCsv').addEventListener('click', () => {
   document.body.appendChild(a); a.click(); a.remove();
 });
 
-$('ecPrint').addEventListener('click', () => window.print());
-
 // ============ INIT ============
 ['ecD','ecd','ecH','ecE','ecQuick','ecBasis','ecT','ecN','ecRho'].forEach(id => {
   $(id).addEventListener('input', calc);
@@ -436,7 +500,6 @@ $('ecPrint').addEventListener('click', () => window.print());
 });
 calc();
 </script>
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
 </body>
 </html>

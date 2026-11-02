@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Consultor de Dimensiones de Válvulas (EN 558)</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
-
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
@@ -15,6 +15,7 @@
     color: #222;
   }
 
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
     max-width: 600px;
     margin: 0 auto;
@@ -22,19 +23,57 @@
     border-radius: 7px;
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
     padding: 16px 19px 21px;
-    position: relative; /* IMPORTANTE para el panel flotante */
+    position: relative;
   }
 
-  h1 {
-    text-align: center;
-    font-size: 13px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
     border-radius: 4px;
-    margin: 0 0 5px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
   }
 
+  /* ============ CONTENIDO INTERNO ============ */
   .subtitulo {
     text-align: center;
     font-size: 9px;
@@ -42,7 +81,6 @@
     margin: 0 0 15px;
   }
 
-  /* ===== Layout en dos columnas ===== */
   .layout {
     display: grid;
     grid-template-columns: 253px 1fr;
@@ -52,7 +90,6 @@
     .layout { grid-template-columns: 1fr; }
   }
 
-  /* ===== Panel de selección ===== */
   .panel {
     background: #f4f6f8;
     border: 1px solid #e0e3e6;
@@ -98,7 +135,6 @@
     line-height: 1.4;
   }
 
-  /* ===== Panel de resultado ===== */
   .resultado {
     background: #fff;
     border: 1px solid #e0e3e6;
@@ -153,7 +189,6 @@
     display: block;
   }
 
-  /* Tabla de dimensiones */
   table {
     border-collapse: collapse;
     width: 100%;
@@ -169,7 +204,7 @@
   td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
 
   /* ========================================================= */
-  /* VENTANA FLOTANTE CON EL CATÁLOGO DE VÁLVULAS (ESTILO HTML 2) */
+  /* VENTANA FLOTANTE CON EL CATÁLOGO DE VÁLVULAS              */
   /* ========================================================= */
   #panelValvulasFlotante {
       position: absolute;
@@ -204,43 +239,54 @@
   .valvula-opcion:hover { background: #e0f2fe; border-color: #38bdf8; }
   .valvula-opcion img { width: 50px; height: 40px; object-fit: contain; margin-bottom: 4px; }
   .valvula-opcion span { font-size: 8px; font-weight: bold; color: #333; text-align: center; text-transform: uppercase; line-height: 1.1; }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">? Volver atrás</a>
-  <h1>Consultor de Dimensiones de Válvulas y Accesorios</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Consultor de<br>Válvulas</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+
   <p class="subtitulo">Dimensiones según norma EN 558</p>
 
   <div class="layout">
@@ -310,9 +356,6 @@
 
 <script src="valvulas.js"></script>
 
-<!-- ============================================================ -->
-<!-- SCRIPT PARA EL CATÁLOGO VISUAL (Basado en el HTML de bridas) -->
-<!-- ============================================================ -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const tipoSelect = document.getElementById('tipoValvula');
@@ -320,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const imagenArea = document.getElementById('imagenArea');
     const imgPlaceholder = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='40'><rect width='100%' height='100%' fill='%23f1f5f9'/><text x='50%' y='50%' font-family='Arial' font-size='8' fill='%2364748b' text-anchor='middle' dy='.3em'>?</text></svg>`;
 
-    // 1. Crear la estructura del panel con placeholders
     function crearEstructura() {
         const opciones = tipoSelect.options;
         panel.innerHTML = '';
@@ -346,40 +388,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 2. El "Espía" que copia las imágenes de la derecha a la izquierda
     function extraerImagenes() {
         const opciones = tipoSelect.options;
         const seleccionOriginal = tipoSelect.value;
-
-        // Ocultamos el parpadeo
         panel.style.visibility = 'hidden';
 
         for (let i = 1; i < opciones.length; i++) {
             const valor = opciones[i].value;
-            
-            // Simulamos que el usuario selecciona la opción
             tipoSelect.value = valor;
             tipoSelect.dispatchEvent(new Event('change'));
-
-            // Leemos la imagen que se acaba de generar a la derecha
             const imgReal = imagenArea.querySelector('img');
-            
-            // Si la imagen existe, la copiamos a nuestra miniatura
             if (imgReal && imgReal.src) {
                 const thumb = document.getElementById(`thumb_${valor}`);
-                if (thumb) {
-                    thumb.src = imgReal.src;
-                }
+                if (thumb) thumb.src = imgReal.src;
             }
         }
 
-        // Dejamos el selector como estaba al principio
         tipoSelect.value = seleccionOriginal;
         tipoSelect.dispatchEvent(new Event('change'));
         panel.style.visibility = 'visible';
     }
 
-    // 3. Control de abrir/cerrar
     tipoSelect.addEventListener('mousedown', function(e) {
         e.preventDefault(); 
         if (panel.classList.contains('activa')) {
@@ -397,15 +426,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 4. Ejecutar
     crearEstructura();
-    
-    // Esperamos 1 segundo (1000ms) para asegurarnos de que valvulas.js haya cargado del todo
     setTimeout(extraerImagenes, 1000); 
 });
 </script>
 
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

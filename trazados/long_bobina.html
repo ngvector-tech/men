@@ -2,16 +2,73 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora de Longitud de Bobina</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   :root { --azul: #0d6efd; --borde: #dee2e6; --gris: #f8f9fa; --texto: #212529; --verde: #1c9b8a; }
-  * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-  body { background: #eef2f5; margin: 0; padding: 8px; font-size: 12px; color: var(--texto); }
-  .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
-  .header { background: var(--azul); color: #fff; padding: 8px; text-align: center; font-weight: bold; font-size: 13px; }
+  * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #eef2f5; margin: 0; padding: 16px 11px 40px; font-size: 12px; color: var(--texto); }
 
-  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+  }
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
+  .grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
   @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
 
   .panel { border: 1px solid var(--borde); border-radius: 4px; overflow: hidden; }
@@ -32,14 +89,14 @@
   .result-val { font-size: 11px; font-weight: bold; color: var(--azul); text-align: right; background: var(--gris); padding: 3px 5px; border-radius: 3px; }
   .result-val.big { font-size: 12px; background: #e7f1ff; }
 
-  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px; }
+  .banner { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; padding: 8px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 11px; margin: 8px 0; }
   .banner.warn { background: #fdf1dc; color: #9a6a12; border-color: #e7c98f; }
 
   .svg-box { background: #f8f9fa; border: 1px solid var(--borde); border-radius: 4px; padding: 5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; min-height: 250px; cursor: zoom-in; }
   .svg-box svg { width: 100%; max-width: 500px; height: auto; max-height: 350px; }
   .cap { font-size: 10px; color: #69707a; font-style: italic; text-align: center; margin: 2px 0 0; }
 
-  .tabs { display: flex; gap: 0; border: 2px solid var(--azul); border-radius: 4px; overflow: hidden; margin: 8px; }
+  .tabs { display: flex; gap: 0; border: 2px solid var(--azul); border-radius: 4px; overflow: hidden; margin: 8px 0; }
   .tab { flex: 1; background: #fff; color: var(--azul); border: none; font-weight: 700; font-size: 12px; padding: 8px 12px; cursor: pointer; transition: background 0.2s, color 0.2s; }
   .tab + .tab { border-left: 2px solid var(--azul); }
   .tab.on { background: var(--azul); color: #fff; }
@@ -49,43 +106,53 @@
   .lightbox.activo { display: flex; }
   .lightbox img { width: 95vw; height: 95vh; object-fit: contain; background: #fff; padding: 10px; border-radius: 4px; cursor: default; }
   .lightbox .cerrar { position: absolute; top: 15px; right: 22px; color: #fff; font-size: 32px; font-weight: 700; cursor: pointer; user-select: none; }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <div class="header">Calculadora de Longitud de Bobina</div>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Calculadora de<br>Longitud de Bobina</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
 
   <div class="tabs">
     <button class="tab on" data-mode="hel">Bobina Helicoidal</button>
@@ -167,7 +234,7 @@
         <div class="result-row"><div class="result-label">Peso de la tubería</div><div class="result-val" id="qoW">-</div></div>
         <div class="result-row"><div class="result-label">Volumen de retención</div><div class="result-val" id="qoV">-</div></div>
         <div class="result-row"><div class="result-label">Tuberías estándar a pedir</div><div class="result-val" id="qoS">-</div></div>
-        <div class="result-row"><div class="label" style="font-size:9px; color:#666; margin-top:8px;">Nota: Geometría únicamente. Añada margen de recorte y recuperación elástica.</div></div>
+        <div class="row"><div class="label" style="font-size:9px; color:#666; margin-top:8px;">Nota: Geometría únicamente. Añada margen de recorte y recuperación elástica.</div></div>
       </div>
     </div>
     <div class="panel">
@@ -254,7 +321,8 @@ function lenOut(id, L, u) {
 function calc() {
   const u = $('clUnit').value, d0 = num('clDo'), t = num('clT') || 0, tail = num('clTail') || 0;
   $('modeHel').style.display = mode === 'hel' ? 'grid' : 'none';
-  $('modeSpi').style.display = mode === 'spi' ? 'grid' : 'none';$('clSkTitle').textContent = mode === 'hel' ? 'Vista previa: Bobina Helicoidal' : 'Vista previa: Bobina Espiral';
+  $('modeSpi').style.display = mode === 'spi' ? 'grid' : 'none';
+  $('clSkTitle').textContent = mode === 'hel' ? 'Vista previa: Bobina Helicoidal' : 'Vista previa: Bobina Espiral';
 
   if (!(d0 > 0)) return fail('Introduce el diámetro exterior.');
   if (t < 0 || tail < 0) return fail('El espesor y las colas no pueden ser negativos.');
@@ -429,7 +497,6 @@ document.querySelectorAll('.tab').forEach(b => {
 
 calc();
 </script>
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
+
 </body>
 </html>

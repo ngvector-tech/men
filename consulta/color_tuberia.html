@@ -5,45 +5,88 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Código de Colores IS-2379</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef0f2;
     margin: 0;
-    padding: 16px 11px 40px;              /* ⬅️ antes 24 16 60 */
+    padding: 16px 11px 40px;
     color: #222;
   }
+
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
   .container {
-    max-width: 520px;                    /* ⬅️ antes 780 (≈ 2/3) */
+    max-width: 520px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 7px;                  /* ⬅️ antes 10 */
+    border-radius: 7px;
     box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-    padding: 16px 19px 21px;             /* ⬅️ antes 24 28 32 */
+    padding: 16px 19px 21px;
   }
-  h1 {
-    text-align: center;
-    font-size: 15px;                     /* ⬅️ antes 22 */
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;                   /* ⬅️ antes 12 16 */
-    border-radius: 4px;                  /* ⬅️ antes 6 */
-    margin: 0 0 12px;                    /* ⬅️ antes 18 */
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
-  .field { margin-bottom: 9px; }         /* ⬅️ antes 14 */
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
+  .field { margin-bottom: 9px; }
   .field label {
     display: block;
-    font-size: 9px;                      /* ⬅️ antes 13 */
+    font-size: 9px;
     font-weight: 600;
     color: #444;
-    margin-bottom: 3px;                  /* ⬅️ antes 5 */
+    margin-bottom: 3px;
   }
   select {
     width: 100%;
-    padding: 6px 7px;                    /* ⬅️ antes 9 10 */
-    font-size: 9px;                      /* ⬅️ antes 14 */
+    padding: 6px 7px;
+    font-size: 9px;
     border: 1px solid #c7ccd1;
-    border-radius: 4px;                  /* ⬅️ antes 6 */
+    border-radius: 4px;
     background: #fff;
   }
   select:focus { outline: none; border-color: #4a90d9; }
@@ -51,41 +94,41 @@
     background: #111;
     color: #fff;
     border: none;
-    padding: 7px 12px;                   /* ⬅️ antes 10 18 */
-    font-size: 9px;                      /* ⬅️ antes 14 */
+    padding: 7px 12px;
+    font-size: 9px;
     font-weight: 600;
-    border-radius: 4px;                  /* ⬅️ antes 6 */
+    border-radius: 4px;
     cursor: pointer;
-    margin-top: 7px;                     /* ⬅️ antes 10 */
-    margin-bottom: 11px;                 /* ⬅️ antes 16 */
+    margin-top: 7px;
+    margin-bottom: 11px;
     width: 100%;
     transition: background 0.2s;
   }
   #btnLimpiar:hover { background: #333; }
 
-  #results { margin-top: 13px; }         /* ⬅️ antes 20 */
+  #results { margin-top: 13px; }
   .card-result {
     background: #f8f9fa;
     border: 1px solid #e0e3e6;
-    border-radius: 5px;                  /* ⬅️ antes 8 */
-    padding: 11px;                       /* ⬅️ antes 16 */
-    margin-bottom: 8px;                  /* ⬅️ antes 12 */
+    border-radius: 5px;
+    padding: 11px;
+    margin-bottom: 8px;
   }
   .card-title {
-    font-size: 10px;                     /* ⬅️ antes 15 */
+    font-size: 10px;
     font-weight: bold;
     color: #111;
-    margin-bottom: 8px;                  /* ⬅️ antes 12 */
+    margin-bottom: 8px;
     border-bottom: 2px solid #4a90d9;
-    padding-bottom: 3px;                 /* ⬅️ antes 4 */
+    padding-bottom: 3px;
   }
   .data-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 9px;                      /* ⬅️ antes 13 */
+    font-size: 9px;
   }
   .data-table th, .data-table td {
-    padding: 5px 7px;                    /* ⬅️ antes 7 10 */
+    padding: 5px 7px;
     border-bottom: 1px solid #e2e8f0;
     text-align: left;
     vertical-align: middle;
@@ -99,19 +142,19 @@
   .no-results {
     text-align: center;
     color: #888;
-    font-size: 9px;                      /* ⬅️ antes 14 */
-    padding: 13px 0;                     /* ⬅️ antes 20 */
+    font-size: 9px;
+    padding: 13px 0;
   }
 
   /* --- Barra de colores más estrecha --- */
   .barra-colores {
     display: flex;
-    height: 21px;                        /* ⬅️ antes 32 */
+    height: 21px;
     border: 1px solid #c7ccd1;
-    border-radius: 3px;                  /* ⬅️ antes 5 */
+    border-radius: 3px;
     overflow: hidden;
     width: 100%;
-    max-width: 213px;                    /* ⬅️ antes 320 */
+    max-width: 213px;
   }
   .barra-colores .franja {
     height: 100%;
@@ -121,49 +164,55 @@
   }
   .barra-colores .franja:not(:first-child) {
     flex: 1;
-    max-width: 30px;                     /* ⬅️ antes 45 */
+    max-width: 30px;
   }
 
-  /* Anular cualquier flex del body que ponga la cabecera al lado de la tarjeta */
-  body { display: block !important; }
-        /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
-
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
-<link rel="stylesheet" href="men-header.css">
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Código de Colores IS-2379</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Código de Colores<br>IS-2379</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
 
   <div class="field">
     <label for="selectContenido">Contenido</label>
@@ -439,6 +488,5 @@ btnLimpiar.addEventListener('click', function() {
 });
 </script>
 
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

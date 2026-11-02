@@ -5,12 +5,85 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buscador de Bridas y Dimensiones</title>
 <style>
+  /* ============ ESTILOS BASE ============ */
   * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f2; margin: 0; padding: 16px 11px 40px; color: #222; display: block !important; }
-  .container { max-width: 520px; margin: 0 auto; background: #fff; border-radius: 7px; box-shadow: 0 2px 7px rgba(0,0,0,0.08); padding: 16px 19px 21px; position: relative; }
-  h1 { text-align: center; font-size: 15px; background: #111; color: #fff; padding: 8px 11px; border-radius: 4px; margin: 0 0 4px; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef0f2;
+    margin: 0;
+    padding: 16px 11px 40px;
+    color: #222;
+  }
 
-  .resumen-seleccion { text-align: center; color: #a03428; font-weight: bold; font-size: 9px; margin: 4px 0 12px; min-height: 13px; letter-spacing: 0.3px; text-transform: uppercase; }
+  /* ============ CONTENEDOR PRINCIPAL ÚNICO ============ */
+  .container {
+    max-width: 520px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+    padding: 16px 19px 21px;
+    position: relative;
+  }
+
+  /* ============ CABECERA UNIFICADA (LA ÚNICA BARRA NEGRA) ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ============ CONTENIDO INTERNO ============ */
+  .resumen-seleccion {
+    text-align: center;
+    color: #a03428;
+    font-weight: bold;
+    font-size: 9px;
+    margin: 4px 0 12px;
+    min-height: 13px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
 
   .grid-2 { display: table; width: 100%; table-layout: fixed; margin-bottom: 8px; }
   .col { display: table-cell; width: 50%; padding-right: 5px; vertical-align: top; }
@@ -44,13 +117,11 @@
   .bloque-tornilleria .btn-ir { display: block; width: 100%; margin-top: 9px; padding: 8px; background: #16a34a; color: #fff; border: none; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; }
   .bloque-tornilleria .btn-ir-sec { display: block; width: 100%; margin-top: 5px; padding: 7px; background: #fff; color: #b42318; border: 1px solid #ea580c; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; }
 
-  /* Desplegable de tipos de caras (mantenido) */
+  /* Desplegable de tipos de caras */
   #tipoSelect { width: 100%; padding: 6px 7px; font-size: 9px; border: 1px solid #c7ccd1; border-radius: 4px; background: #fff; }
   #tipoSelect:focus { outline: none; border-color: #4a90d9; }
 
-  /* ========================================================= */
-  /* VENTANA FLOTANTE CON EL CATÁLOGO DE CATEGORÍAS            */
-  /* ========================================================= */
+  /* VENTANA FLOTANTE CON EL CATÁLOGO DE CATEGORÍAS */
   #panelCategoriasFlotante {
       position: absolute;
       z-index: 1000;
@@ -60,7 +131,7 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       padding: 8px;
       display: none;
-      width: 250px; /* Ancho del catálogo */
+      width: 250px;
       top: 100%;
       left: 0;
       margin-top: 5px;
@@ -82,44 +153,54 @@
   .cat-opcion:hover { background: #e0f2fe; border-color: #38bdf8; }
   .cat-opcion img { width: 50px; height: 40px; object-fit: contain; margin-bottom: 4px; }
   .cat-opcion span { font-size: 8px; font-weight: bold; color: #333; text-align: center; text-transform: uppercase; }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
+  /* ============ BOTÓN VOLVER ============ */
+  .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #ecf0f1;
+      color: #34495e;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+  }
+  .btn-volver:hover {
+      background-color: #e0e6ed;
+      border-color: #95a5a6;
+      color: #2c3e50;
+  }
+  .btn-volver:active {
+      transform: scale(0.98);
+  }
 </style>
-<link rel="stylesheet" href="men-header.css">
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Consulta Tecnica de Bridas</h1>
+  
+  <!-- BARRA OSCURA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Buscador de<br>Bridas</h1>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+
   <div class="resumen-seleccion" id="resumenSeleccion"></div>
 
   <div id="loadingMsg">⏳ Cargando base de datos...</div>
@@ -129,7 +210,6 @@
       <div class="col">
         <div class="field">
           <label for="catSelect">1. Categoría</label>
-          <!-- Al hacer clic aquí se abre el panel visual -->
           <select id="catSelect"><option value="">-- Selecciona Categoria --</option></select>
           
           <!-- Panel flotante de categorías -->
@@ -333,16 +413,13 @@ function initCategories() {
   const cats = [...new Set(DATA.map(item => item[0]))].filter(Boolean).sort();
   catSelect.innerHTML = '<option value="">-- Selecciona Categoría --</option>';
   
-  // Rellenar el select tradicional
   cats.forEach(cat => { 
       catSelect.innerHTML += `<option value="${cat}">${cat}</option>`; 
   });
 
-  // Rellenar el panel visual flotante
   const panel = document.getElementById('panelCategoriasFlotante');
   panel.innerHTML = '';
   cats.forEach(cat => {
-      // Obtener el archivo de imagen
       const archivo = MAPA_IMG_CATEGORIAS[cat] || `${cat.toLowerCase()}.png`;
       const imgPath = `img/${archivo}`;
       
@@ -354,7 +431,6 @@ function initCategories() {
           panel.classList.remove('activa');
       };
       
-      // Placeholder por si la imagen no existe en el catálogo
       div.innerHTML = `
           <img src="${imgPath}" alt="${cat}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'50\\' height=\\'40\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23f1f5f9\\'/><text x=\\'50%\\' y=\\'50%\\' font-family=\\'Arial\\' font-size=\\'8\\' fill=\\'%2364748b\\' text-anchor=\\'middle\\' dy=\\'.3em\\'>?</text></svg>'">
           <span>${cat}</span>
@@ -368,12 +444,8 @@ function initCategories() {
 // ============================================================
 const panelCategorias = document.getElementById('panelCategoriasFlotante');
 
-// Al hacer clic en el select, abrimos/cerramos el panel (y prevenimos el desplegable nativo)
 catSelect.addEventListener('mousedown', function(e) {
-    // Evitar que el select nativo se abra en algunos navegadores
     e.preventDefault(); 
-    
-    // Alternar visibilidad del panel
     if (panelCategorias.classList.contains('activa')) {
         panelCategorias.classList.remove('activa');
     } else {
@@ -381,19 +453,16 @@ catSelect.addEventListener('mousedown', function(e) {
     }
 });
 
-// Cerrar el panel al hacer clic fuera
 document.addEventListener('click', function(event) {
     if (panelCategorias.classList.contains('activa')) {
-        // Si el clic NO es en el select ni en el panel, cerrar
         if (event.target !== catSelect && !panelCategorias.contains(event.target)) {
             panelCategorias.classList.remove('activa');
         }
     }
 });
 
-
 // ============================================================
-// RESTO DE LÓGICA (updateImage, filtros, etc.)
+// RESTO DE LÓGICA
 // ============================================================
 function updateImage(cat) {
   if (!cat) {
@@ -421,7 +490,6 @@ catSelect.addEventListener('change', function() {
   const cat = this.value;
   updateImage(cat);
   const previaNorma = normaSelect.value;
-  const previaDN = dnSelect.value;
 
   normaSelect.disabled = !cat;
   if (cat) {
@@ -692,6 +760,5 @@ init();
 window.addEventListener('pageshow', function (event) { if (event.persisted) window.location.reload(); });
 </script>
 
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

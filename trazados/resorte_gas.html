@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de resortes de gas — Arcón</title>
+<style>
+:root{--blue:#087fbd;--blue2:#e8f4fb;--ink:#263442;--muted:#687785;--line:#d9e1e7;--panel:#f7f9fb;--green:#18834b;--red:#c0392b;--orange:#d35400}
+*{box-sizing:border-box}
+body{margin:0;padding:18px 12px 40px;background:#eef1f4;color:var(--ink);font:14px "Segoe UI",Arial,sans-serif}
+.wrap{max-width:1050px;margin:auto;background:#fff;border-radius:12px;box-shadow:0 3px 16px #14253614;padding:20px}
+.header-top{display:flex;justify-content:space-between;align-items:center;background:#17212b;color:white;padding:12px 20px;border-radius:7px;margin-bottom:6px;flex-wrap:wrap;gap:10px}
+.header-left{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand-title{font-size:15px;font-weight:700;color:#087fbd;background:#fff;padding:2px 6px;border-radius:4px}
+.brand-sub{font-size:13px;color:#d9e1e7;font-weight:600}
+.brand-author{font-size:11px;color:#89949e}
+.header-right{display:flex;align-items:center;gap:15px}
+h1{margin:0;font-size:16px;font-weight:600;color:#e8f4fb}
+.sub{text-align:center;color:var(--muted);font-size:12px;margin:0 0 18px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin:0 0 12px;color:#354657}
+.layout{display:grid;grid-template-columns: minmax(280px, .9fr) minmax(380px,1.35fr);gap:15px;align-items:start}
+.panel{border:1px solid var(--line);border-radius:8px;padding:15px;background:var(--panel);margin-bottom:14px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.field label{display:block;font-size:11px;font-weight:650;color:#526170;margin-bottom:4px}
+.field input,.field select{width:100%;padding:9px 8px;border:1px solid #c8d2dc;border-radius:5px;background:#fff;color:#1f2d3a;font-size:14px}
+.field small{display:block;color:#7c8995;font-size:10px;margin-top:3px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{border:0;border-radius:5px;padding:9px 13px;background:var(--blue);color:white;font-weight:650;cursor:pointer}
+button.secondary{background:#e8edf1;color:#344454;border:1px solid #cbd5dd}
+button.accent{background:#18834b;color:white}
+button.print-btn{background:#263442;border:1px solid #4a5c6e;padding:7px 11px;font-size:12px}
+button:hover{filter:brightness(.96)}
+#drawing{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:7px;touch-action:none}
+.legend{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px}
+.point{cursor:grab;stroke:#fff;stroke-width:2}
+.point:active{cursor:grabbing}
+.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.metric{background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px}
+.metric.highlight{background:#e8f4fb;border-color:#087fbd}
+.metric.status-metric{grid-column: span 2; border-width: 2px; text-align: center; transition: all 0.3s ease;}
+.metric .k{font-size:10px;color:var(--muted);font-weight:650}
+.metric .v{font-size:19px;font-weight:750;margin-top:4px;color:#164e70}
+.metric .unit{font-size:11px;color:var(--muted);font-weight:500}
+
+/* Estilos de colores para la evaluación */
+.eval-deficiente { background-color: #fdf2f2 !important; border-color: var(--red) !important; }
+.eval-deficiente .v { color: var(--red) !important; }
+.eval-optimo { background-color: #edfbf3 !important; border-color: var(--green) !important; }
+.eval-optimo .v { color: var(--green) !important; }
+.eval-sobredimensionado { background-color: #fff8f0 !important; border-color: var(--orange) !important; }
+.eval-sobredimensionado .v { color: var(--orange) !important; }
+
+.status{font-size:12px;padding:9px 10px;border-radius:5px;background:#eaf5ee;color:#17613b;margin-top:10px}
+.status.warn{background:#fff2e8;color:#9b431c}
+.note{font-size:11px;color:#657482;line-height:1.55}
+.guide-box{background:#eaf5ee;border:1px solid #b7e1cd;border-radius:7px;padding:12px;margin-top:12px;font-size:11px;color:#134e2a;line-height:1.5}
+.guide-box h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;color:#0e3a1f;display:flex;align-items:center;gap:5px}
+.guide-box ul{margin:0;padding-left:16px}
+.guide-box li{margin-bottom:4px}
+.inline-title{font-size:12px;font-weight:700;margin:12px 0 8px}
+.cotas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cotas .field input{font-weight:700}
+.range-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+.range-row input{flex:1}
+.range-row output{min-width:42px;text-align:right;font-weight:700}
+.footer{font-size:10px;color:#89949e;text-align:center;margin-top:14px}
+
+/* REGLAS PARA IMPRESIÓN A4 */
+@media print {
+  @page { size: A4 portrait; margin: 10mm; }
+  body { background: #fff; padding: 0; color: #000; font-size: 12px; }
+  .wrap { max-width: 100%; box-shadow: none; padding: 0; }
+  .header-top { background: #17212b !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .brand-title { background: #fff !important; color: #087fbd !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .actions, .range-row, .guide-box, button, .sub, .footer { display: none !important; }
+  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .panel { break-inside: avoid; background: #fff !important; border: 1px solid #bbb !important; padding: 10px; margin-bottom: 10px; }
+  .metric { break-inside: avoid; }
+  .eval-deficiente, .eval-optimo, .eval-sobredimensionado { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@media(max-width:760px){.wrap{padding:13px}.layout{grid-template-columns:1fr}.cotas{grid-template-columns:repeat(2,minmax(0,1fr))}body{padding:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="header-top">
+  <div class="header-left">
+    <span class="brand-title">MEN</span>
+    <span class="brand-sub">Montajes Industriales S. L.</span>
+    <span class="brand-author">Creado por: J.N.G</span>
+  </div>
+  <div class="header-right">
+    <h1>Calculadora de resortes de gas — Arcón</h1>
+    <button class="print-btn" id="imprimir">🖨️ Imprimir A4</button>
+  </div>
+</div>
+<p class="sub">Dimensionado preliminar · cotas editables · esquema interactivo</p>
+<div class="layout">
+<div>
+  <section class="panel">
+    <h2>1. Datos de la tapa</h2>
+    <div class="fields">
+      <div class="field"><label for="longitud">Longitud desde bisagra (mm)</label><input id="longitud" type="number" min="50" step="1" value="750"></div>
+      <div class="field"><label for="ancho">Anchura del arcón (mm)</label><input id="ancho" type="number" min="50" step="1" value="500"></div>
+      <div class="field"><label for="espesor">Espesor de tapa (mm)</label><input id="espesor" type="number" min="1" step="1" value="20"></div>
+      <div class="field"><label for="peso">Peso de la tapa (kg)</label><input id="peso" type="number" min="0.1" step="0.1" value="20"></div>
+      <div class="field"><label for="angulo">Ángulo de apertura (°)</label><input id="angulo" type="number" min="10" max="120" step="1" value="85"></div>
+      <div class="field"><label for="cantidad">Número de resortes</label><select id="cantidad"><option value="1">1 resorte</option><option value="2" selected>2 resortes</option></select></div>
+    </div>
+    <div class="field" style="margin-top:10px"><label for="friccion">Margen de fuerza / rozamiento (%)</label><input id="friccion" type="number" min="0" max="50" step="1" value="10"><small>Margen orientativo aplicado a la fuerza de equilibrio.</small></div>
+    <div class="actions"><button id="calcular">Calcular / actualizar</button><button class="secondary" id="reiniciar">Restablecer ejemplo</button></div>
+  </section>
+
+  <section class="panel">
+    <h2>2. Cotas de montaje A · B · C · D</h2>
+    <p class="note">A y B sitúan el anclaje sobre la tapa, medidos desde la bisagra. C y D sitúan el anclaje fijo del cilindro respecto a la bisagra. Cambia cualquier valor: el dibujo y los resultados se actualizan al instante.</p>
+    <div class="cotas">
+      <div class="field"><label for="A">A — sobre tapa (mm)</label><input id="A" type="number" step="1" value="450"></div>
+      <div class="field"><label for="B">B — espesor / offset (mm)</label><input id="B" type="number" step="1" value="-20"></div>
+      <div class="field"><label for="C">C — horizontal fijo (mm)</label><input id="C" type="number" step="1" value="180"></div>
+      <div class="field"><label for="D">D — vertical fijo (mm)</label><input id="D" type="number" step="1" value="160"></div>
+    </div>
+
+    <!-- CASILLA VERDE DE CONSEJOS GEOMÉTRICOS -->
+    <div class="guide-box">
+      <h3>💡 Consejos de ajuste geométrico (A, B, C, D)</h3>
+      <ul>
+        <li><b>Aumentar A (anclaje más lejos de bisagra):</b> Aumenta la carrera (Stroke) requerida. Si no aumentas <b>D</b>, el cilindro se tumba demasiado en cerrado y <i>no reduce la fuerza</i>.</li>
+        <li><b>Aumentar D (anclaje fijo más abajo):</b> <u>Forma principal de reducir fuerza</u>. Da más ángulo al resorte en cerrado, aumentando su brazo de palanca perpendicular y reduciendo los Newtons requeridos.</li>
+        <li><b>Modificar C (desplazamiento horizontal del marco):</b> Ajusta el balance del brazo entre posición abierta y cerrada, ayudando a controlar la fuerza manual al cerrar la tapa.</li>
+        <li><b>Aumentar B (desfasaje vertical en tapa):</b> Sirve para salvar el grosor del perfil o marco sin chocar con la bisagra.</li>
+      </ul>
+    </div>
+
+    <div class="inline-title">Fuerza nominal seleccionada por cilindro</div>
+    <div class="fields">
+      <div class="field"><label for="fuerza">Fuerza manual (N)</label><input id="fuerza" type="number" min="1" step="10" value="500"></div>
+      <div class="field"><label for="eficiencia">Coeficiente de fuerza</label><input id="eficiencia" type="number" min="0.5" max="1.5" step="0.01" value="1"></div>
+    </div>
+    <div style="margin-top:8px" class="actions">
+      <button type="button" class="accent" id="usarPropuesta" style="padding:5px 9px; font-size:11px;">Usar fuerza comercial recomendada</button>
+    </div>
+    <p class="note" style="margin-top:6px">La fuerza nominal es editable. Puedes escribir un valor propio o hacer clic en el botón verde para usar la propuesta comercial sugerida.</p>
+  </section>
+</div>
+
+<div>
+  <section class="panel">
+    <h2>3. Esquema lateral — arrastra los anclajes</h2>
+    <svg id="drawing" viewBox="0 0 720 440" role="img" aria-label="Esquema lateral de arcón con tapa y resorte de gas">
+      <defs>
+        <marker id="arrow" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#087fbd"/></marker>
+      </defs>
+      <rect x="0" y="0" width="720" height="440" fill="#fff"/>
+      <g id="geometry"></g>
+      <g id="labels" font-family="Segoe UI,Arial" font-size="12"></g>
+    </svg>
+    <div class="legend"><b>Azul:</b> anclaje de tapa (A/B). <b>Naranja:</b> anclaje fijo (C/D). Arrastra cualquiera de los dos puntos. El arcón se representa en posición cerrada; la línea discontinua muestra la tapa abierta.</div>
+    <div class="range-row"><label for="posicion">Simular apertura</label><input id="posicion" type="range" min="0" max="85" value="0"><output id="posicionTxt">0°</output></div>
+  </section>
+
+  <section class="panel">
+    <h2>4. Resultados recalculados</h2>
+    <div class="result-grid">
+      <!-- Métrica de Evaluación del Dimensionado con Colores -->
+      <div class="metric status-metric" id="boxEvaluacion">
+        <div class="k">EVALUACIÓN DEL DIMENSIONADO DE FUERZA</div>
+        <div class="v" id="txtEvaluacion">—</div>
+      </div>
+
+      <div class="metric"><div class="k">Fuerza teórica mínima / cilindro</div><div class="v" id="fNecesaria">— <span class="unit">N</span></div></div>
+      <div class="metric highlight"><div class="k">Fuerza nominal comercial recomendada</div><div class="v" id="fPropuesta">— <span class="unit">N</span></div></div>
+      <div class="metric"><div class="k">Fuerza nominal introducida / cilindro</div><div class="v" id="fNominal">— <span class="unit">N</span></div></div>
+      <div class="metric"><div class="k">Fuerza total instalada</div><div class="v" id="fTotal">— <span class="unit">N</span></div></div>
+      <div class="metric"><div class="k">Longitud del resorte cerrado (L_min)</div><div class="v" id="lCerrado">— <span class="unit">mm</span></div></div>
+      <div class="metric"><div class="k">Longitud del resorte abierto (L_max)</div><div class="v" id="lAbierto">— <span class="unit">mm</span></div></div>
+      <div class="metric highlight"><div class="k">Carrera / Stroke requerida (S)</div><div class="v" id="carrera">— <span class="unit">mm</span></div></div>
+      <div class="metric"><div class="k">Momento del peso en cerrado</div><div class="v" id="mPeso">— <span class="unit">Nm</span></div></div>
+      <div class="metric"><div class="k">Momento de resortes en cerrado</div><div class="v" id="mResorte">— <span class="unit">Nm</span></div></div>
+      <div class="metric"><div class="k">Fuerza manual borde (cerrado)</div><div class="v" id="fManoC">— <span class="unit">N</span></div></div>
+    </div>
+    <div id="estado" class="status">Modifica los datos o arrastra los anclajes para actualizar el cálculo.</div>
+  </section>
+</div>
+</div>
+<p class="footer">Herramienta de estimación geométrica. Verifica siempre carrera, longitudes, soportes, cargas, estabilidad y especificaciones del fabricante antes de fabricar o instalar.</p>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const ids=['longitud','ancho','espesor','peso','angulo','cantidad','friccion','A','B','C','D','fuerza','eficiencia'];
+const num=id=>Number($(id).value);
+const fmt=(v,d=1)=>Number.isFinite(v)?v.toFixed(d):'—';
+const geom=$('geometry'), labels=$('labels'), svg=$('drawing');
+let dragging=null, last={}, fPropuestaGlobal=500;
+
+function values(){
+ return {L:num('longitud'),W:num('ancho'),t:num('espesor'),m:num('peso'),theta:num('angulo')*Math.PI/180,n:num('cantidad'),margin:num('friccion')/100,A:num('A'),B:num('B'),C:num('C'),D:num('D'),F:num('fuerza'),eff:num('eficiencia'),pos:num('posicion')*Math.PI/180};
+}
+function pointL(v,ang){return {x:v.A*Math.cos(ang)-v.B*Math.sin(ang),y:v.A*Math.sin(ang)+v.B*Math.cos(ang)}}
+function pointF(v){return {x:-v.C,y:-v.D}}
+function torqueArm(p,f){return (p.x*f.y-p.y*f.x)}
+
+function obtenerFuerzaNominalComercial(fTeorica){
+ if(!Number.isFinite(fTeorica) || fTeorica <= 0) return 100;
+ if(fTeorica <= 250) return Math.ceil(fTeorica / 20) * 20;
+ if(fTeorica <= 1000) return Math.ceil(fTeorica / 50) * 50;
+ return Math.ceil(fTeorica / 100) * 100;
+}
+
+function calc(v){
+ const g=9.81, cgx=v.L/2, cgy=v.t/2;
+ const gravAt=ang=>({x:cgx*Math.cos(ang)-cgy*Math.sin(ang),y:cgx*Math.sin(ang)+cgy*Math.cos(ang)});
+ const lidAt=ang=>pointL(v,ang);
+ const fixed=pointF(v);
+ const metricsAt=ang=>{
+   const p=lidAt(ang), dx=p.x-fixed.x,dy=p.y-fixed.y, ll=Math.hypot(dx,dy);
+   if(ll<1e-6)return null;
+   const u={x:dx/ll,y:dy/ll};
+   const arm=torqueArm(p,u);
+   const cg=gravAt(ang), mg=-v.m*g;
+   const mWeight=cg.x*mg/1000;
+   const mPerN=arm/1000;
+   const mSpring=v.n*v.F*v.eff*mPerN;
+   const manual=(mWeight+mSpring)*1000/Math.max(v.L,1);
+   return {p,ll,arm,mWeight,mSpring,manual,mPerN};
+ };
+ const closed=metricsAt(0), opened=metricsAt(v.theta);
+ if(!closed||!opened)return {error:'Los puntos de anclaje coinciden; modifica A, B, C o D.'};
+ const required=closed.mPerN>0?(-closed.mWeight/(v.n*closed.mPerN*(1+v.margin))):NaN;
+ const stroke=Math.abs(opened.ll-closed.ll);
+ const nominalSugerida=obtenerFuerzaNominalComercial(required);
+ fPropuestaGlobal=nominalSugerida;
+
+ const allAngles=[];
+ for(let a=0;a<=v.theta+1e-6;a+=Math.max(v.theta/30,0.01)){
+   const z=metricsAt(Math.min(a,v.theta));if(z)allAngles.push(z);
+ }
+ return {closed,opened,required,nominalSugerida,stroke,allAngles,fixed,closedPoint:closed.p,openPoint:opened.p};
+}
+
+function setText(id,value,unit=''){
+ $(id).innerHTML=fmt(value,1)+(unit?` <span class="unit">${unit}</span>`:'');
+}
+
+function actualizarEvaluacionFuerza(fuerzaIntroducida, fuerzaRequerida){
+ const box = $('boxEvaluacion');
+ const txt = $('txtEvaluacion');
+ box.className = 'metric status-metric';
+
+ if(!Number.isFinite(fuerzaRequerida) || fuerzaRequerida <= 0){
+   txt.textContent = '—';
+   return;
+ }
+
+ if(fuerzaIntroducida < fuerzaRequerida){
+   txt.textContent = 'Deficiente';
+   box.classList.add('eval-deficiente');
+ } else if(fuerzaIntroducida <= fuerzaRequerida * 1.25){
+   txt.textContent = 'Óptimo';
+   box.classList.add('eval-optimo');
+ } else {
+   txt.textContent = 'Sobredimensionado';
+   box.classList.add('eval-sobredimensionado');
+ }
+}
+
+function draw(v,r){
+ const hinge={x:430,y:300}, scale=Math.min(0.42,390/Math.max(v.L,v.C+v.L,400),220/Math.max(v.D+v.t,300));
+ const sx=p=>hinge.x-p.x*scale, sy=p=>hinge.y-p.y*scale;
+ const worldLid=ang=>({x:v.L*Math.cos(ang),y:v.L*Math.sin(ang)});
+ const currentAng=v.pos||0;
+ const p0={x:0,y:0}, pL=worldLid(currentAng), pOpen=worldLid(v.theta);
+ const fixed=pointF(v), moving=pointL(v,currentAng), movingOpen=pointL(v,v.theta);
+ const boxDepth=Math.max(v.D*1.05,180);
+ const boxFront={x:v.L,y:0}, boxBottomFront={x:v.L,y:-boxDepth}, boxBottomRear={x:0,y:-boxDepth};
+ const poly=(pts)=>pts.map(p=>`${sx(p)},${sy(p)}`).join(' ');
+ let s='';
+ s+=`<polygon points="${poly([p0,boxFront,boxBottomFront,boxBottomRear])}" fill="#dce4e9" stroke="#6f7e89" stroke-width="2"/>`;
+ s+=`<line x1="${sx(p0)}" y1="${sy(p0)}" x2="${sx(pL)}" y2="${sy(pL)}" stroke="#263b4b" stroke-width="12" stroke-linecap="round"/>`;
+ s+=`<line x1="${sx(p0)}" y1="${sy(p0)}" x2="${sx(pOpen)}" y2="${sy(pOpen)}" stroke="#6f9fb9" stroke-width="8" stroke-dasharray="9 6" opacity=".65"/>`;
+ s+=`<line x1="${sx(fixed)}" y1="${sy(fixed)}" x2="${sx(moving)}" y2="${sy(moving)}" stroke="#087fbd" stroke-width="7" stroke-linecap="round"/>`;
+ s+=`<line x1="${sx(fixed)}" y1="${sy(fixed)}" x2="${sx(movingOpen)}" y2="${sy(movingOpen)}" stroke="#087fbd" stroke-width="3" stroke-dasharray="6 5" opacity=".5"/>`;
+ s+=`<circle cx="${sx(p0)}" cy="${sy(p0)}" r="8" fill="#263b4b"/>`;
+ s+=`<circle class="point" data-point="lid" cx="${sx(moving)}" cy="${sy(moving)}" r="10" fill="#087fbd"/>`;
+ s+=`<circle class="point" data-point="fixed" cx="${sx(fixed)}" cy="${sy(fixed)}" r="10" fill="#e58b27"/>`;
+ const cg={x:v.L/2,y:v.t/2};
+ s+=`<circle cx="${sx(cg)}" cy="${sy(cg)}" r="6" fill="#d34b45" stroke="white" stroke-width="2"/>`;
+ s+=`<text x="${sx(cg)+10}" y="${sy(cg)-9}" font-size="12" fill="#a8322d">CG</text>`;
+ s+=`<text x="${sx(p0)+10}" y="${sy(p0)-13}" font-size="12" fill="#263b4b">Bisagra</text>`;
+ s+=`<text x="${sx(moving)-18}" y="${sy(moving)-16}" font-size="12" fill="#087fbd">A/B</text>`;
+ s+=`<text x="${sx(fixed)+12}" y="${sy(fixed)+4}" font-size="12" fill="#b86b16">C/D</text>`;
+ s+=`<text x="20" y="25" font-size="12" fill="#647482">Vista lateral · posición cerrada</text>`;
+ s+=`<text x="20" y="45" font-size="11" fill="#647482">Arrastra los círculos A/B y C/D</text>`;
+ geom.innerHTML=s;
+ labels.innerHTML='';
+ last={hinge,scale,sx,sy};
+}
+
+function update(){
+ const v=values();
+ const bad=ids.some(id=>!Number.isFinite(num(id))) || v.L<=0||v.m<=0||v.A<0||v.A>v.L;
+ if(bad){$('estado').className='status warn';$('estado').textContent='Revisa los datos: longitud y peso deben ser positivos; A debe estar entre 0 y la longitud de la tapa.';return}
+ const r=calc(v);draw(v,r);
+ if(r.error){$('estado').className='status warn';$('estado').textContent=r.error;return}
+ 
+ setText('fNecesaria',r.required,'N');
+ setText('fPropuesta',r.nominalSugerida,'N');
+ setText('fNominal',v.F,'N');
+ setText('fTotal',v.F*v.n,'N');
+ setText('lCerrado',r.closed.ll,'mm');
+ setText('lAbierto',r.opened.ll,'mm');
+ setText('carrera',r.stroke,'mm');
+ setText('mPeso',Math.abs(r.closed.mWeight),'Nm');
+ setText('mResorte',Math.abs(r.closed.mSpring),'Nm');
+ setText('fManoC',Math.abs(r.closed.manual),'N');
+
+ actualizarEvaluacionFuerza(v.F, r.required);
+
+ const minLen=Math.min(r.closed.ll,r.opened.ll);
+ let warnings=[];
+ if(r.closed.mPerN<=0)warnings.push('El resorte no genera momento de apertura en posición cerrada.');
+ if(r.opened.mPerN<=0)warnings.push('La geometría pierde el efecto de apertura al final del recorrido.');
+ if(v.A>v.L)warnings.push('El anclaje A queda fuera de la tapa.');
+ if(minLen<50)warnings.push('Longitud entre anclajes muy corta; revisa interferencias.');
+ if(r.required<0||!Number.isFinite(r.required))warnings.push('No se puede obtener una fuerza de equilibrio válida con esta geometría.');
+ if(v.F<r.required)warnings.push('La fuerza nominal elegida es inferior a la fuerza mínima estimada.');
+ if(!warnings.length)warnings.push('Geometría calculada. Comprueba la carrera comercial (Stroke) requerida en el catálogo del fabricante.');
+ 
+ $('estado').className='status'+(warnings.some(x=>x.includes('inferior')||x.includes('no ' )||x.includes('interferencias'))?' warn':'');
+ $('estado').textContent=warnings.join(' ');
+}
+
+function dragStart(e){
+ const target=e.target.closest('[data-point]');if(!target)return;
+ e.preventDefault();dragging=target.dataset.point;svg.setPointerCapture(e.pointerId);
+}
+function dragMove(e){
+ if(!dragging)return;
+ const rect=svg.getBoundingClientRect(), vb=svg.viewBox.baseVal;
+ const x=(e.clientX-rect.left)*vb.width/rect.width,y=(e.clientY-rect.top)*vb.height/rect.height;
+ const wx=(last.hinge.x-x)/last.scale,wy=(last.hinge.y-y)/last.scale;
+ if(dragging==='fixed'){
+   $('C').value=Math.round(-wx);$('D').value=Math.round(-wy);
+ }else{
+   $('A').value=Math.round(wx);$('B').value=Math.round(wy);
+ }
+ update();
+}
+function dragEnd(){dragging=null}
+
+ids.forEach(id=>$(id).addEventListener('input',update));
+$('calcular').addEventListener('click',update);
+$('imprimir').addEventListener('click',()=>window.print());
+$('usarPropuesta').addEventListener('click',()=>{
+ $('fuerza').value = fPropuestaGlobal;
+ update();
+});
+$('reiniciar').addEventListener('click',()=>{
+ const defaults={longitud:750,ancho:500,espesor:20,peso:20,angulo:85,cantidad:2,friccion:10,A:450,B:-20,C:180,D:160,fuerza:500,eficiencia:1};
+ Object.keys(defaults).forEach(k=>$(k).value=defaults[k]);$('posicion').value=0;update();
+});
+$('posicion').addEventListener('input',()=>{$('posicionTxt').textContent=$('posicion').value+'°';const v=values();v.pos=num('posicion')*Math.PI/180;draw(v,calc(v));});
+svg.addEventListener('pointerdown',dragStart);svg.addEventListener('pointermove',dragMove);svg.addEventListener('pointerup',dragEnd);svg.addEventListener('pointercancel',dragEnd);
+$('posicion').max=$('angulo').value;
+$('angulo').addEventListener('input',()=>{$('posicion').max=$('angulo').value;if(num('posicion')>num('angulo'))$('posicion').value=$('angulo').value;update()});
+update();
+})();
+</script>
+</body>
+</html>

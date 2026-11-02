@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Bayoneta de Tubería</title>
+<title>Calculadora de Bayoneta de Tubería — MEN</title>
 <style>
   :root{
     --azul:#1e5fa8; --azul-claro:#e8f0fa; --gris:#f4f5f7;
@@ -18,35 +18,76 @@
     margin: 0;
     padding: 16px 11px 40px;
     color: #222;
+    display: block !important;
   }
 
   .container {
-    max-width: 733px;
+    max-width: 850px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 7px;
-    box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-    padding: 16px 19px 21px;
+    border-radius: 9px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    padding: 18px 20px 24px;
   }
 
-  h1 {
-    text-align: center;
-    font-size: 13px;
-    background: #111;
-    color: #fff;
-    padding: 8px 11px;
+  /* ============ CABECERA UNIFICADA ESTILO MEN ============ */
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #17212b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e5fa8;
+    background: #fff;
+    padding: 2px 7px;
     border-radius: 4px;
-    margin: 0 0 5px;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: #d9e1e7;
+    font-weight: 600;
+  }
+  .brand-author {
+    font-size: 11px;
+    color: #89949e;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-right h1 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #e8f0fa;
+    background: transparent;
+    padding: 0;
   }
 
   .subtitulo {
     text-align: center;
-    font-size: 9px;
+    font-size: 11px;
     color: #666;
-    margin: 0 0 12px;
+    margin: 0 0 16px;
   }
 
-  /* ============ BOTÓN BAYONETA ============ */
+  /* BOTÓN PEINE BAYONETAS */
   .btn-bayoneta-paralela {
     display: block;
     width: 100%;
@@ -57,52 +98,45 @@
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    padding: 10px 14px;
+    padding: 9px 14px;
     border-radius: 5px;
     margin: 0 0 14px;
     box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    transition: background 0.2s, transform 0.15s;
     cursor: pointer;
   }
   .btn-bayoneta-paralela:hover {
     background: #174a85;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(30, 95, 168, 0.45);
-  }
-  .btn-bayoneta-paralela:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(30, 95, 168, 0.35);
   }
 
   .layout {
     display: grid;
-    grid-template-columns: 253px 1fr;
-    gap: 13px;
+    grid-template-columns: 280px 1fr;
+    gap: 15px;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 820px) {
     .layout { grid-template-columns: 1fr; }
   }
 
   .panel {
     background: #f4f6f8;
     border: 1px solid var(--borde);
-    border-radius: 5px;
-    padding: 11px;
+    border-radius: 6px;
+    padding: 13px;
   }
-  .panel h2 {
-    font-size: 9px;
-    margin: 0 0 8px;
+  .panel h2, .resultado h2 {
+    font-size: 11px;
+    margin: 0 0 10px;
     color: #111;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .esquema {
-    margin-bottom: 9px;
+    margin-bottom: 10px;
     background: #e8f0fa;
     border-radius: 4px;
     padding: 7px;
-    min-height: 27px;
     text-align: center;
   }
   .esquema img {
@@ -113,52 +147,46 @@
     cursor: zoom-in;
     transition: transform 0.15s ease;
   }
-  .esquema img:hover {
-    transform: scale(1.03);
-  }
+  .esquema img:hover { transform: scale(1.03); }
 
   label {
     display: block;
-    font-size: 9px;
-    margin: 7px 0 3px;
+    font-size: 11px;
+    margin: 8px 0 4px;
     font-weight: 600;
     color: #444;
   }
 
   input, select {
     width: 100%;
-    padding: 6px 7px;
+    padding: 7px 8px;
     border: 1px solid #c7ccd1;
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 12px;
     background: #fff;
     color: #222;
-  }
-  input:focus, select:focus {
-    outline: none;
-    border-color: #4a90d9;
   }
 
   .fila {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 7px;
+    gap: 8px;
   }
 
   button {
     width: 100%;
-    padding: 7px;
-    margin-top: 9px;
+    padding: 8px;
+    margin-top: 10px;
     border: none;
     border-radius: 4px;
-    background: #111;
+    background: #17212b;
     color: #fff;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
   }
-  button:hover { background: #333; }
+  button:hover { background: #263442; }
 
   button.sec {
     background: #fff;
@@ -167,72 +195,59 @@
   }
   button.sec:hover { background: #f4f6f8; }
 
-  .aviso {
-    margin-top: 7px;
-    padding: 5px 7px;
+  button.print-btn {
+    background: #263442;
+    border: 1px solid #4a5c6e;
+    color: #fff;
+    padding: 6px 11px;
+    font-size: 11px;
     border-radius: 4px;
-    font-size: 9px;
+    margin-top: 0;
+    width: auto;
+  }
+
+  .aviso {
+    margin-top: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 11px;
     display: none;
   }
-  .aviso.error {
-    background: #fdecea;
-    color: var(--error);
-    display: block;
-  }
-  .aviso.ok {
-    background: #e7f5ec;
-    color: var(--ok);
-    display: block;
-  }
+  .aviso.error { background: #fdecea; color: var(--error); display: block; }
+  .aviso.ok { background: #e7f5ec; color: var(--ok); display: block; }
 
   .resultado {
     background: #fff;
     border: 1px solid var(--borde);
-    border-radius: 5px;
-    padding: 11px;
-    min-height: 133px;
-  }
-  .resultado h2 {
-    font-size: 9px;
-    margin: 0 0 8px;
-    color: #111;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    border-radius: 6px;
+    padding: 13px;
+    min-height: 140px;
   }
 
   .resumen {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin: 8px 0 5px;
-    font-size: 10px;
+    gap: 6px;
+    margin: 10px 0;
+    font-size: 12px;
     font-weight: 600;
   }
   .resumen .dato {
     background: #f4f6f8;
     border: 1px solid var(--borde);
-    padding: 7px 9px;
+    padding: 8px 10px;
     border-radius: 4px;
     color: #111;
   }
-  .resumen .titulo {
-    background: transparent;
-    color: #444;
-    font-weight: 700;
-    padding: 4px 0 1px;
-    border: none;
-  }
 
   .nota {
-    font-size: 8px;
+    font-size: 10px;
     color: #667085;
-    margin-top: 7px;
+    margin-top: 8px;
+    line-height: 1.4;
   }
 
-  /* Anular cualquier flex del body que ponga la cabecera al lado de la tarjeta */
-  body { display: block !important; }
-
-  /* ============ LIGHTBOX (ventana flotante) ============ */
+  /* LIGHTBOX */
   .lightbox {
     display: none;
     position: fixed;
@@ -243,20 +258,15 @@
     align-items: center;
     padding: 20px;
     cursor: zoom-out;
-    animation: fadeIn 0.2s ease;
   }
-  .lightbox.activo {
-    display: flex;
-  }
+  .lightbox.activo { display: flex; }
   .lightbox img {
     max-width: 95vw;
     max-height: 90vh;
     border-radius: 6px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
     background: #fff;
     padding: 10px;
     cursor: default;
-    animation: zoomIn 0.25s ease;
   }
   .lightbox .cerrar {
     position: absolute;
@@ -265,76 +275,70 @@
     color: #fff;
     font-size: 32px;
     font-weight: 700;
-    line-height: 1;
     cursor: pointer;
-    user-select: none;
-    transition: transform 0.15s ease;
-  }
-  .lightbox .cerrar:hover {
-    transform: scale(1.2);
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  /* BOTÓN VOLVER */
+  .btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    background-color: #e8edf1;
+    color: #344454;
+    border: 1px solid #cbd5dd;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
   }
-  @keyframes zoomIn {
-    from { transform: scale(0.85); opacity: 0; }
-    to   { transform: scale(1);    opacity: 1; }
+  .btn-volver:hover { background-color: #dce3e8; }
+
+  /* REGLAS IMPRESIÓN A4 */
+  @media print {
+    @page { size: A4 portrait; margin: 10mm; }
+    body { background: #fff; padding: 0; color: #000; }
+    .container { max-width: 100%; box-shadow: none; padding: 0; }
+    .header-top { background: #17212b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .brand-title { background: #fff !important; color: #1e5fa8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .btn-volver, .btn-bayoneta-paralela, button, .nota { display: none !important; }
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .panel, .resultado { break-inside: avoid; background: #fff !important; border: 1px solid #bbb !important; }
   }
-      /* ============================================================
-       ESTILO DEL BOTÓN VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* Separación con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
-
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
 </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
-  <h1>Calculadora de Bayoneta de Tubería</h1>
+  <a href="javascript:history.back()" class="btn-volver">⬅ Volver atrás</a>
+
+  <!-- BARRA DE CABECERA UNIFICADA -->
+  <div class="header-top">
+    <div class="header-left">
+      <span class="brand-title">MEN</span>
+      <span class="brand-sub">Montajes Industriales S. L.</span>
+      <span class="brand-author">Creado por: J.N.G</span>
+    </div>
+    <div class="header-right">
+      <h1>Calculadora de Bayoneta de Tubería</h1>
+
+    </div>
+  </div>
+
   <p class="subtitulo">Cálculo de tramo recto y ángulos de corte del codo — medidas en mm</p>
 
-  <!-- Botón único: Cálculo peine bayonetas misma dirección -->
   <a href="bayoneta_paralela.html" class="btn-bayoneta-paralela">🔧 Cálculo peine bayonetas</a>
 
   <div class="layout">
-
     <section class="panel">
       <h2>Datos de entrada</h2>
 
-      <!-- Imagen del esquema (clic para ampliar) -->
       <div class="esquema" id="esquemaEntrada">
         <img src="img/bayoneta.png" alt="Esquema de la bayoneta de tubería" id="imgBayoneta">
       </div>
 
-      <!-- Selector de unidad oculto: mantiene compatibilidad con bayoneta.js -->
       <select id="unidad" hidden>
         <option value="mm" selected>Milímetros (mm)</option>
       </select>
@@ -374,14 +378,12 @@
 
     <section class="resultado">
       <h2>Resultados</h2>
-      <!-- Sin imagen duplicada: solo lista de resultados -->
       <div id="resumenSalida"></div>
     </section>
-
   </div>
 </div>
 
-<!-- ============ LIGHTBOX ============ -->
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <span class="cerrar" id="cerrarLightbox">&times;</span>
   <img src="img/bayoneta.png" alt="Esquema de la bayoneta ampliado" id="imgLightbox">
@@ -390,95 +392,70 @@
 <script src="bayoneta.js"></script>
 
 <script>
-/* ============ LIGHTBOX (versión robusta con delegación) ============ */
 (function(){
   "use strict";
 
-  const lightbox       = document.getElementById('lightbox');
+  // Botón Imprimir
+  const btnImp = document.getElementById('imprimir');
+  if (btnImp) btnImp.addEventListener('click', () => window.print());
+
+  // Lightbox
+  const lightbox = document.getElementById('lightbox');
   const cerrarLightbox = document.getElementById('cerrarLightbox');
-  const imgLightbox    = document.getElementById('imgLightbox');
+  const imgLightbox = document.getElementById('imgLightbox');
 
-  if (!lightbox) return;
-
-  function abrirLightbox(srcImagen){
-    if (srcImagen) imgLightbox.src = srcImagen;
-    lightbox.classList.add('activo');
-    document.body.style.overflow = 'hidden';
-  }
-  function cerrarLightboxFn(){
-    lightbox.classList.remove('activo');
-    document.body.style.overflow = '';
-  }
-
-  // Delegación: cualquier clic sobre una imagen dentro de .esquema la amplía
-  document.addEventListener('click', function(e){
-    const img = e.target.closest('.esquema img');
-    if (img) {
-      e.preventDefault();
-      abrirLightbox(img.src);
+  if (lightbox) {
+    function abrirLightbox(srcImagen){
+      if (srcImagen) imgLightbox.src = srcImagen;
+      lightbox.classList.add('activo');
+      document.body.style.overflow = 'hidden';
     }
-  });
-
-  // Cerrar
-  cerrarLightbox.addEventListener('click', cerrarLightboxFn);
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) cerrarLightboxFn();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox.classList.contains('activo')) {
-      cerrarLightboxFn();
+    function cerrarLightboxFn(){
+      lightbox.classList.remove('activo');
+      document.body.style.overflow = '';
     }
-  });
-})();
 
-/* ============ OCULTAR FILAS NO DESEADAS EN RESULTADOS ============ */
-(function(){
-  "use strict";
+    document.addEventListener('click', function(e){
+      const img = e.target.closest('.esquema img');
+      if (img) {
+        e.preventDefault();
+        abrirLightbox(img.src);
+      }
+    });
 
-  const patronesAOcultar = [
-    /arco\s*—\s*línea\s*media/i,
-    /longitud\s*bruta\s*entre\s*codos/i
-  ];
+    if (cerrarLightbox) cerrarLightbox.addEventListener('click', cerrarLightboxFn);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) cerrarLightboxFn();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('activo')) cerrarLightboxFn();
+    });
+  }
 
+  // Filtrado de resultados
+  const patronesAOcultar = [/arco\s*—\s*línea\s*media/i, /longitud\s*bruta\s*entre\s*codos/i];
   function limpiarResumen(){
     const contenedor = document.getElementById('resumenSalida');
     if (!contenedor) return;
-
-    // Buscar todos los elementos que contengan los textos a ocultar
     const candidatos = contenedor.querySelectorAll('div, p, li, tr, span');
     candidatos.forEach(el => {
       const texto = (el.textContent || '').trim();
-      if (patronesAOcultar.some(p => p.test(texto))) {
-        if (texto.length < 120) {
-          el.style.display = 'none';
-        }
+      if (patronesAOcultar.some(p => p.test(texto)) && texto.length < 120) {
+        el.style.display = 'none';
       }
     });
   }
 
   const btnCalcular = document.getElementById('btnCalcular');
-  if (btnCalcular) {
-    btnCalcular.addEventListener('click', () => {
-      setTimeout(limpiarResumen, 50);
-    });
-  }
-
-  window.addEventListener('load', () => {
-    setTimeout(limpiarResumen, 100);
-  });
+  if (btnCalcular) btnCalcular.addEventListener('click', () => setTimeout(limpiarResumen, 50));
+  window.addEventListener('load', () => setTimeout(limpiarResumen, 100));
 
   const contenedor = document.getElementById('resumenSalida');
   if (contenedor && window.MutationObserver) {
-    const observer = new MutationObserver(() => {
-      setTimeout(limpiarResumen, 10);
-    });
+    const observer = new MutationObserver(() => setTimeout(limpiarResumen, 10));
     observer.observe(contenedor, { childList: true, subtree: true });
   }
 })();
 </script>
-
-<!-- Cabecera MEN generada por tus archivos, sin tocar nada de ellos -->
-<link rel="stylesheet" href="men-header.css">
-<script src="men-header.js" data-autor="Creado por: J.N.G"></script>
 </body>
 </html>

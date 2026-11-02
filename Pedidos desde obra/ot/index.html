@@ -3,85 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de OTs</title>
+    <title>Listado de OTs - MEN</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { margin: 0; padding: 10px; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 500px; margin: 0 auto; }
-        .logo-men { color: #2980b9; font-size: 12px; font-weight: bold; text-align: center; margin-bottom: 3px; letter-spacing: 1px; }
-        h1 { text-align: center; color: #2c3e50; margin-top: 0; margin-bottom: 10px; font-size: 12px; }
-        .btn { display: inline-block; padding: 6px 10px; border: none; border-radius: 3px; background-color: #3498db; color: white; text-decoration: none; font-size: 8px; cursor: pointer; width: 100%; text-align: center; margin-bottom: 10px; }
+        /* ============ ESTILOS BASE ============ */
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { margin: 0; padding: 16px 11px 40px; background-color: #eef0f2; color: #222; }
+
+        /* ============ CONTENEDOR PRINCIPAL √öNICO ============ */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 7px;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            padding: 16px 19px 21px;
+        }
+
+        /* ============ CABECERA UNIFICADA (LA √öNICA BARRA NEGRA) ============ */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #17212b;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-left {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .brand-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e5fa8;
+            background: #fff;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .brand-sub {
+            font-size: 13px;
+            color: #d9e1e7;
+            font-weight: 600;
+        }
+        .brand-author {
+            font-size: 11px;
+            color: #89949e;
+        }
+        .header-right h1 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e8f0fa;
+            background: transparent;
+            padding: 0;
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        /* ============ RESTO DE ESTILOS ============ */
+        h2 { text-align: center; color: #2c3e50; margin-top: 0; margin-bottom: 10px; font-size: 18px; }
+
+        .btn {
+            display: inline-block; padding: 8px 12px; border: none; border-radius: 4px;
+            background-color: #3498db; color: white; text-decoration: none;
+            font-size: 11px; cursor: pointer; width: 100%; text-align: center;
+            margin-bottom: 12px;
+        }
         .btn:hover { background-color: #2980b9; }
-        .btn-danger { background-color: #e74c3c; width: auto; padding: 4px 7px; font-size: 7px; border: none; border-radius: 2px; color: white; cursor: pointer; }
+
+        .btn-danger {
+            background-color: #e74c3c; width: auto; padding: 5px 9px;
+            font-size: 10px; border: none; border-radius: 3px; color: white; cursor: pointer;
+        }
         .btn-danger:hover { background-color: #c0392b; }
-        .tabla-contenedor { overflow-x: auto; background: white; padding: 5px; border-radius: 4px; box-shadow: 0 2px 3px rgba(0,0,0,0.1); }
+
+        .tabla-contenedor {
+            overflow-x: auto; background: white; padding: 8px;
+            border-radius: 5px; box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th, td { padding: 6px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; font-size: 8px; }
-        th { background-color: #2c3e50; color: white; font-size: 7px; }
+        th, td {
+            padding: 8px; text-align: left; border-bottom: 1px solid #e2e8f0;
+            vertical-align: top; font-size: 11px;
+        }
+        th { background-color: #2c3e50; color: white; font-size: 10px; }
         tr:hover { background-color: #f5f5f5; }
+
         th:nth-child(1), td:nth-child(1) { width: 15%; }
         th:nth-child(2), td:nth-child(2) { width: 15%; }
         th:nth-child(3), td:nth-child(3) { width: 40%; }
         th:nth-child(4), td:nth-child(4) { width: 18%; }
         th:nth-child(5), td:nth-child(5) { width: 12%; text-align: center; }
-        .ot-roja { color: #e74c3c; font-weight: bold; font-size: 8px; word-break: break-word; }
+
+        .ot-roja { color: #e74c3c; font-weight: bold; font-size: 11px; word-break: break-word; }
         .texto-ajustable { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.4; }
-        @media (max-width: 600px) {
-            body { padding: 5px; }
-            th, td { padding: 4px 2px; font-size: 7px; }
-            .btn-danger { padding: 3px 4px; font-size: 6px; }
-            .ot-roja { font-size: 7px; }
-            table { min-width: 275px; }
+
+        /* ============ BOT√ìN VOLVER ============ */
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background-color: #ecf0f1;
+            color: #34495e;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: Arial, sans-serif;
         }
-      /* ============================================================
-       ESTILO DEL BOT”N VOLVER (Para calculadoras)
-       ============================================================ */
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 20px; /* SeparaciÛn con el contenido de abajo */
-        padding: 8px 16px;
-        background-color: #ecf0f1;
-        color: #34495e;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: Arial, sans-serif;
-    }
+        .btn-volver:hover {
+            background-color: #e0e6ed;
+            border-color: #95a5a6;
+            color: #2c3e50;
+        }
+        .btn-volver:active {
+            transform: scale(0.98);
+        }
 
-    .btn-volver:hover {
-        background-color: #e0e6ed;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    .btn-volver:active {
-        transform: scale(0.98);
-    }
-</style>
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .container { padding: 12px; }
+            th, td { padding: 5px 4px; font-size: 9px; }
+            .btn-danger { padding: 4px 6px; font-size: 8px; }
+            .ot-roja { font-size: 9px; }
+            table { min-width: 300px; }
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-<a href="javascript:history.back()" class="btn-volver">? Volver atr·s</a>
-    <div class="logo-men">MEN</div>
-    <h1>Listado de &Oacute;rdenes de Trabajo</h1>
+    
+    <!-- BARRA OSCURA UNIFICADA -->
+    <div class="header-top">
+        <div class="header-left">
+            <span class="brand-title">MEN</span>
+            <span class="brand-sub">Montajes Industriales S. L.</span>
+            <span class="brand-author">Creado por: J.N.G</span>
+        </div>
+        <div class="header-right">
+            <h1>Listado de<br>√ìrdenes de Trabajo</h1>
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <a href="javascript:history.back()" class="btn-volver">? Volver atr√°s</a>
+
     <button class="btn" onclick="irAFormulario()">Nueva OT (solo administrador)</button>
+
     <div class="tabla-contenedor">
         <table>
             <thead>
                 <tr>
                     <th>Fecha</th>
                     <th>OT</th>
-                    <th>Descripci&oacute;n</th>
+                    <th>Descripci√≥n</th>
                     <th>Cliente</th>
-                    <th style="text-align: center;">Acci&oacute;n</th>
+                    <th style="text-align: center;">Acci√≥n</th>
                 </tr>
             </thead>
             <tbody id="listaOTs">
@@ -100,11 +192,11 @@
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     function irAFormulario() {
-        const password = prompt("Introduce la contraseÒa para ingresar datos:");
+        const password = prompt("Introduce la contrase√±a para ingresar datos:");
         if (password === PASS) {
             window.location.href = "formulario.html";
         } else if (password !== null) {
-            alert("ContraseÒa incorrecta.");
+            alert("Contrase√±a incorrecta.");
         }
     }
 
@@ -149,7 +241,7 @@
     }
 
     async function eliminarLinea(id) {
-        const password = prompt("Introduce la contraseÒa para borrar este registro:");
+        const password = prompt("Introduce la contrase√±a para borrar este registro:");
         if (password === PASS) {
             const { error } = await supabaseClient
                 .from('ots')
@@ -163,7 +255,7 @@
                 cargarOTs();
             }
         } else if (password !== null) {
-            alert("ContraseÒa incorrecta. No se borrÛ el registro.");
+            alert("Contrase√±a incorrecta. No se borr√≥ el registro.");
         }
     }
 
