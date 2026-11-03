@@ -7,24 +7,50 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
-    body{background:#f4f6f9;color:#333;padding:15px;padding-bottom:80px}
+    body{background:#f4f6f9;color:#333;padding:15px}
     .header-logo{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;padding:5px 10px}
     .logo-men{font-size:1.5rem;font-weight:800;color:#2563eb;letter-spacing:1px}
     h1{font-size:1.2rem;color:#1e293b;text-align:right}
     .container{max-width:100%;margin:0 auto;background:#fff;padding:15px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.05)}
-    .actions-top{display:flex;gap:10px;margin-bottom:15px}
-    button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s}
-    .btn-back{background:#64748b;color:#fff;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:8px;font-size:.95rem;font-weight:600}
-    .btn-clear{background:#ef4444;color:#fff;font-size:.85rem;padding:6px 12px}
+    
+    /* Botones superiores */
+    .actions-top{display:flex;gap:10px;margin-bottom:15px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .actions-left{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    
+    button,.btn-back{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 14px;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s;text-decoration:none;white-space:nowrap}
+    .btn-back{background:#64748b;color:#fff}
+    .btn-excel{background:#16a34a;color:#fff;width:max-content}
+    .btn-print{background:#0284c7;color:#fff;width:max-content}
+    .btn-clear{background:#ef4444;color:#fff;font-size:.85rem;padding:8px 12px}
+
     .table-wrapper{width:100%;overflow-x:auto;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:20px;-webkit-overflow-scrolling:touch}
     table{width:100%;border-collapse:collapse;min-width:750px}
     th{background:#f8fafc;color:#64748b;font-size:.85rem;text-transform:uppercase;padding:10px;text-align:left;border-bottom:2px solid #e2e8f0}
     td{padding:10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;font-size:.95rem}
-    .col-fecha{width:120px}.col-operario{width:160px}.col-ot{width:100px}.col-desc{width:250px}.col-horas{width:80px}.col-accion{width:50px;text-align:center}
+    .col-fecha{width:120px}.col-operario{width:160px}.col-ot{width:100px}.col-desc{width:auto}.col-horas{width:90px}.col-accion{width:50px;text-align:center}
     .btn-delete{background:#fee2e2;color:#ef4444;padding:6px;border-radius:6px;width:32px;height:32px;border:none;cursor:pointer}
-    .footer-actions{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 15px;box-shadow:0 -4px 10px rgba(0,0,0,.1);display:flex;gap:10px;z-index:100}
-    .btn-excel{background:#16a34a;color:#fff;flex:1;font-size:1.1rem}.no-data{text-align:center;color:#94a3b8;padding:30px;font-style:italic}
-    @media(max-width:600px){body{padding:10px;padding-bottom:85px}.container{padding:10px}.header-logo{padding:5px}.logo-men{font-size:1.4rem}h1{font-size:1.05rem}.actions-top{flex-direction:column;align-items:stretch!important}.btn-back,.btn-clear{width:100%;min-height:44px}.footer-actions{padding:10px}.btn-excel{min-height:48px;font-size:1rem}}
+    .no-data{text-align:center;color:#94a3b8;padding:30px;font-style:italic}
+
+    /* Reglas específicas para Impresión / Guardar PDF */
+    @media print {
+      body { background: #fff; padding: 0; color: #000; }
+      .container { box-shadow: none; padding: 0; border-radius: 0; }
+      .actions-top, .col-accion, .btn-delete { display: none !important; }
+      .table-wrapper { border: none; overflow: visible; }
+      table { width: 100% !important; min-width: 0 !important; border-collapse: collapse; font-size: 8.5pt; }
+      th, td { padding: 5px 8px !important; border: 1px solid #cbd5e1 !important; word-wrap: break-word; white-space: normal !important; }
+      th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { margin: 1cm; size: auto; }
+    }
+
+    @media(max-width:600px){
+      body{padding:10px}
+      .container{padding:10px}
+      .header-logo{padding:5px}
+      .actions-top{flex-direction:column;align-items:stretch}
+      .actions-left{flex-direction:column;width:100%}
+      .btn-back, .btn-excel, .btn-print, .btn-clear{width:100%}
+    }
   </style>
 </head>
 <body>
@@ -35,8 +61,12 @@
     <h1>Lista</h1>
   </div>
   
-  <div class="actions-top" style="justify-content:space-between;align-items:center;">
-    <a href="index.html" class="btn-back">⬅️ Volver a Introducir</a>
+  <div class="actions-top">
+    <div class="actions-left">
+      <a href="index.html" class="btn-back">⬅️ Volver a Introducir</a>
+      <button class="btn-excel" onclick="exportarExcel()">🍏 Exportar Excel</button>
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
     <button class="btn-clear" onclick="borrarTodoElHistorial()">⚠️ Vaciar Todo</button>
   </div>
   
@@ -58,13 +88,9 @@
   </div>
 </div>
 
-<div class="footer-actions">
-  <button class="btn-excel" onclick="exportarExcel()">🍏 Exportar a Excel (.xls)</button>
-</div>
-
 <script>
   const SUPABASE_URL = "https://qjyyvobhzybugiqlmdyp.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6MjEwMzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqeXl2b2JoenlidWdpcWxtZHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTg4NzksImV4cCI6IzE0MzkzNDg3OX0.Q4o304kJyQZmY3kkk-WwawpOMMj3f8a7Vg54iO9FEg0";
 
   let supabaseClient = null;
   let listaTrabajos = [];
@@ -103,7 +129,7 @@
           <td><span style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">${item.ot || ''}</span></td>
           <td>${item.desc || ''}</td>
           <td><strong>${item.horas || '0'} h</strong></td>
-          <td><button class="btn-delete" onclick="eliminarFilaUnica(${item.id})">🗑️</button></td>
+          <td class="col-accion"><button class="btn-delete" onclick="eliminarFilaUnica(${item.id})">🗑️</button></td>
         `;
         tbody.appendChild(tr);
       });
