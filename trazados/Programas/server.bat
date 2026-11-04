@@ -1,12 +1,6 @@
 @echo off
 cd /d "%~dp0"
-
+taskkill /f /im python.exe >nul 2>&1
 echo Iniciando servidor local en http://localhost:8000 ...
-start "" /min cmd /c "python -m http.server 8000"
-
-timeout /t 2 /nobreak >nul
-
-start "" "http://localhost:8000/pid.html"
-
-echo Servidor iniciado. Cierra la ventana minimizada para detenerlo.
+python -m http.server 8000
 pause

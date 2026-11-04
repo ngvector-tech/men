@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión Inteligente de Operarios y Obras</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --panel2:#334155; --text:#e2e8f0;
+    --muted:#94a3b8; --accent:#38bdf8; --danger:#ef4444; --ok:#22c55e;
+    --font-base: 11px; --font-sm: 9px; --font-lg: 12px;
+    --padding-sm: 3px 6px; --padding-md: 5px 8px; --padding-lg: 8px 12px;
+    --gap-sm: 4px; --gap-md: 8px; --border-radius: 5px;
+  }
+  *{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif}
+  body{margin:0;background:linear-gradient(135deg,#0f172a,#1e293b);color:var(--text);min-height:100vh; font-size: var(--font-base);}
+  
+  /* BANDA SUPERIOR (HEADER) */
+  .app-header {
+    background: #0b1220; border-bottom: 1px solid #1e293b;
+    padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+  }
+  .company-info { display: flex; align-items: center; gap: 12px; }
+  .logo-badge {
+    background: #fff; color: #0b1220; font-weight: 900; font-size: 16px;
+    padding: 4px 10px; border-radius: 6px; letter-spacing: 1px;
+  }
+  .company-text { display: flex; flex-direction: column; }
+  .company-name { font-size: 14px; font-weight: 700; color: #e2e8f0; }
+  .company-author { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .header-actions button { padding: 6px 12px; font-size: 11px; }
+  
+  /* RECORDATORIO */
+  .warning-banner {
+    background: #f59e0b; color: #0b1220; text-align: center; padding: 4px; 
+    font-weight: bold; font-size: 11px; display: flex; justify-content: center; align-items: center; gap: 10px;
+  }
+  .warning-banner button { background: #0b1220; color: #fff; padding: 2px 8px; font-size: 10px; margin: 0;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--gap-md);padding:12px}
+  .card{background:var(--panel);border:1px solid #334155;border-radius:var(--border-radius);padding:10px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+  .card h2{margin:0 0 8px;font-size:var(--font-lg);color:var(--accent)}
+  
+  label{display:block;font-size:var(--font-sm);color:var(--muted);margin: 4px 0 2px}
+  input,select{width:100%;padding: 4px 6px; border-radius:var(--border-radius);border:1px solid #475569;background:#0f172a;color:var(--text);font-size:var(--font-base)}
+  input:focus,select:focus{outline:1px solid var(--accent);border-color:transparent}
+  
+  /* AMPLIAR ZONA DE CLIC DE LOS CALENDARIOS */
+  input[type="date"] { padding: 4px 8px; position: relative; cursor: pointer; }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%; margin: 0; padding: 0;
+    background: transparent; color: transparent; cursor: pointer;
+  }
+  
+  button{padding: var(--padding-md); border-radius:var(--border-radius);border:0;background:var(--accent);color:#0b1220;font-weight:700;cursor:pointer;font-size:var(--font-base); transition:all 0.1s;}
+  button:hover{filter:brightness(1.1)}
+  button.danger{background:var(--danger);color:#fff}
+  button.ghost{background:transparent;border:1px solid #475569;color:var(--text);font-weight:500}
+  
+  .row{display:flex;gap:var(--gap-sm);align-items:end;flex-wrap:wrap}
+  .row > div{flex:1;min-width:100px}
+  
+  .msg{padding:6px;border-radius:var(--border-radius);font-size:var(--font-sm);margin-top:6px;display:none}
+  .msg.err{background:#7f1d1d;color:#fecaca;display:block}
+  .msg.ok{background:#14532d;color:#bbf7d0;display:block}
+  
+  /* Chart */
+  #chartWrap{overflow-x:auto;padding:6px 0}
+  #chart{min-width:100%;position:relative}
+  .day-row{display:flex;align-items:center;gap:var(--gap-sm);padding: 3px 0; border-bottom:1px dashed #334155}
+  .day-label{width:85px;flex:none;font-size:var(--font-base);color:var(--muted);font-variant-numeric:tabular-nums}
+  .ops{display:flex;flex-wrap:wrap;gap:var(--gap-sm);flex:1}
+  
+  .opbtn{
+    padding: var(--padding-sm); border-radius:var(--border-radius);font-size:var(--font-sm);font-weight:700;color:#fff;
+    border:0;cursor:pointer;transition:transform .1s; display:flex; gap:4px; align-items:center;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+  }
+  .opbtn:hover{transform:scale(1.02)}
+  .opbtn.sel{outline:2px solid #fff;outline-offset:1px}
+  .opbtn .pill{background:rgba(0,0,0,0.4); padding: 1px 4px; border-radius:3px; font-size:8px; font-weight:normal; color:#fff;}
+  
+  .legend{display:flex;flex-wrap:wrap;gap:var(--gap-md);margin-bottom:6px; font-size:var(--font-sm); color:var(--muted)}
+  .legend-group{display:flex; gap:var(--gap-sm); align-items:center; flex-wrap:wrap;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  
+  .obra-tag{background:#0f172a;border:1px solid #475569;padding: 1px 5px; border-radius:4px;font-size:var(--font-sm);color:#cbd5e1}
+  .filter{display:flex;gap:var(--gap-sm);margin-bottom:6px;flex-wrap:wrap; align-items:center;}
+  .filter input{max-width:130px}
+  
+  /* Panel edición */
+  .edit-panel{background:#0b1220;border:1px solid var(--accent);border-radius:var(--border-radius);padding:10px;margin-top:6px;display:none;box-shadow:0 2px 8px rgba(56,189,248,0.1)}
+  .edit-panel h3{margin:0 0 6px;font-size:var(--font-base);color:var(--accent)}
+  .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-sm);margin-bottom:6px}
+  .edit-actions{display:flex;gap:var(--gap-sm);justify-content:flex-end}
+  .info-box{background:#1e293b; padding:6px; border-radius:var(--border-radius); font-size:var(--font-sm); margin-bottom:6px; border-left:2px solid var(--accent); line-height:1.3;}
+  .quick-actions { display:flex; gap:var(--gap-sm); margin-bottom:6px; }
+
+  /* MODALES */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(2px);
+    display: none; justify-content: center; align-items: center; z-index: 1000;
+  }
+  .modal-content {
+    background: var(--panel); border: 1px solid var(--accent); border-radius: var(--border-radius);
+    padding: 16px; width: 90%; max-width: 400px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-content h3 { margin: 0 0 10px; color: var(--accent); font-size: var(--font-lg); }
+  .modal-content p { margin: 0 0 10px; font-size: var(--font-base); line-height: 1.3; color: var(--text); }
+  .modal-options { display: flex; flex-direction: column; gap: 6px; }
+
+  /* TABLA PARA EL MODAL DE FILTRO */
+  .modal-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: var(--font-base); }
+  .modal-table th { background: #0f172a; padding: 4px 6px; text-align: left; border-bottom: 2px solid var(--accent); color: var(--accent); }
+  .modal-table td { padding: 4px 6px; border-bottom: 1px solid #334155; }
+  .modal-table tr:hover { background: rgba(255,255,255,0.05); }
+  .badge-op { padding: 1px 6px; border-radius: 3px; font-weight: bold; color: #0b1220; display: inline-block;}
+
+  /* ESTILOS DE IMPRESIÓN DINÁMICA (MODAL) */
+  .print-only { display: none; }
+  
+  @media print {
+    body { background: #fff !important; color: #000 !important; font-size: 10pt; margin: 0; padding: 0; }
+    .app-header, .warning-banner, .grid, .card, .modal-overlay, #chartWrap { display: none !important; }
+    .print-only { display: block !important; width: 100%; padding: 10px;}
+    
+    .print-header { text-align: center; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 8px; }
+    .print-header h1 { margin: 0; font-size: 14pt; color: #000; }
+    .print-header p { margin: 3px 0 0; font-size: 9pt; }
+    
+    table.print-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    table.print-table th, table.print-table td { border: 1px solid #000 !important; padding: 4px 6px; text-align: left; }
+    table.print-table th { background-color: #e0e0e0 !important; font-weight: bold; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    table.print-table tr { page-break-inside: avoid; }
+    
+    tr.dia-separador td { background-color: #f8f9fa !important; font-weight: bold; border-top: 2px solid #000 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact;}
+  }
+</style>
+</head>
+<body>
+
+<!-- BANDA SUPERIOR CON LOGO Y ACCIONES -->
+<div class="app-header">
+  <div class="company-info">
+    <div class="logo-badge">MEN</div>
+    <div class="company-text">
+      <div class="company-name">Montajes Industriales S. L.</div>
+      <div class="company-author">Creado por: J.N.G</div>
+    </div>
+  </div>
+  
+  <div class="header-actions">
+    <button onclick="abrirModalFiltroObra()" style="background:#c084fc; color:#0b1220;">🔍 Filtrar Obra</button>
+    <button onclick="abrirModalFiltroOperario()" style="background:#f472b6; color:#0b1220;">👷 Filtrar Operario</button>
+    <button onclick="abrirModalImpresion()" style="background:var(--ok); color:#0b1220;">🖨️ Imprimir</button>
+    <button onclick="guardarLocalmente()" style="background:#38bdf8; color:#0b1220;">💾 Guardar</button>
+    <button onclick="document.getElementById('fileInput').click()" style="background:#fbbf24; color:#0b1220;">📂 Abrir</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="abrirLocalmente(event)">
+    <button onclick="cerrarApp()" class="danger">❌ Cerrar</button>
+  </div>
+</div>
+
+<!-- RECORDATORIO DE GUARDADO -->
+<div class="warning-banner">
+  <span>⚠️ Recuerda guardar tu planing en un archivo para no perder los datos.</span>
+</div>
+
+<div class="grid">
+  <!-- GESTIÓN DE OPERARIOS -->
+  <div class="card">
+    <h2>➕ Gestión de Operarios</h2>
+    <label>Seleccionar o añadir operario</label>
+    <div style="display:flex; gap:4px;">
+      <select id="selAddOperario" onchange="toggleNewOperario()" style="flex:1;">
+        <!-- Se rellena dinámicamente -->
+      </select>
+      <button class="danger" onclick="delOperarioSel()" style="padding: 4px 8px;" title="Eliminar operario seleccionado">🗑️</button>
+    </div>
+    
+    <div id="divNewOperario" style="display:none; margin-top:6px;">
+      <input id="opName" placeholder="Nombre del nuevo operario...">
+      <div class="row" style="margin-top:6px">
+        <div><button onclick="addOperario()" style="width:100%">Crear operario</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GESTIÓN DE OBRAS -->
+  <div class="card">
+    <h2>🏢 Gestión de Obras</h2>
+    <label>Seleccionar o añadir obra</label>
+    <div style="display:flex; gap:4px;">
+      <select id="selAddObra" onchange="toggleNewObra()" style="flex:1;">
+        <!-- Se rellena dinámicamente -->
+      </select>
+      <button class="danger" onclick="delObraSel()" style="padding: 4px 8px;" title="Eliminar obra seleccionada">🗑️</button>
+    </div>
+    
+    <div id="divNewObra" style="display:none; margin-top:6px;">
+      <input id="obraName" placeholder="Nombre de la nueva obra...">
+      <div class="row" style="margin-top:6px">
+        <div><button onclick="addObra()" style="width:100%">Crear obra</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASIGNAR OPERARIO A OBRA -->
+  <div class="card">
+    <h2>🔗 Asignar Operario a Obra</h2>
+    <label>Operario</label>
+    <select id="selOperario"></select>
+    <label>Obra</label>
+    <select id="selObra"></select>
+    <div class="row" style="margin-top:6px">
+      <div><label>Desde</label><input type="date" id="fIni"></div>
+      <div><label>Hasta</label><input type="date" id="fFin"></div>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <div><button onclick="asignar()">Asignar periodo</button></div>
+    </div>
+    <div class="msg" id="msgAsig"></div>
+  </div>
+</div>
+
+<div class="card" style="margin:0 12px 12px">
+  <h2>📊 Timeline por Fecha</h2>
+  <div class="filter">
+    <input type="date" id="filterDate" onchange="renderChart()">
+    <button class="btn-ver-todo ghost" onclick="document.getElementById('filterDate').value='';renderChart()">Ver todo</button>
+  </div>
+  
+  <div class="legend">
+    <div class="legend-group" id="legendOps"><b>Operarios:</b> </div>
+    <div class="legend-group" id="legendObras"><b>Obras:</b> </div>
+  </div>
+
+  <div id="chartWrap"><div id="chart"></div></div>
+  
+  <div class="edit-panel" id="editPanel">
+    <h3>✏️ Editar Asignación</h3>
+    <div class="info-box" id="editInfoBox"></div>
+    
+    <div class="quick-actions" id="quickActions">
+      <button onclick="moverSoloDia()" style="background:var(--ok); color:#0b1220; width:100%">📅 Mover SOLO el día seleccionado</button>
+    </div>
+
+    <div class="edit-grid">
+      <div>
+        <label>Operario</label>
+        <select id="editOperario"></select>
+      </div>
+      <div>
+        <label>Obra</label>
+        <select id="editObra"></select>
+      </div>
+      <div>
+        <label>Desde</label>
+        <input type="date" id="editIni">
+      </div>
+      <div>
+        <label>Hasta</label>
+        <input type="date" id="editFin">
+      </div>
+    </div>
+    <div class="edit-actions">
+      <button class="ghost" onclick="cerrarEdicion()">Cancelar</button>
+      <button class="danger" onclick="borrarAsignacionDesdePanel()">Eliminar</button>
+      <button onclick="guardarEdicion()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REASIGNACIÓN -->
+<div class="modal-overlay" id="reassignModal">
+  <div class="modal-content">
+    <h3>⚠️ Cambio de Operario</h3>
+    <p id="modalText"></p>
+    
+    <div class="edit-grid" style="margin-bottom: 10px;">
+      <div>
+        <label>Reasignar a Obra:</label>
+        <select id="modalObra"></select>
+      </div>
+      <div style="display:flex; align-items:flex-end;">
+        <label style="display:flex; align-items:center; gap:4px; cursor:pointer; margin:0; height:26px;">
+          <input type="checkbox" id="modalSoloDia" style="width:auto; margin:0;"> Solo este día
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-options">
+      <button onclick="confirmarReasignacion('obra')" style="background:var(--accent);">Reasignar Operario</button>
+      <button onclick="confirmarReasignacion('libre')" style="background:#fff; color:#000;">❌ Día Libre / Baja</button>
+      <button class="ghost" onclick="confirmarReasignacion('eliminar')">Eliminar</button>
+      <button class="ghost" onclick="confirmarReasignacion('mantener')">Ignorar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL IMPRESIÓN -->
+<div class="modal-overlay" id="printModal">
+  <div class="modal-content">
+    <h3>🖨️ Reporte de Planing</h3>
+    <p>Selecciona el periodo.</p>
+    
+    <div class="edit-grid" style="margin-bottom: 10px;">
+      <div>
+        <label>Desde</label>
+        <input type="date" id="printIni">
+      </div>
+      <div>
+        <label>Hasta</label>
+        <input type="date" id="printFin">
+      </div>
+    </div>
+
+    <div class="modal-options">
+      <button onclick="generarImpresion()" style="background:var(--ok); color:#0b1220;">Generar e Imprimir</button>
+      <button class="ghost" onclick="document.getElementById('printModal').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FILTRO POR OBRA -->
+<div class="modal-overlay" id="filtroObraModal">
+  <div class="modal-content" style="max-width: 500px;">
+    <h3>🔍 Filtrar por Obra</h3>
+    
+    <div class="edit-grid" style="margin-bottom: 10px;">
+      <div style="grid-column: span 2;">
+        <label>Obra</label>
+        <select id="filtroObraSelect"></select>
+      </div>
+      <div>
+        <label>Desde</label>
+        <input type="date" id="filtroObraIni">
+      </div>
+      <div>
+        <label>Hasta</label>
+        <input type="date" id="filtroObraFin">
+      </div>
+    </div>
+
+    <div class="modal-options" style="flex-direction: row; justify-content: flex-end; margin-bottom: 10px;">
+      <button onclick="ejecutarFiltroObra()" style="background:var(--accent);">Filtrar</button>
+      <button class="ghost" onclick="document.getElementById('filtroObraModal').style.display='none'">Cerrar</button>
+    </div>
+
+    <div id="filtroObraResultados" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin: 6px 0 4px;">
+        <h4 style="color:var(--accent); font-size:var(--font-base); margin:0;" id="filtroObraTitulo"></h4>
+        <button onclick="imprimirFiltroActual('obra')" style="background:var(--ok); padding:3px 6px; font-size:var(--font-sm);">🖨️ Imprimir</button>
+      </div>
+      <div style="max-height: 200px; overflow-y: auto;">
+        <table class="modal-table">
+          <thead>
+            <tr><th>Fecha</th><th>Operario(s)</th></tr>
+          </thead>
+          <tbody id="filtroObraTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FILTRO POR OPERARIO -->
+<div class="modal-overlay" id="filtroOpModal">
+  <div class="modal-content" style="max-width: 500px;">
+    <h3>👷 Filtrar por Operario</h3>
+    
+    <div class="edit-grid" style="margin-bottom: 10px;">
+      <div style="grid-column: span 2;">
+        <label>Operario</label>
+        <select id="filtroOpSelect"></select>
+      </div>
+      <div>
+        <label>Desde</label>
+        <input type="date" id="filtroOpIni">
+      </div>
+      <div>
+        <label>Hasta</label>
+        <input type="date" id="filtroOpFin">
+      </div>
+    </div>
+
+    <div class="modal-options" style="flex-direction: row; justify-content: flex-end; margin-bottom: 10px;">
+      <button onclick="ejecutarFiltroOperario()" style="background:var(--accent);">Filtrar</button>
+      <button class="ghost" onclick="document.getElementById('filtroOpModal').style.display='none'">Cerrar</button>
+    </div>
+
+    <div id="filtroOpResultados" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin: 6px 0 4px;">
+        <h4 style="color:var(--accent); font-size:var(--font-base); margin:0;" id="filtroOpTitulo"></h4>
+        <button onclick="imprimirFiltroActual('operario')" style="background:var(--ok); padding:3px 6px; font-size:var(--font-sm);">🖨️ Imprimir</button>
+      </div>
+      <div style="max-height: 200px; overflow-y: auto;">
+        <table class="modal-table">
+          <thead>
+            <tr><th>Fecha</th><th>Obra Asignada</th></tr>
+          </thead>
+          <tbody id="filtroOpTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ÁREA DE IMPRESIÓN DINÁMICA -->
+<div id="printArea" class="print-only">
+  <div class="print-header">
+    <h1 id="printTitle">Reporte de Planing</h1>
+    <p id="printPeriodo"></p>
+  </div>
+  <table class="print-table">
+    <thead id="printThead"></thead>
+    <tbody id="printTbody"></tbody>
+  </table>
+</div>
+
+<script>
+const state = { operarios: [], obras: [], asignaciones: [] };
+const PALETA = ['#38bdf8','#f472b6','#22c55e','#f59e0b','#a78bfa','#f87171','#2dd4bf','#eab308','#fb7185','#84cc16','#06b6d4','#c084fc'];
+let colorIdx = 0;
+const uid = () => Math.random().toString(36).slice(2,9);
+
+let asignacionEditando = null; 
+let diaClicadoEdicion = null;
+let pendingReassign = null; 
+let filtroActual = null; 
+
+const toDate = s => { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); };
+const toStr = d => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+};
+const addDays = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const daysBetween = (a,b) => Math.round((toDate(b)-toDate(a))/86400000);
+
+function cadaDia(ini,fin){
+  const out=[]; let d=toDate(ini), f=toDate(fin);
+  while(d<=f){ out.push(toStr(d)); d=addDays(d,1); }
+  return out;
+}
+
+// AQUÍ ESTÁ LA MAGIA PARA VACACIONES, BAJA Y DÍA LIBRE
+function esEspecial(nombreObra) {
+  const n = nombreObra.toLowerCase();
+  return n.includes('dia libre') || n.includes('día libre') || n.includes('vacacion') || n.includes('baja');
+}
+
+function toggleNewOperario() {
+  const val = document.getElementById('selAddOperario').value;
+  const div = document.getElementById('divNewOperario');
+  if (val === 'new') {
+    div.style.display = 'block';
+    document.getElementById('opName').focus();
+  } else {
+    div.style.display = 'none';
+    document.getElementById('opName').value = '';
+  }
+}
+
+function toggleNewObra() {
+  const val = document.getElementById('selAddObra').value;
+  const div = document.getElementById('divNewObra');
+  if (val === 'new') {
+    div.style.display = 'block';
+    document.getElementById('obraName').focus();
+  } else {
+    div.style.display = 'none';
+    document.getElementById('obraName').value = '';
+  }
+}
+
+/* ============ CERRAR APP ============ */
+function cerrarApp() {
+  if (state.asignaciones.length > 0) {
+    if (confirm("⚠️ ¿Seguro que quieres cerrar?\n\nSi no has guardado el planing (con el botón azul), perderás los últimos cambios.")) {
+      window.close();
+      // Si el navegador bloquea el cierre, avisamos
+      setTimeout(() => {
+        document.body.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#0f172a; color:white; font-family:sans-serif; text-align:center; padding:20px;"><div><h2>✅ Aplicación cerrada de forma segura</h2><p>Ya puedes cerrar esta pestaña.</p></div></div>';
+      }, 500);
+    }
+  } else {
+    window.close();
+    setTimeout(() => {
+      document.body.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#0f172a; color:white; font-family:sans-serif; text-align:center; padding:20px;"><div><h2>✅ Aplicación cerrada</h2><p>Ya puedes cerrar esta pestaña.</p></div></div>';
+    }, 500);
+  }
+}
+
+/* ============ GUARDAR Y ABRIR ============ */
+function guardarLocalmente() {
+  localStorage.setItem('planing_data', JSON.stringify(state));
+  
+  const dataStr = JSON.stringify(state, null, 2);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  const fecha = new Date().toISOString().slice(0,10);
+  a.download = `Planing_Operarios_${fecha}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function abrirLocalmente(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      if (!data.operarios || !data.obras || !data.asignaciones) {
+        throw new Error("El archivo no tiene el formato correcto.");
+      }
+
+      state.operarios = data.operarios;
+      state.obras = data.obras;
+      state.asignaciones = data.asignaciones;
+      
+      colorIdx = state.operarios.length + state.obras.length;
+      localStorage.setItem('planing_data', JSON.stringify(state));
+
+      renderListas();
+      cerrarEdicion();
+      
+      alert('✅ Planing cargado correctamente.');
+    } catch (err) {
+      alert('❌ Error al abrir el archivo: ' + err.message);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function cargarAutoguardado() {
+  const saved = localStorage.getItem('planing_data');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (data.operarios && data.obras && data.asignaciones) {
+        state.operarios = data.operarios;
+        state.obras = data.obras;
+        state.asignaciones = data.asignaciones;
+        colorIdx = state.operarios.length + state.obras.length;
+        return true;
+      }
+    } catch(e) { console.error("Fallo al cargar autoguardado", e); }
+  }
+  return false;
+}
+
+/* ============ RENDERIZADO CON ORDEN ALFABÉTICO ============ */
+function renderListas(){
+  localStorage.setItem('planing_data', JSON.stringify(state));
+
+  // ORDENAR ALFABÉTICAMENTE
+  const opsSorted = [...state.operarios].sort((a,b) => a.nombre.localeCompare(b.nombre));
+  const obrasSorted = [...state.obras].sort((a,b) => a.nombre.localeCompare(b.nombre));
+
+  // SELECTS DE AÑADIR
+  fillSelectWithNew('selAddOperario', opsSorted, o=>o.nombre);
+  fillSelectWithNew('selAddObra', obrasSorted, o=>{
+    let n = o.nombre;
+    if(esEspecial(n) && !n.includes('❌')) n = '❌ ' + n;
+    return n;
+  });
+
+  // SELECTS DE ASIGNACIÓN
+  fillSelect('selOperario', opsSorted, o=>o.nombre);
+  fillSelect('selObra', obrasSorted, o=>{
+    let n = o.nombre;
+    if(esEspecial(n) && !n.includes('❌')) n = '❌ ' + n;
+    return n;
+  });
+  fillSelect('editOperario', opsSorted, o=>o.nombre);
+  fillSelect('editObra', obrasSorted, o=>{
+    let n = o.nombre;
+    if(esEspecial(n) && !n.includes('❌')) n = '❌ ' + n;
+    return n;
+  });
+  fillSelect('modalObra', obrasSorted, o=>{
+    let n = o.nombre;
+    if(esEspecial(n) && !n.includes('❌')) n = '❌ ' + n;
+    return n;
+  });
+  fillSelect('filtroObraSelect', obrasSorted, o=>{
+    let n = o.nombre;
+    if(esEspecial(n) && !n.includes('❌')) n = '❌ ' + n;
+    return n;
+  });
+  fillSelect('filtroOpSelect', opsSorted, o=>o.nombre);
+  
+  // RECUPERAR SELECCIÓN PREVIA
+  const prevSelOp = document.getElementById('selAddOperario').value;
+  if(prevSelOp === 'new') document.getElementById('selAddOperario').value = 'new';
+  
+  const prevSelOb = document.getElementById('selAddObra').value;
+  if(prevSelOb === 'new') document.getElementById('selAddObra').value = 'new';
+
+  renderLegend();
+  renderChart();
+}
+
+function fillSelectWithNew(id, arr, label){
+  const s=document.getElementById(id);
+  let html = arr.map(x=>`<option value="${x.id}">${label(x)}</option>`).join('');
+  html += `<option value="new" style="color:var(--ok);font-weight:bold;">➕ Añadir nuevo...</option>`;
+  s.innerHTML = html;
+  
+  if(s.value !== 'new' && arr.length > 0) {
+      s.value = arr[0].id;
+  }
+}
+
+function fillSelect(id, arr, label){
+  const s=document.getElementById(id);
+  s.innerHTML = arr.length? arr.map(x=>`<option value="${x.id}">${label(x)}</option>`).join('') : '<option value="">-- vacío --</option>';
+}
+
+/* ============ AÑADIR / ELIMINAR ============ */
+function addOperario(){
+  const n=document.getElementById('opName').value.trim();
+  if(!n) return alert('Escribe un nombre');
+  state.operarios.push({id:uid(), nombre:n, color:PALETA[colorIdx++%PALETA.length]});
+  document.getElementById('opName').value='';
+  document.getElementById('divNewOperario').style.display = 'none';
+  renderListas();
+}
+
+function delOperarioSel(){
+  const id = document.getElementById('selAddOperario').value;
+  if(!id || id === 'new') return alert('Selecciona un operario válido para eliminar');
+  const op = state.operarios.find(o=>o.id===id);
+  if(!confirm(`¿Eliminar al operario "${op.nombre}" y todas sus asignaciones?`)) return;
+  
+  state.operarios = state.operarios.filter(o=>o.id!==id);
+  state.asignaciones = state.asignaciones.filter(a=>a.operarioId!==id);
+  cerrarEdicion();
+  renderListas();
+}
+
+function addObra(){
+  const n=document.getElementById('obraName').value.trim();
+  if(!n) return alert('Escribe una obra');
+  state.obras.push({id:uid(), nombre:n, color:PALETA[colorIdx++%PALETA.length]});
+  document.getElementById('obraName').value='';
+  document.getElementById('divNewObra').style.display = 'none';
+  renderListas();
+}
+
+function delObraSel(){
+  const id = document.getElementById('selAddObra').value;
+  if(!id || id === 'new') return alert('Selecciona una obra válida para eliminar');
+  const ob = state.obras.find(o=>o.id===id);
+  if(!confirm(`¿Eliminar la obra "${ob.nombre}" y todas sus asignaciones?`)) return;
+  
+  state.obras = state.obras.filter(o=>o.id!==id);
+  state.asignaciones = state.asignaciones.filter(a=>a.obraId!==id);
+  cerrarEdicion();
+  renderListas();
+}
+
+function showMsg(id, text, type){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=text; el.className='msg '+type;
+  setTimeout(()=>{ el.className='msg'; }, 5000);
+}
+
+/* ============ LÓGICA CORE ============ */
+function procesarAsignacionInteligente(operarioId, obraId, ini, fin, idEditar = null) {
+  let asignaciones = [...state.asignaciones];
+  if (idEditar) {
+    asignaciones = asignaciones.filter(a => a.id !== idEditar);
+  }
+
+  const nuevo = {id:uid(), operarioId, obraId, ini, fin};
+  const diasNuevos = cadaDia(ini,fin);
+  const setDiasNuevos = new Set(diasNuevos);
+  const cambios = []; 
+
+  const asignacionesOp = asignaciones.filter(a => a.operarioId === operarioId);
+  
+  asignacionesOp.forEach(a=>{
+    const diasExist = cadaDia(a.ini, a.fin);
+    const inter = diasExist.filter(d => setDiasNuevos.has(d));
+    
+    if(inter.length > 0){
+      const quedan = diasExist.filter(d => !setDiasNuevos.has(d));
+      cambios.push({eliminar: a.id});
+      
+      if(quedan.length > 0){
+        const bloques = []; 
+        let cur = [quedan[0]];
+        for(let i=1; i<quedan.length; i++){
+          const prev = toDate(quedan[i-1]), act = toDate(quedan[i]);
+          if((act - prev) / 86400000 === 1) {
+            cur.push(quedan[i]);
+          } else { 
+            bloques.push(cur); 
+            cur = [quedan[i]]; 
+          }
+        }
+        bloques.push(cur);
+        
+        bloques.forEach(b => {
+          cambios.push({
+            nuevo: { id: uid(), operarioId: a.operarioId, obraId: a.obraId, ini: b[0], fin: b[b.length-1] }
+          });
+        });
+      }
+    }
+  });
+
+  cambios.forEach(c => {
+    if(c.eliminar) asignaciones = asignaciones.filter(x => x.id !== c.eliminar);
+  });
+  cambios.forEach(c => { if(c.nuevo) asignaciones.push(c.nuevo); });
+  asignaciones.push(nuevo);
+  state.asignaciones = asignaciones;
+}
+
+function asignar(){
+  const operarioId = document.getElementById('selOperario').value;
+  const obraId = document.getElementById('selObra').value;
+  const ini = document.getElementById('fIni').value;
+  const fin = document.getElementById('fFin').value;
+
+  if(!operarioId || !obraId) return showMsg('msgAsig','Selecciona operario y obra','err');
+  if(!ini || !fin) return showMsg('msgAsig','Selecciona fechas','err');
+  if(ini>fin) return showMsg('msgAsig','Inicio debe ser ≤ fin','err');
+
+  procesarAsignacionInteligente(operarioId, obraId, ini, fin);
+  showMsg('msgAsig', '✅ Asignación creada', 'ok');
+  renderListas();
+}
+
+function abrirEdicion(idAsignacion, diaClicado) {
+  const a = state.asignaciones.find(x => x.id === idAsignacion);
+  if (!a) return;
+  
+  asignacionEditando = idAsignacion;
+  diaClicadoEdicion = diaClicado;
+  
+  document.getElementById('editOperario').value = a.operarioId;
+  document.getElementById('editObra').value = a.obraId;
+  document.getElementById('editIni').value = a.ini;
+  document.getElementById('editFin').value = a.fin;
+  
+  const infoBox = document.getElementById('editInfoBox');
+  const totalDias = daysBetween(a.ini, a.fin) + 1;
+  
+  infoBox.innerHTML = `
+    <b>📅 Bloque original:</b> Inicio: <b>${a.ini}</b> | Fin: <b>${a.fin}</b> (Total: ${totalDias} días)<br>
+    <span style="color:var(--accent); font-weight:bold; display:inline-block; margin-top:4px;">
+      👉 Día seleccionado: ${diaClicado}
+    </span>
+  `;
+
+  const quickBtn = document.querySelector('#quickActions button');
+  if(quickBtn) quickBtn.textContent = `📅 Mover SOLO el día ${diaClicado} a esta obra`;
+  document.getElementById('quickActions').style.display = totalDias > 1 ? 'flex' : 'none';
+  
+  document.getElementById('editPanel').style.display = 'block';
+  document.getElementById('editPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function moverSoloDia() {
+  if (!asignacionEditando || !diaClicadoEdicion) return;
+  const obraId = document.getElementById('editObra').value;
+  if(!obraId) return alert('Selecciona una obra destino');
+  
+  const a = state.asignaciones.find(x => x.id === asignacionEditando);
+  if(!a) return;
+  
+  const arr = []; 
+
+  state.asignaciones.forEach(asig => {
+    if (asig.id === a.id) {
+      const todosDias = cadaDia(a.ini, a.fin);
+      const sobrantes = todosDias.filter(d => d !== diaClicadoEdicion);
+      
+      if (sobrantes.length > 0) {
+        let cur = [sobrantes[0]];
+        for (let i = 1; i < sobrantes.length; i++) {
+          const prev = toDate(sobrantes[i-1]), act = toDate(sobrantes[i]);
+          if ((act - prev) / 86400000 === 1) { cur.push(sobrantes[i]); } else {
+            arr.push({ id: uid(), operarioId: a.operarioId, obraId: a.obraId, ini: cur[0], fin: cur[cur.length-1] });
+            cur = [sobrantes[i]];
+          }
+        }
+        arr.push({ id: uid(), operarioId: a.operarioId, obraId: a.obraId, ini: cur[0], fin: cur[cur.length-1] });
+      }
+    } else if (asig.operarioId === a.operarioId && diaClicadoEdicion >= asig.ini && diaClicadoEdicion <= asig.fin) {
+      const todosDias = cadaDia(asig.ini, asig.fin);
+      const sobrantes = todosDias.filter(d => d !== diaClicadoEdicion);
+      if (sobrantes.length > 0) {
+        let cur = [sobrantes[0]];
+        for (let i = 1; i < sobrantes.length; i++) {
+          const prev = toDate(sobrantes[i-1]), act = toDate(sobrantes[i]);
+          if ((act - prev) / 86400000 === 1) { cur.push(sobrantes[i]); } else {
+            arr.push({ id: uid(), operarioId: asig.operarioId, obraId: asig.obraId, ini: cur[0], fin: cur[cur.length-1] });
+            cur = [sobrantes[i]];
+          }
+        }
+        arr.push({ id: uid(), operarioId: asig.operarioId, obraId: asig.obraId, ini: cur[0], fin: cur[cur.length-1] });
+      }
+    } else {
+      arr.push(asig);
+    }
+  });
+
+  arr.push({ id: uid(), operarioId: a.operarioId, obraId: obraId, ini: diaClicadoEdicion, fin: diaClicadoEdicion });
+
+  state.asignaciones = arr;
+  cerrarEdicion();
+  renderListas();
+  showMsg('msgAsig', `✅ Movido el día ${diaClicadoEdicion}`, 'ok');
+}
+
+function cerrarEdicion() {
+  asignacionEditando = null;
+  diaClicadoEdicion = null;
+  document.getElementById('editPanel').style.display = 'none';
+}
+
+function guardarEdicion() {
+  const newOperarioId = document.getElementById('editOperario').value;
+  const obraId = document.getElementById('editObra').value;
+  const ini = document.getElementById('editIni').value;
+  const fin = document.getElementById('editFin').value;
+
+  if(!newOperarioId || !obraId) return alert('Selecciona operario y obra');
+  if(!ini || !fin) return alert('Selecciona fechas');
+  if(ini>fin) return alert('Inicio debe ser ≤ fin');
+
+  const oldAsig = state.asignaciones.find(a => a.id === asignacionEditando);
+  const oldOperarioId = oldAsig ? oldAsig.operarioId : null;
+
+  procesarAsignacionInteligente(newOperarioId, obraId, ini, fin, asignacionEditando);
+  
+  cerrarEdicion();
+  renderListas();
+
+  if (oldOperarioId && oldOperarioId !== newOperarioId) {
+    pendingReassign = { operarioId: oldOperarioId, obraId: obraId, ini: ini, fin: fin };
+    abrirModalReasignacion();
+  }
+}
+
+function abrirModalReasignacion() {
+  if(!pendingReassign) return;
+  const op = state.operarios.find(o => o.id === pendingReassign.operarioId);
+  const ob = state.obras.find(o => o.id === pendingReassign.obraId);
+  
+  const totalDias = daysBetween(pendingReassign.ini, pendingReassign.fin) + 1;
+  const obName = esEspecial(ob.nombre) && !ob.nombre.includes('❌') ? '❌ '+ob.nombre : ob.nombre;
+  
+  document.getElementById('modalText').innerHTML = `Has cambiado a otro operario en <b>${obName}</b> (${pendingReassign.ini} → ${pendingReassign.fin}).<br><br>¿Qué haces con <b>${op.nombre}</b>?`;
+  
+  const chk = document.getElementById('modalSoloDia');
+  chk.checked = false;
+  chk.parentElement.style.display = totalDias > 1 ? 'flex' : 'none';
+
+  document.getElementById('reassignModal').style.display = 'flex';
+}
+
+function confirmarReasignacion(accion) {
+  if(!pendingReassign) return;
+  
+  const { operarioId, obraId, ini, fin } = pendingReassign;
+  const soloEsteDia = document.getElementById('modalSoloDia').checked;
+  
+  const rIni = soloEsteDia ? ini : ini;
+  const rFin = soloEsteDia ? ini : fin;
+
+  if (accion === 'obra') {
+    const targetObraId = document.getElementById('modalObra').value;
+    if(targetObraId) {
+      procesarAsignacionInteligente(operarioId, targetObraId, rIni, rFin);
+    }
+  } else if (accion === 'libre') {
+    // Buscar o crear una obra especial (Día libre / Baja / Vacaciones)
+    let especial = state.obras.find(o => esEspecial(o.nombre));
+    if (!especial) {
+      especial = {id:uid(), nombre:'❌ Día libre', color:PALETA[colorIdx++%PALETA.length]};
+      state.obras.push(especial);
+    }
+    procesarAsignacionInteligente(operarioId, especial.id, rIni, rFin);
+  } 
+
+  document.getElementById('reassignModal').style.display = 'none';
+  pendingReassign = null;
+  renderListas();
+}
+
+function borrarAsignacionDesdePanel() {
+  if(!asignacionEditando) return;
+  if(!confirm('¿Eliminar este bloque completo?')) return;
+  state.asignaciones = state.asignaciones.filter(a => a.id !== asignacionEditando);
+  cerrarEdicion();
+  renderListas();
+}
+
+function renderLegend(){
+  const lgOps=document.getElementById('legendOps'); 
+  lgOps.innerHTML='<b>Operarios:</b> ';
+  const opsSorted = [...state.operarios].sort((a,b) => a.nombre.localeCompare(b.nombre));
+  opsSorted.forEach(o=>{
+    const s=document.createElement('span');
+    s.innerHTML=`<span class="dot" style="background:${o.color}"></span>${o.nombre}`;
+    lgOps.appendChild(s);
+  });
+
+  const lgObras=document.getElementById('legendObras'); 
+  lgObras.innerHTML='<b>Obras:</b> ';
+  const obrasSorted = [...state.obras].sort((a,b) => a.nombre.localeCompare(b.nombre));
+  obrasSorted.forEach(o=>{
+    let color = o.color;
+    let obName = o.nombre;
+    if (esEspecial(o.nombre)) {
+      color = '#fff';
+      if(!obName.includes('❌')) obName = '❌ ' + obName;
+    }
+    const s=document.createElement('span');
+    s.innerHTML=`<span class="dot" style="background:${color}"></span>${obName}`;
+    lgObras.appendChild(s);
+  });
+}
+
+function renderChart(){
+  const chart=document.getElementById('chart');
+  if(!state.asignaciones.length){ chart.innerHTML='<div class="empty">Aún no hay asignaciones</div>'; return; }
+
+  const filtro = document.getElementById('filterDate').value;
+  const dias = new Set();
+  state.asignaciones.forEach(a=>cadaDia(a.ini,a.fin).forEach(d=>dias.add(d)));
+  let listaDias=[...dias].sort();
+  if(filtro){ listaDias = listaDias.filter(d=>d===filtro); }
+  if(!listaDias.length){ chart.innerHTML='<div class="empty">Sin datos</div>'; return; }
+
+  chart.innerHTML='';
+
+  listaDias.forEach(dia=>{
+    const row=document.createElement('div'); row.className='day-row';
+    const lbl=document.createElement('div'); lbl.className='day-label'; lbl.textContent=dia;
+    row.appendChild(lbl);
+    const opsDiv=document.createElement('div'); opsDiv.className='ops';
+
+    const activos = state.asignaciones.filter(a=>dia>=a.ini && dia<=a.fin);
+
+    activos.forEach(a=>{
+      const op=state.operarios.find(o=>o.id===a.operarioId);
+      const ob=state.obras.find(o=>o.id===a.obraId);
+      if(!op||!ob) return;
+      
+      const btn=document.createElement('button');
+      btn.className='opbtn';
+      
+      const obEsp = esEspecial(ob.nombre);
+      let obName = ob.nombre;
+      if (obEsp && !obName.includes('❌')) obName = '❌ ' + obName;
+      
+      if (obEsp) {
+        btn.style.background = '#fff';
+        btn.style.color = '#000';
+        btn.style.textShadow = 'none';
+      } else {
+        btn.style.background = `linear-gradient(90deg, ${op.color} 50%, ${ob.color} 50%)`;
+        btn.style.color = '#fff';
+        btn.style.textShadow = '0 1px 1px rgba(0,0,0,0.8)';
+      }
+
+      const totalDias = daysBetween(a.ini, a.fin) + 1;
+      btn.innerHTML = `${op.nombre} · ${obName} <span class="pill" style="${obEsp?'background:#ddd;color:#000;':''}">${totalDias}d</span>`;
+      btn.title=`${op.nombre} en ${obName} (${a.ini} → ${a.fin})`;
+      
+      btn.onclick=()=>{
+        document.querySelectorAll('.opbtn.sel').forEach(x=>x.classList.remove('sel'));
+        btn.classList.add('sel');
+        abrirEdicion(a.id, dia);
+      };
+      opsDiv.appendChild(btn);
+    });
+    if(!activos.length) opsDiv.innerHTML='<span class="empty" style="padding:0">—</span>';
+    row.appendChild(opsDiv);
+    chart.appendChild(row);
+  });
+}
+
+/* ============ LÓGICA DE FILTROS E IMPRESIÓN ============ */
+function abrirModalFiltroObra() {
+  document.getElementById('filtroObraModal').style.display = 'flex';
+  document.getElementById('filtroObraResultados').style.display = 'none';
+  if(!document.getElementById('filtroObraIni').value) {
+    const today = toStr(new Date());
+    document.getElementById('filtroObraIni').value = today;
+    document.getElementById('filtroObraFin').value = today;
+  }
+}
+
+function ejecutarFiltroObra() {
+  const obraId = document.getElementById('filtroObraSelect').value;
+  const ini = document.getElementById('filtroObraIni').value;
+  const fin = document.getElementById('filtroObraFin').value;
+
+  if(!obraId) return alert('Selecciona una obra');
+  if(!ini || !fin) return alert('Selecciona el periodo');
+  if(ini > fin) return alert('Inicio ≤ fin');
+
+  const ob = state.obras.find(o => o.id === obraId);
+  const obName = esEspecial(ob.nombre) && !ob.nombre.includes('❌') ? '❌ '+ob.nombre : ob.nombre;
+  
+  document.getElementById('filtroObraTitulo').innerHTML = `Obra: <span style="color:white">${obName}</span> | Periodo: <span style="color:white">${ini} al ${fin}</span>`;
+
+  const tbody = document.getElementById('filtroObraTbody');
+  tbody.innerHTML = '';
+  const listaDias = cadaDia(ini, fin);
+  let datosFiltro = [];
+  let hayDatos = false;
+
+  listaDias.forEach(dia => {
+    const activos = state.asignaciones.filter(a => a.obraId === obraId && dia >= a.ini && dia <= a.fin);
+    if (activos.length > 0) {
+      hayDatos = true;
+      const tr = document.createElement('tr');
+      const tdFecha = document.createElement('td');
+      tdFecha.textContent = dia;
+      
+      const tdOps = document.createElement('td');
+      tdOps.style.display = 'flex';
+      tdOps.style.flexWrap = 'wrap';
+      tdOps.style.gap = '4px';
+
+      let nombresOps = [];
+      activos.forEach(a => {
+        const op = state.operarios.find(o => o.id === a.operarioId);
+        if(op) {
+          nombresOps.push(op.nombre);
+          const span = document.createElement('span');
+          span.className = 'badge-op';
+          span.style.background = op.color;
+          span.textContent = op.nombre;
+          tdOps.appendChild(span);
+        }
+      });
+      datosFiltro.push({dia, ops: nombresOps.join(', ')});
+      tr.appendChild(tdFecha);
+      tr.appendChild(tdOps);
+      tbody.appendChild(tr);
+    }
+  });
+
+  if(!hayDatos) {
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:var(--muted); padding:10px;">No hay operarios asignados a esta obra.</td></tr>';
+  }
+
+  filtroActual = { tipo: 'obra', titulo: obName, periodo: `${ini} al ${fin}`, datos: datosFiltro };
+  document.getElementById('filtroObraResultados').style.display = 'block';
+}
+
+function abrirModalFiltroOperario() {
+  document.getElementById('filtroOpModal').style.display = 'flex';
+  document.getElementById('filtroOpResultados').style.display = 'none';
+  if(!document.getElementById('filtroOpIni').value) {
+    const today = toStr(new Date());
+    document.getElementById('filtroOpIni').value = today;
+    document.getElementById('filtroOpFin').value = today;
+  }
+}
+
+function ejecutarFiltroOperario() {
+  const opId = document.getElementById('filtroOpSelect').value;
+  const ini = document.getElementById('filtroOpIni').value;
+  const fin = document.getElementById('filtroOpFin').value;
+
+  if(!opId) return alert('Selecciona un operario');
+  if(!ini || !fin) return alert('Selecciona el periodo');
+  if(ini > fin) return alert('Inicio ≤ fin');
+
+  const op = state.operarios.find(o => o.id === opId);
+  document.getElementById('filtroOpTitulo').innerHTML = `Operario: <span style="color:white">${op.nombre}</span> | Periodo: <span style="color:white">${ini} al ${fin}</span>`;
+
+  const tbody = document.getElementById('filtroOpTbody');
+  tbody.innerHTML = '';
+  const listaDias = cadaDia(ini, fin);
+  let datosFiltro = [];
+  let hayDatos = false;
+
+  listaDias.forEach(dia => {
+    const asignacion = state.asignaciones.find(a => a.operarioId === opId && dia >= a.ini && dia <= a.fin);
+    if (asignacion) {
+      hayDatos = true;
+      const ob = state.obras.find(o => o.id === asignacion.obraId);
+      let obName = ob ? ob.nombre : 'Desconocida';
+      if(obName !== 'Desconocida' && esEspecial(obName) && !obName.includes('❌')) {
+        obName = '❌ ' + obName;
+      }
+
+      const tr = document.createElement('tr');
+      const tdFecha = document.createElement('td');
+      tdFecha.textContent = dia;
+      const tdObra = document.createElement('td');
+      tdObra.textContent = obName;
+      
+      datosFiltro.push({dia, obra: obName});
+      tr.appendChild(tdFecha);
+      tr.appendChild(tdObra);
+      tbody.appendChild(tr);
+    }
+  });
+
+  if(!hayDatos) {
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:var(--muted); padding:10px;">No hay obras asignadas.</td></tr>';
+  }
+
+  filtroActual = { tipo: 'operario', titulo: op.nombre, periodo: `${ini} al ${fin}`, datos: datosFiltro };
+  document.getElementById('filtroOpResultados').style.display = 'block';
+}
+
+function imprimirFiltroActual(tipo) {
+  if(!filtroActual) return;
+  
+  const printTitle = document.getElementById('printTitle');
+  const printPeriodo = document.getElementById('printPeriodo');
+  const printThead = document.getElementById('printThead');
+  const printTbody = document.getElementById('printTbody');
+
+  if (tipo === 'obra') {
+    printTitle.textContent = `Reporte de Obra: ${filtroActual.titulo}`;
+    printThead.innerHTML = `<tr><th style="width: 30%;">Fecha</th><th style="width: 70%;">Operario(s)</th></tr>`;
+  } else {
+    printTitle.textContent = `Reporte de Operario: ${filtroActual.titulo}`;
+    printThead.innerHTML = `<tr><th style="width: 30%;">Fecha</th><th style="width: 70%;">Obra Asignada</th></tr>`;
+  }
+  
+  printPeriodo.textContent = `Periodo: ${filtroActual.periodo}`;
+  printTbody.innerHTML = '';
+
+  filtroActual.datos.forEach(d => {
+    const tr = document.createElement('tr');
+    const td1 = document.createElement('td');
+    td1.textContent = d.dia;
+    
+    const td2 = document.createElement('td');
+    td2.textContent = tipo === 'obra' ? d.ops : d.obra;
+
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    printTbody.appendChild(tr);
+  });
+
+  window.print();
+}
+
+function abrirModalImpresion() {
+  document.getElementById('printModal').style.display = 'flex';
+  const filtro = document.getElementById('filterDate').value;
+  if(filtro) {
+    document.getElementById('printIni').value = filtro;
+    document.getElementById('printFin').value = filtro;
+  }
+}
+
+function generarImpresion() {
+  const ini = document.getElementById('printIni').value;
+  const fin = document.getElementById('printFin').value;
+
+  if(!ini || !fin) return alert('Selecciona ambas fechas');
+  if(ini > fin) return alert('Inicio ≤ fin');
+
+  const printTitle = document.getElementById('printTitle');
+  const printPeriodo = document.getElementById('printPeriodo');
+  const printThead = document.getElementById('printThead');
+  const printTbody = document.getElementById('printTbody');
+
+  printTitle.textContent = 'Planing General de Operarios y Obras';
+  printPeriodo.textContent = `Periodo: ${ini} al ${fin}`;
+  printThead.innerHTML = `
+    <tr>
+      <th style="width: 20%;">Fecha</th>
+      <th style="width: 30%;">Operario</th>
+      <th style="width: 50%;">Obra Asignada</th>
+    </tr>`;
+  
+  printTbody.innerHTML = '';
+  const listaDias = cadaDia(ini, fin);
+
+  listaDias.forEach(dia => {
+    const activos = state.asignaciones.filter(a => dia >= a.ini && dia <= a.fin);
+    
+    if (activos.length > 0) {
+      activos.forEach((a, index) => {
+        const op = state.operarios.find(o => o.id === a.operarioId);
+        const ob = state.obras.find(o => o.id === a.obraId);
+        if(!op || !ob) return;
+
+        let obName = ob.nombre;
+        if(esEspecial(obName) && !obName.includes('❌')) obName = '❌ ' + obName;
+
+        const tr = document.createElement('tr');
+        if (index === 0) tr.className = 'dia-separador';
+
+        const tdFecha = document.createElement('td');
+        tdFecha.textContent = dia; 
+        if(index !== 0) tdFecha.style.color = '#888';
+
+        const tdOp = document.createElement('td');
+        tdOp.textContent = op.nombre;
+        
+        const tdOb = document.createElement('td');
+        tdOb.textContent = obName;
+
+        tr.appendChild(tdFecha);
+        tr.appendChild(tdOp);
+        tr.appendChild(tdOb);
+        printTbody.appendChild(tr);
+      });
+    } else {
+      const tr = document.createElement('tr');
+      tr.className = 'dia-separador';
+      const tdFecha = document.createElement('td');
+      tdFecha.textContent = dia;
+      const tdOp = document.createElement('td');
+      tdOp.textContent = '-';
+      const tdOb = document.createElement('td');
+      tdOb.textContent = 'Sin asignaciones';
+      tr.appendChild(tdFecha);
+      tr.appendChild(tdOp);
+      tr.appendChild(tdOb);
+      printTbody.appendChild(tr);
+    }
+  });
+
+  document.getElementById('printModal').style.display = 'none';
+  window.print();
+}
+
+// INICIALIZACIÓN
+if (!cargarAutoguardado()) {
+  state.operarios.push({id:uid(), nombre:'Juan', color:PALETA[colorIdx++%PALETA.length]});
+  state.operarios.push({id:uid(), nombre:'María', color:PALETA[colorIdx++%PALETA.length]});
+  state.operarios.push({id:uid(), nombre:'Pedro', color:PALETA[colorIdx++%PALETA.length]});
+  state.obras.push({id:uid(), nombre:'Torre Norte', color:PALETA[colorIdx++%PALETA.length]});
+  state.obras.push({id:uid(), nombre:'Obra Sur', color:PALETA[colorIdx++%PALETA.length]});
+  state.obras.push({id:uid(), nombre:'❌ Día libre', color:PALETA[colorIdx++%PALETA.length]});
+}
+renderListas();
+
+window.addEventListener('beforeunload', function (e) {
+    if (state.asignaciones.length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+</script>
+</body>
+</html>
