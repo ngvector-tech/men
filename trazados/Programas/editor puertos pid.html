@@ -8,7 +8,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; display: flex; flex-direction: column; height: 100vh; font-family: Arial, sans-serif; background:#f4f4f4; overflow: hidden; }
 
-        /* Header superior con botón P&ID */
+        /* Header superior */
         #header-nativo {
             background-color: #1a252f;
             color: white;
@@ -37,7 +37,7 @@
         }
         .btn-nav:hover { background: #2980b9; }
 
-        /* Panel superior (antes sidebar) */
+        /* Toolbar superior */
         #toolbar-puertos {
             background: #2c3e50;
             color: white;
@@ -86,7 +86,7 @@
             width: 160px;
         }
 
-        /* Zona principal: info + lienzo */
+        /* Zona principal */
         .main-container {
             display: flex;
             flex: 1;
@@ -95,7 +95,7 @@
             min-height: 0;
         }
         #sidebar {
-            width: 260px;
+            width: 280px;
             background: #2c3e50;
             color: white;
             padding: 15px;
@@ -117,7 +117,7 @@
         #sidebar hr { border: 1px solid #555; width: 100%; margin: 5px 0; }
         #sidebar textarea {
             width: 100%;
-            height: 150px;
+            height: 200px;
             font-family: monospace;
             font-size: 11px;
             background: #1a252f;
@@ -131,6 +131,83 @@
 
         #lienzo { flex: 1; background: #f9f9f9; position: relative; border-radius: 6px; border: 1px solid #ccc; overflow: hidden; }
 
+        /* Estilos del Modal del Catálogo de Símbolos */
+        #modalSimbolosIso { 
+            display: none; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 0; 
+            top: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(0,0,0,0.6); 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .modal-content-iso { 
+            background: #fff; 
+            width: 680px; 
+            height: 80vh; 
+            border-radius: 8px; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            border: 2px solid #3498db; 
+        }
+        .modal-header-iso { 
+            background: #3498db; 
+            color: white; 
+            padding: 10px 15px; 
+            font-weight: bold; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .modal-cats-iso { 
+            background: #2c3e50; 
+            padding: 6px 10px; 
+            display: flex; 
+            gap: 6px; 
+            overflow-x: auto; 
+            flex-shrink: 0; 
+            align-items: center; 
+        }
+        .btn-cat-iso { 
+            background: #34495e; 
+            color: #fff; 
+            border: 1px solid #555; 
+            padding: 4px 8px; 
+            border-radius: 3px; 
+            font-size: 11px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            white-space: nowrap; 
+        }
+        .btn-cat-iso.active, .btn-cat-iso:hover { background: #27ae60; border-color: #27ae60; }
+        .modal-body-iso { 
+            padding: 15px; 
+            overflow-y: auto; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
+            gap: 10px; 
+            flex: 1; 
+        }
+        .card-simb-iso { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 5px; 
+            background: #fafafa; 
+            transition: all 0.2s; 
+        }
+        .card-simb-iso:hover { background: #eef2f7; border-color: #3498db; transform: scale(1.03); }
+        .card-simb-iso img { width: 70px; height: 50px; object-fit: contain; }
+        .card-simb-iso span { font-size: 10px; text-align: center; font-weight: bold; color: #333; line-height: 1.2; }
+
         @media (max-width: 900px) {
             #toolbar-puertos { flex-direction: column; align-items: stretch; }
             #toolbar-puertos .grupo { border-right: none; border-bottom: 1px solid #555; padding-bottom: 6px; padding-right: 0; flex-wrap: wrap; }
@@ -138,29 +215,31 @@
             .main-container { flex-direction: column; }
             #sidebar { width: 100%; }
             #lienzo { min-height: 400px; }
+            .modal-content-iso { width: 95%; height: 90vh; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header superior con botón P&ID -->
+    <!-- Header superior con enlaces de navegación -->
     <div id="header-nativo">
         <span class="logo-text">MEN</span>
         <span class="empresa-text">Montajes Industriales S. L.</span>
         <span class="autor-text">Creado por: J.N.G</span>
         <div style="margin-left: auto; display: flex; gap: 8px;">
             <button class="btn-nav" onclick="window.location.href='pid.html'">📶 P&ID</button>
-			 <button class="btn-nav" onclick="window.location.href='s_pid.html'">📶 Esquemas</button>
-			  <button class="btn-nav" onclick="window.location.href='isometrico.html'">📶 Isometricos</button>
+            <button class="btn-nav" onclick="window.location.href='s_pid.html'">📶 Esquemas</button>
+            <button class="btn-nav" onclick="window.location.href='isometrico.html'">📶 Isometricos</button>
         </div>
     </div>
 
-    <!-- Toolbar horizontal con los botones que antes estaban en el sidebar -->
+    <!-- Toolbar superior con acciones -->
     <div id="toolbar-puertos">
         <div class="grupo">
-            <button class="btn" onclick="cargarSVGManual()">📁 Cargar SVG</button>
+            <button class="btn" onclick="abrirModalCatalogo()">📁 Cargar SVG</button>
+            <button class="btn" style="background:#16a34a;" onclick="cargarSVGManual()">📤 Subir archivo SVG</button>
             <input type="file" id="file-input" accept=".svg" style="display: none;" onchange="leerArchivo(event)">
-            <button class="btn" style="background:#7f8c8d;" onclick="document.getElementById('json-input').click()">📂 Cargar archivo</button>
+            <button class="btn" style="background:#7f8c8d;" onclick="document.getElementById('json-input').click()">📂 Cargar JSON</button>
             <input type="file" id="json-input" accept=".json" style="display: none;" onchange="cargarJSONExistente(event)">
         </div>
 
@@ -176,27 +255,44 @@
 
         <div class="grupo">
             <button class="btn btn-success" onclick="guardarYFusionar()">💾 Actualizar puertos JSON</button>
-            <button class="btn btn-purple" onclick="descargarJSON()">⬇️ Descargar archivo</button>
+            <button class="btn btn-purple" onclick="descargarJSON()">⬇️ Descargar JSON</button>
         </div>
     </div>
 
-    <!-- Zona principal: información + lienzo -->
+    <!-- Zona principal: Panel Lateral + Canvas -->
     <div class="main-container">
         <div id="sidebar">
             <h3 style="margin:0 0 5px 0; font-size:15px; color:#3498db;">Editor de Puertos</h3>
             <div class="info">
-                1. Carga un SVG.<br>
-                2. Los puertos del JSON se cargan solos.<br>
+                1. Haz clic en <b>"Cargar SVG"</b> para elegir del catálogo o subir uno libre.<br>
+                2. Los puertos definidos se cargarán automáticamente.<br>
                 3. <b>Haz clic en el fondo</b> para añadir un puerto.<br>
-                4. Arrastra los círculos para ajustarlos.<br>
+                4. Arrastra los círculos para situarlos.<br>
                 5. Selecciona un puerto (amarillo) y pulsa <b>Suprimir</b> para borrarlo.
             </div>
             <hr>
-            <label>JSON Acumulado:</label>
+            <label>config_puertos.json (Previsualización):</label>
             <textarea id="json-output" readonly></textarea>
         </div>
 
         <div id="lienzo"></div>
+    </div>
+
+    <!-- Modal Catálogo de Símbolos SVG -->
+    <div id="modalSimbolosIso">
+        <div class="modal-content-iso">
+            <div class="modal-header-iso">
+                <span>Biblioteca de Símbolos P&ID</span>
+                <span style="cursor:pointer; font-size:18px;" onclick="cerrarModalSimb()">✖</span>
+            </div>
+            <div class="modal-cats-iso" id="barSubcarpetas"></div>
+            <div style="padding: 6px 10px; background: #eee; display: flex; justify-content: flex-end;">
+                <input type="text" id="buscIsoSimb" placeholder="🔍 Buscar símbolo..." style="padding:4px 8px; font-size:12px; width:220px; border-radius:3px; border:1px solid #ccc;" oninput="filtrarSimbolosIso()">
+            </div>
+            <div class="modal-body-iso" id="listaModalSimb">
+                <p style="text-align:center; grid-column:1/-1;">Cargando catálogo...</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -216,9 +312,40 @@
         let contadorPuertos = 1;
         let puertoSeleccionado = null;
         let configPuertos = {};
+        let catalogoGlobalIso = {};
+        let subcarpetaActivaIso = '';
 
         let datosAcumulados = JSON.parse(localStorage.getItem('configPuertosJSON')) || {};
-        actualizarTextarea();
+
+        // Cargar config_puertos.json al iniciar
+        async function cargarConfigPuertos() {
+            try {
+                const res = await fetch('./config_puertos.json?t=' + new Date().getTime());
+                if (res.ok) {
+                    const datosBrutos = await res.json();
+                    configPuertos = datosBrutos;
+                    datosAcumulados = { ...datosBrutos, ...datosAcumulados };
+                    localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
+                    actualizarTextarea();
+                    console.log("✅ JSON de puertos cargado con éxito.");
+                }
+            } catch (e) { 
+                console.warn("⚠️ No se pudo leer config_puertos.json inicialmente."); 
+                actualizarTextarea();
+            }
+        }
+        cargarConfigPuertos();
+
+        // Cargar catálogo global de símbolos SVG
+        async function cargarCatalogoIso() {
+            try {
+                const res = await fetch('./catalogo.json?t=' + new Date().getTime());
+                if (res.ok) {
+                    catalogoGlobalIso = await res.json();
+                }
+            } catch (e) { console.error("Error al cargar catalogo.json", e); }
+        }
+        cargarCatalogoIso();
 
         function actualizarTextarea() {
             document.getElementById('json-output').value = Object.keys(datosAcumulados).length > 0
@@ -239,21 +366,98 @@
             paper.drawGrid();
         };
 
-        async function cargarConfigPuertos() {
-            try {
-                const res = await fetch('./config_puertos.json?t=' + new Date().getTime());
-                if (res.ok) {
-                    const datosBrutos = await res.json();
-                    for (const clave in datosBrutos) {
-                        const claveNormalizada = clave.toLowerCase().replace('.svg', '').replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                        configPuertos[claveNormalizada] = datosBrutos[clave];
-                    }
-                    console.log("✅ JSON de puertos cargado.");
-                }
-            } catch (e) { console.warn("⚠️ No se encontró config_puertos.json."); }
-        }
-        cargarConfigPuertos();
+        // --- FUNCIONES DEL MODAL DE CATÁLOGO SVG ---
+        function abrirModalCatalogo() {
+            const modal = document.getElementById('modalSimbolosIso');
+            const bar = document.getElementById('barSubcarpetas');
+            bar.innerHTML = '';
+            const categorias = Object.keys(catalogoGlobalIso);
+            
+            if (categorias.length === 0) {
+                document.getElementById('listaModalSimb').innerHTML = '<p style="text-align:center; grid-column:1/-1;">No se cargó catalogo.json o está vacío.</p>';
+                modal.style.display = 'flex'; 
+                return;
+            }
 
+            categorias.forEach((cat, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-cat-iso' + (idx === 0 ? ' active' : '');
+                btn.textContent = cat;
+                btn.onclick = () => {
+                    document.querySelectorAll('.btn-cat-iso').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    subcarpetaActivaIso = cat;
+                    renderizarItemsSubcarpeta(cat);
+                };
+                bar.appendChild(btn);
+            });
+
+            subcarpetaActivaIso = categorias[0];
+            renderizarItemsSubcarpeta(subcarpetaActivaIso);
+            modal.style.display = 'flex';
+        }
+
+        function renderizarItemsSubcarpeta(cat) {
+            const contenedor = document.getElementById('listaModalSimb');
+            contenedor.innerHTML = '';
+            document.getElementById('buscIsoSimb').value = '';
+            const items = catalogoGlobalIso[cat] || [];
+            
+            if (items.length === 0) {
+                contenedor.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Carpeta vacía.</p>'; 
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card-simb-iso';
+                card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}</span>`;
+                card.onclick = () => {
+                    cargarSVGDesdeRuta(item.ruta, item.nombre);
+                    cerrarModalSimb();
+                };
+                contenedor.appendChild(card);
+            });
+        }
+
+        function filtrarSimbolosIso() {
+            const txt = document.getElementById('buscIsoSimb').value.toLowerCase().trim();
+            const contenedor = document.getElementById('listaModalSimb');
+            contenedor.innerHTML = '';
+            if (!txt) { renderizarItemsSubcarpeta(subcarpetaActivaIso); return; }
+            let total = 0;
+            for (const cat in catalogoGlobalIso) {
+                catalogoGlobalIso[cat].forEach(item => {
+                    if (item.nombre.toLowerCase().includes(txt)) {
+                        total++;
+                        const card = document.createElement('div');
+                        card.className = 'card-simb-iso';
+                        card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}<br><small style="color:#777;">(${cat})</small></span>`;
+                        card.onclick = () => {
+                            cargarSVGDesdeRuta(item.ruta, item.nombre);
+                            cerrarModalSimb();
+                        };
+                        contenedor.appendChild(card);
+                    }
+                });
+            }
+            if (total === 0) contenedor.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No se encontraron resultados.</p>';
+        }
+
+        function cerrarModalSimb() { document.getElementById('modalSimbolosIso').style.display = 'none'; }
+
+        async function cargarSVGDesdeRuta(ruta, nombreItem) {
+            try {
+                const res = await fetch(ruta);
+                const svgTexto = await res.text();
+                const nombreArchivo = ruta.split('/').pop() || nombreItem;
+                cargarSVGTexto(svgTexto, nombreArchivo);
+            } catch (err) {
+                alert("Error al cargar el archivo SVG: " + err.message);
+            }
+        }
+
+        // --- Carga y Renderizado del SVG ---
         function cargarSVGTexto(svgTexto, nombreArchivo) {
             graph.clear();
             contadorPuertos = 1;
@@ -300,16 +504,19 @@
             fondo.set('escala', escala);
             fondo.addTo(graph);
 
-            let nombreParaBuscar = "";
+            let nombreLimpio = "";
             if (nombreArchivo) {
-                nombreParaBuscar = nombreArchivo.toLowerCase().replace('.svg', '').replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                document.getElementById('nombre-simbolo').value = nombreArchivo.replace('.svg', '');
+                nombreLimpio = nombreArchivo.replace('.svg', '');
+                document.getElementById('nombre-simbolo').value = nombreLimpio;
             }
 
             let puertosParaDibujar = [];
 
-            if (nombreParaBuscar && configPuertos[nombreParaBuscar]) {
-                puertosParaDibujar = configPuertos[nombreParaBuscar];
+            // Buscar en datos acumulados / config
+            if (nombreLimpio && datosAcumulados[nombreLimpio]) {
+                puertosParaDibujar = datosAcumulados[nombreLimpio];
+            } else if (nombreLimpio && configPuertos[nombreLimpio]) {
+                puertosParaDibujar = configPuertos[nombreLimpio];
             } else {
                 puertosParaDibujar = [
                     { id: "p_1", x: minX, y: minY + (altoReal / 2) },
@@ -477,14 +684,67 @@
             return { nombre, puertos: puertosExportados };
         }
 
-        // --- GUARDAR SIN MENSAJE DE CONFIRMACIÓN ---
-        function guardarYFusionar() {
+        // --- GUARDAR Y ACTUALIZAR CONFIG_PUERTOS.JSON ---
+        async function guardarYFusionar() {
             const datos = obtenerPuertosActuales();
             if (!datos) return;
 
-            datosAcumulados[datos.nombre] = datos.puertos;
+            // 1. Intentar descargar/leer primero las líneas escritas existentes de config_puertos.json
+            let baseJSON = {};
+            try {
+                const respuesta = await fetch('./config_puertos.json?t=' + new Date().getTime());
+                if (respuesta.ok) {
+                    baseJSON = await respuesta.json();
+                }
+            } catch (e) {
+                baseJSON = { ...datosAcumulados };
+            }
+
+            // 2. Fusionar respetando la estructura: sustituye las del símbolo actual y mantiene las existentes
+            baseJSON[datos.nombre] = datos.puertos;
+            datosAcumulados = baseJSON;
+
+            // Guardar en almacenamiento local
             localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
             actualizarTextarea();
+
+            // 3. Escribir/Enviar actualización hacia el archivo config_puertos.json
+            let guardadoExitoso = false;
+
+            // Intento A: Guardar vía servidor / endpoint local si está disponible
+            try {
+                const respuestaGuardado = await fetch('./config_puertos.json', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datosAcumulados, null, 4)
+                });
+                if (respuestaGuardado.ok) {
+                    guardadoExitoso = true;
+                    alert(`✅ "config_puertos.json" se ha actualizado correctamente en el servidor/directorio local con los puertos de "${datos.nombre}".`);
+                }
+            } catch (e) { console.log("Servidor local no admite escritura directa por POST."); }
+
+            // Intento B: Si el servidor web directo no está activo, ofrecer guardado por File System Access API
+            if (!guardadoExitoso && 'showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'config_puertos.json',
+                        types: [{ description: 'Archivo JSON de Configuración de Puertos', accept: { 'application/json': ['.json'] } }]
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(JSON.stringify(datosAcumulados, null, 4));
+                    await writable.close();
+                    guardadoExitoso = true;
+                    alert(`✅ Archivo "config_puertos.json" guardado con éxito reemplazando y añadiendo los puertos de "${datos.nombre}".`);
+                } catch (err) {
+                    if (err.name !== 'AbortError') console.error(err);
+                }
+            }
+
+            // Fallback C: Notificación estándar si no se guardó automáticamente
+            if (!guardadoExitoso) {
+                alert(` Símbolo "${datos.nombre}" actualizado en la vista de panel. Haz clic en "Descargar JSON" para guardar tu archivo directamente.`);
+            }
         }
 
         function descargarJSON() {

@@ -57,8 +57,9 @@
         .btn-success:hover { background: #27ae60; }
         .btn-archivo { background: #8e44ad; }
         .btn-archivo:hover { background: #71368a; }
-        .btn-svg { background: #0284c7; color: white; }
-        .btn-svg:hover { background: #0369a1; }
+        .btn-simb { background: #8e44ad; color: white; }
+        .btn-simb:hover { background: #71368a; }
+        
         .color-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; cursor: pointer; transition: transform 0.1s; }
         .color-btn:hover { transform: scale(1.15); }
         .color-btn.seleccionado { border: 3px solid #f1c40f; transform: scale(1.2); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
@@ -67,105 +68,23 @@
         .grosor-btn:hover { background: #e67e22; }
         .grosor-btn.seleccionado { background: #e67e22; border-color: #fff; }
 
-        /* Barra Secundaria de Categorías */
-        #barra-categorias {
-            background: #34495e;
-            color: white;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #2c3e50;
-            z-index: 90;
-            flex-wrap: wrap;
-        }
-        .btn-categoria {
-            background: #2DB01E;
-            color: white;
-            border: 1px solid #555;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .btn-categoria:hover, .btn-categoria.active { background: #3498db; border-color: #2980b9; }
-        #input-buscador {
-            padding: 6px 10px;
-            border-radius: 4px;
-            border: none;
-            font-size: 12px;
-            width: 200px;
-        }
-
         /* Área Central Lienzo */
         #main { display: flex; flex: 1; width: 100%; overflow: hidden; position: relative; }
         #lienzo { flex: 1; background: #f9f9f9; position: relative; overflow: hidden; cursor: default; height: 100%; transition: background 0.3s; }
         #lienzo.sin-rejilla { background: white; }
 
-        /* Modal Símbolos */
-        #modal-simbolos {
-            position: absolute;
-            top: 100px;
-            left: 50px;
-            width: 400px;
-            height: 400px;
-            min-width: 250px;
-            min-height: 200px;
-            background: white;
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-            resize: both;
-            overflow: hidden;
-        }
-        #modal-header {
-            background: #3498db;
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
-            cursor: move;
-        }
-        #modal-header span { font-size: 14px; }
-        #modal-header button {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        #modal-contenido {
-            padding: 15px;
-            overflow-y: auto;
-            flex: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-        }
-        .simbolo-card {
-            border: 1px solid #eee;
-            padding: 10px;
-            border-radius: 4px;
-            background: #fff;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
-        }
-        .simbolo-card:hover { border-color: #3498db; background: #f1f2f6; transform: scale(1.05); }
-        .simbolo-card img { width: 80px; height: 60px; object-fit: contain; pointer-events: none; }
-        .simbolo-card span { font-size: 11px; font-weight: bold; color: #333; text-align: center; line-height: 1.2; }
+        /* Estilos idénticos al modal de símbolos del isométrico */
+        #modalSimbolosIso { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content-iso { background: #fff; width: 650px; height: 80vh; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; border: 2px solid #3498db; }
+        .modal-header-iso { background: #3498db; color: white; padding: 10px 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .modal-cats-iso { background: #2c3e50; padding: 6px 10px; display: flex; gap: 6px; overflow-x: auto; flex-shrink: 0; align-items: center; }
+        .btn-cat-iso { background: #34495e; color: #fff; border: 1px solid #555; padding: 4px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; font-weight: bold; white-space: nowrap; }
+        .btn-cat-iso.active, .btn-cat-iso:hover { background: #27ae60; border-color: #27ae60; }
+        .modal-body-iso { padding: 15px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; flex: 1; }
+        .card-simb-iso { border: 1px solid #ddd; padding: 8px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; background: #fafafa; transition: all 0.2s; }
+        .card-simb-iso:hover { background: #eef2f7; border-color: #3498db; transform: scale(1.03); }
+        .card-simb-iso img { width: 70px; height: 50px; object-fit: contain; }
+        .card-simb-iso span { font-size: 10px; text-align: center; font-weight: bold; color: #333; line-height: 1.2; }
 
         /* Menú Contextual */
         #menu-contextual { position: absolute; display: none; background: white; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); border-radius: 4px; z-index: 2000; padding: 5px 0; min-width: 180px; }
@@ -178,48 +97,17 @@
         #caja-impresion svg { width: 100% !important; height: 100% !important; }
 
         /* Visibilidad y Estilos de Puertos SVG en Pantalla */
-        .joint-port {
-            opacity: 0.75;
-            transition: opacity 0.2s, transform 0.2s;
-        }
-        .joint-port:hover, .joint-element:hover .joint-port {
-            opacity: 1;
-        }
-        .joint-port circle {
-            fill: #3498db !important;
-            stroke: #ffffff !important;
-            stroke-width: 1.5px !important;
-            cursor: crosshair !important;
-            r: 5px !important;
-        }
-        .joint-port circle:hover {
-            fill: #e74c3c !important;
-            r: 7px !important;
-        }
+        .joint-port { opacity: 0.75; transition: opacity 0.2s, transform 0.2s; }
+        .joint-port:hover, .joint-element:hover .joint-port { opacity: 1; }
+        .joint-port circle { fill: #3498db !important; stroke: #ffffff !important; stroke-width: 1.5px !important; cursor: crosshair !important; r: 5px !important; }
+        .joint-port circle:hover { fill: #e74c3c !important; r: 7px !important; }
 
         /* Tiradores/Nodos Discretos para las Líneas */
-        .joint-link-tools, .joint-tool-segments, .joint-tools, .joint-tools-layer {
-            z-index: 999 !important;
+        .joint-link-tools, .joint-tool-segments, .joint-tools, .joint-tools-layer { z-index: 999 !important; }
+        .joint-link-tools .handle, .joint-tool-segments .handle, .joint-tools .handle, .joint-link-tools circle, .joint-tool-segments circle, .joint-tools circle {
+            r: 3.5px !important; fill: #3498db !important; stroke: #ffffff !important; stroke-width: 1.5px !important; cursor: pointer !important; transition: transform 0.15s ease, fill 0.15s ease;
         }
-        .joint-link-tools .handle,
-        .joint-tool-segments .handle,
-        .joint-tools .handle,
-        .joint-link-tools circle,
-        .joint-tool-segments circle,
-        .joint-tools circle {
-            r: 3.5px !important;
-            fill: #3498db !important;
-            stroke: #ffffff !important;
-            stroke-width: 1.5px !important;
-            cursor: pointer !important;
-            transition: transform 0.15s ease, fill 0.15s ease;
-        }
-        .joint-link-tools circle:hover,
-        .joint-tool-segments circle:hover,
-        .joint-tools circle:hover {
-            fill: #e74c3c !important;
-            transform: scale(1.4);
-        }
+        .joint-link-tools circle:hover, .joint-tool-segments circle:hover, .joint-tools circle:hover { fill: #e74c3c !important; transform: scale(1.4); }
 
         /* Reglas de Impresión Estrictas */
         @media print {
@@ -228,32 +116,17 @@
             body * { visibility: hidden !important; }
             #caja-impresion, #caja-impresion * { visibility: visible !important; }
             #caja-impresion {
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
-                position: fixed !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                background: white !important;
-                z-index: 99999 !important;
+                display: flex !important; align-items: center; justify-content: center; position: fixed !important;
+                left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important;
+                margin: 0 !important; padding: 0 !important; background: white !important; z-index: 99999 !important;
             }
-            .joint-port, .joint-tools, .joint-link-tools, .joint-tool-segments, .joint-grid {
-                display: none !important;
-                visibility: hidden !important;
-            }
+            .joint-port, .joint-tools, .joint-link-tools, .joint-tool-segments, .joint-grid { display: none !important; visibility: hidden !important; }
         }
 
         @media (max-width: 768px) {
             .btn-tool { padding: 5px 8px; font-size: 11px; }
             .color-btn { width: 18px; height: 18px; }
-            #modal-simbolos { width: 90%; left: 5%; top: 150px; }
-            #input-buscador { width: 100px; }
-            #barra-categorias { gap: 5px; padding: 5px; }
-            .btn-categoria { padding: 4px 8px; font-size: 11px; }
+            .modal-content-iso { width: 95%; height: 90vh; }
         }
     </style>
 </head>
@@ -272,7 +145,7 @@
 
     <div id="toolbar">
         <div class="tool-group">
-            <button class="btn-tool btn-archivo"  onclick="nuevoProyecto()">📄 Nuevo proyecto</button>
+            <button class="btn-tool btn-archivo" onclick="nuevoProyecto()">📄 Nuevo proyecto</button>
             <button class="btn-tool btn-archivo" onclick="abrirProyecto()">📂 Abrir proyecto</button>
             <button class="btn-tool btn-archivo" onclick="guardarProyecto()">💾 Guardar proyecto</button>
             <button class="btn-tool btn-archivo" onclick="prepararImpresion()">🖨️ Imprimir</button>
@@ -281,6 +154,7 @@
         </div>
 
         <div class="tool-group">
+            <button class="btn-tool btn-simb" id="btnSimb" onclick="abrirModalCatalogo()">➕ Añadir Símbolo P&ID</button>
             <button class="btn-tool btn-danger" onclick="eliminarSeleccionado()">🗑️ Borrar</button>
             <button class="btn-tool btn-warning" onclick="rotar90()">🔄 Girar 90°</button>
         </div>
@@ -312,30 +186,30 @@
             <button class="btn-tool" onclick="toggleNombreSimbolo()">🏷️ Nombre Símbolo</button>
         </div>
         <div class="tool-group">
-            <button class="btn-tool"  onclick="centrarDibujo()">🎯 Centrar Dibujo</button>
-            <button class="btn-tool"  onclick="toggleRejilla(this)" id="btn-rejilla">📐 Rejilla ON</button>
+            <button class="btn-tool" onclick="centrarDibujo()">🎯 Centrar Dibujo</button>
+            <button class="btn-tool" onclick="toggleRejilla(this)" id="btn-rejilla">📐 Rejilla ON</button>
         </div>
     </div>
 
-    <div id="barra-categorias">
-        <span style="font-size: 11px; font-weight: bold; opacity: 0.8;">Biblioteca:</span>
-        <div id="botones-categorias" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
-        
-        <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-            <input type="text" id="input-buscador" placeholder="🔍 Buscar..." oninput="buscarSimbolos()">
+    <!-- Modal Catálogo de Símbolos Estilo Isométrico -->
+    <div id="modalSimbolosIso">
+        <div class="modal-content-iso">
+            <div class="modal-header-iso">
+                <span>Biblioteca P&ID (svg-procesados)</span>
+                <span style="cursor:pointer; font-size:18px;" onclick="cerrarModalSimb()">✖</span>
+            </div>
+            <div class="modal-cats-iso" id="barSubcarpetas"></div>
+            <div style="padding: 6px 10px; background: #eee; display: flex; justify-content: flex-end;">
+                <input type="text" id="buscIsoSimb" placeholder="🔍 Buscar en todas las carpetas..." style="padding:4px 8px; font-size:12px; width:220px; border-radius:3px; border:1px solid #ccc;" oninput="filtrarSimbolosIso()">
+            </div>
+            <div class="modal-body-iso" id="listaModalSimb">
+                <p style="text-align:center; grid-column:1/-1;">Cargando catálogo...</p>
+            </div>
         </div>
     </div>
 
     <div id="main">
         <div id="lienzo"></div>
-    </div>
-
-    <div id="modal-simbolos">
-        <div id="modal-header">
-            <span id="modal-titulo">Símbolos</span>
-            <button onclick="cerrarModal()">✖</button>
-        </div>
-        <div id="modal-contenido"></div>
     </div>
 
     <div id="menu-contextual">
@@ -362,7 +236,8 @@
         let currentScale = 1;
         let grosorActual = 2; 
         let rejillaActiva = true;
-        let catalogoGlobal = {};
+        let catalogoGlobalIso = {};
+        let subcarpetaActivaIso = '';
         
         let cambiosSinGuardar = false;
         let archivoHandleActual = null;
@@ -382,13 +257,7 @@
 
         const configuracionRouter = {
             name: 'manhattan',
-            args: {
-                step: 10,
-                padding: 20,
-                maxDirections: 4,
-                startDirections: ['top', 'bottom', 'left', 'right'],
-                endDirections: ['top', 'bottom', 'left', 'right']
-            }
+            args: { step: 10, padding: 20, maxDirections: 4 }
         };
 
         const paper = new joint.dia.Paper({
@@ -399,13 +268,7 @@
             drawGrid: true, 
             cellViewNamespace: joint.shapes,
             interactive: {
-                linkMove: true,
-                labelMove: false,
-                arrowheadMove: true,
-                vertexMove: true,
-                vertexAdd: true,
-                vertexRemove: true,
-                useLinkTools: false
+                linkMove: true, labelMove: false, arrowheadMove: true, vertexMove: true, vertexAdd: true, vertexRemove: true, useLinkTools: false
             },
             magnetThreshold: 'onleave',
             linkPinning: false, 
@@ -417,17 +280,19 @@
                     this.el.style.overflow = 'visible';
                 }
             }),
-            defaultLink: new joint.shapes.standard.Link({
-                router: configuracionRouter,
-                connector: { name: 'jumpover', args: { size: 10 } },
-                attrs: { 
-                    line: { 
-                        stroke: '#000', 
-                        strokeWidth: 2, 
-                        targetMarker: null 
-                    } 
-                }
-            })
+            defaultLink: function() {
+                return new joint.shapes.standard.Link({
+                    router: configuracionRouter,
+                    connector: { name: 'jumpover', args: { size: 10 } },
+                    attrs: { 
+                        line: { 
+                            stroke: colorActual, 
+                            strokeWidth: grosorActual, 
+                            targetMarker: null 
+                        } 
+                    }
+                });
+            }
         });
 
         paper.on('element:pointerup', function(elementView) {
@@ -461,14 +326,7 @@
                     port: { 
                         position: { name: 'absolute' }, 
                         attrs: { 
-                            circle: { 
-                                r: 5, 
-                                magnet: true, 
-                                stroke: '#ffffff', 
-                                strokeWidth: 1.5, 
-                                fill: '#3498db', 
-                                cursor: 'crosshair' 
-                            } 
+                            circle: { r: 5, magnet: true, stroke: '#ffffff', strokeWidth: 1.5, fill: '#3498db', cursor: 'crosshair' } 
                         } 
                     }
                 },
@@ -484,7 +342,7 @@
         let configPuertos = {};
 
         async function cargarConfigPuertos() {
-            const urlSinCache = '/config_puertos.json?t=' + new Date().getTime();
+            const urlSinCache = './config_puertos.json?t=' + new Date().getTime();
             try {
                 const res = await fetch(urlSinCache);
                 if (res.ok) {
@@ -496,95 +354,80 @@
         }
         cargarConfigPuertos();
 
-        async function cargarPaleta() {
+        // Cargar catálogo de símbolos SVG idéntico al isométrico
+        async function cargarCatalogoIso() {
             try {
                 const res = await fetch('./catalogo.json?t=' + new Date().getTime());
-                catalogoGlobal = await res.json();
-                
-                const contenedorBotones = document.getElementById('botones-categorias');
-                contenedorBotones.innerHTML = '';
-
-                const categoriasOrdenadas = Object.keys(catalogoGlobal).sort((a, b) => a.localeCompare(b));
-
-                categoriasOrdenadas.forEach(categoria => {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-categoria';
-                    btn.innerText = categoria;
-                    btn.onclick = () => abrirCategoria(categoria, btn);
-                    contenedorBotones.appendChild(btn);
-                });
-            } catch (error) { 
-                console.error("Error catálogo:", error);
-            }
+                catalogoGlobalIso = await res.json();
+            } catch (e) { console.error("Error al cargar catálogo P&ID", e); }
         }
+        cargarCatalogoIso();
 
-        function abrirCategoria(categoria, btn) {
-            document.querySelectorAll('.btn-categoria').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-
-            const modal = document.getElementById('modal-simbolos');
-            const titulo = document.getElementById('modal-titulo');
-            const contenido = document.getElementById('modal-contenido');
-
-            titulo.innerText = categoria;
-            contenido.innerHTML = '';
-
-            const simbolos = catalogoGlobal[categoria] || [];
-
-            simbolos.forEach(archivo => {
-                const card = document.createElement('div');
-                card.className = 'simbolo-card';
-                card.innerHTML = `<img src="${archivo.ruta}"><span>${archivo.nombre}</span>`;
-                
-                card.onclick = () => {
-                    insertarSimboloEnCentro(archivo.ruta, archivo.nombre);
-                    cerrarModal();
+        function abrirModalCatalogo() {
+            const modal = document.getElementById('modalSimbolosIso');
+            const bar = document.getElementById('barSubcarpetas');
+            bar.innerHTML = '';
+            const categorias = Object.keys(catalogoGlobalIso);
+            if (categorias.length === 0) {
+                document.getElementById('listaModalSimb').innerHTML = '<p style="text-align:center; grid-column:1/-1;">No se cargó catalogo.json o está vacío.</p>';
+                modal.style.display = 'flex'; return;
+            }
+            categorias.forEach((cat, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-cat-iso' + (idx === 0 ? ' active' : '');
+                btn.textContent = cat;
+                btn.onclick = () => {
+                    document.querySelectorAll('.btn-cat-iso').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    subcarpetaActivaIso = cat;
+                    renderizarItemsSubcarpeta(cat);
                 };
-                contenido.appendChild(card);
+                bar.appendChild(btn);
             });
-
+            subcarpetaActivaIso = categorias[0];
+            renderizarItemsSubcarpeta(subcarpetaActivaIso);
             modal.style.display = 'flex';
         }
 
-        function buscarSimbolos() {
-            const termino = document.getElementById('input-buscador').value.toLowerCase().trim();
-            const modal = document.getElementById('modal-simbolos');
-            const titulo = document.getElementById('modal-titulo');
-            const contenido = document.getElementById('modal-contenido');
+        function renderizarItemsSubcarpeta(cat) {
+            const contenedor = document.getElementById('listaModalSimb');
+            contenedor.innerHTML = '';
+            document.getElementById('buscIsoSimb').value = '';
+            const items = catalogoGlobalIso[cat] || [];
+            if (items.length === 0) {
+                contenedor.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Carpeta vacía.</p>'; return;
+            }
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card-simb-iso';
+                card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}</span>`;
+                card.onclick = () => { insertarSimboloEnCentro(item.ruta, item.nombre); cerrarModalSimb(); };
+                contenedor.appendChild(card);
+            });
+        }
 
-            if (termino === '') { cerrarModal(); return; }
-
-            titulo.innerText = `Resultados: "${termino}"`;
-            contenido.innerHTML = '';
-            
-            let encontrados = 0;
-            Object.keys(catalogoGlobal).forEach(categoria => {
-                catalogoGlobal[categoria].forEach(archivo => {
-                    if (archivo.nombre.toLowerCase().includes(termino)) {
-                        encontrados++;
+        function filtrarSimbolosIso() {
+            const txt = document.getElementById('buscIsoSimb').value.toLowerCase().trim();
+            const contenedor = document.getElementById('listaModalSimb');
+            contenedor.innerHTML = '';
+            if (!txt) { renderizarItemsSubcarpeta(subcarpetaActivaIso); return; }
+            let total = 0;
+            for (const cat in catalogoGlobalIso) {
+                catalogoGlobalIso[cat].forEach(item => {
+                    if (item.nombre.toLowerCase().includes(txt)) {
+                        total++;
                         const card = document.createElement('div');
-                        card.className = 'simbolo-card';
-                        card.innerHTML = `<img src="${archivo.ruta}"><span>${archivo.nombre}</span>`;
-                        card.onclick = () => {
-                            insertarSimboloEnCentro(archivo.ruta, archivo.nombre);
-                            cerrarModal();
-                        };
-                        contenido.appendChild(card);
+                        card.className = 'card-simb-iso';
+                        card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}<br><small style="color:#777;">(${cat})</small></span>`;
+                        card.onclick = () => { insertarSimboloEnCentro(item.ruta, item.nombre); cerrarModalSimb(); };
+                        contenedor.appendChild(card);
                     }
                 });
-            });
-
-            if (encontrados === 0) {
-                contenido.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#999;">No se encontraron símbolos.</p>';
             }
-            modal.style.display = 'flex';
+            if (total === 0) contenedor.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No se encontraron resultados.</p>';
         }
 
-        function cerrarModal() {
-            document.getElementById('modal-simbolos').style.display = 'none';
-            document.getElementById('input-buscador').value = '';
-            document.querySelectorAll('.btn-categoria').forEach(b => b.classList.remove('active'));
-        }
+        function cerrarModalSimb() { document.getElementById('modalSimbolosIso').style.display = 'none'; }
 
         async function procesarImagenSVG(ruta) {
             const res = await fetch(ruta);
@@ -630,10 +473,7 @@
             const svgLimpio = new XMLSerializer().serializeToString(svgElement);
             const base64Data = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgLimpio)));
             
-            return {
-                dataUri: base64Data,
-                minX, minY, anchoReal, altoReal
-            };
+            return { dataUri: base64Data, minX, minY, anchoReal, altoReal };
         }
 
         async function insertarSimboloEnCentro(ruta, nombreMostrado) {
@@ -692,6 +532,12 @@
                 elemento.set('mostrarNombre', false);
                 elemento.set('anchoReal', datosSvg.anchoReal);
                 elemento.set('altoReal', datosSvg.altoReal);
+                
+                // Aplicar tinte/color si el usuario cambió el color predeterminado
+                if (colorActual !== '#000000') {
+                    elemento.attr('image/style', `filter: drop-shadow(0 0 0 ${colorActual}) saturate(10);`);
+                }
+
                 elemento.addTo(graph);
             } catch (err) {
                 console.error("Error al cargar SVG: ", err);
@@ -719,10 +565,7 @@
                 try {
                     const handle = archivoHandleActual || await window.showSaveFilePicker({
                         suggestedName: 'esquema_PID.pid.json',
-                        types: [{
-                            description: 'Archivo P&ID (*.pid.json)',
-                            accept: { 'application/json': ['.json', '.pid.json'] }
-                        }]
+                        types: [{ description: 'Archivo P&ID (*.pid.json)', accept: { 'application/json': ['.json', '.pid.json'] } }]
                     });
                     const writable = await handle.createWritable();
                     await writable.write(data);
@@ -748,62 +591,54 @@
             cambiosSinGuardar = false;
         }
 
-        /* Exportación SVG idéntica a la del ejemplo que centra perfectamente */
         function guardarSVG() {
-    const bbox = graph.getBBox();
-    if (!bbox || bbox.width === 0 || bbox.height === 0) {
-        alert("No hay elementos en el lienzo para exportar.");
-        return;
-    }
+            const bbox = graph.getBBox();
+            if (!bbox || bbox.width === 0 || bbox.height === 0) {
+                alert("No hay elementos en el lienzo para exportar.");
+                return;
+            }
 
-    // Definir un margen estético alrededor del dibujo (igual que en el ejemplo funcional)
-    const padding = 80;
-    const minX = bbox.x - padding;
-    const minY = bbox.y - padding;
-    const w = bbox.width + padding * 2;
-    const h = bbox.height + padding * 2;
+            const padding = 80;
+            const minX = bbox.x - padding;
+            const minY = bbox.y - padding;
+            const w = bbox.width + padding * 2;
+            const h = bbox.height + padding * 2;
 
-    // Clonar el SVG principal de JointJS
-    const svgClon = paper.svg.cloneNode(true);
-    
-    // Configurar el viewBox exactamente con los límites del dibujo para forzar el centrado
-    svgClon.setAttribute('viewBox', `${minX} ${minY} ${w} ${h}`);
-    svgClon.setAttribute('width', '100%');
-    svgClon.setAttribute('height', '100%');
-    svgClon.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    svgClon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            const svgClon = paper.svg.cloneNode(true);
+            svgClon.setAttribute('viewBox', `${minX} ${minY} ${w} ${h}`);
+            svgClon.setAttribute('width', '100%');
+            svgClon.setAttribute('height', '100%');
+            svgClon.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            svgClon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
-    // Limpiar elementos de interfaz que no deben salir en la exportación
-    svgClon.querySelectorAll('.joint-grid').forEach(el => el.remove());
-    svgClon.querySelectorAll('.joint-port').forEach(el => el.remove());
-    svgClon.querySelectorAll('.joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
-    
-    svgClon.querySelectorAll('.joint-link path').forEach(el => { 
-        if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
-    });
+            svgClon.querySelectorAll('.joint-grid').forEach(el => el.remove());
+            svgClon.querySelectorAll('.joint-port').forEach(el => el.remove());
+            svgClon.querySelectorAll('.joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
+            
+            svgClon.querySelectorAll('.joint-link path').forEach(el => { 
+                if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
+            });
 
-    // Insertar un fondo blanco limpio que cubra exactamente el área del viewBox centrado
-    const rectFondo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rectFondo.setAttribute('x', minX);
-    rectFondo.setAttribute('y', minY);
-    rectFondo.setAttribute('width', w);
-    rectFondo.setAttribute('height', h);
-    rectFondo.setAttribute('fill', '#ffffff');
-    svgClon.insertBefore(rectFondo, svgClon.firstChild);
+            const rectFondo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rectFondo.setAttribute('x', minX);
+            rectFondo.setAttribute('y', minY);
+            rectFondo.setAttribute('width', w);
+            rectFondo.setAttribute('height', h);
+            rectFondo.setAttribute('fill', '#ffffff');
+            svgClon.insertBefore(rectFondo, svgClon.firstChild);
 
-    // Generar y descargar el archivo SVG centrado
-    const svgTexto = new XMLSerializer().serializeToString(svgClon);
-    const blob = new Blob([svgTexto], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'esquema_PID.svg';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
+            const svgTexto = new XMLSerializer().serializeToString(svgClon);
+            const blob = new Blob([svgTexto], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'esquema_PID.svg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
 
         function abrirProyecto() {
             if (cambiosSinGuardar && graph.getCells().length > 0) {
@@ -833,7 +668,7 @@
                                 el.attr('image/xlink:href', datosSvg.dataUri);
                                 el.attr('image/href', datosSvg.dataUri);
                             } catch (err) {
-                                console.error("No se pudo volver a cargar la imagen SVG desde:", ruta, err);
+                                console.error("No se pudo recargar imagen desde:", ruta, err);
                             }
                         }
 
@@ -855,7 +690,7 @@
                     archivoHandleActual = null;
                     alert("Proyecto cargado con éxito.");
                 } catch (err) {
-                    alert("Error al leer el archivo. Asegúrate de que sea un JSON de P&ID válido.");
+                    alert("Error al leer el archivo. Asegúrate de que sea un JSON válido.");
                     console.error(err);
                 }
                 event.target.value = '';
@@ -938,14 +773,23 @@
             }, 250);
         };
 
+        // --- CORRECCIÓN DE LA FUNCIÓN DE COLOR ---
         window.setColor = function(hex, btn) {
             colorActual = hex;
             document.querySelectorAll('#toolbar .color-btn').forEach(b => b.classList.remove('seleccionado'));
             btn.classList.add('seleccionado');
+
+            // Actualizar símbolos seleccionados (usando filtro de CSS para colorear SVGs)
             const seleccionados = paper.model.getElements().filter(el => el.get('selected'));
             seleccionados.forEach(el => { 
-                el.attr('image/style', colorActual === '#000000' ? '' : `filter: drop-shadow(0 0 0 ${colorActual}) saturate(10);`); 
+                if (el.get('tipo') === 'texto') {
+                    el.attr('label/fill', colorActual);
+                } else {
+                    el.attr('image/style', colorActual === '#000000' ? '' : `filter: drop-shadow(0 0 0 ${colorActual}) saturate(10);`); 
+                }
             });
+
+            // Actualizar líneas seleccionadas
             const lineas = paper.model.getLinks().filter(link => link.get('selected'));
             lineas.forEach(link => link.attr('line/stroke', colorActual));
         };
@@ -971,11 +815,17 @@
             document.getElementById('menu-contextual').style.display = 'none';
         };
 
+        // --- CORRECCIÓN DE LA FUNCIÓN DE GROSOR ---
         window.setGrosor = function(grosor, btn) {
             grosorActual = grosor;
-            document.querySelectorAll('.grosor-btn').forEach(b => b.classList.remove('seleccionado')); btn.classList.add('seleccionado');
+            document.querySelectorAll('.grosor-btn').forEach(b => b.classList.remove('seleccionado')); 
+            btn.classList.add('seleccionado');
+
+            // Actualizar grosor solo en las líneas seleccionadas
             const lineas = paper.model.getLinks().filter(link => link.get('selected'));
-            lineas.forEach(link => { link.attr('line/strokeWidth', grosorActual); });
+            lineas.forEach(link => { 
+                link.attr('line/strokeWidth', grosorActual); 
+            });
         };
 
         window.toggleLinea = function() {
@@ -1242,97 +1092,6 @@
                 if (etiquetaId) { const etiquetaExistente = graph.getCell(etiquetaId); if (etiquetaExistente) etiquetaExistente.remove(); elementoSeleccionado.unset('etiquetaId'); }
             }
         };
-
-        (function configurarModalInteractivo() {
-            const modal = document.getElementById('modal-simbolos');
-            const header = document.getElementById('modal-header');
-
-            let isDragging = false, startX, startY, initialLeft, initialTop;
-
-            header.addEventListener('mousedown', (e) => {
-                if (e.target.tagName === 'BUTTON') return;
-                isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                initialLeft = modal.offsetLeft;
-                initialTop = modal.offsetTop;
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-            });
-
-            function onMouseMove(e) {
-                if (!isDragging) return;
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-                modal.style.left = `${initialLeft + dx}px`;
-                modal.style.top = `${initialTop + dy}px`;
-            }
-
-            function onMouseUp() {
-                isDragging = false;
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-            }
-
-            let isResizing = false, resizeDir = '', startW, startH, startClientX, startClientY;
-            const borderThreshold = 10;
-
-            modal.addEventListener('mousemove', (e) => {
-                if (isResizing) return;
-                const rect = modal.getBoundingClientRect();
-                const edgeRight = rect.right - e.clientX;
-                const edgeBottom = rect.bottom - e.clientY;
-
-                if (edgeRight < borderThreshold && edgeBottom < borderThreshold) {
-                    modal.style.cursor = 'se-resize';
-                    resizeDir = 'se';
-                } else if (edgeRight < borderThreshold) {
-                    modal.style.cursor = 'e-resize';
-                    resizeDir = 'e';
-                } else if (edgeBottom < borderThreshold) {
-                    modal.style.cursor = 's-resize';
-                    resizeDir = 's';
-                } else {
-                    modal.style.cursor = 'default';
-                    resizeDir = '';
-                }
-            });
-
-            modal.addEventListener('mousedown', (e) => {
-                if (!resizeDir) return;
-                isResizing = true;
-                startClientX = e.clientX;
-                startClientY = e.clientY;
-                startW = modal.offsetWidth;
-                startH = modal.offsetHeight;
-
-                document.addEventListener('mousemove', onResizeMove);
-                document.addEventListener('mouseup', onResizeUp);
-                e.preventDefault();
-            });
-
-            function onResizeMove(e) {
-                if (!isResizing) return;
-                const dx = e.clientX - startClientX;
-                const dy = e.clientY - startClientY;
-
-                if (resizeDir === 'se' || resizeDir === 'e') {
-                    modal.style.width = `${Math.max(250, startW + dx)}px`;
-                }
-                if (resizeDir === 'se' || resizeDir === 's') {
-                    modal.style.height = `${Math.max(200, startH + dy)}px`;
-                }
-            }
-
-            function onResizeUp() {
-                isResizing = false;
-                document.removeEventListener('mousemove', onResizeMove);
-                document.removeEventListener('mouseup', onResizeUp);
-                modal.style.cursor = 'default';
-            }
-        })();
-
-        cargarPaleta();
     </script>
 </body>
 </html>
