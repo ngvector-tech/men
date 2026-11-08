@@ -4,45 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Editor P&ID - MEN</title>
-    <!-- JointJS CSS & JS Dependencies -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@joint/core@4.1.0/dist/joint.css" />
     <script src="https://cdn.jsdelivr.net/npm/@joint/core@4.1.0/dist/joint.js"></script>
     <style>
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; flex-direction: column; font-family: Arial, sans-serif; overflow: hidden; }
         
-        /* Estilos Header Superior */
         #header-nativo {
-            background-color: #1a252f;
-            color: white;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            box-sizing: border-box;
-            width: 100%;
-            flex-shrink: 0;
+            background-color: #1a252f; color: white; height: 40px;
+            display: flex; align-items: center; padding: 0 15px;
+            box-sizing: border-box; width: 100%; flex-shrink: 0;
             border-bottom: 2px solid #3498db;
         }
         #header-nativo .logo-text { font-size: 24px; font-weight: 900; color: #3498db; margin-right: 15px; letter-spacing: 1px; }
         #header-nativo .empresa-text { font-size: 13px; font-weight: bold; color: #ecf0f1; margin-right: 20px; }
         #header-nativo .autor-text { font-size: 10px; color: #7f8c8d; }
         
-        /* Botones de navegación superior */
         .nav-links { margin-left: auto; display: flex; gap: 8px; }
         .btn-navegacion {
-            padding: 5px 10px;
-            background: #34495e;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            border: 1px solid #4e6d8c;
-            transition: background 0.2s;
+            padding: 5px 10px; background: #34495e; color: white;
+            text-decoration: none; border-radius: 4px; font-size: 11px;
+            font-weight: bold; border: 1px solid #4e6d8c; transition: background 0.2s;
         }
         .btn-navegacion:hover { background: #3498db; }
 
-        /* Barra de Herramientas Principal */
         #toolbar { background: #2c3e50; color: white; padding: 8px 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; flex-wrap: wrap; flex-shrink: 0; }
         .tool-group { display: flex; align-items: center; gap: 6px; border-right: 1px solid #555; padding-right: 12px; }
         .tool-group:last-child { border-right: none; padding-right: 0; }
@@ -57,6 +41,11 @@
         .btn-success:hover { background: #27ae60; }
         .btn-archivo { background: #8e44ad; }
         .btn-archivo:hover { background: #71368a; }
+        .btn-pid { background: #8e44ad; }
+        .btn-pid:hover { background: #71368a; }
+        .btn-sombreado { background: #16a085; }
+        .btn-sombreado:hover { background: #117a65; }
+        
         .color-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; cursor: pointer; transition: transform 0.1s; }
         .color-btn:hover { transform: scale(1.15); }
         .color-btn.seleccionado { border: 3px solid #f1c40f; transform: scale(1.2); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
@@ -64,116 +53,88 @@
         .grosor-btn { padding: 4px 8px; background: #34495e; border: 1px solid #555; color: white; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; }
         .grosor-btn:hover { background: #e67e22; }
         .grosor-btn.seleccionado { background: #e67e22 !important; border-color: #fff !important; }
+        .grosor-btn.grosor-tuberia { background: linear-gradient(135deg, #16a085, #2c3e50); border: 1px solid #1abc9c; }
+        .grosor-btn.grosor-tuberia:hover { background: linear-gradient(135deg, #1abc9c, #34495e); }
 
-        .grosor-btn.grosor-tuberia {
-            background: linear-gradient(135deg, #16a085, #2c3e50);
-            border: 1px solid #1abc9c;
-        }
-        .grosor-btn.grosor-tuberia:hover {
-            background: linear-gradient(135deg, #1abc9c, #34495e);
-        }
-
-        /* Barra Secundaria de Categorías */
-        #barra-categorias {
-            background: #34495e;
-            color: white;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #2c3e50;
-            z-index: 90;
-            flex-wrap: wrap;
-        }
-        .btn-categoria {
-            background: #2DB01E;
-            color: white;
-            border: 1px solid #555;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .btn-categoria:hover, .btn-categoria.active { background: #3498db; border-color: #2980b9; }
-        #input-buscador {
-            padding: 6px 10px;
-            border-radius: 4px;
-            border: none;
-            font-size: 12px;
-            width: 200px;
-        }
-
-        /* Área Central Lienzo */
         #main { display: flex; flex: 1; width: 100%; overflow: hidden; position: relative; }
         #lienzo { flex: 1; background: #f9f9f9; position: relative; overflow: hidden; cursor: default; height: 100%; transition: background 0.3s; }
         #lienzo.sin-rejilla { background: white; }
 
-        /* Modal Símbolos */
+        /* --- MODAL SÍMBOLOS --- */
         #modal-simbolos {
-            position: absolute;
-            top: 100px;
-            left: 50px;
-            width: 400px;
-            height: 400px;
-            min-width: 250px;
-            min-height: 200px;
-            background: white;
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
+            position: absolute; top: 100px; left: 50px;
+            width: 500px; height: 480px;
+            min-width: 300px; min-height: 250px;
+            background: white; border: 2px solid #3498db;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none; flex-direction: column;
+            z-index: 1000; 
             resize: both;
             overflow: hidden;
         }
+        #modal-simbolos.modo-sombreado { border-color: #16a085; }
+
         #modal-header {
-            background: #3498db;
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
-            cursor: move;
+            background: #3498db; color: white; padding: 10px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: bold; border-top-left-radius: 6px; border-top-right-radius: 6px;
+            cursor: grab; flex-shrink: 0; user-select: none;
         }
+        #modal-header:active { cursor: grabbing; }
+        #modal-simbolos.modo-sombreado #modal-header { background: #16a085; }
         #modal-header span { font-size: 14px; }
         #modal-header button {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            font-weight: bold;
+            background: transparent; border: none; color: white;
+            font-size: 18px; cursor: pointer; font-weight: bold;
         }
+
+        #modal-toolbar {
+            background: #2c3e50; padding: 8px 10px;
+            display: flex; gap: 10px; align-items: center;
+            flex-shrink: 0;
+        }
+        #modal-simbolos.modo-sombreado #modal-toolbar { background: #0e6655; }
+        
+        #modal-toolbar select {
+            padding: 4px 8px; font-size: 12px; border-radius: 4px;
+            border: 1px solid #555; background: #34495e; color: #fff;
+            font-weight: bold; cursor: pointer; outline: none;
+        }
+        #modal-simbolos.modo-sombreado #modal-toolbar select { background: #1abc9c; border-color: #1abc9c; }
+        
+        #modal-buscador {
+            padding: 4px 8px; font-size: 12px; flex: 1;
+            border-radius: 4px; border: 1px solid #ccc;
+        }
+
         #modal-contenido {
-            padding: 15px;
-            overflow-y: auto;
-            flex: 1;
+            padding: 15px; overflow-y: auto; flex: 1;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 10px;
         }
         .simbolo-card {
-            border: 1px solid #eee;
-            padding: 10px;
-            border-radius: 4px;
-            background: #fff;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
+            border: 1px solid #eee; padding: 10px; border-radius: 4px;
+            background: #fff; cursor: pointer; display: flex;
+            flex-direction: column; align-items: center; gap: 5px;
             transition: all 0.2s;
         }
         .simbolo-card:hover { border-color: #3498db; background: #f1f2f6; transform: scale(1.05); }
+        #modal-simbolos.modo-sombreado .simbolo-card:hover { border-color: #16a085; background: #e8f8f5; }
         .simbolo-card img { width: 80px; height: 60px; object-fit: contain; pointer-events: none; }
         .simbolo-card span { font-size: 11px; font-weight: bold; color: #333; text-align: center; line-height: 1.2; }
 
-        /* Menú Contextual */
+        .resize-handle {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 16px; height: 16px;
+            cursor: se-resize;
+            background: linear-gradient(135deg, transparent 50%, #3498db 50%);
+            border-bottom-right-radius: 6px;
+            z-index: 10;
+        }
+        #modal-simbolos.modo-sombreado .resize-handle { background: linear-gradient(135deg, transparent 50%, #16a085 50%); }
+
         #menu-contextual { position: absolute; display: none; background: white; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); border-radius: 4px; z-index: 2000; padding: 5px 0; min-width: 180px; }
         #menu-contextual > div { padding: 8px 15px; cursor: pointer; font-size: 13px; color: #333; display: flex; align-items: center; gap: 8px; }
         #menu-contextual > div:hover { background-color: #f1f2f6; color: #3498db; }
@@ -181,77 +142,72 @@
         .menu-colores .color-btn { width: 20px; height: 20px; border: 2px solid #ccc; }
 
         #caja-impresion { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; }
-        #caja-impresion svg { width: 100% !important; height: 100% !important; }
-
-        .joint-port {
-            opacity: 0.75;
-            transition: opacity 0.2s, transform 0.2s;
-        }
-        .joint-port:hover, .joint-element:hover .joint-port {
-            opacity: 1;
-        }
-        .joint-port circle {
-            fill: #3498db !important;
-            stroke: #ffffff !important;
-            stroke-width: 1.5px !important;
-            cursor: crosshair !important;
-            r: 5px !important;
-        }
-        .joint-port circle:hover {
-            fill: #e74c3c !important;
-            r: 7px !important;
+        
+        /* Modificado para asegurar que el SVG ocupe todo el espacio disponible sin recortes */
+        #caja-impresion svg { 
+            width: 100% !important; 
+            height: 100% !important; 
+            max-width: 100vw;
+            max-height: 100vh;
         }
 
-        .joint-link-tools, .joint-tool-segments, .joint-tools, .joint-tools-layer {
-            z-index: 999 !important;
-        }
-        .joint-link-tools .handle,
-        .joint-tool-segments .handle,
-        .joint-tools .handle,
-        .joint-link-tools circle,
-        .joint-tool-segments circle,
-        .joint-tools circle {
-            r: 3.5px !important;
-            fill: #3498db !important;
-            stroke: #ffffff !important;
-            stroke-width: 1.5px !important;
-            cursor: pointer !important;
+        .joint-port { opacity: 0.75; transition: opacity 0.2s, transform 0.2s; }
+        .joint-port:hover, .joint-element:hover .joint-port { opacity: 1; }
+        .joint-port circle { fill: #3498db !important; stroke: #ffffff !important; stroke-width: 1.5px !important; cursor: crosshair !important; r: 5px !important; }
+        .joint-port circle:hover { fill: #e74c3c !important; r: 7px !important; }
+
+        .joint-link-tools, .joint-tool-segments, .joint-tools, .joint-tools-layer { z-index: 999 !important; }
+        .joint-link-tools .handle, .joint-tool-segments .handle, .joint-tools .handle,
+        .joint-link-tools circle, .joint-tool-segments circle, .joint-tools circle {
+            r: 3.5px !important; fill: #3498db !important; stroke: #ffffff !important;
+            stroke-width: 1.5px !important; cursor: pointer !important;
             transition: transform 0.15s ease, fill 0.15s ease;
         }
-        .joint-link-tools circle:hover,
-        .joint-tool-segments circle:hover,
-        .joint-tools circle:hover {
-            fill: #e74c3c !important;
-            transform: scale(1.4);
+        .joint-link-tools circle:hover, .joint-tool-segments circle:hover, .joint-tools circle:hover {
+            fill: #e74c3c !important; transform: scale(1.4);
         }
 
         .joint-element.elemento-seleccionado rect[joint-selector="body"] {
-            stroke: #3498db !important;
-            stroke-width: 2px !important;
-            stroke-dasharray: 4 4 !important;
+            stroke: #3498db !important; stroke-width: 2px !important; stroke-dasharray: 4 4 !important;
         }
 
+        /* --- REGLAS DE IMPRESIÓN CORREGIDAS --- */
         @media print {
-            @page { size: landscape; margin: 0; }
-            html, body { width: 100% !important; height: 100% !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: white !important; }
-            body * { visibility: hidden !important; }
-            #caja-impresion, #caja-impresion * { visibility: visible !important; }
+            @page { 
+                size: landscape; 
+                margin: 10mm; /* Margen de la hoja */
+            }
+            html, body { 
+                width: 100% !important; 
+                height: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                overflow: hidden !important; 
+                background: white !important; 
+            }
+            body * { 
+                visibility: hidden !important; 
+            }
+            #caja-impresion, #caja-impresion * { 
+                visibility: visible !important; 
+            }
             #caja-impresion {
-                display: flex !important;
-                align-items: center;
+                display: flex !important; 
+                align-items: center; 
                 justify-content: center;
-                position: fixed !important;
-                left: 0 !important;
+                position: fixed !important; 
+                left: 0 !important; 
                 top: 0 !important;
-                width: 100vw !important;
+                width: 100vw !important; 
                 height: 100vh !important;
-                margin: 0 !important;
+                margin: 0 !important; 
                 padding: 0 !important;
-                background: white !important;
+                background: white !important; 
                 z-index: 99999 !important;
             }
+            /* Ocultar elementos de interfaz al imprimir */
             .joint-port, .joint-tools, .joint-link-tools, .joint-tool-segments, .joint-grid {
-                display: none !important;
+                display: none !important; 
                 visibility: hidden !important;
             }
         }
@@ -260,9 +216,6 @@
             .btn-tool { padding: 5px 8px; font-size: 11px; }
             .color-btn { width: 18px; height: 18px; }
             #modal-simbolos { width: 90%; left: 5%; top: 150px; }
-            #input-buscador { width: 100px; }
-            #barra-categorias { gap: 5px; padding: 5px; }
-            .btn-categoria { padding: 4px 8px; font-size: 11px; }
         }
     </style>
 </head>
@@ -283,10 +236,15 @@
         <div class="tool-group">
             <button class="btn-tool btn-archivo" onclick="nuevoProyecto()">📄 Nuevo proyecto</button>
             <button class="btn-tool btn-archivo" onclick="abrirProyecto()">📂 Abrir proyecto</button>
-            <button class="btn-tool btn-archivo" onclick="guardarProyecto()">💾 Guardar proyeco</button>
-            <button class="btn-tool btn-archivo" onclick="guardarComoProyecto()">💾 Esportar SVG...</button>
-            <button class="btn-tool btn-archivo" onclick="prepararImpresion()">🖨️Imprimir</button>
+            <button class="btn-tool btn-archivo" onclick="guardarProyecto()">💾 Guardar proyecto</button>
+            <button class="btn-tool btn-archivo" onclick="guardarComoProyecto()">🖼️ Exportar SVG...</button>
+            <button class="btn-tool btn-archivo" onclick="prepararImpresion()">🖨️ Imprimir</button>
             <input type="file" id="input-archivo" accept=".json,.pid" style="display: none;" onchange="cargarArchivoProyecto(event)">
+        </div>
+
+        <div class="tool-group">
+            <button class="btn-tool btn-pid" onclick="abrirModalPID()" title="Biblioteca P&ID (catalogo.json + svg-procesados)">➕ Símbolo P&ID</button>
+            <button class="btn-tool btn-sombreado" onclick="abrirModalSombreados()" title="Biblioteca Sombreados (s_catalogo.json + s-procesados)">🌑 Símbolo Sombreado</button>
         </div>
 
         <div class="tool-group">
@@ -333,25 +291,25 @@
         </div>
     </div>
 
-    <div id="barra-categorias">
-        <span style="font-size: 11px; font-weight: bold; opacity: 0.8;">Biblioteca:</span>
-        <div id="botones-categorias" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
-        
-        <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-            <input type="text" id="input-buscador" placeholder="🔍 Buscar..." oninput="buscarSimbolos()">
-        </div>
-    </div>
-
     <div id="main">
         <div id="lienzo"></div>
     </div>
 
+    <!-- Modal Símbolos -->
     <div id="modal-simbolos">
         <div id="modal-header">
             <span id="modal-titulo">Símbolos</span>
             <button onclick="cerrarModal()">✖</button>
         </div>
+        
+        <div id="modal-toolbar">
+            <select id="selectCategoria" onchange="cambiarCategoriaModal(this.value)"></select>
+            <input type="text" id="modal-buscador" placeholder="🔍 Buscar..." oninput="filtrarModal()">
+        </div>
+
         <div id="modal-contenido"></div>
+        
+        <div class="resize-handle"></div>
     </div>
 
     <div id="menu-contextual">
@@ -382,7 +340,10 @@
         let esTuberiaDegradada = false;
         let rejillaActiva = true;
         let catalogoGlobal = {};
+        let catalogoSombreados = {};
         let colorActual = '#000000';
+        let modoModalActual = 'pid';
+        let categoriaActivaModal = '';
         
         let cambiosSinGuardar = false;
         let archivoHandleActual = null;
@@ -403,18 +364,14 @@
         const configuracionRouter = {
             name: 'manhattan',
             args: {
-                step: 10,
-                padding: 20,
-                maxDirections: 4,
+                step: 10, padding: 20, maxDirections: 4,
                 startDirections: ['top', 'bottom', 'left', 'right'],
                 endDirections: ['top', 'bottom', 'left', 'right']
             }
         };
 
         function obtenerStrokeLinea(grosor, colorBase, esDegradado) {
-            if (esDegradado) {
-                return 'url(#tuberia-gradient)';
-            }
+            if (esDegradado) return 'url(#tuberia-gradient)';
             return colorBase;
         }
 
@@ -422,27 +379,14 @@
             el: document.getElementById('lienzo'), 
             model: graph, 
             width: '100%', height: '100%',
-            gridSize: 10, 
-            drawGrid: true, 
-            cellViewNamespace: joint.shapes,
+            gridSize: 10, drawGrid: true, cellViewNamespace: joint.shapes,
             interactive: function(cellView) {
                 if (cellView.model.isLink()) {
-                    return {
-                        linkMove: true,
-                        labelMove: false,
-                        arrowheadMove: true,
-                        vertexMove: true,
-                        vertexAdd: true,
-                        vertexRemove: true,
-                        useLinkTools: false
-                    };
+                    return { linkMove: true, labelMove: false, arrowheadMove: true, vertexMove: true, vertexAdd: true, vertexRemove: true, useLinkTools: false };
                 }
                 return { elementMove: true };
             },
-            magnetThreshold: 'onleave',
-            linkPinning: false, 
-            snapLinks: { radius: 25 }, 
-            sortViews: true, 
+            magnetThreshold: 'onleave', linkPinning: false, snapLinks: { radius: 25 }, sortViews: true, 
             elementView: joint.dia.ElementView.extend({
                 renderMarkup: function() {
                     joint.dia.ElementView.prototype.renderMarkup.apply(this, arguments);
@@ -452,13 +396,7 @@
             defaultLink: new joint.shapes.standard.Link({
                 router: configuracionRouter,
                 connector: { name: 'jumpover', args: { size: 10 } },
-                attrs: { 
-                    line: { 
-                        stroke: '#000000', 
-                        strokeWidth: 2, 
-                        targetMarker: null 
-                    } 
-                }
+                attrs: { line: { stroke: '#000000', strokeWidth: 2, targetMarker: null } }
             })
         });
 
@@ -466,15 +404,11 @@
             const svgDefs = paper.svg.querySelector('defs') || paper.svg.appendChild(
                 document.createElementNS('http://www.w3.org/2000/svg', 'defs')
             );
-
             if (!document.getElementById('tuberia-gradient')) {
                 const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
                 gradient.setAttribute('id', 'tuberia-gradient');
-                gradient.setAttribute('x1', '0%');
-                gradient.setAttribute('y1', '0%');
-                gradient.setAttribute('x2', '0%');
-                gradient.setAttribute('y2', '100%');
-                
+                gradient.setAttribute('x1', '0%'); gradient.setAttribute('y1', '0%');
+                gradient.setAttribute('x2', '0%'); gradient.setAttribute('y2', '100%');
                 gradient.innerHTML = `
                     <stop offset="0%" stop-color="#7f8c8d" />
                     <stop offset="35%" stop-color="#bdc3c7" />
@@ -485,58 +419,6 @@
             }
         }
         registrarDegradadoTuberia();
-
-        paper.on('blank:pointerdown', function(evt, x, y) {
-            const snappedX = Math.round(x / 10) * 10;
-            const snappedY = Math.round(y / 10) * 10;
-
-            if (modoTexto) {
-                const texto = prompt("Escribe el texto:");
-                if (texto && texto.trim() !== '') {
-                    const etiqueta = new joint.shapes.standard.TextBlock();
-                    etiqueta.position(snappedX, snappedY);
-                    etiqueta.resize(Math.max(100, texto.length * 8), 30);
-                    etiqueta.attr({
-                        body: { fill: 'transparent', stroke: 'none' },
-                        label: { text: texto, fontSize: 14, fontWeight: 'bold', fill: colorActual }
-                    });
-                    etiqueta.set('tipo', 'texto');
-                    etiqueta.addTo(graph);
-                }
-                toggleTexto();
-                return;
-            }
-
-            if (modoLinea) {
-                const punto = { x: snappedX, y: snappedY };
-
-                if (!lineaEnCurso) {
-                    puntosLinea = [punto];
-                    lineaEnCurso = new joint.shapes.standard.Link({
-                        source: { x: snappedX, y: snappedY },
-                        target: { x: snappedX, y: snappedY },
-                        router: configuracionRouter,
-                        connector: { name: 'jumpover', args: { size: 10 } },
-                        attrs: {
-                            line: {
-                                stroke: obtenerStrokeLinea(grosorActual, colorActual, esTuberiaDegradada),
-                                strokeWidth: grosorActual,
-                                targetMarker: null
-                            }
-                        }
-                    });
-                    lineaEnCurso.set('esTuberiaDegradada', esTuberiaDegradada);
-                    lineaEnCurso.addTo(graph);
-                } else {
-                    puntosLinea.push(punto);
-                    actualizarRutaOrtogonalManual(punto);
-                    
-                    lineaEnCurso = null;
-                    puntosLinea = [];
-                    toggleLinea(); 
-                }
-            }
-        });
 
         let portapapeles = null;
         let elementoBajoClicDerecho = null;
@@ -557,130 +439,201 @@
                 groups: {
                     port: { 
                         position: { name: 'absolute' }, 
-                        attrs: { 
-                            circle: { 
-                                r: 5, 
-                                magnet: true, 
-                                stroke: '#ffffff', 
-                                strokeWidth: 1.5, 
-                                fill: '#3498db', 
-                                cursor: 'crosshair' 
-                            } 
-                        } 
+                        attrs: { circle: { r: 5, magnet: true, stroke: '#ffffff', strokeWidth: 1.5, fill: '#3498db', cursor: 'crosshair' } } 
                     }
                 },
                 items: []
             }
         }, {
-            markup: [
-                { tagName: 'rect', selector: 'body' },
-                { tagName: 'image', selector: 'image' }
-            ]
+            markup: [ { tagName: 'rect', selector: 'body' }, { tagName: 'image', selector: 'image' } ]
         });
 
         let configPuertos = {};
+        let configPuertosSombreados = {};
 
         async function cargarConfigPuertos() {
-            const urlSinCache = './s_config_puertos.json?t=' + new Date().getTime();
             try {
-                const res = await fetch(urlSinCache);
-                if (res.ok) {
-                    configPuertos = await res.json();
-                }
-            } catch (e) { 
-                setTimeout(cargarConfigPuertos, 1000);
-            }
+                const res = await fetch('./config_puertos.json?t=' + new Date().getTime());
+                if (res.ok) configPuertos = await res.json();
+                else console.warn('config_puertos.json no encontrado');
+            } catch (e) { setTimeout(cargarConfigPuertos, 1000); }
         }
         cargarConfigPuertos();
 
-        async function cargarPaleta() {
+        async function cargarConfigPuertosSombreados() {
             try {
-                const res = await fetch('./s_catalogo.json?t=' + new Date().getTime());
+                const res = await fetch('./s_config_puertos.json?t=' + new Date().getTime());
+                if (res.ok) configPuertosSombreados = await res.json();
+                else console.warn('s_config_puertos.json no encontrado');
+            } catch (e) { setTimeout(cargarConfigPuertosSombreados, 1000); }
+        }
+        cargarConfigPuertosSombreados();
+
+        async function cargarCatalogoPID() {
+            try {
+                const res = await fetch('./catalogo.json?t=' + new Date().getTime());
+                if (!res.ok) throw new Error('No se pudo cargar catalogo.json');
                 catalogoGlobal = await res.json();
-                
-                const contenedorBotones = document.getElementById('botones-categorias');
-                contenedorBotones.innerHTML = '';
-
-                const categoriasOrdenadas = Object.keys(catalogoGlobal).sort((a, b) => a.localeCompare(b));
-
-                categoriasOrdenadas.forEach(categoria => {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-categoria';
-                    btn.innerText = categoria;
-                    btn.onclick = () => abrirCategoria(categoria, btn);
-                    contenedorBotones.appendChild(btn);
-                });
-            } catch (error) { 
-                console.error("Error catálogo:", error);
+            } catch (e) { 
+                console.error("Error catálogo P&ID:", e);
+                catalogoGlobal = {};
             }
         }
 
-        function abrirCategoria(categoria, btn) {
-            document.querySelectorAll('.btn-categoria').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
+        async function cargarCatalogoSombreados() {
+            try {
+                const res = await fetch('./s_catalogo.json?t=' + new Date().getTime());
+                if (!res.ok) throw new Error('No se pudo cargar s_catalogo.json');
+                catalogoSombreados = await res.json();
+            } catch (e) { 
+                console.warn("Catálogo sombreados no disponible:", e);
+                catalogoSombreados = {};
+            }
+        }
 
+        function abrirModalPID() {
+            modoModalActual = 'pid';
             const modal = document.getElementById('modal-simbolos');
-            const titulo = document.getElementById('modal-titulo');
-            const contenido = document.getElementById('modal-contenido');
+            modal.classList.remove('modo-sombreado');
+            document.getElementById('modal-titulo').innerText = '➕ Biblioteca P&ID';
 
-            titulo.innerText = categoria;
-            contenido.innerHTML = '';
+            const cats = Object.keys(catalogoGlobal).sort();
+            const select = document.getElementById('selectCategoria');
+            select.innerHTML = '';
+            
+            if (cats.length === 0) {
+                document.getElementById('modal-contenido').innerHTML = 
+                    '<p style="grid-column:1/-1;text-align:center;color:#999;">No hay catálogo P&ID cargado.</p>';
+                modal.style.display = 'flex';
+                return;
+            }
 
-            const simbolos = catalogoGlobal[categoria] || [];
+            cats.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                select.appendChild(opt);
+            });
 
+            categoriaActivaModal = cats[0];
+            select.value = categoriaActivaModal;
+            document.getElementById('modal-buscador').value = '';
+            renderizarContenido();
+            modal.style.display = 'flex';
+            
+            const ventana = document.getElementById('modal-simbolos');
+            if (!ventana.dataset.arrastrado) {
+                ventana.style.left = '50px'; ventana.style.top = '100px';
+            }
+        }
+
+        function abrirModalSombreados() {
+            modoModalActual = 'sombreado';
+            const modal = document.getElementById('modal-simbolos');
+            modal.classList.add('modo-sombreado');
+            document.getElementById('modal-titulo').innerText = '🌑 Biblioteca Símbolos Sombreados';
+
+            const cats = Object.keys(catalogoSombreados).sort();
+            const select = document.getElementById('selectCategoria');
+            select.innerHTML = '';
+            
+            if (cats.length === 0) {
+                document.getElementById('modal-contenido').innerHTML = 
+                    '<p style="grid-column:1/-1;text-align:center;color:#999;">No hay catálogo de sombreados cargado.</p>';
+                modal.style.display = 'flex';
+                return;
+            }
+
+            cats.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                select.appendChild(opt);
+            });
+
+            categoriaActivaModal = cats[0];
+            select.value = categoriaActivaModal;
+            document.getElementById('modal-buscador').value = '';
+            renderizarContenido();
+            modal.style.display = 'flex';
+            
+            const ventana = document.getElementById('modal-simbolos');
+            if (!ventana.dataset.arrastrado) {
+                ventana.style.left = '50px'; ventana.style.top = '100px';
+            }
+        }
+
+        function cambiarCategoriaModal(cat) {
+            categoriaActivaModal = cat;
+            renderizarContenido();
+            document.getElementById('modal-buscador').value = '';
+        }
+
+        function renderizarContenido() {
+            const contenedor = document.getElementById('modal-contenido');
+            contenedor.innerHTML = '';
+
+            const catalogo = modoModalActual === 'pid' ? catalogoGlobal : catalogoSombreados;
+            const simbolos = catalogo[categoriaActivaModal] || [];
+
+            if (simbolos.length === 0) {
+                contenedor.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;">Categoría vacía.</p>';
+                return;
+            }
             simbolos.forEach(archivo => {
                 const card = document.createElement('div');
                 card.className = 'simbolo-card';
                 card.innerHTML = `<img src="${archivo.ruta}"><span>${archivo.nombre}</span>`;
-                
                 card.onclick = () => {
-                    insertarSimboloEnCentro(archivo.ruta, archivo.nombre);
+                    if (modoModalActual === 'pid') {
+                        insertarSimboloEnCentro(archivo.ruta, archivo.nombre);
+                    } else {
+                        insertarSimboloSombreadoEnCentro(archivo.ruta, archivo.nombre);
+                    }
                     cerrarModal();
                 };
-                contenido.appendChild(card);
+                contenedor.appendChild(card);
             });
-
-            modal.style.display = 'flex';
         }
 
-        function buscarSimbolos() {
-            const termino = document.getElementById('input-buscador').value.toLowerCase().trim();
-            const modal = document.getElementById('modal-simbolos');
-            const titulo = document.getElementById('modal-titulo');
-            const contenido = document.getElementById('modal-contenido');
+        function filtrarModal() {
+            const termino = document.getElementById('modal-buscador').value.toLowerCase().trim();
+            const contenedor = document.getElementById('modal-contenido');
 
-            if (termino === '') { cerrarModal(); return; }
+            if (termino === '') { renderizarContenido(); return; }
 
-            titulo.innerText = `Resultados: "${termino}"`;
-            contenido.innerHTML = '';
-            
+            contenedor.innerHTML = '';
+            const catalogo = modoModalActual === 'pid' ? catalogoGlobal : catalogoSombreados;
+
             let encontrados = 0;
-            Object.keys(catalogoGlobal).forEach(categoria => {
-                catalogoGlobal[categoria].forEach(archivo => {
+            Object.keys(catalogo).forEach(cat => {
+                catalogo[cat].forEach(archivo => {
                     if (archivo.nombre.toLowerCase().includes(termino)) {
                         encontrados++;
                         const card = document.createElement('div');
                         card.className = 'simbolo-card';
-                        card.innerHTML = `<img src="${archivo.ruta}"><span>${archivo.nombre}</span>`;
+                        card.innerHTML = `<img src="${archivo.ruta}"><span>${archivo.nombre}<br><small style="color:#777;">(${cat})</small></span>`;
                         card.onclick = () => {
-                            insertarSimboloEnCentro(archivo.ruta, archivo.nombre);
+                            if (modoModalActual === 'pid') {
+                                insertarSimboloEnCentro(archivo.ruta, archivo.nombre);
+                            } else {
+                                insertarSimboloSombreadoEnCentro(archivo.ruta, archivo.nombre);
+                            }
                             cerrarModal();
                         };
-                        contenido.appendChild(card);
+                        contenedor.appendChild(card);
                     }
                 });
             });
 
             if (encontrados === 0) {
-                contenido.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#999;">No se encontraron símbolos.</p>';
+                contenedor.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;">No se encontraron símbolos.</p>';
             }
-            modal.style.display = 'flex';
         }
 
         function cerrarModal() {
             document.getElementById('modal-simbolos').style.display = 'none';
-            document.getElementById('input-buscador').value = '';
-            document.querySelectorAll('.btn-categoria').forEach(b => b.classList.remove('active'));
+            document.getElementById('modal-buscador').value = '';
         }
 
         async function procesarImagenSVG(ruta) {
@@ -710,62 +663,42 @@
             } else {
                 const wAttr = parseFloat(svgElement.getAttribute('width'));
                 const hAttr = parseFloat(svgElement.getAttribute('height'));
-                if (wAttr && hAttr) {
-                    anchoReal = wAttr;
-                    altoReal = hAttr;
-                }
+                if (wAttr && hAttr) { anchoReal = wAttr; altoReal = hAttr; }
                 svgElement.setAttribute('viewBox', `0 0 ${anchoReal} ${altoReal}`);
             }
-
             svgElement.setAttribute('width', anchoReal);
             svgElement.setAttribute('height', altoReal);
             svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-            if (!svgElement.getAttribute('xmlns')) {
-                svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            }
+            if (!svgElement.getAttribute('xmlns')) svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
             const svgLimpio = new XMLSerializer().serializeToString(svgElement);
             const base64Data = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgLimpio)));
-            
-            return {
-                dataUri: base64Data,
-                minX, minY, anchoReal, altoReal
-            };
+            return { dataUri: base64Data, minX, minY, anchoReal, altoReal };
         }
 
         async function insertarSimboloEnCentro(ruta, nombreMostrado) {
             const rect = document.getElementById('lienzo').getBoundingClientRect();
             const localPoint = paper.clientToLocalPoint({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-
             const nombreArchivo = ruta.split('/').pop().replace('.svg', '');
             const nombreBusqueda = nombreArchivo.toLowerCase().replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             try {
                 const datosSvg = await procesarImagenSVG(ruta);
-                const escala = 2; 
+                const escala = 2;
                 const targetWidth = datosSvg.anchoReal * escala;
                 const targetHeight = datosSvg.altoReal * escala;
 
                 let puertosItems = [];
                 let claveEncontrada = null;
                 for (const clave in configPuertos) {
-                    if (clave.replace(/\s+/g, '_').toLowerCase() === nombreBusqueda) {
-                        claveEncontrada = clave;
-                        break;
-                    }
+                    if (clave.replace(/\s+/g, '_').toLowerCase() === nombreBusqueda) { claveEncontrada = clave; break; }
                 }
 
                 if (claveEncontrada) {
-                    puertosItems = configPuertos[claveEncontrada].map(p => {
-                        return {
-                            group: 'port',
-                            id: p.id,
-                            args: { 
-                                x: (p.x - datosSvg.minX) * escala, 
-                                y: (p.y - datosSvg.minY) * escala 
-                            }
-                        };
-                    });
+                    puertosItems = configPuertos[claveEncontrada].map(p => ({
+                        group: 'port', id: p.id,
+                        args: { x: (p.x - datosSvg.minX) * escala, y: (p.y - datosSvg.minY) * escala }
+                    }));
                 } else {
                     puertosItems = [
                         { group: 'port', id: 'p_left', args: { x: 0, y: targetHeight / 2 } },
@@ -778,96 +711,114 @@
                 const posY = Math.round((localPoint.y - (targetHeight/2)) / 10) * 10;
                 elemento.position(posX, posY);
                 elemento.resize(targetWidth, targetHeight);
-                
                 elemento.attr('image/xlink:href', datosSvg.dataUri);
                 elemento.attr('image/href', datosSvg.dataUri);
                 elemento.prop('ports/items', puertosItems);
-                
                 elemento.set('rutaOriginal', ruta);
                 elemento.set('simboloNombre', nombreBusqueda);
                 elemento.set('simboloLabel', nombreMostrado);
                 elemento.set('mostrarNombre', false);
                 elemento.set('anchoReal', datosSvg.anchoReal);
                 elemento.set('altoReal', datosSvg.altoReal);
+                elemento.set('esSombreado', false);
                 elemento.addTo(graph);
-            } catch (err) {
-                console.error("Error al cargar SVG: ", err);
-            }
+            } catch (err) { console.error("Error al cargar SVG:", err); }
+        }
+
+        async function insertarSimboloSombreadoEnCentro(ruta, nombreMostrado) {
+            const rect = document.getElementById('lienzo').getBoundingClientRect();
+            const localPoint = paper.clientToLocalPoint({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+            const nombreArchivo = ruta.split('/').pop().replace('.svg', '');
+            const nombreBusqueda = nombreArchivo.toLowerCase().replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            try {
+                const datosSvg = await procesarImagenSVG(ruta);
+                const escala = 2;
+                const targetWidth = datosSvg.anchoReal * escala;
+                const targetHeight = datosSvg.altoReal * escala;
+
+                let puertosItems = [];
+                let claveEncontrada = null;
+                for (const clave in configPuertosSombreados) {
+                    if (clave.replace(/\s+/g, '_').toLowerCase() === nombreBusqueda) { claveEncontrada = clave; break; }
+                }
+
+                if (claveEncontrada) {
+                    puertosItems = configPuertosSombreados[claveEncontrada].map(p => ({
+                        group: 'port', id: p.id,
+                        args: { x: (p.x - datosSvg.minX) * escala, y: (p.y - datosSvg.minY) * escala }
+                    }));
+                } else {
+                    puertosItems = [
+                        { group: 'port', id: 'p_left', args: { x: 0, y: targetHeight / 2 } },
+                        { group: 'port', id: 'p_right', args: { x: targetWidth, y: targetHeight / 2 } }
+                    ];
+                }
+
+                const elemento = new CustomImageShape();
+                const posX = Math.round((localPoint.x - (targetWidth/2)) / 10) * 10;
+                const posY = Math.round((localPoint.y - (targetHeight/2)) / 10) * 10;
+                elemento.position(posX, posY);
+                elemento.resize(targetWidth, targetHeight);
+                elemento.attr('image/xlink:href', datosSvg.dataUri);
+                elemento.attr('image/href', datosSvg.dataUri);
+                elemento.prop('ports/items', puertosItems);
+                elemento.set('rutaOriginal', ruta);
+                elemento.set('simboloNombre', nombreBusqueda);
+                elemento.set('simboloLabel', nombreMostrado);
+                elemento.set('mostrarNombre', false);
+                elemento.set('anchoReal', datosSvg.anchoReal);
+                elemento.set('altoReal', datosSvg.altoReal);
+                elemento.set('esSombreado', true);
+                elemento.addTo(graph);
+            } catch (err) { console.error("Error al cargar SVG sombreado:", err); }
         }
 
         function nuevoProyecto() {
             if (cambiosSinGuardar && graph.getCells().length > 0) {
-                if (!confirm("Tienes cambios sin guardar. ¿Deseas crear un nuevo proyecto y descartar el actual?")) {
-                    return;
-                }
+                if (!confirm("Tienes cambios sin guardar. ¿Deseas crear un nuevo proyecto?")) return;
             }
             graph.clear();
             archivoHandleActual = null;
             cambiosSinGuardar = false;
-            paper.scale(1, 1);
-            paper.translate(0, 0);
-            currentScale = 1;
+            paper.scale(1, 1); paper.translate(0, 0); currentScale = 1;
         }
 
         async function guardarComoProyecto() {
             const bbox = graph.getBBox();
-            if (!bbox || bbox.width === 0 || bbox.height === 0) {
-                alert("No hay elementos en el lienzo para guardar como SVG.");
-                return;
-            }
-
+            if (!bbox || bbox.width === 0 || bbox.height === 0) { alert("No hay elementos en el lienzo."); return; }
             const padding = 80;
-            const minX = bbox.x - padding;
-            const minY = bbox.y - padding;
-            const w = bbox.width + padding * 2;
-            const h = bbox.height + padding * 2;
-
+            const minX = bbox.x - padding, minY = bbox.y - padding;
+            const w = bbox.width + padding * 2, h = bbox.height + padding * 2;
             const svgClon = paper.svg.cloneNode(true);
             svgClon.setAttribute('viewBox', `${minX} ${minY} ${w} ${h}`);
-            svgClon.setAttribute('width', '100%');
-            svgClon.setAttribute('height', '100%');
+            svgClon.setAttribute('width', '100%'); svgClon.setAttribute('height', '100%');
             svgClon.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             svgClon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
             svgClon.querySelectorAll('.joint-grid').forEach(el => el.remove());
             svgClon.querySelectorAll('.joint-port').forEach(el => el.remove());
             svgClon.querySelectorAll('.joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
-            
-            svgClon.querySelectorAll('.joint-link path').forEach(el => { 
-                if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
-            });
-
+            svgClon.querySelectorAll('.joint-link path').forEach(el => { if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); });
             const rectFondo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rectFondo.setAttribute('x', minX);
-            rectFondo.setAttribute('y', minY);
-            rectFondo.setAttribute('width', w);
-            rectFondo.setAttribute('height', h);
+            rectFondo.setAttribute('x', minX); rectFondo.setAttribute('y', minY);
+            rectFondo.setAttribute('width', w); rectFondo.setAttribute('height', h);
             rectFondo.setAttribute('fill', '#ffffff');
             svgClon.insertBefore(rectFondo, svgClon.firstChild);
-
             const svgTexto = new XMLSerializer().serializeToString(svgClon);
             const blob = new Blob([svgTexto], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
-            a.href = url;
-            a.download = 'esquema_PID.svg';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            a.href = url; a.download = 'esquema_PID.svg';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
             URL.revokeObjectURL(url);
             cambiosSinGuardar = false;
         }
 
-        async function guardarProyecto() {
-            guardarComoProyecto();
-        }
+        async function guardarProyecto() { guardarComoProyecto(); }
 
         function abrirProyecto() {
             if (cambiosSinGuardar && graph.getCells().length > 0) {
-                if (!confirm("Tienes cambios sin guardar. ¿Deseas abrir otro archivo?")) {
-                    return;
-                }
+                if (!confirm("Tienes cambios sin guardar. ¿Deseas abrir otro archivo?")) return;
             }
             document.getElementById('input-archivo').click();
         }
@@ -875,13 +826,11 @@
         function cargarArchivoProyecto(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
                     const json = JSON.parse(e.target.result);
                     graph.fromJSON(json);
-                    
                     const elementos = graph.getElements();
                     for (const el of elementos) {
                         const ruta = el.get('rutaOriginal');
@@ -890,30 +839,25 @@
                                 const datosSvg = await procesarImagenSVG(ruta);
                                 el.attr('image/xlink:href', datosSvg.dataUri);
                                 el.attr('image/href', datosSvg.dataUri);
-                            } catch (err) {
-                                console.error("No se pudo recargar SVG desde:", ruta, err);
-                            }
+                            } catch (err) { console.error("No se pudo recargar SVG:", ruta, err); }
                         }
-
                         const etiquetaId = el.get('etiquetaId');
                         if (etiquetaId) {
                             const etiqueta = graph.getCell(etiquetaId);
                             if (etiqueta) {
                                 etiqueta.listenTo(el, 'change:position', function() {
-                                    const p = el.position();
-                                    const t = el.size();
+                                    const p = el.position(); const t = el.size();
                                     etiqueta.position(p.x + (t.width / 2) - 100, p.y + t.height + 6);
                                 });
                             }
                         }
                     }
-
                     centrarDibujo();
                     cambiosSinGuardar = false;
                     archivoHandleActual = null;
                     alert("Proyecto cargado con éxito.");
                 } catch (err) {
-                    alert("Error al leer el archivo JSON de P&ID.");
+                    alert("Error al leer el archivo JSON.");
                     console.error(err);
                 }
                 event.target.value = '';
@@ -964,6 +908,7 @@
             currentScale = paper.scale().sx;
         };
 
+        // --- FUNCIÓN DE IMPRESIÓN CORREGIDA ---
         window.prepararImpresion = function() {
             const caja = document.getElementById('caja-impresion'); 
             caja.innerHTML = ''; 
@@ -974,17 +919,27 @@
             const anchoTotal = bbox.width + margen * 2; 
             const altoTotal = bbox.height + margen * 2;
             
+            // Clonamos el SVG
             const svgClon = paper.svg.cloneNode(true);
+            
+            // Ajustamos el viewBox para que encaje perfectamente
             svgClon.setAttribute('viewBox', `${bbox.x - margen} ${bbox.y - margen} ${anchoTotal} ${altoTotal}`);
             svgClon.setAttribute('width', '100%'); 
             svgClon.setAttribute('height', '100%'); 
-            svgClon.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            svgClon.setAttribute('preserveAspectRatio', 'xMidYMid meet'); // Esto asegura que quepa sin recortarse
             
+            // Ocultamos elementos interactivos
             svgClon.querySelectorAll('.joint-grid').forEach(el => el.remove());
             svgClon.querySelectorAll('.joint-port').forEach(el => el.remove());
             svgClon.querySelectorAll('.joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
             
+            // Aseguramos que las líneas tengan color
+            svgClon.querySelectorAll('.joint-link path').forEach(el => { 
+                if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
+            });
+            
             caja.appendChild(svgClon);
+            
             setTimeout(() => { 
                 window.print(); 
                 setTimeout(() => { caja.innerHTML = ''; }, 500); 
@@ -1023,7 +978,8 @@
             if (!elementoBajoClicDerecho) return;
             const el = elementoBajoClicDerecho;
             if (el.get('tipo') === 'texto') {
-                const textoActual = el.attr('label/text'); const nuevoTexto = prompt("Editar texto:", textoActual);
+                const textoActual = el.attr('label/text');
+                const nuevoTexto = prompt("Editar texto:", textoActual);
                 if (nuevoTexto !== null && nuevoTexto.trim() !== '') { el.attr('label/text', nuevoTexto); el.resize(Math.max(100, nuevoTexto.length * 8), 30); }
             }
             document.getElementById('menu-contextual').style.display = 'none';
@@ -1032,10 +988,8 @@
         window.setGrosor = function(grosor, btn, esDegradado) {
             grosorActual = grosor;
             esTuberiaDegradada = !!esDegradado;
-            
             document.querySelectorAll('.grosor-btn').forEach(b => b.classList.remove('seleccionado')); 
             btn.classList.add('seleccionado');
-
             const lineas = paper.model.getLinks().filter(link => link.get('selected'));
             lineas.forEach(link => { 
                 link.set('esTuberiaDegradada', esTuberiaDegradada);
@@ -1051,28 +1005,16 @@
                 if (!event) alert("Selecciona un símbolo primero.");
                 return;
             }
-
             const tamanoActual = seleccionado.size();
             const nuevoAncho = Math.max(20, Math.round(tamanoActual.width * factor));
             const nuevoAlto = Math.max(20, Math.round(tamanoActual.height * factor));
             seleccionado.resize(nuevoAncho, nuevoAlto);
-
             const puertos = seleccionado.prop('ports/items') || [];
             if (puertos.length > 0) {
                 const factorX = nuevoAncho / tamanoActual.width;
                 const factorY = nuevoAlto / tamanoActual.height;
-                const puertosActualizados = puertos.map(p => {
-                    return {
-                        ...p,
-                        args: {
-                            x: Math.round(p.args.x * factorX),
-                            y: Math.round(p.args.y * factorY)
-                        }
-                    };
-                });
-                seleccionado.prop('ports/items', puertosActualizados);
+                seleccionado.prop('ports/items', puertos.map(p => ({ ...p, args: { x: Math.round(p.args.x * factorX), y: Math.round(p.args.y * factorY) } })));
             }
-
             document.getElementById('menu-contextual').style.display = 'none';
         };
 
@@ -1093,7 +1035,6 @@
 
         function actualizarRutaOrtogonalManual(destino) {
             if (!lineaEnCurso || puntosLinea.length === 0) return;
-
             const vertices = [];
             for (let i = 1; i < puntosLinea.length; i++) {
                 const anterior = puntosLinea[i - 1];
@@ -1101,43 +1042,34 @@
                 vertices.push({ x: Math.round(actual.x / 10) * 10, y: Math.round(anterior.y / 10) * 10 });
                 vertices.push({ x: Math.round(actual.x / 10) * 10, y: Math.round(actual.y / 10) * 10 });
             }
-
             const ultimo = puntosLinea[puntosLinea.length - 1];
-
             if (destino) {
                 vertices.push({ x: Math.round(destino.x / 10) * 10, y: Math.round(ultimo.y / 10) * 10 });
                 lineaEnCurso.target({ x: Math.round(destino.x / 10) * 10, y: Math.round(destino.y / 10) * 10 });
             } else {
                 lineaEnCurso.target({ x: Math.round(ultimo.x / 10) * 10, y: Math.round(ultimo.y / 10) * 10 });
             }
-
             lineaEnCurso.vertices(vertices);
         }
 
         paper.on('blank:pointerdown', function(evt, x, y) {
             const snappedX = Math.round(x / 10) * 10;
             const snappedY = Math.round(y / 10) * 10;
-
             if (modoTexto) {
                 const texto = prompt("Escribe el texto:");
                 if (texto && texto.trim() !== '') {
                     const etiqueta = new joint.shapes.standard.TextBlock();
                     etiqueta.position(snappedX, snappedY);
                     etiqueta.resize(Math.max(100, texto.length * 8), 30);
-                    etiqueta.attr({
-                        body: { fill: 'transparent', stroke: 'none' },
-                        label: { text: texto, fontSize: 14, fontWeight: 'bold', fill: colorActual }
-                    });
+                    etiqueta.attr({ body: { fill: 'transparent', stroke: 'none' }, label: { text: texto, fontSize: 14, fontWeight: 'bold', fill: colorActual } });
                     etiqueta.set('tipo', 'texto');
                     etiqueta.addTo(graph);
                 }
                 toggleTexto();
                 return;
             }
-
             if (modoLinea) {
                 const punto = { x: snappedX, y: snappedY };
-
                 if (!lineaEnCurso) {
                     puntosLinea = [punto];
                     lineaEnCurso = new joint.shapes.standard.Link({
@@ -1145,56 +1077,62 @@
                         target: { x: snappedX, y: snappedY },
                         router: configuracionRouter,
                         connector: { name: 'jumpover', args: { size: 10 } },
-                        attrs: {
-                            line: {
-                                stroke: obtenerStrokeLinea(grosorActual, colorActual, esTuberiaDegradada),
-                                strokeWidth: grosorActual,
-                                targetMarker: null
-                            }
-                        }
+                        attrs: { line: { stroke: obtenerStrokeLinea(grosorActual, colorActual, esTuberiaDegradada), strokeWidth: grosorActual, targetMarker: null } }
                     });
                     lineaEnCurso.set('esTuberiaDegradada', esTuberiaDegradada);
                     lineaEnCurso.addTo(graph);
                 } else {
                     puntosLinea.push(punto);
                     actualizarRutaOrtogonalManual(punto);
+                    lineaEnCurso = null;
+                    puntosLinea = [];
+                    toggleLinea(); 
                 }
             }
         });
 
         paper.on('blank:pointermove', function(evt, x, y) {
-            if (modoLinea && lineaEnCurso) {
-                actualizarRutaOrtogonalManual({ x: x, y: y });
-            }
+            if (modoLinea && lineaEnCurso) actualizarRutaOrtogonalManual({ x: x, y: y });
         });
 
         paper.on('blank:pointerdblclick', function() { 
-            if (modoLinea && lineaEnCurso) { 
-                lineaEnCurso = null; 
-                puntosLinea = []; 
-                toggleLinea(); 
-            } 
+            if (modoLinea && lineaEnCurso) { lineaEnCurso = null; puntosLinea = []; toggleLinea(); } 
         });
 
         window.eliminarSeleccionado = function() {
             const seleccionados = paper.model.getElements().filter(el => el.get('selected'));
             const enlaces = paper.model.getLinks().filter(link => link.get('selected'));
             if (seleccionados.length === 0 && enlaces.length === 0) return;
-            
-            seleccionados.forEach(el => {
-                paper.removeTools();
-                el.remove();
-            }); 
-            enlaces.forEach(link => {
-                paper.removeTools();
-                link.remove();
-            });
+            seleccionados.forEach(el => { paper.removeTools(); el.remove(); }); 
+            enlaces.forEach(link => { paper.removeTools(); link.remove(); });
         };
 
-        window.rotar90 = function() {
+              window.rotar90 = function() {
             const seleccionado = paper.model.getElements().find(el => el.get('selected'));
             if (!seleccionado || seleccionado.get('tipo') === 'texto') return;
-            seleccionado.rotate((seleccionado.angle() || 0) + 90);
+
+            // 1. Obtener el ángulo actual (si no tiene, empezamos en 0)
+            let anguloActual = seleccionado.angle() || 0;
+            
+            // 2. Sumar 90 grados
+            let nuevoAngulo = anguloActual + 90;
+            
+            // 3. Si llega a 360, volver a 0 para que no se acumulen números gigantes
+            if (nuevoAngulo >= 360) {
+                nuevoAngulo = nuevoAngulo - 360;
+            }
+
+            // 4. Aplicar la rotación
+            seleccionado.rotate(nuevoAngulo);
+            
+            // 5. Forzar a JointJS a guardar el nuevo estado
+            seleccionado.set('angle', nuevoAngulo);
+
+            // Opcional: Ver en consola cómo va sumando
+            console.log("Girando a: " + nuevoAngulo + "º");
+            
+            // 6. Redibujar el lienzo
+            dibujar();
         };
 
         paper.on('element:pointerdown', function(elementView, evt) {
@@ -1208,7 +1146,6 @@
                 ultimoClicTiempo = 0; elementoClicAnterior = null; return;
             }
             ultimoClicTiempo = ahora; elementoClicAnterior = el.id;
-            
             paper.model.getElements().forEach(otherEl => { 
                 otherEl.unset('selected'); 
                 const v = paper.findViewByModel(otherEl);
@@ -1217,12 +1154,8 @@
             });
             paper.model.getLinks().forEach(l => l.unset('selected'));
             paper.removeTools();
-
             el.set('selected', true);
-            if (elementView && elementView.el) {
-                elementView.el.classList.add('elemento-seleccionado');
-            }
-
+            if (elementView && elementView.el) elementView.el.classList.add('elemento-seleccionado');
             if (el.get('tipo') === 'texto') { 
                 el.attr('body/stroke', '#3498db'); el.attr('body/strokeWidth', 1); el.attr('body/strokeDasharray', '5, 5'); 
             }
@@ -1236,32 +1169,17 @@
             });
             paper.model.getLinks().forEach(link => link.unset('selected'));
             paper.removeTools();
-
             const enlace = linkView.model;
             enlace.set('selected', true);
-
             const herramientas = new joint.dia.ToolsView({
                 tools: [
                     new joint.linkTools.Vertices({ snapRadius: 10, redundancyRemoval: true }),
                     new joint.linkTools.Segments({
-                        redundancyRemoval: true,
-                        segmentLengthThreshold: 10,
-                        snapRadius: 10,
-                        markup: [{
-                            tagName: 'circle',
-                            selector: 'handle',
-                            attributes: {
-                                'r': 3.5,
-                                'fill': '#3498db',
-                                'stroke': '#ffffff',
-                                'stroke-width': 1.5,
-                                'cursor': 'pointer'
-                            }
-                        }]
+                        redundancyRemoval: true, segmentLengthThreshold: 10, snapRadius: 10,
+                        markup: [{ tagName: 'circle', selector: 'handle', attributes: { 'r': 3.5, 'fill': '#3498db', 'stroke': '#ffffff', 'stroke-width': 1.5, 'cursor': 'pointer' } }]
                     })
                 ]
             });
-
             linkView.addTools(herramientas);
         });
 
@@ -1284,9 +1202,7 @@
         const menuContextual = document.getElementById('menu-contextual');
         
         document.getElementById('lienzo').addEventListener('contextmenu', function(evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            
+            evt.preventDefault(); evt.stopPropagation();
             const localPoint = paper.clientToLocalPoint({ x: evt.clientX, y: evt.clientY });
             const elementos = paper.model.getElements();
             elementoBajoClicDerecho = null;
@@ -1305,7 +1221,6 @@
                 elementoBajoClicDerecho.set('selected', true);
                 const v = paper.findViewByModel(elementoBajoClicDerecho);
                 if (v && v.el) v.el.classList.add('elemento-seleccionado');
-
                 document.getElementById('menu-editar').style.display = elementoBajoClicDerecho.get('tipo') === 'texto' ? 'flex' : 'none';
                 document.getElementById('menu-paleta').style.display = 'flex';
                 menuContextual.style.display = 'block';
@@ -1326,8 +1241,7 @@
         });
 
         paper.on('link:contextmenu', function(linkView, evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
+            evt.preventDefault(); evt.stopPropagation();
             paper.model.getElements().forEach(el => {
                 el.unset('selected');
                 const v = paper.findViewByModel(el);
@@ -1404,93 +1318,34 @@
         (function configurarModalInteractivo() {
             const modal = document.getElementById('modal-simbolos');
             const header = document.getElementById('modal-header');
-
             let isDragging = false, startX, startY, initialLeft, initialTop;
 
             header.addEventListener('mousedown', (e) => {
-                if (e.target.tagName === 'BUTTON') return;
+                if (e.target.tagName === 'BUTTON' || e.target.classList.contains('resize-handle')) return;
                 isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                initialLeft = modal.offsetLeft;
-                initialTop = modal.offsetTop;
+                startX = e.clientX; startY = e.clientY;
+                initialLeft = modal.offsetLeft; initialTop = modal.offsetTop;
+                modal.dataset.arrastrado = 'true';
                 document.addEventListener('mousemove', onMouseMove);
                 document.addEventListener('mouseup', onMouseUp);
             });
-
             function onMouseMove(e) {
                 if (!isDragging) return;
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
+                const dx = e.clientX - startX, dy = e.clientY - startY;
                 modal.style.left = `${initialLeft + dx}px`;
                 modal.style.top = `${initialTop + dy}px`;
             }
-
             function onMouseUp() {
                 isDragging = false;
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
             }
-
-            let isResizing = false, resizeDir = '', startW, startH, startClientX, startClientY;
-            const borderThreshold = 10;
-
-            modal.addEventListener('mousemove', (e) => {
-                if (isResizing) return;
-                const rect = modal.getBoundingClientRect();
-                const edgeRight = rect.right - e.clientX;
-                const edgeBottom = rect.bottom - e.clientY;
-
-                if (edgeRight < borderThreshold && edgeBottom < borderThreshold) {
-                    modal.style.cursor = 'se-resize';
-                    resizeDir = 'se';
-                } else if (edgeRight < borderThreshold) {
-                    modal.style.cursor = 'e-resize';
-                    resizeDir = 'e';
-                } else if (edgeBottom < borderThreshold) {
-                    modal.style.cursor = 's-resize';
-                    resizeDir = 's';
-                } else {
-                    modal.style.cursor = 'default';
-                    resizeDir = '';
-                }
-            });
-
-            modal.addEventListener('mousedown', (e) => {
-                if (!resizeDir) return;
-                isResizing = true;
-                startClientX = e.clientX;
-                startClientY = e.clientY;
-                startW = modal.offsetWidth;
-                startH = modal.offsetHeight;
-
-                document.addEventListener('mousemove', onResizeMove);
-                document.addEventListener('mouseup', onResizeUp);
-                e.preventDefault();
-            });
-
-            function onResizeMove(e) {
-                if (!isResizing) return;
-                const dx = e.clientX - startClientX;
-                const dy = e.clientY - startClientY;
-
-                if (resizeDir === 'se' || resizeDir === 'e') {
-                    modal.style.width = `${Math.max(250, startW + dx)}px`;
-                }
-                if (resizeDir === 'se' || resizeDir === 's') {
-                    modal.style.height = `${Math.max(200, startH + dy)}px`;
-                }
-            }
-
-            function onResizeUp() {
-                isResizing = false;
-                document.removeEventListener('mousemove', onResizeMove);
-                document.removeEventListener('mouseup', onResizeUp);
-                modal.style.cursor = 'default';
-            }
         })();
 
-        cargarPaleta();
+        (async () => {
+            try { await cargarCatalogoPID(); } catch(e) { console.error("P&ID:", e); }
+            try { await cargarCatalogoSombreados(); } catch(e) { console.error("Sombreados:", e); }
+        })();
     </script>
 </body>
 </html>

@@ -9,57 +9,17 @@
         body { margin: 0; display: flex; flex-direction: column; height: 100vh; font-family: Arial, sans-serif; background:#f4f4f4; overflow: hidden; }
 
         /* Header superior */
-        #header-nativo {
-            background-color: #1a252f;
-            color: white;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            box-sizing: border-box;
-            width: 100%;
-            flex-shrink: 0;
-            border-bottom: 2px solid #3498db;
-        }
+        #header-nativo { background-color: #1a252f; color: white; height: 40px; display: flex; align-items: center; padding: 0 15px; box-sizing: border-box; width: 100%; flex-shrink: 0; border-bottom: 2px solid #3498db; }
         #header-nativo .logo-text { font-size: 24px; font-weight: 900; color: #3498db; margin-right: 15px; letter-spacing: 1px; }
         #header-nativo .empresa-text { font-size: 13px; font-weight: bold; color: #ecf0f1; margin-right: 20px; }
         #header-nativo .autor-text { font-size: 10px; color: #7f8c8d; }
-        .btn-nav {
-            padding: 6px 12px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
+        .btn-nav { padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: background 0.2s; }
         .btn-nav:hover { background: #2980b9; }
 
         /* Toolbar superior */
-        #toolbar-puertos {
-            background: #2c3e50;
-            color: white;
-            padding: 8px 12px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-            flex-shrink: 0;
-            border-bottom: 1px solid #1a252f;
-        }
-        #toolbar-puertos .grupo {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            padding-right: 10px;
-            border-right: 1px solid #555;
-        }
-        #toolbar-puertos .grupo:last-child {
-            border-right: none;
-            padding-right: 0;
-        }
+        #toolbar-puertos { background: #2c3e50; color: white; padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex-shrink: 0; border-bottom: 1px solid #1a252f; }
+        #toolbar-puertos .grupo { display: flex; gap: 6px; align-items: center; padding-right: 10px; border-right: 1px solid #555; }
+        #toolbar-puertos .grupo:last-child { border-right: none; padding-right: 0; }
 
         .btn { padding: 7px 10px; background: #3498db; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
         .btn:hover { background: #2980b9; }
@@ -71,142 +31,68 @@
         .btn-warning:hover { background: #d68910; }
         .btn-purple { background: #8e44ad; }
         .btn-purple:hover { background: #71368a; }
+        .btn-sombreado { background: #16a085; color: white; }
+        .btn-sombreado:hover { background: #117a65; }
+        .btn-svg-nuevo { background: #e67e22; color: white; }
+        .btn-svg-nuevo:hover { background: #d35400; }
+        .btn-eliminar-bib { background: #c0392b; color: white; }
+        .btn-eliminar-bib:hover { background: #962d22; }
 
-        #toolbar-puertos label {
-            font-size: 11px;
-            font-weight: bold;
-            color: #ecf0f1;
-            white-space: nowrap;
-        }
-        #toolbar-puertos input[type="text"] {
-            padding: 6px 8px;
-            border-radius: 4px;
-            border: 1px solid #555;
-            font-size: 12px;
-            width: 160px;
-        }
+        #toolbar-puertos label { font-size: 11px; font-weight: bold; color: #ecf0f1; white-space: nowrap; }
+        #toolbar-puertos input[type="text"] { padding: 6px 8px; border-radius: 4px; border: 1px solid #555; font-size: 12px; width: 160px; }
 
         /* Zona principal */
-        .main-container {
-            display: flex;
-            flex: 1;
-            padding: 8px;
-            gap: 8px;
-            min-height: 0;
-        }
-        #sidebar {
-            width: 280px;
-            background: #2c3e50;
-            color: white;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        #sidebar .info {
-            font-size: 12px;
-            background: #34495e;
-            padding: 10px;
-            border-radius: 4px;
-            line-height: 1.5;
-        }
+        .main-container { display: flex; flex: 1; padding: 8px; gap: 8px; min-height: 0; }
+        #sidebar { width: 280px; background: #2c3e50; color: white; padding: 15px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; border-radius: 6px; flex-shrink: 0; }
+        #sidebar .info { font-size: 12px; background: #34495e; padding: 10px; border-radius: 4px; line-height: 1.5; }
         #sidebar label { font-size: 12px; font-weight: bold; margin-top: 5px; }
         #sidebar hr { border: 1px solid #555; width: 100%; margin: 5px 0; }
-        #sidebar textarea {
-            width: 100%;
-            height: 200px;
-            font-family: monospace;
-            font-size: 11px;
-            background: #1a252f;
-            color: #2ecc71;
-            border: 1px solid #555;
-            padding: 8px;
-            box-sizing: border-box;
-            border-radius: 4px;
-            resize: vertical;
-        }
+        #sidebar textarea { width: 100%; height: 200px; font-family: monospace; font-size: 11px; background: #1a252f; color: #2ecc71; border: 1px solid #555; padding: 8px; box-sizing: border-box; border-radius: 4px; resize: vertical; }
 
         #lienzo { flex: 1; background: #f9f9f9; position: relative; border-radius: 6px; border: 1px solid #ccc; overflow: hidden; }
 
-        /* Estilos del Modal del Catálogo de Símbolos */
-        #modalSimbolosIso { 
-            display: none; 
-            position: fixed; 
-            z-index: 9999; 
-            left: 0; 
-            top: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            background: rgba(0,0,0,0.6); 
-            align-items: center; 
-            justify-content: center; 
-        }
-        .modal-content-iso { 
-            background: #fff; 
-            width: 680px; 
-            height: 80vh; 
-            border-radius: 8px; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            border: 2px solid #3498db; 
-        }
-        .modal-header-iso { 
-            background: #3498db; 
-            color: white; 
-            padding: 10px 15px; 
-            font-weight: bold; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        .modal-cats-iso { 
-            background: #2c3e50; 
-            padding: 6px 10px; 
-            display: flex; 
-            gap: 6px; 
-            overflow-x: auto; 
-            flex-shrink: 0; 
-            align-items: center; 
-        }
-        .btn-cat-iso { 
-            background: #34495e; 
-            color: #fff; 
-            border: 1px solid #555; 
-            padding: 4px 8px; 
-            border-radius: 3px; 
-            font-size: 11px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            white-space: nowrap; 
-        }
-        .btn-cat-iso.active, .btn-cat-iso:hover { background: #27ae60; border-color: #27ae60; }
-        .modal-body-iso { 
-            padding: 15px; 
-            overflow-y: auto; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
-            gap: 10px; 
-            flex: 1; 
-        }
-        .card-simb-iso { 
-            border: 1px solid #ddd; 
-            padding: 8px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 5px; 
-            background: #fafafa; 
-            transition: all 0.2s; 
-        }
+        /* Modales */
+        #modalSimbolosIso, #modalSimbolosSombreados { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); }
+        .modal-content-iso { background: #fff; width: 680px; height: 80vh; min-width: 350px; min-height: 250px; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; border: 2px solid #3498db; position: absolute; top: 10%; left: 50%; transform: translateX(-50%); resize: both; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-header-iso { background: #3498db; color: white; padding: 10px 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; user-select: none; }
+        .modal-header-iso:active { cursor: grabbing; }
+        .modal-toolbar-iso { background: #2c3e50; padding: 8px 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        .modal-toolbar-iso select { padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #555; background: #34495e; color: #fff; font-weight: bold; cursor: pointer; outline: none; }
+        .modal-toolbar-iso input { padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #ccc; flex: 1; }
+
+        .modal-body-iso { padding: 15px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; flex: 1; }
+        .card-simb-iso { border: 1px solid #ddd; padding: 8px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; background: #fafafa; transition: all 0.2s; }
         .card-simb-iso:hover { background: #eef2f7; border-color: #3498db; transform: scale(1.03); }
         .card-simb-iso img { width: 70px; height: 50px; object-fit: contain; }
         .card-simb-iso span { font-size: 10px; text-align: center; font-weight: bold; color: #333; line-height: 1.2; }
+
+        .resize-handle { position: absolute; bottom: 0; right: 0; width: 16px; height: 16px; cursor: se-resize; background: linear-gradient(135deg, transparent 50%, #3498db 50%); border-bottom-right-radius: 6px; z-index: 10; }
+
+        #modalSimbolosSombreados .modal-content-iso { border-color: #16a085; }
+        #modalSimbolosSombreados .modal-header-iso { background: #16a085; }
+        #modalSimbolosSombreados .modal-toolbar-iso { background: #0e6655; }
+        #modalSimbolosSombreados .modal-toolbar-iso select { background: #1abc9c; border-color: #1abc9c; }
+        #modalSimbolosSombreados .resize-handle { background: linear-gradient(135deg, transparent 50%, #16a085 50%); }
+        #modalSimbolosSombreados .card-simb-iso:hover { border-color: #16a085; background: #e8f8f5; }
+
+        /* Modal de Guardado (Cajetín) */
+        #modalGuardar {
+            display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5);
+            align-items: center; justify-content: center;
+        }
+        .modal-guardar-content {
+            background: white; padding: 20px; border-radius: 8px; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-top: 5px solid #e67e22; font-family: Arial, sans-serif;
+        }
+        .modal-guardar-content h3 { margin: 0 0 15px 0; color: #333; font-size: 18px; }
+        .modal-guardar-content label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; font-size: 13px; }
+        .modal-guardar-content select { width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none; }
+        .modal-guardar-content input[type="text"] { width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none; }
+        .modal-guardar-botones { display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-guardar-botones button { padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-cancelar { background: #ccc; color: #333; }
+        .btn-confirmar { background: #2ecc71; color: white; }
+        .btn-confirmar:hover { background: #27ae60; }
 
         @media (max-width: 900px) {
             #toolbar-puertos { flex-direction: column; align-items: stretch; }
@@ -215,13 +101,12 @@
             .main-container { flex-direction: column; }
             #sidebar { width: 100%; }
             #lienzo { min-height: 400px; }
-            .modal-content-iso { width: 95%; height: 90vh; }
+            .modal-content-iso { width: 95%; height: 90vh; transform: translateX(-50%); left: 50%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header superior con enlaces de navegación -->
     <div id="header-nativo">
         <span class="logo-text">MEN</span>
         <span class="empresa-text">Montajes Industriales S. L.</span>
@@ -233,12 +118,12 @@
         </div>
     </div>
 
-    <!-- Toolbar superior con acciones -->
     <div id="toolbar-puertos">
         <div class="grupo">
-            <button class="btn" onclick="abrirModalCatalogo()">📁 Cargar SVG</button>
-            <button class="btn" style="background:#16a34a;" onclick="cargarSVGManual()">📤 Subir archivo SVG</button>
-            <input type="file" id="file-input" accept=".svg" style="display: none;" onchange="leerArchivo(event)">
+            <button class="btn" onclick="abrirModalCatalogo()">📁 Cargar símbolo</button>
+            <button class="btn btn-sombreado" onclick="abrirModalSombreados()">🌑 Cargar Símbolo Sombreado</button>
+            <button class="btn" style="background:#16a34a;" onclick="cargarSVGManual()">📤 Subir archivo (SVG/PNG)</button>
+            <input type="file" id="file-input" accept=".svg, .png, .jpg, .jpeg" style="display: none;" onchange="leerArchivo(event)">
             <button class="btn" style="background:#7f8c8d;" onclick="document.getElementById('json-input').click()">📂 Cargar JSON</button>
             <input type="file" id="json-input" accept=".json" style="display: none;" onchange="cargarJSONExistente(event)">
         </div>
@@ -246,51 +131,95 @@
         <div class="grupo">
             <button class="btn btn-warning" onclick="toggleRejilla()" id="btn-rejilla">🔲 Desactivar Rejilla</button>
             <button class="btn btn-danger" onclick="borrarTodo()">🗑️ Limpiar Lienzo</button>
+            <button class="btn" onclick="resetZoom()" title="Restablecer zoom y centrar imagen">🎯 Centrar / Reset</button>
         </div>
 
         <div class="grupo">
             <label>Nombre del Símbolo:</label>
-            <input type="text" id="nombre-simbolo" placeholder="nombre_exacto">
+            <input type="text" id="nombre-simbolo" placeholder="nombre_exacto" oninput="actualizarTextareaActual()">
         </div>
 
         <div class="grupo">
+            <button class="btn btn-svg-nuevo" onclick="abrirModalGuardar()">💾 Guardar nuevo Símbolo</button>
             <button class="btn btn-success" onclick="guardarYFusionar()">💾 Actualizar puertos JSON</button>
+            <button class="btn btn-eliminar-bib" onclick="eliminarSimboloDeBiblioteca()">🗑️ Eliminar de la biblioteca</button>
             <button class="btn btn-purple" onclick="descargarJSON()">⬇️ Descargar JSON</button>
         </div>
     </div>
 
-    <!-- Zona principal: Panel Lateral + Canvas -->
     <div class="main-container">
         <div id="sidebar">
             <h3 style="margin:0 0 5px 0; font-size:15px; color:#3498db;">Editor de Puertos</h3>
             <div class="info">
-                1. Haz clic en <b>"Cargar SVG"</b> para elegir del catálogo o subir uno libre.<br>
-                2. Los puertos definidos se cargarán automáticamente.<br>
-                3. <b>Haz clic en el fondo</b> para añadir un puerto.<br>
-                4. Arrastra los círculos para situarlos.<br>
-                5. Selecciona un puerto (amarillo) y pulsa <b>Suprimir</b> para borrarlo.
+                1. Usa la <b>rueda del ratón</b> para hacer Zoom.<br>
+                2. Mantén pulsado el <b>clic central o derecho</b> para mover el lienzo.<br>
+                3. Haz clic en el lienzo para añadir puertos.<br>
+                4. Usa <b>"💾 Guardar"</b> para registrar la configuración.
             </div>
             <hr>
-            <label>config_puertos.json (Previsualización):</label>
+            <label>Parámetros del Símbolo Actual:</label>
             <textarea id="json-output" readonly></textarea>
         </div>
 
         <div id="lienzo"></div>
     </div>
 
-    <!-- Modal Catálogo de Símbolos SVG -->
+    <!-- Modal Catálogo de Símbolos P&ID -->
     <div id="modalSimbolosIso">
         <div class="modal-content-iso">
             <div class="modal-header-iso">
-                <span>Biblioteca de Símbolos P&ID</span>
+                <span>Biblioteca P&ID (svg-procesados)</span>
                 <span style="cursor:pointer; font-size:18px;" onclick="cerrarModalSimb()">✖</span>
             </div>
-            <div class="modal-cats-iso" id="barSubcarpetas"></div>
-            <div style="padding: 6px 10px; background: #eee; display: flex; justify-content: flex-end;">
-                <input type="text" id="buscIsoSimb" placeholder="🔍 Buscar símbolo..." style="padding:4px 8px; font-size:12px; width:220px; border-radius:3px; border:1px solid #ccc;" oninput="filtrarSimbolosIso()">
+            <div class="modal-toolbar-iso">
+                <select id="selectCategoriaIso" onchange="cambiarCategoriaIso(this.value)"></select>
+                <input type="text" id="buscIsoSimb" placeholder="🔍 Buscar símbolo..." oninput="filtrarSimbolosIso()">
             </div>
             <div class="modal-body-iso" id="listaModalSimb">
                 <p style="text-align:center; grid-column:1/-1;">Cargando catálogo...</p>
+            </div>
+            <div class="resize-handle"></div>
+        </div>
+    </div>
+
+    <!-- Modal Catálogo de Símbolos Sombreados -->
+    <div id="modalSimbolosSombreados">
+        <div class="modal-content-iso">
+            <div class="modal-header-iso">
+                <span>Biblioteca Símbolos Sombreados (s-procesados)</span>
+                <span style="cursor:pointer; font-size:18px;" onclick="cerrarModalSombreados()">✖</span>
+            </div>
+            <div class="modal-toolbar-iso">
+                <select id="selectCategoriaSombreados" onchange="cambiarCategoriaSombreados(this.value)"></select>
+                <input type="text" id="buscSombreados" placeholder="🔍 Buscar sombreado..." oninput="filtrarSombreados()">
+            </div>
+            <div class="modal-body-iso" id="listaModalSombreados">
+                <p style="text-align:center; grid-column:1/-1;">Cargando catálogo...</p>
+            </div>
+            <div class="resize-handle"></div>
+        </div>
+    </div>
+
+    <!-- Modal de Guardado (Cajetín) -->
+    <div id="modalGuardar">
+        <div class="modal-guardar-content">
+            <h3>💾 Guardar Nuevo Símbolo</h3>
+            
+            <label>Catálogo de destino:</label>
+            <select id="selectCatalogoDestino" onchange="actualizarCarpetasModal()">
+                <option value="pid">P&ID Normal (catalogo.json)</option>
+                <option value="sombreado">Símbolos Sombreados (s_catalogo.json)</option>
+            </select>
+
+            <label>Subcarpeta:</label>
+            <select id="selectCarpetaDestino"></select>
+
+            <label>Nombre para mostrar en la biblioteca (sin guiones):</label>
+            <input type="text" id="inputNombreModal" placeholder="Nombre del símbolo">
+
+            <div class="modal-guardar-botones">
+                <button class="btn-cancelar" onclick="cerrarModalGuardar()">Cancelar</button>
+                <button class="btn-confirmar" onclick="ejecutarGuardado()">Guardar</button>
             </div>
         </div>
     </div>
@@ -312,12 +241,76 @@
         let contadorPuertos = 1;
         let puertoSeleccionado = null;
         let configPuertos = {};
+        let configSombreados = {};
         let catalogoGlobalIso = {};
+        let catalogoGlobalSombreados = {};
         let subcarpetaActivaIso = '';
+        let subcarpetaActivaSombreados = '';
+
+        // Variables para Sistema de Archivos
+        let archivoOriginalSubido = null;
+        let dirHandleGlobal = null; // Guarda la carpeta raíz del proyecto
+        let nombreArchivoOriginalSubido = ""; 
 
         let datosAcumulados = JSON.parse(localStorage.getItem('configPuertosJSON')) || {};
+        let datosSombreadosAcumulados = JSON.parse(localStorage.getItem('configSombreadosJSON')) || {};
 
-        // Cargar config_puertos.json al iniciar
+        // ==========================================
+        // LÓGICA DE ZOOM Y PAN (ENCUADRE)
+        // ==========================================
+        let currentScale = 2;
+        let isPanning = false;
+        let startPanX = 0;
+        let startPanY = 0;
+
+        document.getElementById('lienzo').addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomFactor = 1.1;
+            let newScale = e.deltaY < 0 ? currentScale * zoomFactor : currentScale / zoomFactor;
+            newScale = Math.max(0.2, Math.min(8, newScale)); 
+            
+            const rect = document.getElementById('lienzo').getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+            
+            paper.scale(newScale, newScale, offsetX, offsetY);
+            currentScale = newScale;
+        }, { passive: false });
+
+        document.getElementById('lienzo').addEventListener('mousedown', (e) => {
+            if (e.button === 1 || e.button === 2) { 
+                isPanning = true; 
+                startPanX = e.clientX; 
+                startPanY = e.clientY; 
+                e.preventDefault(); 
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isPanning) return;
+            const dx = e.clientX - startPanX; 
+            const dy = e.clientY - startPanY;
+            startPanX = e.clientX; 
+            startPanY = e.clientY;
+            const translate = paper.translate();
+            paper.translate(translate.tx + dx, translate.ty + dy);
+        });
+
+        document.addEventListener('mouseup', () => { isPanning = false; });
+        
+        document.getElementById('lienzo').addEventListener('contextmenu', e => e.preventDefault());
+
+        window.resetZoom = function() {
+            paper.scale(2, 2);
+            currentScale = 2;
+            paper.translate(0, 0);
+            if (graph.getElements().length > 0) {
+                paper.scaleContentToFit({ padding: 50, minScale: 0.2, maxScale: 3 });
+                currentScale = paper.scale().sx;
+            }
+        };
+        // ==========================================
+
         async function cargarConfigPuertos() {
             try {
                 const res = await fetch('./config_puertos.json?t=' + new Date().getTime());
@@ -326,31 +319,48 @@
                     configPuertos = datosBrutos;
                     datosAcumulados = { ...datosBrutos, ...datosAcumulados };
                     localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
-                    actualizarTextarea();
-                    console.log("✅ JSON de puertos cargado con éxito.");
                 }
-            } catch (e) { 
-                console.warn("⚠️ No se pudo leer config_puertos.json inicialmente."); 
-                actualizarTextarea();
-            }
+            } catch (e) { }
         }
         cargarConfigPuertos();
 
-        // Cargar catálogo global de símbolos SVG
         async function cargarCatalogoIso() {
             try {
                 const res = await fetch('./catalogo.json?t=' + new Date().getTime());
-                if (res.ok) {
-                    catalogoGlobalIso = await res.json();
-                }
+                if (res.ok) catalogoGlobalIso = await res.json();
             } catch (e) { console.error("Error al cargar catalogo.json", e); }
         }
         cargarCatalogoIso();
 
-        function actualizarTextarea() {
-            document.getElementById('json-output').value = Object.keys(datosAcumulados).length > 0
-                ? JSON.stringify(datosAcumulados, null, 4)
-                : "No hay símbolos guardados aún...";
+        async function cargarCatalogoSombreados() {
+            try {
+                const res = await fetch('./s_catalogo.json?t=' + new Date().getTime());
+                if (res.ok) catalogoGlobalSombreados = await res.json();
+            } catch (e) { console.error("Error al cargar s_catalogo.json", e); }
+
+            try {
+                const resSomb = await fetch('./s_config_puertos.json?t=' + new Date().getTime());
+                if (resSomb.ok) {
+                    const datosBrutosSomb = await resSomb.json();
+                    configSombreados = datosBrutosSomb;
+                    datosSombreadosAcumulados = { ...datosBrutosSomb, ...datosSombreadosAcumulados };
+                    localStorage.setItem('configSombreadosJSON', JSON.stringify(datosSombreadosAcumulados));
+                }
+            } catch (e) { }
+        }
+        cargarCatalogoSombreados();
+
+        function actualizarTextareaActual() {
+            const nombre = document.getElementById('nombre-simbolo').value.trim();
+            const datosActuales = obtenerPuertosActuales(false);
+            
+            if (nombre && datosActuales && datosActuales.puertos.length > 0) {
+                const objUnico = {};
+                objUnico[nombre] = datosActuales.puertos;
+                document.getElementById('json-output').value = JSON.stringify(objUnico, null, 4);
+            } else {
+                document.getElementById('json-output').value = "No hay puertos configurados para este símbolo...";
+            }
         }
 
         window.toggleRejilla = function() {
@@ -366,54 +376,70 @@
             paper.drawGrid();
         };
 
-        // --- FUNCIONES DEL MODAL DE CATÁLOGO SVG ---
+        // --- ARRASTRE DE ARCHIVOS ---
+        const lienzoEl = document.getElementById('lienzo');
+        lienzoEl.addEventListener('dragover', (e) => e.preventDefault());
+        lienzoEl.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                archivoOriginalSubido = file;
+                nombreArchivoOriginalSubido = file.name;
+                procesarArchivoLocal(file);
+            }
+        });
+
+        // --- MODAL CATÁLOGO P&ID ---
         function abrirModalCatalogo() {
             const modal = document.getElementById('modalSimbolosIso');
-            const bar = document.getElementById('barSubcarpetas');
-            bar.innerHTML = '';
-            const categorias = Object.keys(catalogoGlobalIso);
+            const select = document.getElementById('selectCategoriaIso');
+            select.innerHTML = '';
+            const categorias = Object.keys(catalogoGlobalIso).sort();
             
             if (categorias.length === 0) {
                 document.getElementById('listaModalSimb').innerHTML = '<p style="text-align:center; grid-column:1/-1;">No se cargó catalogo.json o está vacío.</p>';
-                modal.style.display = 'flex'; 
-                return;
+                modal.style.display = 'flex'; return;
             }
 
-            categorias.forEach((cat, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-cat-iso' + (idx === 0 ? ' active' : '');
-                btn.textContent = cat;
-                btn.onclick = () => {
-                    document.querySelectorAll('.btn-cat-iso').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    subcarpetaActivaIso = cat;
-                    renderizarItemsSubcarpeta(cat);
-                };
-                bar.appendChild(btn);
+            categorias.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                select.appendChild(opt);
             });
 
             subcarpetaActivaIso = categorias[0];
+            select.value = subcarpetaActivaIso;
+            document.getElementById('buscIsoSimb').value = '';
             renderizarItemsSubcarpeta(subcarpetaActivaIso);
             modal.style.display = 'flex';
+            
+            const ventana = modal.querySelector('.modal-content-iso');
+            if (!ventana.dataset.arrastrado) {
+                ventana.style.left = '50%'; ventana.style.top = '10%';
+                ventana.style.transform = 'translateX(-50%)';
+            }
+        }
+
+        function cambiarCategoriaIso(cat) {
+            subcarpetaActivaIso = cat;
+            renderizarItemsSubcarpeta(cat);
         }
 
         function renderizarItemsSubcarpeta(cat) {
             const contenedor = document.getElementById('listaModalSimb');
             contenedor.innerHTML = '';
             document.getElementById('buscIsoSimb').value = '';
-            const items = catalogoGlobalIso[cat] || [];
+            const items = (catalogoGlobalIso[cat] || []).sort((a, b) => a.nombre.localeCompare(b.nombre));
             
-            if (items.length === 0) {
-                contenedor.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Carpeta vacía.</p>'; 
-                return;
-            }
-
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card-simb-iso';
                 card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}</span>`;
                 card.onclick = () => {
-                    cargarSVGDesdeRuta(item.ruta, item.nombre);
+                    window.esSimboloSombreado = false;
+                    archivoOriginalSubido = null;
+                    cargarImagenDesdeRuta(item.ruta, item.nombre);
                     cerrarModalSimb();
                 };
                 contenedor.appendChild(card);
@@ -434,7 +460,9 @@
                         card.className = 'card-simb-iso';
                         card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}<br><small style="color:#777;">(${cat})</small></span>`;
                         card.onclick = () => {
-                            cargarSVGDesdeRuta(item.ruta, item.nombre);
+                            window.esSimboloSombreado = false;
+                            archivoOriginalSubido = null;
+                            cargarImagenDesdeRuta(item.ruta, item.nombre);
                             cerrarModalSimb();
                         };
                         contenedor.appendChild(card);
@@ -446,31 +474,132 @@
 
         function cerrarModalSimb() { document.getElementById('modalSimbolosIso').style.display = 'none'; }
 
-        async function cargarSVGDesdeRuta(ruta, nombreItem) {
-            try {
-                const res = await fetch(ruta);
-                const svgTexto = await res.text();
-                const nombreArchivo = ruta.split('/').pop() || nombreItem;
-                cargarSVGTexto(svgTexto, nombreArchivo);
-            } catch (err) {
-                alert("Error al cargar el archivo SVG: " + err.message);
+        // --- MODAL CATÁLOGO SOMBREADOS ---
+        function abrirModalSombreados() {
+            const modal = document.getElementById('modalSimbolosSombreados');
+            const select = document.getElementById('selectCategoriaSombreados');
+            select.innerHTML = '';
+            const categorias = Object.keys(catalogoGlobalSombreados).sort();
+            
+            if (categorias.length === 0) {
+                document.getElementById('listaModalSombreados').innerHTML = '<p style="text-align:center; grid-column:1/-1;">No se cargó s_catalogo.json o está vacío.</p>';
+                modal.style.display = 'flex'; return;
+            }
+
+            categorias.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                select.appendChild(opt);
+            });
+
+            subcarpetaActivaSombreados = categorias[0];
+            select.value = subcarpetaActivaSombreados;
+            document.getElementById('buscSombreados').value = '';
+            renderizarItemsSombreados(subcarpetaActivaSombreados);
+            modal.style.display = 'flex';
+            
+            const ventana = modal.querySelector('.modal-content-iso');
+            if (!ventana.dataset.arrastrado) {
+                ventana.style.left = '50%'; ventana.style.top = '10%';
+                ventana.style.transform = 'translateX(-50%)';
             }
         }
 
-        // --- Carga y Renderizado del SVG ---
-        function cargarSVGTexto(svgTexto, nombreArchivo) {
-            graph.clear();
-            contadorPuertos = 1;
-            puertoSeleccionado = null;
+        function cambiarCategoriaSombreados(cat) {
+            subcarpetaActivaSombreados = cat;
+            renderizarItemsSombreados(cat);
+        }
 
+        function renderizarItemsSombreados(cat) {
+            const contenedor = document.getElementById('listaModalSombreados');
+            contenedor.innerHTML = '';
+            document.getElementById('buscSombreados').value = '';
+            const items = (catalogoGlobalSombreados[cat] || []).sort((a, b) => a.nombre.localeCompare(b.nombre));
+            
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card-simb-iso';
+                card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}</span>`;
+                card.onclick = () => {
+                    window.esSimboloSombreado = true;
+                    archivoOriginalSubido = null;
+                    cargarImagenDesdeRuta(item.ruta, item.nombre);
+                    cerrarModalSombreados();
+                };
+                contenedor.appendChild(card);
+            });
+        }
+
+        function filtrarSombreados() {
+            const txt = document.getElementById('buscSombreados').value.toLowerCase().trim();
+            const contenedor = document.getElementById('listaModalSombreados');
+            contenedor.innerHTML = '';
+            if (!txt) { renderizarItemsSombreados(subcarpetaActivaSombreados); return; }
+            let total = 0;
+            for (const cat in catalogoGlobalSombreados) {
+                catalogoGlobalSombreados[cat].forEach(item => {
+                    if (item.nombre.toLowerCase().includes(txt)) {
+                        total++;
+                        const card = document.createElement('div');
+                        card.className = 'card-simb-iso';
+                        card.innerHTML = `<img src="${item.ruta}" alt=""><span>${item.nombre}<br><small style="color:#777;">(${cat})</small></span>`;
+                        card.onclick = () => {
+                            window.esSimboloSombreado = true;
+                            archivoOriginalSubido = null;
+                            cargarImagenDesdeRuta(item.ruta, item.nombre);
+                            cerrarModalSombreados();
+                        };
+                        contenedor.appendChild(card);
+                    }
+                });
+            }
+            if (total === 0) contenedor.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No se encontraron resultados.</p>';
+        }
+
+        function cerrarModalSombreados() { document.getElementById('modalSimbolosSombreados').style.display = 'none'; }
+
+        async function cargarImagenDesdeRuta(ruta, nombreItem) {
+            try {
+                const res = await fetch(ruta);
+                if (!res.ok) throw new Error("Archivo no encontrado");
+                const blob = await res.blob();
+                const nombreArchivo = ruta.split('/').pop() || nombreItem;
+
+                if (ruta.toLowerCase().match(/\.(png|jpg|jpeg)$/)) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const dataUri = reader.result;
+                        const img = new Image();
+                        img.onload = () => renderizarFondo(dataUri, nombreArchivo, img.width || 100, img.height || 100);
+                        img.onerror = () => renderizarFondo(dataUri, nombreArchivo, 100, 100);
+                        img.src = dataUri;
+                    };
+                    reader.readAsDataURL(blob);
+                } else if (ruta.toLowerCase().match(/\.svg$/)) {
+                    const svgTexto = await blob.text();
+                    cargarSVGTexto(svgTexto, nombreArchivo);
+                } else {
+                    alert("Formato no soportado: " + ruta);
+                }
+            } catch (err) {
+                alert("Error al cargar el archivo: " + err.message);
+            }
+        }
+
+        function cargarSVGTexto(svgTexto, nombreArchivo) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(svgTexto, "image/svg+xml");
             const svgElement = doc.querySelector('svg');
 
+            if (!svgElement) {
+                alert("El archivo no es un SVG válido.");
+                return;
+            }
+
             let minX = 0, minY = 0, anchoReal = 100, altoReal = 100;
-            const viewBox = svgElement.getAttribute('viewBox');
-            if(viewBox) {
-                const partes = viewBox.trim().split(/\s+/);
+            if(svgElement.getAttribute('viewBox')) {
+                const partes = svgElement.getAttribute('viewBox').trim().split(/\s+/);
                 if(partes.length === 4) {
                     minX = parseFloat(partes[0]); minY = parseFloat(partes[1]);
                     anchoReal = parseFloat(partes[2]); altoReal = parseFloat(partes[3]);
@@ -480,24 +609,36 @@
             const svgLimpio = new XMLSerializer().serializeToString(svgElement);
             const blob = new Blob([svgLimpio], {type: 'image/svg+xml'});
             const urlLimpia = URL.createObjectURL(blob);
+            renderizarFondo(urlLimpia, nombreArchivo, anchoReal, altoReal, minX, minY);
+        }
+
+        // --- RENDERIZADO CORREGIDO PARA RESALTAR LA IMAGEN ---
+        function renderizarFondo(urlImagen, nombreArchivo, anchoReal, altoReal, minX = 0, minY = 0) {
+            graph.clear();
+            contadorPuertos = 1;
+            puertoSeleccionado = null;
+
+            currentScale = 2;
+            paper.scale(2, 2);
+            paper.translate(0, 0);
 
             const escala = 2;
             const targetWidth = anchoReal * escala;
             const targetHeight = altoReal * escala;
 
             const rectLienzo = document.getElementById('lienzo').getBoundingClientRect();
-            const centroX = rectLienzo.width / 2;
-            const centroY = rectLienzo.height / 2;
-            const localPoint = paper.clientToLocalPoint({ x: rectLienzo.left + centroX, y: rectLienzo.top + centroY });
+            const localPoint = paper.clientToLocalPoint({ x: rectLienzo.left + (rectLienzo.width / 2), y: rectLienzo.top + (rectLienzo.height / 2) });
 
             const fondo = new joint.shapes.standard.Image();
             fondo.position(localPoint.x - (targetWidth/2), localPoint.y - (targetHeight/2));
             fondo.resize(targetWidth, targetHeight);
-            fondo.attr('image/xlink:href', urlLimpia);
+            fondo.attr('image/xlink:href', urlImagen);
             fondo.attr('image/preserveAspectRatio', 'xMidYMid meet');
-            fondo.attr('body/fill', 'transparent');
-            fondo.attr('body/stroke', 'red');
-            fondo.attr('body/strokeDasharray', '5,5');
+            
+            // LA CLAVE: En lugar de forzar un fondo blanco (que puede lavar la imagen), 
+            // dejamos que la imagen sea transparente o mantenga sus colores.
+            fondo.attr('body/fill', 'transparent'); 
+            fondo.attr('body/stroke', 'none'); 
 
             fondo.set('isFondo', true);
             fondo.set('svgViewBox', { minX, minY, width: anchoReal, height: altoReal });
@@ -506,17 +647,18 @@
 
             let nombreLimpio = "";
             if (nombreArchivo) {
-                nombreLimpio = nombreArchivo.replace('.svg', '');
+                nombreLimpio = nombreArchivo.replace(/\.(svg|png|jpg|jpeg)$/i, '')
+                                             .replace(/[-_]/g, ' ') 
+                                             .replace(/\s+/g, ' ') 
+                                             .trim();
                 document.getElementById('nombre-simbolo').value = nombreLimpio;
             }
 
             let puertosParaDibujar = [];
+            const fuenteDatos = window.esSimboloSombreado ? datosSombreadosAcumulados : datosAcumulados;
 
-            // Buscar en datos acumulados / config
-            if (nombreLimpio && datosAcumulados[nombreLimpio]) {
-                puertosParaDibujar = datosAcumulados[nombreLimpio];
-            } else if (nombreLimpio && configPuertos[nombreLimpio]) {
-                puertosParaDibujar = configPuertos[nombreLimpio];
+            if (nombreLimpio && fuenteDatos[nombreLimpio]) {
+                puertosParaDibujar = fuenteDatos[nombreLimpio];
             } else {
                 puertosParaDibujar = [
                     { id: "p_1", x: minX, y: minY + (altoReal / 2) },
@@ -534,39 +676,69 @@
                 nuevoPuerto.position(posX - radio, posY - radio);
                 nuevoPuerto.resize(radio * 2, radio * 2);
                 nuevoPuerto.attr({
-                    body: { fill: '#3498db', stroke: 'white', strokeWidth: 2, cursor: 'move' },
+                    body: { fill: window.esSimboloSombreado ? '#16a085' : '#3498db', stroke: 'white', strokeWidth: 2, cursor: 'move' },
                     label: { text: contadorPuertos, fontSize: 10, fill: 'white', fontWeight: 'bold' }
                 });
                 nuevoPuerto.set('isPuerto', true);
+                nuevoPuerto.set('_relX', p.x);
+                nuevoPuerto.set('_relY', p.y);
+                
                 nuevoPuerto.addTo(graph);
                 contadorPuertos++;
             });
+            actualizarTextareaActual();
         }
 
-        const lienzo = document.getElementById('lienzo');
-        lienzo.addEventListener('dragover', (e) => e.preventDefault());
-        lienzo.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const file = e.dataTransfer.files[0];
-            if (file && file.name.endsWith('.svg')) {
+        function cargarSVGManual() { document.getElementById('file-input').click(); }
+        
+        function leerArchivo(e) {
+            const file = e.target.files[0]; if (!file) return;
+            archivoOriginalSubido = file;
+            nombreArchivoOriginalSubido = file.name;
+            procesarArchivoLocal(file);
+            e.target.value = '';
+        }
+
+        function procesarArchivoLocal(file) {
+            const fileName = file.name.toLowerCase();
+            
+            if (fileName.endsWith('.png') || fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const dataUri = event.target.result;
+                    const img = new Image();
+                    img.onload = () => renderizarFondo(dataUri, file.name, img.width || 100, img.height || 100);
+                    img.onerror = () => renderizarFondo(dataUri, file.name, 100, 100);
+                    img.src = dataUri;
+                };
+                reader.readAsDataURL(file);
+            } else if (fileName.endsWith('.svg')) {
                 const reader = new FileReader();
                 reader.onload = (event) => cargarSVGTexto(event.target.result, file.name);
                 reader.readAsText(file);
+            } else {
+                alert("Formato no soportado. Usa SVG, PNG o JPG.");
             }
-        });
-
-        function cargarSVGManual() { document.getElementById('file-input').click(); }
-        function leerArchivo(e) {
-            const file = e.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (event) => cargarSVGTexto(event.target.result, file.name);
-            reader.readAsText(file);
         }
 
-        // --- CREAR PUERTO CON CLIC EN EL FONDO ---
         paper.on('blank:pointerdown', function(evt, x, y) {
+            if (evt.button !== 0) return;
+
+            const fondos = graph.getElements().filter(el => el.get('isFondo'));
+            if (fondos.length === 0) return;
+
+            const fondo = fondos[0];
+            const posFondo = fondo.position();
+            const datosSVG = fondo.get('svgViewBox');
+            const escala = fondo.get('escala');
+
             const nuevoPuerto = new joint.shapes.standard.Circle();
             const radio = 6;
+
+            const relX = (x - posFondo.x) / escala;
+            const relY = (y - posFondo.y) / escala;
+            const originalX = datosSVG.minX + relX;
+            const originalY = datosSVG.minY + relY;
 
             let posX = x;
             let posY = y;
@@ -579,10 +751,13 @@
             nuevoPuerto.position(posX - radio, posY - radio);
             nuevoPuerto.resize(radio * 2, radio * 2);
             nuevoPuerto.attr({
-                body: { fill: '#3498db', stroke: 'white', strokeWidth: 2, cursor: 'move' },
+                body: { fill: window.esSimboloSombreado ? '#16a085' : '#3498db', stroke: 'white', strokeWidth: 2, cursor: 'move' },
                 label: { text: contadorPuertos, fontSize: 10, fill: 'white', fontWeight: 'bold' }
             });
             nuevoPuerto.set('isPuerto', true);
+            nuevoPuerto.set('_relX', originalX);
+            nuevoPuerto.set('_relY', originalY);
+            
             nuevoPuerto.addTo(graph);
             contadorPuertos++;
 
@@ -590,10 +765,12 @@
                 puertoSeleccionado.attr('body/stroke', 'white');
                 puertoSeleccionado = null;
             }
+            actualizarTextareaActual();
         });
 
-        // --- SELECCIONAR Y MOVER PUERTOS ---
         paper.on('element:pointerdown', function(elementView, evt) {
+            if (evt.button !== 0) return;
+
             const el = elementView.model;
             if (!el.get('isPuerto')) return;
             evt.stopPropagation();
@@ -629,17 +806,18 @@
             const onMouseUp = () => {
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
+                actualizarTextareaActual();
             };
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
         });
 
-        // --- BORRAR PUERTO CON SUPRIMIR ---
         window.addEventListener('keydown', function(e) {
             if ((e.key === 'Delete' || e.key === 'Backspace') && puertoSeleccionado) {
                 puertoSeleccionado.remove();
                 puertoSeleccionado = null;
                 e.preventDefault();
+                actualizarTextareaActual();
             }
         });
 
@@ -647,32 +825,22 @@
             graph.clear();
             contadorPuertos = 1;
             puertoSeleccionado = null;
+            archivoOriginalSubido = null;
+            actualizarTextareaActual();
         }
 
-        function obtenerPuertosActuales() {
+        function obtenerPuertosActuales(mostrarAlerta = true) {
             const nombre = document.getElementById('nombre-simbolo').value.trim();
-            if (!nombre) { alert("Escribe el nombre del símbolo primero."); return null; }
+            if (!nombre) {
+                if (mostrarAlerta) alert("Escribe el nombre del símbolo primero.");
+                return null;
+            }
 
-            const fondos = graph.getElements().filter(el => el.get('isFondo'));
-            if (fondos.length === 0) { alert("No hay ningún SVG en el lienzo."); return null; }
-
-            const fondo = fondos[0];
-            const posFondo = fondo.position();
-            const datosSVG = fondo.get('svgViewBox');
-            const escala = fondo.get('escala');
             const puertos = graph.getElements().filter(el => el.get('isPuerto'));
 
             const puertosExportados = puertos.map(p => {
-                const posP = p.position();
-                const radio = 6;
-                const centroX = posP.x + radio;
-                const centroY = posP.y + radio;
-
-                const relX = (centroX - posFondo.x) / escala;
-                const relY = (centroY - posFondo.y) / escala;
-
-                const originalX = datosSVG.minX + relX;
-                const originalY = datosSVG.minY + relY;
+                const originalX = p.get('_relX');
+                const originalY = p.get('_relY');
 
                 return {
                     id: 'p_' + p.attr('label/text'),
@@ -684,77 +852,244 @@
             return { nombre, puertos: puertosExportados };
         }
 
-        // --- GUARDAR Y ACTUALIZAR CONFIG_PUERTOS.JSON ---
-        async function guardarYFusionar() {
-            const datos = obtenerPuertosActuales();
-            if (!datos) return;
+        // --- MODAL DE GUARDADO (CAJETÍN CON MEMORIA) ---
+        function abrirModalGuardar() {
+            const nombreInput = document.getElementById('nombre-simbolo').value.trim();
+            if (!nombreInput) return alert("Escribe un nombre para el símbolo primero.");
+            const fondos = graph.getElements().filter(el => el.get('isFondo'));
+            if (fondos.length === 0) return alert("Carga o arrastra una imagen al lienzo primero.");
 
-            // 1. Intentar descargar/leer primero las líneas escritas existentes de config_puertos.json
-            let baseJSON = {};
-            try {
-                const respuesta = await fetch('./config_puertos.json?t=' + new Date().getTime());
-                if (respuesta.ok) {
-                    baseJSON = await respuesta.json();
+            document.getElementById('inputNombreModal').value = nombreInput;
+            
+            // RECUPERAR ÚLTIMA CONFIGURACIÓN GUARDADA
+            const ultimoCatalogo = localStorage.getItem('ultimoCatalogoDestino') || (window.esSimboloSombreado ? 'sombreado' : 'pid');
+            const ultimaCarpeta = localStorage.getItem('ultimaCarpetaDestino');
+
+            document.getElementById('selectCatalogoDestino').value = ultimoCatalogo;
+            
+            actualizarCarpetasModal();
+
+            // Si había una carpeta seleccionada previamente, intentamos seleccionarla
+            if (ultimaCarpeta) {
+                const selectCarpeta = document.getElementById('selectCarpetaDestino');
+                for (let i = 0; i < selectCarpeta.options.length; i++) {
+                    if (selectCarpeta.options[i].value === ultimaCarpeta) {
+                        selectCarpeta.selectedIndex = i;
+                        break;
+                    }
                 }
-            } catch (e) {
-                baseJSON = { ...datosAcumulados };
             }
+            
+            document.getElementById('modalGuardar').style.display = 'flex';
+        }
 
-            // 2. Fusionar respetando la estructura: sustituye las del símbolo actual y mantiene las existentes
-            baseJSON[datos.nombre] = datos.puertos;
-            datosAcumulados = baseJSON;
+        function cerrarModalGuardar() {
+            document.getElementById('modalGuardar').style.display = 'none';
+        }
 
-            // Guardar en almacenamiento local
-            localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
-            actualizarTextarea();
+        function actualizarCarpetasModal() {
+            const target = document.getElementById('selectCatalogoDestino').value;
+            const selectCarpeta = document.getElementById('selectCarpetaDestino');
+            selectCarpeta.innerHTML = '';
 
-            // 3. Escribir/Enviar actualización hacia el archivo config_puertos.json
-            let guardadoExitoso = false;
+            const catalogo = target === 'pid' ? catalogoGlobalIso : catalogoGlobalSombreados;
+            const categorias = Object.keys(catalogo).sort();
 
-            // Intento A: Guardar vía servidor / endpoint local si está disponible
-            try {
-                const respuestaGuardado = await fetch('./config_puertos.json', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datosAcumulados, null, 4)
-                });
-                if (respuestaGuardado.ok) {
-                    guardadoExitoso = true;
-                    alert(`✅ "config_puertos.json" se ha actualizado correctamente en el servidor/directorio local con los puertos de "${datos.nombre}".`);
-                }
-            } catch (e) { console.log("Servidor local no admite escritura directa por POST."); }
+            categorias.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                selectCarpeta.appendChild(opt);
+            });
+        }
 
-            // Intento B: Si el servidor web directo no está activo, ofrecer guardado por File System Access API
-            if (!guardadoExitoso && 'showSaveFilePicker' in window) {
+        // --- SISTEMA DE GUARDADO NATIVO (File System Access API) ---
+        async function ejecutarGuardado() {
+            const nombreInput = document.getElementById('inputNombreModal').value.trim();
+            const targetVal = document.getElementById('selectCatalogoDestino').value;
+            const targetCatalogo = targetVal === 'pid' ? 'catalogo.json' : 's_catalogo.json';
+            const carpetaRaiz = targetVal === 'pid' ? 'svg-procesados' : 's-procesados';
+            const catSeleccionada = document.getElementById('selectCarpetaDestino').value;
+
+            if (!nombreInput) return alert("El nombre no puede estar vacío.");
+            if (!catSeleccionada) return alert("Selecciona una carpeta de destino.");
+
+            // GUARDAR LA CONFIGURACIÓN EN LA MEMORIA DEL NAVEGADOR
+            localStorage.setItem('ultimoCatalogoDestino', targetVal);
+            localStorage.setItem('ultimaCarpetaDestino', catSeleccionada);
+
+            cerrarModalGuardar();
+
+            // Si no tenemos acceso a la carpeta, lo pedimos
+            if (!dirHandleGlobal) {
                 try {
-                    const handle = await window.showSaveFilePicker({
-                        suggestedName: 'config_puertos.json',
-                        types: [{ description: 'Archivo JSON de Configuración de Puertos', accept: { 'application/json': ['.json'] } }]
-                    });
-                    const writable = await handle.createWritable();
-                    await writable.write(JSON.stringify(datosAcumulados, null, 4));
-                    await writable.close();
-                    guardadoExitoso = true;
-                    alert(`✅ Archivo "config_puertos.json" guardado con éxito reemplazando y añadiendo los puertos de "${datos.nombre}".`);
+                    dirHandleGlobal = await window.showDirectoryPicker({ mode: 'readwrite' });
                 } catch (err) {
-                    if (err.name !== 'AbortError') console.error(err);
+                    alert("Se necesita permiso para acceder a la carpeta del proyecto para guardar los archivos.");
+                    return;
                 }
             }
 
-            // Fallback C: Notificación estándar si no se guardó automáticamente
-            if (!guardadoExitoso) {
-                alert(` Símbolo "${datos.nombre}" actualizado en la vista de panel. Haz clic en "Descargar JSON" para guardar tu archivo directamente.`);
+            try {
+                // 1. LIMPIAR NOMBRE SOLO PARA LA BIBLIOTECA
+                const nombreLimpio = nombreInput.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+                
+                // 2. RESPETAR EL NOMBRE ORIGINAL DEL ARCHIVO Y SU EXTENSIÓN
+                let nombreArchivoFinal = nombreInput;
+                if (nombreArchivoOriginalSubido) {
+                    nombreArchivoFinal = nombreArchivoOriginalSubido;
+                } else {
+                    const datosFondo = graph.getElements().filter(el => el.get('isFondo'))[0];
+                    const urlImagen = datosFondo.attr('image/xlink:href');
+                    if (urlImagen.startsWith('data:image/png')) nombreArchivoFinal += '.png';
+                    else if (urlImagen.startsWith('data:image/jpeg')) nombreArchivoFinal += '.jpg';
+                    else nombreArchivoFinal += '.svg';
+                }
+
+                const rutaRelativa = `./${carpetaRaiz}/${catSeleccionada}/${nombreArchivoFinal}`;
+                
+                // 3. ACTUALIZAR EL JSON EN MEMORIA
+                let catalogoActual = targetVal === 'pid' ? catalogoGlobalIso : catalogoGlobalSombreados;
+                const nuevoItem = { nombre: nombreLimpio, ruta: rutaRelativa };
+                if (!catalogoActual[catSeleccionada]) catalogoActual[catSeleccionada] = [];
+                
+                const index = catalogoActual[catSeleccionada].findIndex(item => item.nombre.toLowerCase() === nombreLimpio.toLowerCase());
+                if (index !== -1) {
+                    catalogoActual[catSeleccionada][index] = nuevoItem;
+                } else {
+                    catalogoActual[catSeleccionada].push(nuevoItem);
+                }
+
+                // 4. ORDENAR ALFABÉTICAMENTE
+                let catalogoOrdenado = {};
+                Object.keys(catalogoActual).sort().forEach(cat => {
+                    catalogoOrdenado[cat] = catalogoActual[cat].sort((a, b) => a.nombre.localeCompare(b.nombre));
+                });
+
+                // 5. GUARDAR ARCHIVOS EN EL DISCO
+                // A. Guardar Imagen
+                if (archivoOriginalSubido) {
+                    const dirHandleSub = await dirHandleGlobal.getDirectoryHandle(carpetaRaiz, { create: true })
+                                                            .then(dir => dir.getDirectoryHandle(catSeleccionada, { create: true }));
+                    const fileHandle = await dirHandleSub.getFileHandle(nombreArchivoFinal, { create: true });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(archivoOriginalSubido);
+                    await writable.close();
+                }
+
+                // B. Guardar JSON
+                const jsonHandle = await dirHandleGlobal.getFileHandle(targetCatalogo, { create: true });
+                const jsonWritable = await jsonHandle.createWritable();
+                await jsonWritable.write(JSON.stringify(catalogoOrdenado, null, 4));
+                await jsonWritable.close();
+
+                // --- LIMPIAR PANTALLA DESPUÉS DE GUARDAR ---
+                borrarTodo();
+                document.getElementById('nombre-simbolo').value = '';
+                
+            } catch (err) {
+                alert("Error al acceder a los archivos: " + err.message);
             }
         }
 
-        function descargarJSON() {
-            if (Object.keys(datosAcumulados).length === 0) {
-                return alert("No hay símbolos guardados. Primero guarda algún símbolo.");
+        async function eliminarSimboloDeBiblioteca() {
+            const nombreInput = document.getElementById('nombre-simbolo').value.trim();
+            if (!nombreInput) return alert("No hay ningún símbolo activo para eliminar.");
+
+            const password = prompt("Introduce la contraseña admin para eliminar:");
+            if (password === null) return;
+            if (password !== "admin") return alert("❌ Contraseña incorrecta.");
+
+            let esSombreado = window.esSimboloSombreado || false;
+            const targetCatalogo = esSombreado ? 's_catalogo.json' : 'catalogo.json';
+            const targetConfig = esSombreado ? 's_config_puertos.json' : 'config_puertos.json';
+            let catalogoActual = esSombreado ? catalogoGlobalSombreados : catalogoGlobalIso;
+            let configActual = esSombreado ? datosSombreadosAcumulados : datosAcumulados;
+
+            if (!confirm(`⚠️ ¿Seguro que quieres eliminar "${nombreInput}"?`)) return;
+
+            for (const cat in catalogoActual) {
+                const filtrados = catalogoActual[cat].filter(item => {
+                    const idItem = item.ruta.split('/').pop().replace(/\.(svg|png|jpg|jpeg)$/i, '').toLowerCase();
+                    return idItem !== nombreInput.toLowerCase();
+                });
+                if (filtrados.length < catalogoActual[cat].length) {
+                    catalogoActual[cat] = filtrados;
+                    if (catalogoActual[cat].length === 0) delete catalogoActual[cat];
+                }
             }
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(datosAcumulados, null, 4));
+
+            try { await fetch('./' + targetCatalogo, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(catalogoActual, null, 4) }); } catch (e) { }
+
+            if (configActual[nombreInput]) delete configActual[nombreInput];
+            for (const key in configActual) { if (key.toLowerCase() === nombreInput.toLowerCase()) delete configActual[key]; }
+
+            if (esSombreado) {
+                datosSombreadosAcumulados = configActual;
+                localStorage.setItem('configSombreadosJSON', JSON.stringify(datosSombreadosAcumulados));
+            } else {
+                datosAcumulados = configActual;
+                localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
+            }
+
+            try { await fetch('./' + targetConfig, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(configActual, null, 4) }); } catch (e) { }
+
+            borrarTodo();
+            document.getElementById('nombre-simbolo').value = '';
+            actualizarTextareaActual();
+            alert(`🗑️ Símbolo "${nombreInput}" eliminado.`);
+        }
+
+        async function guardarYFusionar() {
+            const datos = obtenerPuertosActuales(true);
+            if (!datos) return;
+
+            let esSombreado = window.esSimboloSombreado || false;
+            if (window.esSimboloSombreado === undefined) {
+                esSombreado = confirm("¿Actualizar en catálogo de SÍMBOLOS SOMBREADOS?\n(Aceptar = Sombreado, Cancelar = P&ID Normal)");
+                window.esSimboloSombreado = esSombreado;
+            }
+
+            const targetKey = esSombreado ? 's_config_puertos.json' : 'config_puertos.json';
+            let acumuladorActual = esSombreado ? datosSombreadosAcumulados : datosAcumulados;
+
+            let baseJSON = {};
+            try {
+                const respuesta = await fetch('./' + targetKey + '?t=' + new Date().getTime());
+                if (respuesta.ok) baseJSON = await respuesta.json();
+            } catch (e) {
+                baseJSON = { ...acumuladorActual };
+            }
+
+            baseJSON[datos.nombre] = datos.puertos;
+            
+            if (esSombreado) {
+                datosSombreadosAcumulados = baseJSON;
+                localStorage.setItem('configSombreadosJSON', JSON.stringify(datosSombreadosAcumulados));
+            } else {
+                datosAcumulados = baseJSON;
+                localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
+            }
+            actualizarTextareaActual();
+
+            try {
+                await fetch('./' + targetKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(baseJSON, null, 4) });
+            } catch (e) { }
+
+            alert(`✅ Símbolo "${datos.nombre}" actualizado en "${targetKey}".`);
+        }
+
+        function descargarJSON() {
+            const esSombreado = window.esSimboloSombreado || false;
+            const activo = esSombreado ? datosSombreadosAcumulados : datosAcumulados;
+            const nombreArchivo = esSombreado ? 's_config_puertos.json' : 'config_puertos.json';
+
+            if (Object.keys(activo).length === 0) return alert("No hay símbolos guardados.");
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activo, null, 4));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "config_puertos.json");
+            downloadAnchorNode.setAttribute("download", nombreArchivo);
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
@@ -766,16 +1101,72 @@
             reader.onload = (event) => {
                 try {
                     const jsonCargado = JSON.parse(event.target.result);
-                    datosAcumulados = { ...datosAcumulados, ...jsonCargado };
-                    localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
-                    actualizarTextarea();
-                    alert(`JSON cargado. Símbolos totales: ${Object.keys(datosAcumulados).length}`);
+                    if (window.esSimboloSombreado) {
+                        datosSombreadosAcumulados = { ...datosSombreadosAcumulados, ...jsonCargado };
+                        localStorage.setItem('configSombreadosJSON', JSON.stringify(datosSombreadosAcumulados));
+                    } else {
+                        datosAcumulados = { ...datosAcumulados, ...jsonCargado };
+                        localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
+                    }
+                    actualizarTextareaActual();
+                    alert(`JSON cargado correctamente.`);
                 } catch (err) {
                     alert("Error al leer el JSON: " + err.message);
                 }
             };
             reader.readAsText(file);
         }
+
+        function hacerArrastrable(modalId, headerSelector) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            
+            const ventana = modal.querySelector('.modal-content-iso');
+            const header = modal.querySelector(headerSelector);
+            
+            if (!ventana || !header) return;
+
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            header.addEventListener('pointerdown', (e) => {
+                if (e.target.tagName === 'SPAN' || e.target.classList.contains('resize-handle')) return;
+
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                const rect = ventana.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
+                
+                ventana.style.transform = 'none';
+                ventana.style.left = initialLeft + 'px';
+                ventana.style.top = initialTop + 'px';
+                ventana.dataset.arrastrado = 'true';
+                
+                header.setPointerCapture(e.pointerId);
+                e.preventDefault();
+            });
+
+            header.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                ventana.style.left = (initialLeft + dx) + 'px';
+                ventana.style.top = (initialTop + dy) + 'px';
+            });
+
+            header.addEventListener('pointerup', (e) => {
+                isDragging = false;
+                header.releasePointerCapture(e.pointerId);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            hacerArrastrable('modalSimbolosIso', '.modal-header-iso');
+            hacerArrastrable('modalSimbolosSombreados', '.modal-header-iso');
+        });
     </script>
 </body>
 </html>

@@ -1,6 +1,14 @@
 {
     "Alimentos": [
         {
+            "nombre": "Aire acondicionado",
+            "ruta": "./s-procesados/HVAC/aire_acondicionado.png"
+        },
+        {
+            "nombre": "Aire acondicionado industrial",
+            "ruta": "./s-procesados/HVAC/aire_acondicionado_industrial.png"
+        },
+        {
             "nombre": "Analizador en línea de humedad y componentes",
             "ruta": "./s-procesados/Alimentos/Analizador_en_línea_de_humedad_y_componentes.svg"
         },
@@ -109,16 +117,24 @@
             "ruta": "./s-procesados/Alimentos/Línea_de_deshidratación.svg"
         },
         {
+            "nombre": "Mezclador",
+            "ruta": "./s-procesados/Alimentos/Mezclador.svg"
+        },
+        {
+            "nombre": "Mezclador de sólidos y líquidos",
+            "ruta": "./s-procesados/Alimentos/Mezclador_de_sólidos_y_líquidos.svg"
+        },
+        {
+            "nombre": "Mezclador sanitario en línea",
+            "ruta": "./s-procesados/Alimentos/Mezclador_sanitario_en_línea.svg"
+        },
+        {
             "nombre": "Mezclador-emulsionador en línea 1",
             "ruta": "./s-procesados/Alimentos/Mezclador-emulsionador_en_línea_1.svg"
         },
         {
             "nombre": "Mezclador-emulsionador en línea 2",
             "ruta": "./s-procesados/Alimentos/Mezclador-emulsionador_en_línea_2.svg"
-        },
-        {
-            "nombre": "Mezclador",
-            "ruta": "./s-procesados/Alimentos/Mezclador.svg"
         },
         {
             "nombre": "Mezcladora al vacío",
@@ -151,14 +167,6 @@
         {
             "nombre": "Mezcladora vertical",
             "ruta": "./s-procesados/Alimentos/Mezcladora_vertical.svg"
-        },
-        {
-            "nombre": "Mezclador de sólidos y líquidos",
-            "ruta": "./s-procesados/Alimentos/Mezclador_de_sólidos_y_líquidos.svg"
-        },
-        {
-            "nombre": "Mezclador sanitario en línea",
-            "ruta": "./s-procesados/Alimentos/Mezclador_sanitario_en_línea.svg"
         },
         {
             "nombre": "Microcaudalímetro",
@@ -267,6 +275,10 @@
             "ruta": "./s-procesados/Bombas/Bomba_3D.svg"
         },
         {
+            "nombre": "Bomba a prueba de explosiones",
+            "ruta": "./s-procesados/Bombas/Bomba_a_prueba_de_explosiones.svg"
+        },
+        {
             "nombre": "Bomba accionada por aire",
             "ruta": "./s-procesados/Bombas/Bomba_accionada_por_aire.svg"
         },
@@ -277,10 +289,6 @@
         {
             "nombre": "Bomba autocebante para manejo de sólidos",
             "ruta": "./s-procesados/Bombas/Bomba_autocebante_para_manejo_de_sólidos.svg"
-        },
-        {
-            "nombre": "Bomba a prueba de explosiones",
-            "ruta": "./s-procesados/Bombas/Bomba_a_prueba_de_explosiones.svg"
         },
         {
             "nombre": "Bomba blanca",
@@ -395,6 +403,10 @@
             "ruta": "./s-procesados/Bombas/Bomba_de_diafragma_de_aislamiento.svg"
         },
         {
+            "nombre": "Bomba de émbolo",
+            "ruta": "./s-procesados/Bombas/Bomba_de_émbolo.svg"
+        },
+        {
             "nombre": "Bomba de engranajes de desplazamiento positivo",
             "ruta": "./s-procesados/Bombas/Bomba_de_engranajes_de_desplazamiento_positivo.svg"
         },
@@ -423,12 +435,12 @@
             "ruta": "./s-procesados/Bombas/Bomba_de_vacío_rotativa.svg"
         },
         {
-            "nombre": "Bomba de émbolo",
-            "ruta": "./s-procesados/Bombas/Bomba_de_émbolo.svg"
+            "nombre": "Bomba dosificadora",
+            "ruta": "./s-procesados/Bombas/Bomba dosificadora.png"
         },
         {
             "nombre": "Bomba dosificadora 1",
-            "ruta": "./s-procesados/Bombas/Bomba_dosificadora_1.svg"
+            "ruta": "./s-procesados/Bombas/Bomba dosificadora 1.png"
         },
         {
             "nombre": "Bomba dosificadora 2",
@@ -521,6 +533,14 @@
         {
             "nombre": "Bomba para transferencia de calor a alta temperatura",
             "ruta": "./s-procesados/Bombas/Bomba_para_transferencia_de_calor_a_alta_temperatura.svg"
+        },
+        {
+            "nombre": "Bomba persitaltica",
+            "ruta": "./s-procesados/Bombas/Bomba persitaltica.png"
+        },
+        {
+            "nombre": "Bomba persitaltica 1",
+            "ruta": "./s-procesados/Bombas/Bomba persitaltica 1.png"
         },
         {
             "nombre": "Bomba resistente a la corrosión para servicio continuo",
@@ -669,12 +689,12 @@
             "ruta": "./s-procesados/Calderas/caldera_9.svg"
         },
         {
-            "nombre": "caldera con llamas",
-            "ruta": "./s-procesados/Calderas/caldera_con_llamas.svg"
-        },
-        {
             "nombre": "caldera con llama y tuberia",
             "ruta": "./s-procesados/Calderas/caldera_con_llama_y_tuberia.svg"
+        },
+        {
+            "nombre": "caldera con llamas",
+            "ruta": "./s-procesados/Calderas/caldera_con_llamas.svg"
         },
         {
             "nombre": "caldera de aceite 1",
@@ -1109,8 +1129,16 @@
             "ruta": "./s-procesados/Conductos/Pieza_en_T_para_tubería_de_gas_segmentada_1.svg"
         },
         {
+            "nombre": "Salida de humos ventury",
+            "ruta": "./s-procesados/Conductos/Salida_de_humos_ventury.png"
+        },
+        {
             "nombre": "Sistema de pelado 1",
             "ruta": "./s-procesados/Conductos/Sistema_de_pelado_1.svg"
+        },
+        {
+            "nombre": "Sombrero chino",
+            "ruta": "./s-procesados/Conductos/Sombrero_chino.png"
         },
         {
             "nombre": "T1",
@@ -1169,6 +1197,276 @@
             "ruta": "./s-procesados/Conductos/Unión_para_tubería_de_gas_segmentada.svg"
         }
     ],
+    "Conexiones": [
+        {
+            "nombre": "Acople EA con espiga",
+            "ruta": "./s-procesados/Conexiones/Acople_EA_con_espiga.png"
+        },
+        {
+            "nombre": "Acople EA hembra",
+            "ruta": "./s-procesados/Conexiones/Acople_EA_hembra.png"
+        },
+        {
+            "nombre": "Acople EA macho",
+            "ruta": "./s-procesados/Conexiones/Acople_EA_macho.png"
+        },
+        {
+            "nombre": "Acople EA soldable",
+            "ruta": "./s-procesados/Conexiones/Acople_EA_soldable.png"
+        },
+        {
+            "nombre": "Asiento clamp",
+            "ruta": "./s-procesados/Conexiones/Asiento clamp.png"
+        },
+        {
+            "nombre": "Asiento clamp de espiga",
+            "ruta": "./s-procesados/Conexiones/Asiento_clamp_de_espiga.png"
+        },
+        {
+            "nombre": "Brida ciega",
+            "ruta": "./s-procesados/Conexiones/Brida_ciega.png"
+        },
+        {
+            "nombre": "Brida de cuello",
+            "ruta": "./s-procesados/Conexiones/Brida de cuello.png"
+        },
+        {
+            "nombre": "brida prensada",
+            "ruta": "./s-procesados/Conexiones/brida prensada.png"
+        },
+        {
+            "nombre": "Brida roscada",
+            "ruta": "./s-procesados/Conexiones/Brida roscada.png"
+        },
+        {
+            "nombre": "Brida slip on",
+            "ruta": "./s-procesados/Conexiones/Brida slip on.png"
+        },
+        {
+            "nombre": "camlock hembra de espiga",
+            "ruta": "./s-procesados/Conexiones/camlock hembra   de espiga.png"
+        },
+        {
+            "nombre": "camlock hembra hembra",
+            "ruta": "./s-procesados/Conexiones/camlock hembra hembra.png"
+        },
+        {
+            "nombre": "Camlock hembra macho",
+            "ruta": "./s-procesados/Conexiones/Camlock hembra macho.png"
+        },
+        {
+            "nombre": "Camlock hembra sodable",
+            "ruta": "./s-procesados/Conexiones/Camlock  hembra sodable.png"
+        },
+        {
+            "nombre": "Camlock hembra tapon",
+            "ruta": "./s-procesados/Conexiones/Camlock  hembra tapon.png"
+        },
+        {
+            "nombre": "Camlock macho de espiga",
+            "ruta": "./s-procesados/Conexiones/Camlock  macho de espiga.png"
+        },
+        {
+            "nombre": "Camlock macho hembra",
+            "ruta": "./s-procesados/Conexiones/Camlock  macho hembra.png"
+        },
+        {
+            "nombre": "Camlock macho macho",
+            "ruta": "./s-procesados/Conexiones/Camlock  macho macho.png"
+        },
+        {
+            "nombre": "Camlock macho soldable",
+            "ruta": "./s-procesados/Conexiones/Camlock  macho soldable.png"
+        },
+        {
+            "nombre": "Camlock macho tapon",
+            "ruta": "./s-procesados/Conexiones/Camlock  macho tapon.png"
+        },
+        {
+            "nombre": "Cap",
+            "ruta": "./s-procesados/Conexiones/Cap.png"
+        },
+        {
+            "nombre": "Codo",
+            "ruta": "./s-procesados/Conexiones/Codo.png"
+        },
+        {
+            "nombre": "Codo 45",
+            "ruta": "./s-procesados/Conexiones/Codo_45.png"
+        },
+        {
+            "nombre": "Codo 45 Fig120",
+            "ruta": "./s-procesados/Conexiones/Codo 45 Fig120.png"
+        },
+        {
+            "nombre": "Codo de retorno Fig60",
+            "ruta": "./s-procesados/Conexiones/Codo de retorno Fig60.png"
+        },
+        {
+            "nombre": "Codo hembra Fig90",
+            "ruta": "./s-procesados/Conexiones/Codo hembra Fig90.png"
+        },
+        {
+            "nombre": "Codo hembra macho Fig92",
+            "ruta": "./s-procesados/Conexiones/Codo hembra macho Fig92.png"
+        },
+        {
+            "nombre": "Cruz",
+            "ruta": "./s-procesados/Conexiones/Cruz.png"
+        },
+        {
+            "nombre": "Cruz Fig180",
+            "ruta": "./s-procesados/Conexiones/Cruz Fig180.png"
+        },
+        {
+            "nombre": "Enlace 3 piezas H S Fig341",
+            "ruta": "./s-procesados/Conexiones/Enlace 3 piezas H_S Fig341.png"
+        },
+        {
+            "nombre": "Enlace 3 piezas M H Fig341",
+            "ruta": "./s-procesados/Conexiones/Enlace 3 piezas M_H Fig341.png"
+        },
+        {
+            "nombre": "Enlace 3 piezas M M Fig341",
+            "ruta": "./s-procesados/Conexiones/Enlace 3 piezas M_M Fig341.png"
+        },
+        {
+            "nombre": "Enlace 3 piezas M S Fig341",
+            "ruta": "./s-procesados/Conexiones/Enlace 3 piezas M_S Fig341.png"
+        },
+        {
+            "nombre": "Enlace 3 piezas S S Fig341",
+            "ruta": "./s-procesados/Conexiones/Enlace 3 piezas S_S Fig341.png"
+        },
+        {
+            "nombre": "Entronque doble Fig150",
+            "ruta": "./s-procesados/Conexiones/Entronque doble Fig150.png"
+        },
+        {
+            "nombre": "Entronque Fig 149",
+            "ruta": "./s-procesados/Conexiones/Entronque Fig 149.png"
+        },
+        {
+            "nombre": "Entronque Fig270",
+            "ruta": "./s-procesados/Conexiones/Entronque Fig270.png"
+        },
+        {
+            "nombre": "Espiga Fig.399",
+            "ruta": "./s-procesados/Conexiones/Espiga Fig.399.png"
+        },
+        {
+            "nombre": "Fondo klopper",
+            "ruta": "./s-procesados/Conexiones/Fondo_klopper.png"
+        },
+        {
+            "nombre": "Fondo korbogen",
+            "ruta": "./s-procesados/Conexiones/Fondo_korbogen.png"
+        },
+        {
+            "nombre": "Garolla",
+            "ruta": "./s-procesados/Conexiones/Garolla.png"
+        },
+        {
+            "nombre": "Guillemin hembra",
+            "ruta": "./s-procesados/Conexiones/Guillemin hembra.png"
+        },
+        {
+            "nombre": "Guillemin macho",
+            "ruta": "./s-procesados/Conexiones/Guillemin macho.png"
+        },
+        {
+            "nombre": "Guillemin soldable",
+            "ruta": "./s-procesados/Conexiones/Guillemin  soldable.png"
+        },
+        {
+            "nombre": "Guillemin tapon",
+            "ruta": "./s-procesados/Conexiones/Guillemin tapon.png"
+        },
+        {
+            "nombre": "Junta de expansion",
+            "ruta": "./s-procesados/Conexiones/Junta_de_expansion.png"
+        },
+        {
+            "nombre": "Junta de expansion metalica",
+            "ruta": "./s-procesados/Conexiones/Junta_de_expansion_metalica.png"
+        },
+        {
+            "nombre": "Junta de expansion metalica guiada",
+            "ruta": "./s-procesados/Conexiones/Junta_de_expansion_metalica_guiada.png"
+        },
+        {
+            "nombre": "Machon Fig280",
+            "ruta": "./s-procesados/Conexiones/Machon Fig280.png"
+        },
+        {
+            "nombre": "Machon reducido Fig245",
+            "ruta": "./s-procesados/Conexiones/Machon reducido Fig245.png"
+        },
+        {
+            "nombre": "Manguito reduccion hembra Fig240",
+            "ruta": "./s-procesados/Conexiones/Manguito reduccion hembra Fig240.png"
+        },
+        {
+            "nombre": "NW casquillo",
+            "ruta": "./s-procesados/Conexiones/NW casquillo.png"
+        },
+        {
+            "nombre": "NW completo",
+            "ruta": "./s-procesados/Conexiones/NW completo.png"
+        },
+        {
+            "nombre": "NW macho",
+            "ruta": "./s-procesados/Conexiones/NW macho.png"
+        },
+        {
+            "nombre": "NW tuerca",
+            "ruta": "./s-procesados/Conexiones/NW tuerca.png"
+        },
+        {
+            "nombre": "Racor Y Fig220",
+            "ruta": "./s-procesados/Conexiones/Racor Y Fig220.png"
+        },
+        {
+            "nombre": "Reduccion concentrica",
+            "ruta": "./s-procesados/Conexiones/Reduccion_concentrica.png"
+        },
+        {
+            "nombre": "Reduccion excentrica",
+            "ruta": "./s-procesados/Conexiones/Reduccion_excentrica.png"
+        },
+        {
+            "nombre": "Tapon allen Fig531",
+            "ruta": "./s-procesados/Conexiones/Tapon allen Fig531.png"
+        },
+        {
+            "nombre": "Tapon cuadrado Fig291",
+            "ruta": "./s-procesados/Conexiones/Tapon cuadrado Fig291.png"
+        },
+        {
+            "nombre": "Tapon hexagonal Fig291",
+            "ruta": "./s-procesados/Conexiones/Tapon hexagonal Fig291.png"
+        },
+        {
+            "nombre": "Te",
+            "ruta": "./s-procesados/Conexiones/Te.png"
+        },
+        {
+            "nombre": "Te 120",
+            "ruta": "./s-procesados/Conexiones/Te_120.png"
+        },
+        {
+            "nombre": "Te Fig130",
+            "ruta": "./s-procesados/Conexiones/Te Fig130.png"
+        },
+        {
+            "nombre": "Te reducida",
+            "ruta": "./s-procesados/Conexiones/Te_reducida.png"
+        },
+        {
+            "nombre": "Tuerca reduccion macho Fig241",
+            "ruta": "./s-procesados/Conexiones/Tuerca reduccion macho Fig241.png"
+        }
+    ],
     "Contenedores": [
         {
             "nombre": "Barril amarillo",
@@ -1203,20 +1501,20 @@
             "ruta": "./s-procesados/Contenedores/Botella_de_2_litros.svg"
         },
         {
-            "nombre": "Caja de cartón, abierta",
-            "ruta": "./s-procesados/Contenedores/Caja_de_cartón,_abierta.svg"
-        },
-        {
-            "nombre": "Caja de cartón, cerrada",
-            "ruta": "./s-procesados/Contenedores/Caja_de_cartón,_cerrada.svg"
-        },
-        {
             "nombre": "Caja de cartón 1, sellada",
             "ruta": "./s-procesados/Contenedores/Caja_de_cartón_1,_sellada.svg"
         },
         {
             "nombre": "Caja de cartón 3D, sellada",
             "ruta": "./s-procesados/Contenedores/Caja_de_cartón_3D,_sellada.svg"
+        },
+        {
+            "nombre": "Caja de cartón, abierta",
+            "ruta": "./s-procesados/Contenedores/Caja_de_cartón,_abierta.svg"
+        },
+        {
+            "nombre": "Caja de cartón, cerrada",
+            "ruta": "./s-procesados/Contenedores/Caja_de_cartón,_cerrada.svg"
         },
         {
             "nombre": "Caja sellada con cinta adhesiva conforme a la normativa OSHA",
@@ -1353,6 +1651,10 @@
             "ruta": "./s-procesados/Depositos/Caldera_de_cocción_(cervecera).svg"
         },
         {
+            "nombre": "Cámara con brida",
+            "ruta": "./s-procesados/Depositos/Cámara_con_brida.svg"
+        },
+        {
             "nombre": "Cilindro de acero inoxidable",
             "ruta": "./s-procesados/Depositos/Cilindro_de_acero_inoxidable.svg"
         },
@@ -1367,10 +1669,6 @@
         {
             "nombre": "Contenedor",
             "ruta": "./s-procesados/Depositos/Contenedor.svg"
-        },
-        {
-            "nombre": "Cámara con brida",
-            "ruta": "./s-procesados/Depositos/Cámara_con_brida.svg"
         },
         {
             "nombre": "Depósito 1",
@@ -1887,6 +2185,10 @@
             "ruta": "./s-procesados/Depuradora/Bomba_autocebante_de_acoplamiento_directo.svg"
         },
         {
+            "nombre": "Cámara de desarenado",
+            "ruta": "./s-procesados/Depuradora/Cámara_de_desarenado.svg"
+        },
+        {
             "nombre": "Canaleta",
             "ruta": "./s-procesados/Depuradora/Canaleta.svg"
         },
@@ -1965,10 +2267,6 @@
         {
             "nombre": "Cubeto de contención",
             "ruta": "./s-procesados/Depuradora/Cubeto_de_contención.svg"
-        },
-        {
-            "nombre": "Cámara de desarenado",
-            "ruta": "./s-procesados/Depuradora/Cámara_de_desarenado.svg"
         },
         {
             "nombre": "Desnatador de aceite",
@@ -2171,18 +2469,6 @@
             "ruta": "./s-procesados/Depuradora/Tamiz.svg"
         },
         {
-            "nombre": "Tanques de gas de digestor",
-            "ruta": "./s-procesados/Depuradora/Tanques_de_gas_de_digestor.svg"
-        },
-        {
-            "nombre": "Tanques de tratamiento",
-            "ruta": "./s-procesados/Depuradora/Tanques_de_tratamiento.svg"
-        },
-        {
-            "nombre": "Tanques de tratamiento de agua (vista superior)",
-            "ruta": "./s-procesados/Depuradora/Tanques_de_tratamiento_de_agua_(vista_superior).svg"
-        },
-        {
             "nombre": "Tanque con cubierta tipo domo 1",
             "ruta": "./s-procesados/Depuradora/Tanque_con_cubierta_tipo_domo_1.svg"
         },
@@ -2267,18 +2553,30 @@
             "ruta": "./s-procesados/Depuradora/Tanque_elevado_simple.svg"
         },
         {
+            "nombre": "Tanques de gas de digestor",
+            "ruta": "./s-procesados/Depuradora/Tanques_de_gas_de_digestor.svg"
+        },
+        {
+            "nombre": "Tanques de tratamiento",
+            "ruta": "./s-procesados/Depuradora/Tanques_de_tratamiento.svg"
+        },
+        {
+            "nombre": "Tanques de tratamiento de agua (vista superior)",
+            "ruta": "./s-procesados/Depuradora/Tanques_de_tratamiento_de_agua_(vista_superior).svg"
+        },
+        {
             "nombre": "Triturador de aguas residuales",
             "ruta": "./s-procesados/Depuradora/Triturador_de_aguas_residuales.svg"
         }
     ],
     "Eolica": [
         {
-            "nombre": "Aerogenerador  torre marina 2  vista en perspectiva",
-            "ruta": "./s-procesados/Eolica/Aerogenerador__torre_marina_2__vista_en_perspectiva.svg"
-        },
-        {
             "nombre": "Aerogenerador   vista lateral 1",
             "ruta": "./s-procesados/Eolica/Aerogenerador___vista_lateral_1.svg"
+        },
+        {
+            "nombre": "Aerogenerador  torre marina 2  vista en perspectiva",
+            "ruta": "./s-procesados/Eolica/Aerogenerador__torre_marina_2__vista_en_perspectiva.svg"
         },
         {
             "nombre": "Caja de engranajes de aerogenerador 1",
@@ -2335,20 +2633,20 @@
             "ruta": "./s-procesados/Frio/Enfriador_3.svg"
         },
         {
-            "nombre": "Enfriador accionado por motor",
-            "ruta": "./s-procesados/Frio/Enfriador_accionado_por_motor.svg"
-        },
-        {
             "nombre": "Enfriador a gas natural",
             "ruta": "./s-procesados/Frio/Enfriador_a_gas_natural.svg"
         },
         {
-            "nombre": "Enfriador portátil de gran tamaño",
-            "ruta": "./s-procesados/Frio/Enfriador_portátil_de_gran_tamaño.svg"
+            "nombre": "Enfriador accionado por motor",
+            "ruta": "./s-procesados/Frio/Enfriador_accionado_por_motor.svg"
         },
         {
             "nombre": "Enfriador por absorción",
             "ruta": "./s-procesados/Frio/Enfriador_por_absorción.svg"
+        },
+        {
+            "nombre": "Enfriador portátil de gran tamaño",
+            "ruta": "./s-procesados/Frio/Enfriador_portátil_de_gran_tamaño.svg"
         },
         {
             "nombre": "Enfriador refrigerado por agua",
@@ -2359,12 +2657,12 @@
             "ruta": "./s-procesados/Frio/Refrigerador_congelador_industrial_a_prueba_de_explosiones.svg"
         },
         {
-            "nombre": "Sistema de refrigeración accionado por motor",
-            "ruta": "./s-procesados/Frio/Sistema_de_refrigeración_accionado_por_motor.svg"
-        },
-        {
             "nombre": "Sistema de refrigeración a gas natural",
             "ruta": "./s-procesados/Frio/Sistema_de_refrigeración_a_gas_natural.svg"
+        },
+        {
+            "nombre": "Sistema de refrigeración accionado por motor",
+            "ruta": "./s-procesados/Frio/Sistema_de_refrigeración_accionado_por_motor.svg"
         },
         {
             "nombre": "Torre de refrigeración 1",
@@ -2513,6 +2811,10 @@
             "ruta": "./s-procesados/HVAC/Deshumidificador.svg"
         },
         {
+            "nombre": "enfirador-hvac",
+            "ruta": "./s-procesados/HVAC/enfirador-hvac.png"
+        },
+        {
             "nombre": "Equipo de montaje en pared (gas-eléctrico)",
             "ruta": "./s-procesados/HVAC/Equipo_de_montaje_en_pared_(gas-eléctrico).svg"
         },
@@ -2541,16 +2843,16 @@
             "ruta": "./s-procesados/HVAC/Junta_de_expansión.svg"
         },
         {
-            "nombre": "Serpentines de enfriamiento por agua helada",
-            "ruta": "./s-procesados/HVAC/Serpentines_de_enfriamiento_por_agua_helada.svg"
-        },
-        {
             "nombre": "Serpentín de calefacción",
             "ruta": "./s-procesados/HVAC/Serpentín_de_calefacción.svg"
         },
         {
             "nombre": "Serpentín tipo radiador",
             "ruta": "./s-procesados/HVAC/Serpentín_tipo_radiador.svg"
+        },
+        {
+            "nombre": "Serpentines de enfriamiento por agua helada",
+            "ruta": "./s-procesados/HVAC/Serpentines_de_enfriamiento_por_agua_helada.svg"
         },
         {
             "nombre": "Tanque de almacenamiento comercial",
@@ -2627,6 +2929,10 @@
             "ruta": "./s-procesados/Logistica/Contenedor_estándar_de_40_pies_con_logotipo.svg"
         },
         {
+            "nombre": "Grúa pórtico",
+            "ruta": "./s-procesados/Logistica/Grúa_pórtico.svg"
+        },
+        {
             "nombre": "Grúa portuaria 1 (extendida)",
             "ruta": "./s-procesados/Logistica/Grúa_portuaria_1_(extendida).svg"
         },
@@ -2641,10 +2947,6 @@
         {
             "nombre": "Grúa portuaria 3",
             "ruta": "./s-procesados/Logistica/Grúa_portuaria_3.svg"
-        },
-        {
-            "nombre": "Grúa pórtico",
-            "ruta": "./s-procesados/Logistica/Grúa_pórtico.svg"
         },
         {
             "nombre": "Locomotora",
@@ -2921,16 +3223,16 @@
             "ruta": "./s-procesados/Maquinas/Refinador.svg"
         },
         {
-            "nombre": "Secador-enfriador",
-            "ruta": "./s-procesados/Maquinas/Secador-enfriador.svg"
-        },
-        {
             "nombre": "Secador por atomización compacto",
             "ruta": "./s-procesados/Maquinas/Secador_por_atomización_compacto.svg"
         },
         {
             "nombre": "Secador tubular de arrastre por aire",
             "ruta": "./s-procesados/Maquinas/Secador_tubular_de_arrastre_por_aire.svg"
+        },
+        {
+            "nombre": "Secador-enfriador",
+            "ruta": "./s-procesados/Maquinas/Secador-enfriador.svg"
         },
         {
             "nombre": "Silo 1",
@@ -3005,6 +3307,10 @@
             "ruta": "./s-procesados/Maquinas/Transportador_fluidizado.svg"
         },
         {
+            "nombre": "Triturador de impacto de eje vertical",
+            "ruta": "./s-procesados/Maquinas/Triturador_de_impacto_de_eje_vertical.svg"
+        },
+        {
             "nombre": "Trituradora (shredder) 1",
             "ruta": "./s-procesados/Maquinas/Trituradora_(shredder)_1.svg"
         },
@@ -3027,10 +3333,6 @@
         {
             "nombre": "Trituradora de mandíbulas 2",
             "ruta": "./s-procesados/Maquinas/Trituradora_de_mandíbulas_2.svg"
-        },
-        {
-            "nombre": "Triturador de impacto de eje vertical",
-            "ruta": "./s-procesados/Maquinas/Triturador_de_impacto_de_eje_vertical.svg"
         },
         {
             "nombre": "Vagón de carga a granel",
@@ -3509,6 +3811,14 @@
     ],
     "Refinamiento": [
         {
+            "nombre": "Ánodo 1",
+            "ruta": "./s-procesados/Refinamiento/Ánodo_1.svg"
+        },
+        {
+            "nombre": "Ánodo 2",
+            "ruta": "./s-procesados/Refinamiento/Ánodo_2.svg"
+        },
+        {
             "nombre": "Bastidor 1",
             "ruta": "./s-procesados/Refinamiento/Bastidor_1.svg"
         },
@@ -3535,6 +3845,10 @@
         {
             "nombre": "Cabina de recubrimiento en polvo",
             "ruta": "./s-procesados/Refinamiento/Cabina_de_recubrimiento_en_polvo.svg"
+        },
+        {
+            "nombre": "Cámara de acabado",
+            "ruta": "./s-procesados/Refinamiento/Cámara_de_acabado.svg"
         },
         {
             "nombre": "Cartucho de carbón de polipropileno",
@@ -3579,10 +3893,6 @@
         {
             "nombre": "Cuba vibratoria de alta energía 2",
             "ruta": "./s-procesados/Refinamiento/Cuba_vibratoria_de_alta_energía_2.svg"
-        },
-        {
-            "nombre": "Cámara de acabado",
-            "ruta": "./s-procesados/Refinamiento/Cámara_de_acabado.svg"
         },
         {
             "nombre": "Dispositivo de medición de flujo de polvo",
@@ -3705,12 +4015,12 @@
             "ruta": "./s-procesados/Refinamiento/Lavadora_de_piezas_2.svg"
         },
         {
-            "nombre": "Lavadora de piezas portátil",
-            "ruta": "./s-procesados/Refinamiento/Lavadora_de_piezas_portátil.svg"
-        },
-        {
             "nombre": "Lavadora de piezas por cinta transportadora (base acuosa)",
             "ruta": "./s-procesados/Refinamiento/Lavadora_de_piezas_por_cinta_transportadora_(base_acuosa).svg"
+        },
+        {
+            "nombre": "Lavadora de piezas portátil",
+            "ruta": "./s-procesados/Refinamiento/Lavadora_de_piezas_portátil.svg"
         },
         {
             "nombre": "Lavadora por aspersión en línea",
@@ -3899,14 +4209,6 @@
         {
             "nombre": "Tornillo mezclador",
             "ruta": "./s-procesados/Refinamiento/Tornillo_mezclador.svg"
-        },
-        {
-            "nombre": "Ánodo 1",
-            "ruta": "./s-procesados/Refinamiento/Ánodo_1.svg"
-        },
-        {
-            "nombre": "Ánodo 2",
-            "ruta": "./s-procesados/Refinamiento/Ánodo_2.svg"
         }
     ],
     "Sensores": [
@@ -3917,18 +4219,6 @@
         {
             "nombre": "Analizador de CO2 por infrarrojos",
             "ruta": "./s-procesados/Sensores/Analizador_de_CO2_por_infrarrojos.svg"
-        },
-        {
-            "nombre": "Controlador de presión digital",
-            "ruta": "./s-procesados/Sensores/Controlador_de_presión_digital.svg"
-        },
-        {
-            "nombre": "Cromatógrafo de gases inteligente",
-            "ruta": "./s-procesados/Sensores/Cromatógrafo_de_gases_inteligente.svg"
-        },
-        {
-            "nombre": "Cromatógrafo simple",
-            "ruta": "./s-procesados/Sensores/Cromatógrafo_simple.svg"
         },
         {
             "nombre": "Cámara de barrido lineal",
@@ -3955,6 +4245,18 @@
             "ruta": "./s-procesados/Sensores/Célula_de_carga.svg"
         },
         {
+            "nombre": "Controlador de presión digital",
+            "ruta": "./s-procesados/Sensores/Controlador_de_presión_digital.svg"
+        },
+        {
+            "nombre": "Cromatógrafo de gases inteligente",
+            "ruta": "./s-procesados/Sensores/Cromatógrafo_de_gases_inteligente.svg"
+        },
+        {
+            "nombre": "Cromatógrafo simple",
+            "ruta": "./s-procesados/Sensores/Cromatógrafo_simple.svg"
+        },
+        {
             "nombre": "Detector de gases 1",
             "ruta": "./s-procesados/Sensores/Detector_de_gases_1.svg"
         },
@@ -3975,8 +4277,24 @@
             "ruta": "./s-procesados/Sensores/Indicador_digital.svg"
         },
         {
+            "nombre": "Inductor magneticoç",
+            "ruta": "./s-procesados/Sensores/Inductor magneticoç.png"
+        },
+        {
             "nombre": "Interruptor de nivel",
             "ruta": "./s-procesados/Sensores/Interruptor_de_nivel.svg"
+        },
+        {
+            "nombre": "Lira",
+            "ruta": "./s-procesados/Sensores/Lira.png"
+        },
+        {
+            "nombre": "Lira completa",
+            "ruta": "./s-procesados/Sensores/Lira completa.png"
+        },
+        {
+            "nombre": "Manometro",
+            "ruta": "./s-procesados/Sensores/Manometro.png"
         },
         {
             "nombre": "Manómetro",
@@ -4009,6 +4327,10 @@
         {
             "nombre": "Monitor de nivel en tolva",
             "ruta": "./s-procesados/Sensores/Monitor_de_nivel_en_tolva.svg"
+        },
+        {
+            "nombre": "Nivel de flotacion",
+            "ruta": "./s-procesados/Sensores/Nivel de flotacion.png"
         },
         {
             "nombre": "Registrador gráfico circular",
@@ -4067,6 +4389,14 @@
             "ruta": "./s-procesados/Sensores/Sensor_de_humedad.svg"
         },
         {
+            "nombre": "Sensor de nivel",
+            "ruta": "./s-procesados/Sensores/Sensor de nivel.png"
+        },
+        {
+            "nombre": "Sensor de nivel 1",
+            "ruta": "./s-procesados/Sensores/Sensor de nivel 1.png"
+        },
+        {
             "nombre": "Sensor de nivel por microondas",
             "ruta": "./s-procesados/Sensores/Sensor_de_nivel_por_microondas.svg"
         },
@@ -4081,6 +4411,14 @@
         {
             "nombre": "Sistema de visión simple",
             "ruta": "./s-procesados/Sensores/Sistema_de_visión_simple.svg"
+        },
+        {
+            "nombre": "Sonda de temperatura",
+            "ruta": "./s-procesados/Sensores/Sonda de temperatura.png"
+        },
+        {
+            "nombre": "Termometro",
+            "ruta": "./s-procesados/Sensores/Termometro.png"
         },
         {
             "nombre": "Termómetro sin contacto",
@@ -4109,6 +4447,10 @@
         {
             "nombre": "Transmisor de oxígeno",
             "ruta": "./s-procesados/Sensores/Transmisor_de_oxígeno.svg"
+        },
+        {
+            "nombre": "Transmisor de presion",
+            "ruta": "./s-procesados/Sensores/Transmisor de presion.png"
         },
         {
             "nombre": "Transmisor de presión",
@@ -4241,6 +4583,16 @@
             "ruta": "./s-procesados/Soplantes/ventilador_simple_2.svg"
         }
     ],
+    "Soportes": [
+        {
+            "nombre": "Abarcon",
+            "ruta": "./s-procesados/Soportes/Abarcon.png"
+        },
+        {
+            "nombre": "Abrazadera colgante pera",
+            "ruta": "./s-procesados/Soportes/Abrazadera_colgante_pera.png"
+        }
+    ],
     "Transportadores": [
         {
             "nombre": "cinta de pesaje grande",
@@ -4281,16 +4633,108 @@
     ],
     "Valvulas": [
         {
+            "nombre": "Accionamiento electrico",
+            "ruta": "./s-procesados/Valvulas/Accionamiento electrico.png"
+        },
+        {
+            "nombre": "Accionamiento manual",
+            "ruta": "./s-procesados/Valvulas/Accionamiento manual.png"
+        },
+        {
+            "nombre": "Accionamiento neumatico",
+            "ruta": "./s-procesados/Valvulas/Accionamiento neumatico.png"
+        },
+        {
+            "nombre": "Bola de limpieza",
+            "ruta": "./s-procesados/Valvulas/Bola de limpieza.png"
+        },
+        {
+            "nombre": "Caudalimetro",
+            "ruta": "./s-procesados/Valvulas/Caudalimetro.png"
+        },
+        {
+            "nombre": "Ducha de limpieza",
+            "ruta": "./s-procesados/Valvulas/Ducha de limpieza.png"
+        },
+        {
             "nombre": "Electroválvula",
             "ruta": "./s-procesados/Valvulas/Electroválvula.svg"
+        },
+        {
+            "nombre": "Filtro Y",
+            "ruta": "./s-procesados/Valvulas/Filtro Y.png"
+        },
+        {
+            "nombre": "Filtro Y 1",
+            "ruta": "./s-procesados/Valvulas/Filtro Y 1.png"
+        },
+        {
+            "nombre": "Filtro Y 2",
+            "ruta": "./s-procesados/Valvulas/Filtro Y 2.png"
+        },
+        {
+            "nombre": "Filtro Y 3",
+            "ruta": "./s-procesados/Valvulas/Filtro Y 3.png"
+        },
+        {
+            "nombre": "Medidor Ilva",
+            "ruta": "./s-procesados/Valvulas/Medidor Ilva.png"
+        },
+        {
+            "nombre": "Mirilla en cruz",
+            "ruta": "./s-procesados/Valvulas/Mirilla en cruz.png"
+        },
+        {
+            "nombre": "Mirilla M H",
+            "ruta": "./s-procesados/Valvulas/Mirilla M_H.png"
+        },
+        {
+            "nombre": "Mirilla M M",
+            "ruta": "./s-procesados/Valvulas/Mirilla M_M.png"
+        },
+        {
+            "nombre": "Mirilla S S",
+            "ruta": "./s-procesados/Valvulas/Mirilla S_S.png"
         },
         {
             "nombre": "Posicionador de válvula de alta resolución",
             "ruta": "./s-procesados/Valvulas/Posicionador_de_válvula_de_alta_resolución.svg"
         },
         {
+            "nombre": "Sanijet",
+            "ruta": "./s-procesados/Valvulas/Sanijet.png"
+        },
+        {
+            "nombre": "Toftejorg",
+            "ruta": "./s-procesados/Valvulas/Toftejorg.png"
+        },
+        {
+            "nombre": "Valvula bridada de bola 2 piezas",
+            "ruta": "./s-procesados/Valvulas/Valvula_bridada_de_bola_2_piezas.png"
+        },
+        {
+            "nombre": "Valvula clamp de diafragma",
+            "ruta": "./s-procesados/Valvulas/Valvula clamp de diafragma.png"
+        },
+        {
+            "nombre": "Valvula clamp de diafragma neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula clamp de diafragma neumatica.png"
+        },
+        {
             "nombre": "Válvula compacta",
             "ruta": "./s-procesados/Valvulas/Válvula_compacta.svg"
+        },
+        {
+            "nombre": "Valvula de aguja",
+            "ruta": "./s-procesados/Valvulas/Valvula de aguja.png"
+        },
+        {
+            "nombre": "Valvula de aguja 1",
+            "ruta": "./s-procesados/Valvulas/Valvula de aguja 1.png"
+        },
+        {
+            "nombre": "Valvula de asiento",
+            "ruta": "./s-procesados/Valvulas/Valvula de asiento.png"
         },
         {
             "nombre": "Válvula de bola 1",
@@ -4301,8 +4745,64 @@
             "ruta": "./s-procesados/Valvulas/Válvula_de_bola_2.svg"
         },
         {
+            "nombre": "Valvula de bola 2 piezas H H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola 2 piezas H_H.png"
+        },
+        {
+            "nombre": "Valvula de bola 2 piezas M H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola 2 piezas  M_H.png"
+        },
+        {
+            "nombre": "Valvula de bola 2 piezas M M",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola 2 piezas M_M.png"
+        },
+        {
+            "nombre": "Valvula de bola 3 piezas H H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola 3 piezas H_H.png"
+        },
+        {
+            "nombre": "Valvula de bola 3 vias H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola 3 vias H.png"
+        },
+        {
+            "nombre": "Valvula de bola 4 vias H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola 4 vias H.png"
+        },
+        {
+            "nombre": "Valvula de bola alimentaria M H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola alimentaria M_H.png"
+        },
+        {
+            "nombre": "Valvula de bola alimentaria M M",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola alimentaria M_M.png"
+        },
+        {
+            "nombre": "Valvula de bola alimentaria S S",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola alimentaria S_S.png"
+        },
+        {
+            "nombre": "Valvula de bola clamp",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola clamp.png"
+        },
+        {
             "nombre": "Válvula de bola de dos vías de PVC",
             "ruta": "./s-procesados/Valvulas/Válvula_de_bola_de_dos_vías_de_PVC.svg"
+        },
+        {
+            "nombre": "Valvula de bola monoblock",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola monoblock.png"
+        },
+        {
+            "nombre": "Valvula de bola neumatica 3 piezas H H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola neumatica 3 piezas H_H.png"
+        },
+        {
+            "nombre": "Valvula de bola neumatica 3 piezas S S",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola neumatica 3 piezas S_S.png"
+        },
+        {
+            "nombre": "Valvula de bola neumatica 3 vias H",
+            "ruta": "./s-procesados/Valvulas/Valvula de bola neumatica 3 vias H.png"
         },
         {
             "nombre": "Válvula de cierre accionada por aire",
@@ -4311,6 +4811,18 @@
         {
             "nombre": "Válvula de cierre de seguridad",
             "ruta": "./s-procesados/Valvulas/Válvula_de_cierre_de_seguridad.svg"
+        },
+        {
+            "nombre": "Valvula de Compuerta",
+            "ruta": "./s-procesados/Valvulas/valvula_de_compuerta.png"
+        },
+        {
+            "nombre": "Valvula de compuerta R14",
+            "ruta": "./s-procesados/Valvulas/Valvula de compuerta R14.png"
+        },
+        {
+            "nombre": "Valvula de compuerta R15",
+            "ruta": "./s-procesados/Valvulas/Valvula de compuerta R15.png"
         },
         {
             "nombre": "Válvula de control",
@@ -4353,12 +4865,40 @@
             "ruta": "./s-procesados/Valvulas/Válvula_de_control_de_tipo_globo.svg"
         },
         {
+            "nombre": "Valvula de descarga alimentaria",
+            "ruta": "./s-procesados/Valvulas/Valvula de descarga alimentaria.png"
+        },
+        {
             "nombre": "Válvula de diafragma de plástico",
             "ruta": "./s-procesados/Valvulas/Válvula_de_diafragma_de_plástico.svg"
         },
         {
+            "nombre": "Valvula de diafragma neumatica S",
+            "ruta": "./s-procesados/Valvulas/Valvula de diafragma neumatica S.png"
+        },
+        {
+            "nombre": "Valvula de diafragma S",
+            "ruta": "./s-procesados/Valvulas/Valvula de diafragma S.png"
+        },
+        {
             "nombre": "Válvula de drenaje",
             "ruta": "./s-procesados/Valvulas/Válvula_de_drenaje.svg"
+        },
+        {
+            "nombre": "Valvula de estrangulamiento",
+            "ruta": "./s-procesados/Valvulas/Valvula de estrangulamiento.png"
+        },
+        {
+            "nombre": "Valvula de globo",
+            "ruta": "./s-procesados/Valvulas/Valvula de globo.png"
+        },
+        {
+            "nombre": "Valvula de guillotina",
+            "ruta": "./s-procesados/Valvulas/Valvula de guillotina.png"
+        },
+        {
+            "nombre": "Valvula de guillotina neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula de guillotina neumatica.png"
         },
         {
             "nombre": "Válvula de macho giratorio",
@@ -4369,6 +4909,54 @@
             "ruta": "./s-procesados/Valvulas/Válvula_de_manguito.svg"
         },
         {
+            "nombre": "Valvula de mariposa alimentaria entre bridas",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria entre bridas.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria entre bridas neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria entre bridas neumatica.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria H S",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria H_S.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria H S neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria H_S neumatica.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria M H",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria M_H.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria M H neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria M_H neumatica.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria M M",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria M_M.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria M M neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria M_M neumatica.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria M S",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria M_S.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria M S neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria M_S neumatica.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria S S",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria S_S.png"
+        },
+        {
+            "nombre": "Valvula de mariposa alimentaria S S neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula de mariposa alimentaria S_S neumatica.png"
+        },
+        {
             "nombre": "Válvula de retención - Horizontal",
             "ruta": "./s-procesados/Valvulas/Válvula_de_retención_-_Horizontal.svg"
         },
@@ -4377,16 +4965,92 @@
             "ruta": "./s-procesados/Valvulas/Válvula_de_retención_-_Vertical.svg"
         },
         {
+            "nombre": "Valvula de retencion 3 piezas",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion 3 piezas.png"
+        },
+        {
+            "nombre": "Valvula de retencion alimentaria M M",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion alimentaria M_M.png"
+        },
+        {
+            "nombre": "Valvula de retencion alimentaria M S",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion alimentaria M_S.png"
+        },
+        {
+            "nombre": "Valvula de retencion alimentaria S S",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion alimentaria S_S.png"
+        },
+        {
+            "nombre": "Valvula de retencion cromax",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion cromax.png"
+        },
+        {
+            "nombre": "Valvula de retencion de clapeta",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion de clapeta.png"
+        },
+        {
             "nombre": "Válvula de retención de clapeta de plástico",
             "ruta": "./s-procesados/Valvulas/Válvula_de_retención_de_clapeta_de_plástico.svg"
+        },
+        {
+            "nombre": "Valvula de retencion de fondo",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion de fondo.png"
+        },
+        {
+            "nombre": "Valvula de retencion de pie",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion de pie.png"
         },
         {
             "nombre": "Válvula de retención de PVC",
             "ruta": "./s-procesados/Valvulas/Válvula_de_retención_de_PVC.svg"
         },
         {
+            "nombre": "Valvula de retencion wafer",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion wafer.png"
+        },
+        {
+            "nombre": "Valvula de retencion wafer 1",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion wafer 1.png"
+        },
+        {
+            "nombre": "Valvula de retencion wafer de disco",
+            "ruta": "./s-procesados/Valvulas/Valvula de retencion wafer de disco.png"
+        },
+        {
+            "nombre": "Valvula de seguridad",
+            "ruta": "./s-procesados/Valvulas/Valvula de seguridad.png"
+        },
+        {
             "nombre": "Válvula de seguridad",
             "ruta": "./s-procesados/Valvulas/Válvula_de_seguridad.svg"
+        },
+        {
+            "nombre": "Valvula de seguridad BSP",
+            "ruta": "./s-procesados/Valvulas/Valvula de seguridad BSP.png"
+        },
+        {
+            "nombre": "Valvula de vacio",
+            "ruta": "./s-procesados/Valvulas/Valvula de vacio.png"
+        },
+        {
+            "nombre": "Valvula de vacio 1",
+            "ruta": "./s-procesados/Valvulas/Valvula de vacio 1.png"
+        },
+        {
+            "nombre": "Valvula de vacio 2",
+            "ruta": "./s-procesados/Valvulas/Valvula de vacio 2.png"
+        },
+        {
+            "nombre": "Valvula lug",
+            "ruta": "./s-procesados/Valvulas/Valvula lug.png"
+        },
+        {
+            "nombre": "Valvula lug alto rendimiento",
+            "ruta": "./s-procesados/Valvulas/Valvula lug alto rendimiento.png"
+        },
+        {
+            "nombre": "Valvula lug neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula lug neumatica.png"
         },
         {
             "nombre": "Válvula manual - Horizontal",
@@ -4409,12 +5073,88 @@
             "ruta": "./s-procesados/Valvulas/Válvula_manual_4.svg"
         },
         {
+            "nombre": "Valvula mariposa maneta",
+            "ruta": "./s-procesados/Valvulas/Valvula mariposa maneta.png"
+        },
+        {
+            "nombre": "Valvula mariposa maneta 1",
+            "ruta": "./s-procesados/Valvulas/Valvula mariposa maneta 1.png"
+        },
+        {
             "nombre": "Válvula motorizada",
             "ruta": "./s-procesados/Valvulas/Válvula_motorizada.svg"
         },
         {
+            "nombre": "Valvula purga de aire",
+            "ruta": "./s-procesados/Valvulas/Valvula purga de aire.png"
+        },
+        {
             "nombre": "Válvula sencilla",
             "ruta": "./s-procesados/Valvulas/Válvula_sencilla.svg"
+        },
+        {
+            "nombre": "Valvula SW",
+            "ruta": "./s-procesados/Valvulas/Valvula SW.png"
+        },
+        {
+            "nombre": "Valvula tomamuestras",
+            "ruta": "./s-procesados/Valvulas/Valvula tomamuestras.png"
+        },
+        {
+            "nombre": "Valvula tomamuestras 1",
+            "ruta": "./s-procesados/Valvulas/Valvula tomamuestras 1.png"
+        },
+        {
+            "nombre": "Valvula wafer",
+            "ruta": "./s-procesados/Valvulas/Valvula wafer.png"
+        },
+        {
+            "nombre": "Valvula wafer alto rendimiento",
+            "ruta": "./s-procesados/Valvulas/Valvula wafer alto rendimiento.png"
+        },
+        {
+            "nombre": "Valvula wafer neumatica",
+            "ruta": "./s-procesados/Valvulas/Valvula wafer neumatica.png"
+        },
+        {
+            "nombre": "Vavula abridada 2 piezas",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada 2 piezas.png"
+        },
+        {
+            "nombre": "Vavula abridada 2 piezas neumatica",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada 2 piezas neumatica.png"
+        },
+        {
+            "nombre": "Vavula abridada 3 piezas",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada 3 piezas.png"
+        },
+        {
+            "nombre": "Vavula abridada 3 vias",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada 3 vias.png"
+        },
+        {
+            "nombre": "Vavula abridada 3 vias neumatica",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada 3 vias neumatica.png"
+        },
+        {
+            "nombre": "Vavula abridada 4 vias",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada 4 vias.png"
+        },
+        {
+            "nombre": "Vavula abridada monoblock",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada monoblock.png"
+        },
+        {
+            "nombre": "Vavula abridada monoblock neumatica",
+            "ruta": "./s-procesados/Valvulas/Vavula abridada monoblock neumatica.png"
+        },
+        {
+            "nombre": "Vavula alimentaria 3 vias",
+            "ruta": "./s-procesados/Valvulas/Vavula alimentaria 3 vias.png"
+        },
+        {
+            "nombre": "Vavula alimentaria conica",
+            "ruta": "./s-procesados/Valvulas/Vavula alimentaria conica.png"
         }
     ]
 }
