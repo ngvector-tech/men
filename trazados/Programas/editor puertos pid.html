@@ -52,7 +52,7 @@
         #lienzo { flex: 1; background: #f9f9f9; position: relative; border-radius: 6px; border: 1px solid #ccc; overflow: hidden; }
 
         /* Modales */
-        #modalSimbolosIso, #modalSimbolosSombreados { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); }
+        #modalSimbolosIso, #modalSimbolosSombreados, #modalActualizarConfig { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); }
         .modal-content-iso { background: #fff; width: 680px; height: 80vh; min-width: 350px; min-height: 250px; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; border: 2px solid #3498db; position: absolute; top: 10%; left: 50%; transform: translateX(-50%); resize: both; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .modal-header-iso { background: #3498db; color: white; padding: 10px 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: grab; user-select: none; }
         .modal-header-iso:active { cursor: grabbing; }
@@ -75,8 +75,8 @@
         #modalSimbolosSombreados .resize-handle { background: linear-gradient(135deg, transparent 50%, #16a085 50%); }
         #modalSimbolosSombreados .card-simb-iso:hover { border-color: #16a085; background: #e8f8f5; }
 
-        /* Modal de Guardado (Cajetín) */
-        #modalGuardar {
+        /* Modales de Guardado / Actualización */
+        #modalGuardar, #modalActualizarConfig {
             display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5);
             align-items: center; justify-content: center;
         }
@@ -93,6 +93,10 @@
         .btn-cancelar { background: #ccc; color: #333; }
         .btn-confirmar { background: #2ecc71; color: white; }
         .btn-confirmar:hover { background: #27ae60; }
+
+        /* Estilo específico para el modal de actualizar */
+        #modalActualizarConfig .modal-guardar-content { border-top-color: #2ecc71; }
+        #modalActualizarConfig h3 { color: #27ae60; }
 
         @media (max-width: 900px) {
             #toolbar-puertos { flex-direction: column; align-items: stretch; }
@@ -141,7 +145,7 @@
 
         <div class="grupo">
             <button class="btn btn-svg-nuevo" onclick="abrirModalGuardar()">💾 Guardar nuevo Símbolo</button>
-            <button class="btn btn-success" onclick="guardarYFusionar()">💾 Actualizar puertos JSON</button>
+            <button class="btn btn-success" onclick="abrirModalActualizar()">🔄 Actualizar puertos JSON</button>
             <button class="btn btn-eliminar-bib" onclick="eliminarSimboloDeBiblioteca()">🗑️ Eliminar de la biblioteca</button>
             <button class="btn btn-purple" onclick="descargarJSON()">⬇️ Descargar JSON</button>
         </div>
@@ -200,7 +204,7 @@
         </div>
     </div>
 
-    <!-- Modal de Guardado (Cajetín) -->
+    <!-- Modal de Guardado (Cajetín Nuevo) -->
     <div id="modalGuardar">
         <div class="modal-guardar-content">
             <h3>💾 Guardar Nuevo Símbolo</h3>
@@ -220,6 +224,27 @@
             <div class="modal-guardar-botones">
                 <button class="btn-cancelar" onclick="cerrarModalGuardar()">Cancelar</button>
                 <button class="btn-confirmar" onclick="ejecutarGuardado()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Actualización -->
+    <div id="modalActualizarConfig">
+        <div class="modal-guardar-content">
+            <h3>🔄 Actualizar Puertos JSON</h3>
+            
+            <label>¿A qué catálogo deseas actualizar los datos?</label>
+            <select id="selectActualizarDestino">
+                <option value="pid">P&ID Normal (config_puertos.json)</option>
+                <option value="sombreado">Símbolos Sombreados (s_config_puertos.json)</option>
+            </select>
+
+            <label>Resumen de datos a guardar:</label>
+            <textarea id="resumenActualizar" readonly style="width: 100%; height: 100px; font-family: monospace; font-size: 11px; background: #f4f4f4; color: #333; border: 1px solid #ccc; margin-bottom: 20px; border-radius: 4px; padding: 8px; resize: none;"></textarea>
+
+            <div class="modal-guardar-botones">
+                <button class="btn-cancelar" onclick="cerrarModalActualizar()">Cancelar</button>
+                <button class="btn-confirmar" onclick="ejecutarActualizacion()">Actualizar</button>
             </div>
         </div>
     </div>
@@ -247,9 +272,8 @@
         let subcarpetaActivaIso = '';
         let subcarpetaActivaSombreados = '';
 
-        // Variables para Sistema de Archivos
         let archivoOriginalSubido = null;
-        let dirHandleGlobal = null; // Guarda la carpeta raíz del proyecto
+        let dirHandleGlobal = null; 
         let nombreArchivoOriginalSubido = ""; 
 
         let datosAcumulados = JSON.parse(localStorage.getItem('configPuertosJSON')) || {};
@@ -350,14 +374,14 @@
         }
         cargarCatalogoSombreados();
 
+        // Muestra el texto en la caja verde (con nombre y sin llaves exteriores)
         function actualizarTextareaActual() {
             const nombre = document.getElementById('nombre-simbolo').value.trim();
             const datosActuales = obtenerPuertosActuales(false);
             
             if (nombre && datosActuales && datosActuales.puertos.length > 0) {
-                const objUnico = {};
-                objUnico[nombre] = datosActuales.puertos;
-                document.getElementById('json-output').value = JSON.stringify(objUnico, null, 4);
+                const puertosTexto = JSON.stringify(datosActuales.puertos, null, 4);
+                document.getElementById('json-output').value = `"${nombre}": ${puertosTexto}`;
             } else {
                 document.getElementById('json-output').value = "No hay puertos configurados para este símbolo...";
             }
@@ -566,6 +590,12 @@
                 const blob = await res.blob();
                 const nombreArchivo = ruta.split('/').pop() || nombreItem;
 
+                const nombreLimpio = nombreArchivo.replace(/\.(svg|png|jpg|jpeg)$/i, '')
+                                             .replace(/[-_]/g, ' ') 
+                                             .replace(/\s+/g, ' ') 
+                                             .trim();
+                document.getElementById('nombre-simbolo').value = nombreLimpio;
+
                 if (ruta.toLowerCase().match(/\.(png|jpg|jpeg)$/)) {
                     const reader = new FileReader();
                     reader.onloadend = () => {
@@ -612,37 +642,23 @@
             renderizarFondo(urlLimpia, nombreArchivo, anchoReal, altoReal, minX, minY);
         }
 
-        // --- RENDERIZADO CORREGIDO PARA RESALTAR LA IMAGEN ---
+        // --- RENDERIZADO AJUSTADO A PANTALLA ---
         function renderizarFondo(urlImagen, nombreArchivo, anchoReal, altoReal, minX = 0, minY = 0) {
             graph.clear();
             contadorPuertos = 1;
             puertoSeleccionado = null;
 
-            currentScale = 2;
-            paper.scale(2, 2);
-            paper.translate(0, 0);
-
-            const escala = 2;
-            const targetWidth = anchoReal * escala;
-            const targetHeight = altoReal * escala;
-
-            const rectLienzo = document.getElementById('lienzo').getBoundingClientRect();
-            const localPoint = paper.clientToLocalPoint({ x: rectLienzo.left + (rectLienzo.width / 2), y: rectLienzo.top + (rectLienzo.height / 2) });
-
             const fondo = new joint.shapes.standard.Image();
-            fondo.position(localPoint.x - (targetWidth/2), localPoint.y - (targetHeight/2));
-            fondo.resize(targetWidth, targetHeight);
+            fondo.resize(anchoReal, altoReal);
             fondo.attr('image/xlink:href', urlImagen);
             fondo.attr('image/preserveAspectRatio', 'xMidYMid meet');
             
-            // LA CLAVE: En lugar de forzar un fondo blanco (que puede lavar la imagen), 
-            // dejamos que la imagen sea transparente o mantenga sus colores.
             fondo.attr('body/fill', 'transparent'); 
             fondo.attr('body/stroke', 'none'); 
 
             fondo.set('isFondo', true);
             fondo.set('svgViewBox', { minX, minY, width: anchoReal, height: altoReal });
-            fondo.set('escala', escala);
+            
             fondo.addTo(graph);
 
             let nombreLimpio = "";
@@ -667,13 +683,10 @@
             }
 
             puertosParaDibujar.forEach(p => {
-                const posX = localPoint.x - (targetWidth/2) + (p.x - minX) * escala;
-                const posY = localPoint.y - (targetHeight/2) + (p.y - minY) * escala;
-
                 const nuevoPuerto = new joint.shapes.standard.Circle();
                 const radio = 6;
 
-                nuevoPuerto.position(posX - radio, posY - radio);
+                nuevoPuerto.position((p.x - minX) - radio, (p.y - minY) - radio);
                 nuevoPuerto.resize(radio * 2, radio * 2);
                 nuevoPuerto.attr({
                     body: { fill: window.esSimboloSombreado ? '#16a085' : '#3498db', stroke: 'white', strokeWidth: 2, cursor: 'move' },
@@ -686,6 +699,15 @@
                 nuevoPuerto.addTo(graph);
                 contadorPuertos++;
             });
+
+            setTimeout(() => {
+                const bbox = graph.getBBox();
+                if (bbox) {
+                    paper.scaleContentToFit({ padding: 50, minScale: 0.1, maxScale: 4 });
+                    currentScale = paper.scale().sx;
+                }
+            }, 100);
+
             actualizarTextareaActual();
         }
 
@@ -730,13 +752,12 @@
             const fondo = fondos[0];
             const posFondo = fondo.position();
             const datosSVG = fondo.get('svgViewBox');
-            const escala = fondo.get('escala');
 
             const nuevoPuerto = new joint.shapes.standard.Circle();
             const radio = 6;
 
-            const relX = (x - posFondo.x) / escala;
-            const relY = (y - posFondo.y) / escala;
+            const relX = (x - posFondo.x);
+            const relY = (y - posFondo.y);
             const originalX = datosSVG.minX + relX;
             const originalY = datosSVG.minY + relY;
 
@@ -783,6 +804,7 @@
 
             const startPos = el.position();
             const startEvent = evt;
+            
             const onMouseMove = (moveEvt) => {
                 const dx = (moveEvt.clientX - startEvent.clientX) / paper.scale().sx;
                 const dy = (moveEvt.clientY - startEvent.clientY) / paper.scale().sy;
@@ -803,9 +825,26 @@
 
                 el.position(newX, newY);
             };
+            
             const onMouseUp = () => {
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
+                
+                const fondos = graph.getElements().filter(e => e.get('isFondo'));
+                if (fondos.length > 0) {
+                    const fondo = fondos[0];
+                    const posFondo = fondo.position();
+                    const datosSVG = fondo.get('svgViewBox');
+
+                    const posFinal = el.position();
+                    
+                    const originalX = datosSVG.minX + (posFinal.x - posFondo.x);
+                    const originalY = datosSVG.minY + (posFinal.y - posFondo.y);
+
+                    el.set('_relX', originalX);
+                    el.set('_relY', originalY);
+                }
+
                 actualizarTextareaActual();
             };
             document.addEventListener('mousemove', onMouseMove);
@@ -852,7 +891,7 @@
             return { nombre, puertos: puertosExportados };
         }
 
-        // --- MODAL DE GUARDADO (CAJETÍN CON MEMORIA) ---
+        // --- MODAL DE GUARDADO (CAJETÍN NUEVO) ---
         function abrirModalGuardar() {
             const nombreInput = document.getElementById('nombre-simbolo').value.trim();
             if (!nombreInput) return alert("Escribe un nombre para el símbolo primero.");
@@ -861,7 +900,6 @@
 
             document.getElementById('inputNombreModal').value = nombreInput;
             
-            // RECUPERAR ÚLTIMA CONFIGURACIÓN GUARDADA
             const ultimoCatalogo = localStorage.getItem('ultimoCatalogoDestino') || (window.esSimboloSombreado ? 'sombreado' : 'pid');
             const ultimaCarpeta = localStorage.getItem('ultimaCarpetaDestino');
 
@@ -869,7 +907,6 @@
             
             actualizarCarpetasModal();
 
-            // Si había una carpeta seleccionada previamente, intentamos seleccionarla
             if (ultimaCarpeta) {
                 const selectCarpeta = document.getElementById('selectCarpetaDestino');
                 for (let i = 0; i < selectCarpeta.options.length; i++) {
@@ -903,7 +940,6 @@
             });
         }
 
-        // --- SISTEMA DE GUARDADO NATIVO (File System Access API) ---
         async function ejecutarGuardado() {
             const nombreInput = document.getElementById('inputNombreModal').value.trim();
             const targetVal = document.getElementById('selectCatalogoDestino').value;
@@ -914,13 +950,11 @@
             if (!nombreInput) return alert("El nombre no puede estar vacío.");
             if (!catSeleccionada) return alert("Selecciona una carpeta de destino.");
 
-            // GUARDAR LA CONFIGURACIÓN EN LA MEMORIA DEL NAVEGADOR
             localStorage.setItem('ultimoCatalogoDestino', targetVal);
             localStorage.setItem('ultimaCarpetaDestino', catSeleccionada);
 
             cerrarModalGuardar();
 
-            // Si no tenemos acceso a la carpeta, lo pedimos
             if (!dirHandleGlobal) {
                 try {
                     dirHandleGlobal = await window.showDirectoryPicker({ mode: 'readwrite' });
@@ -931,13 +965,11 @@
             }
 
             try {
-                // 1. LIMPIAR NOMBRE SOLO PARA LA BIBLIOTECA
                 const nombreLimpio = nombreInput.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
                 
-                // 2. RESPETAR EL NOMBRE ORIGINAL DEL ARCHIVO Y SU EXTENSIÓN
                 let nombreArchivoFinal = nombreInput;
-                if (nombreArchivoOriginalSubido) {
-                    nombreArchivoFinal = nombreArchivoOriginalSubido;
+                if (archivoOriginalSubido) {
+                    nombreArchivoFinal = archivoOriginalSubido.name;
                 } else {
                     const datosFondo = graph.getElements().filter(el => el.get('isFondo'))[0];
                     const urlImagen = datosFondo.attr('image/xlink:href');
@@ -948,7 +980,6 @@
 
                 const rutaRelativa = `./${carpetaRaiz}/${catSeleccionada}/${nombreArchivoFinal}`;
                 
-                // 3. ACTUALIZAR EL JSON EN MEMORIA
                 let catalogoActual = targetVal === 'pid' ? catalogoGlobalIso : catalogoGlobalSombreados;
                 const nuevoItem = { nombre: nombreLimpio, ruta: rutaRelativa };
                 if (!catalogoActual[catSeleccionada]) catalogoActual[catSeleccionada] = [];
@@ -960,14 +991,11 @@
                     catalogoActual[catSeleccionada].push(nuevoItem);
                 }
 
-                // 4. ORDENAR ALFABÉTICAMENTE
                 let catalogoOrdenado = {};
                 Object.keys(catalogoActual).sort().forEach(cat => {
                     catalogoOrdenado[cat] = catalogoActual[cat].sort((a, b) => a.nombre.localeCompare(b.nombre));
                 });
 
-                // 5. GUARDAR ARCHIVOS EN EL DISCO
-                // A. Guardar Imagen
                 if (archivoOriginalSubido) {
                     const dirHandleSub = await dirHandleGlobal.getDirectoryHandle(carpetaRaiz, { create: true })
                                                             .then(dir => dir.getDirectoryHandle(catSeleccionada, { create: true }));
@@ -977,19 +1005,92 @@
                     await writable.close();
                 }
 
-                // B. Guardar JSON
                 const jsonHandle = await dirHandleGlobal.getFileHandle(targetCatalogo, { create: true });
                 const jsonWritable = await jsonHandle.createWritable();
                 await jsonWritable.write(JSON.stringify(catalogoOrdenado, null, 4));
                 await jsonWritable.close();
 
-                // --- LIMPIAR PANTALLA DESPUÉS DE GUARDAR ---
                 borrarTodo();
                 document.getElementById('nombre-simbolo').value = '';
                 
             } catch (err) {
                 alert("Error al acceder a los archivos: " + err.message);
             }
+        }
+
+        // --- MODAL DE ACTUALIZACIÓN ---
+        function abrirModalActualizar() {
+            const nombreInput = document.getElementById('nombre-simbolo').value.trim();
+            if (!nombreInput) return alert("Escribe un nombre para el símbolo primero.");
+            
+            // Mostramos en el resumen el texto exacto que hay en la caja verde
+            const textoCajaVerde = document.getElementById('json-output').value;
+            document.getElementById('resumenActualizar').value = textoCajaVerde;
+
+            // Seleccionar por defecto según lo que se cargó previamente
+            document.getElementById('selectActualizarDestino').value = window.esSimboloSombreado ? 'sombreado' : 'pid';
+
+            document.getElementById('modalActualizarConfig').style.display = 'flex';
+        }
+
+        function cerrarModalActualizar() {
+            document.getElementById('modalActualizarConfig').style.display = 'none';
+        }
+
+        async function ejecutarActualizacion() {
+            const nombre = document.getElementById('nombre-simbolo').value.trim();
+            if (!nombre) return alert("Falta el nombre del símbolo.");
+
+            const targetVal = document.getElementById('selectActualizarDestino').value;
+            const esSombreado = targetVal === 'sombreado';
+            window.esSimboloSombreado = esSombreado;
+
+            const targetKey = esSombreado ? 's_config_puertos.json' : 'config_puertos.json';
+            let acumuladorActual = esSombreado ? datosSombreadosAcumulados : datosAcumulados;
+
+            // Obtenemos los puertos limpios directamente del lienzo
+            const datosLimpios = obtenerPuertosActuales(false);
+
+            let baseJSON = {};
+            try {
+                const respuesta = await fetch('./' + targetKey + '?t=' + new Date().getTime());
+                if (respuesta.ok) baseJSON = await respuesta.json();
+            } catch (e) {
+                baseJSON = { ...acumuladorActual };
+            }
+
+            // Asignamos el nombre como clave y los puertos como valor
+            baseJSON[nombre] = datosLimpios.puertos;
+            
+            if (esSombreado) {
+                datosSombreadosAcumulados = baseJSON;
+                localStorage.setItem('configSombreadosJSON', JSON.stringify(datosSombreadosAcumulados));
+            } else {
+                datosAcumulados = baseJSON;
+                localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
+            }
+            
+            // Refrescamos la caja verde de la izquierda
+            actualizarTextareaActual();
+
+            // Guardar en archivo (File System o Fetch)
+            if (dirHandleGlobal) {
+                try {
+                    const jsonHandle = await dirHandleGlobal.getFileHandle(targetKey, { create: true });
+                    const jsonWritable = await jsonHandle.createWritable();
+                    await jsonWritable.write(JSON.stringify(baseJSON, null, 4));
+                    await jsonWritable.close();
+                } catch (err) {
+                    console.warn("No se pudo guardar en disco, pero se guardó en navegador.", err);
+                }
+            } else {
+                try {
+                    await fetch('./' + targetKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(baseJSON, null, 4) });
+                } catch (e) { }
+            }
+
+            cerrarModalActualizar();
+            alert(`✅ Símbolo "${nombre}" actualizado en "${targetKey}".`);
         }
 
         async function eliminarSimboloDeBiblioteca() {
@@ -1038,45 +1139,6 @@
             document.getElementById('nombre-simbolo').value = '';
             actualizarTextareaActual();
             alert(`🗑️ Símbolo "${nombreInput}" eliminado.`);
-        }
-
-        async function guardarYFusionar() {
-            const datos = obtenerPuertosActuales(true);
-            if (!datos) return;
-
-            let esSombreado = window.esSimboloSombreado || false;
-            if (window.esSimboloSombreado === undefined) {
-                esSombreado = confirm("¿Actualizar en catálogo de SÍMBOLOS SOMBREADOS?\n(Aceptar = Sombreado, Cancelar = P&ID Normal)");
-                window.esSimboloSombreado = esSombreado;
-            }
-
-            const targetKey = esSombreado ? 's_config_puertos.json' : 'config_puertos.json';
-            let acumuladorActual = esSombreado ? datosSombreadosAcumulados : datosAcumulados;
-
-            let baseJSON = {};
-            try {
-                const respuesta = await fetch('./' + targetKey + '?t=' + new Date().getTime());
-                if (respuesta.ok) baseJSON = await respuesta.json();
-            } catch (e) {
-                baseJSON = { ...acumuladorActual };
-            }
-
-            baseJSON[datos.nombre] = datos.puertos;
-            
-            if (esSombreado) {
-                datosSombreadosAcumulados = baseJSON;
-                localStorage.setItem('configSombreadosJSON', JSON.stringify(datosSombreadosAcumulados));
-            } else {
-                datosAcumulados = baseJSON;
-                localStorage.setItem('configPuertosJSON', JSON.stringify(datosAcumulados));
-            }
-            actualizarTextareaActual();
-
-            try {
-                await fetch('./' + targetKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(baseJSON, null, 4) });
-            } catch (e) { }
-
-            alert(`✅ Símbolo "${datos.nombre}" actualizado en "${targetKey}".`);
         }
 
         function descargarJSON() {

@@ -45,6 +45,8 @@
         .btn-pid:hover { background: #71368a; }
         .btn-sombreado { background: #16a085; }
         .btn-sombreado:hover { background: #117a65; }
+        .btn-anclar { background: #c0392b; }
+        .btn-anclar:hover { background: #962d22; }
         
         .color-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; cursor: pointer; transition: transform 0.1s; }
         .color-btn:hover { transform: scale(1.15); }
@@ -150,10 +152,10 @@
             max-height: 100vh;
         }
 
-        .joint-port { opacity: 0.75; transition: opacity 0.2s, transform 0.2s; }
-        .joint-port:hover, .joint-element:hover .joint-port { opacity: 1; }
-        .joint-port circle { fill: #3498db !important; stroke: #ffffff !important; stroke-width: 1.5px !important; cursor: crosshair !important; r: 5px !important; }
-        .joint-port circle:hover { fill: #e74c3c !important; r: 7px !important; }
+        /* Puertos Rojos */
+        .joint-port { opacity: 1; }
+        .joint-port circle { fill: #ff0000 !important; stroke: #ffffff !important; stroke-width: 2px !important; r: 6px !important; cursor: crosshair !important; }
+        .joint-port circle:hover { fill: #00ff00 !important; r: 8px !important; }
 
         .joint-link-tools, .joint-tool-segments, .joint-tools, .joint-tools-layer { z-index: 999 !important; }
         .joint-link-tools .handle, .joint-tool-segments .handle, .joint-tools .handle,
@@ -174,7 +176,7 @@
         @media print {
             @page { 
                 size: landscape; 
-                margin: 0; /* Margen 0 para que el SVG ocupe todo y no se desplace */
+                margin: 0; 
             }
             html, body { 
                 width: 100% !important; 
@@ -279,6 +281,12 @@
             <button class="btn-tool" id="btn-texto" onclick="toggleTexto()">📝 Añadir Texto</button>
             <button class="btn-tool" onclick="toggleNombreSimbolo()">🏷️ Nombre Símbolo</button>
         </div>
+        
+        <div class="tool-group" style="border-right: none;">
+            <button class="btn-tool btn-anclar" id="btn-anclar" onclick="toggleAnclar()">🔴 Añadir Punto de Anclaje</button>
+            <button class="btn-tool btn-danger" onclick="eliminarPuertoClic()" title="Borra el puerto que cliques">✂️ Borrar Punto</button>
+        </div>
+
         <div class="tool-group">
             <button class="btn-tool" onclick="centrarDibujo()">🎯 Centrar Dibujo</button>
             <button class="btn-tool" onclick="toggleRejilla(this)" id="btn-rejilla">📐 Rejilla ON</button>
@@ -341,6 +349,7 @@
         
         let cambiosSinGuardar = false;
         let archivoHandleActual = null;
+        let modoAnclar = false;
 
         graph.on('all', function(eventName) {
             if (eventName.startsWith('add') || eventName.startsWith('remove') || eventName.startsWith('change')) {
@@ -364,6 +373,11 @@
             }
         };
 
+        const configuracionConector = {
+            name: 'jumpover',
+            args: { size: 15, radius: 10 } 
+        };
+
         function obtenerStrokeLinea(grosor, colorBase, esDegradado) {
             if (esDegradado) return 'url(#tuberia-gradient)';
             return colorBase;
@@ -380,7 +394,10 @@
                 }
                 return { elementMove: true };
             },
-            magnetThreshold: 'onleave', linkPinning: false, snapLinks: { radius: 25 }, sortViews: true, 
+            magnetThreshold: 'onleave', 
+            linkPinning: false, 
+            snapLinks: { radius: 30 }, 
+            sortViews: true, 
             elementView: joint.dia.ElementView.extend({
                 renderMarkup: function() {
                     joint.dia.ElementView.prototype.renderMarkup.apply(this, arguments);
@@ -389,7 +406,7 @@
             }),
             defaultLink: new joint.shapes.standard.Link({
                 router: configuracionRouter,
-                connector: { name: 'jumpover', args: { size: 10 } },
+                connector: configuracionConector,
                 attrs: { line: { stroke: '#000000', strokeWidth: 2, targetMarker: null } }
             })
         });
@@ -433,7 +450,16 @@
                 groups: {
                     port: { 
                         position: { name: 'absolute' }, 
-                        attrs: { circle: { r: 5, magnet: true, stroke: '#ffffff', strokeWidth: 1.5, fill: '#3498db', cursor: 'crosshair' } } 
+                        attrs: { 
+                            circle: { 
+                                r: 6, 
+                                magnet: true, 
+                                stroke: '#ffffff', 
+                                strokeWidth: 2, 
+                                fill: '#ff0000', 
+                                cursor: 'crosshair' 
+                            } 
+                        } 
                     }
                 },
                 items: []
@@ -449,7 +475,6 @@
             try {
                 const res = await fetch('./config_puertos.json?t=' + new Date().getTime());
                 if (res.ok) configPuertos = await res.json();
-                else console.warn('config_puertos.json no encontrado');
             } catch (e) { setTimeout(cargarConfigPuertos, 1000); }
         }
         cargarConfigPuertos();
@@ -458,7 +483,6 @@
             try {
                 const res = await fetch('./s_config_puertos.json?t=' + new Date().getTime());
                 if (res.ok) configPuertosSombreados = await res.json();
-                else console.warn('s_config_puertos.json no encontrado');
             } catch (e) { setTimeout(cargarConfigPuertosSombreados, 1000); }
         }
         cargarConfigPuertosSombreados();
@@ -673,14 +697,24 @@
         async function insertarSimboloEnCentro(ruta, nombreMostrado) {
             const rect = document.getElementById('lienzo').getBoundingClientRect();
             const localPoint = paper.clientToLocalPoint({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-            const nombreArchivo = ruta.split('/').pop().replace('.svg', '');
+            const nombreArchivo = ruta.split('/').pop().replace(/\.(svg|png|jpg|jpeg)$/i, '');
             const nombreBusqueda = nombreArchivo.toLowerCase().replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             try {
-                const datosSvg = await procesarImagenSVG(ruta);
-                const escala = 2;
-                const targetWidth = datosSvg.anchoReal * escala;
-                const targetHeight = datosSvg.altoReal * escala;
+                let datosSvg = { dataUri: ruta, minX: 0, minY: 0, anchoReal: 100, altoReal: 60 };
+                if (ruta.toLowerCase().endsWith('.svg')) {
+                    datosSvg = await procesarImagenSVG(ruta);
+                } else {
+                    const img = new Image();
+                    img.src = ruta;
+                    await new Promise((resolve, reject) => {
+                        img.onload = () => { datosSvg.anchoReal = img.width; datosSvg.altoReal = img.height; resolve(); };
+                        img.onerror = reject;
+                    });
+                }
+
+                const targetWidth = datosSvg.anchoReal;
+                const targetHeight = datosSvg.altoReal;
 
                 let puertosItems = [];
                 let claveEncontrada = null;
@@ -691,7 +725,7 @@
                 if (claveEncontrada) {
                     puertosItems = configPuertos[claveEncontrada].map(p => ({
                         group: 'port', id: p.id,
-                        args: { x: (p.x - datosSvg.minX) * escala, y: (p.y - datosSvg.minY) * escala }
+                        args: { x: (p.x - datosSvg.minX), y: (p.y - datosSvg.minY) }
                     }));
                 } else {
                     puertosItems = [
@@ -716,20 +750,30 @@
                 elemento.set('altoReal', datosSvg.altoReal);
                 elemento.set('esSombreado', false);
                 elemento.addTo(graph);
-            } catch (err) { console.error("Error al cargar SVG:", err); }
+            } catch (err) { console.error("Error al cargar símbolo:", err); }
         }
 
         async function insertarSimboloSombreadoEnCentro(ruta, nombreMostrado) {
             const rect = document.getElementById('lienzo').getBoundingClientRect();
             const localPoint = paper.clientToLocalPoint({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-            const nombreArchivo = ruta.split('/').pop().replace('.svg', '');
+            const nombreArchivo = ruta.split('/').pop().replace(/\.(svg|png|jpg|jpeg)$/i, '');
             const nombreBusqueda = nombreArchivo.toLowerCase().replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             try {
-                const datosSvg = await procesarImagenSVG(ruta);
-                const escala = 2;
-                const targetWidth = datosSvg.anchoReal * escala;
-                const targetHeight = datosSvg.altoReal * escala;
+                let datosSvg = { dataUri: ruta, minX: 0, minY: 0, anchoReal: 100, altoReal: 60 };
+                if (ruta.toLowerCase().endsWith('.svg')) {
+                    datosSvg = await procesarImagenSVG(ruta);
+                } else {
+                    const img = new Image();
+                    img.src = ruta;
+                    await new Promise((resolve, reject) => {
+                        img.onload = () => { datosSvg.anchoReal = img.width; datosSvg.altoReal = img.height; resolve(); };
+                        img.onerror = reject;
+                    });
+                }
+
+                const targetWidth = datosSvg.anchoReal;
+                const targetHeight = datosSvg.altoReal;
 
                 let puertosItems = [];
                 let claveEncontrada = null;
@@ -740,7 +784,7 @@
                 if (claveEncontrada) {
                     puertosItems = configPuertosSombreados[claveEncontrada].map(p => ({
                         group: 'port', id: p.id,
-                        args: { x: (p.x - datosSvg.minX) * escala, y: (p.y - datosSvg.minY) * escala }
+                        args: { x: (p.x - datosSvg.minX), y: (p.y - datosSvg.minY) }
                     }));
                 } else {
                     puertosItems = [
@@ -830,9 +874,14 @@
                         const ruta = el.get('rutaOriginal');
                         if (ruta) {
                             try {
-                                const datosSvg = await procesarImagenSVG(ruta);
-                                el.attr('image/xlink:href', datosSvg.dataUri);
-                                el.attr('image/href', datosSvg.dataUri);
+                                if (ruta.toLowerCase().endsWith('.svg')) {
+                                    const datosSvg = await procesarImagenSVG(ruta);
+                                    el.attr('image/xlink:href', datosSvg.dataUri);
+                                    el.attr('image/href', datosSvg.dataUri);
+                                } else {
+                                    el.attr('image/xlink:href', ruta);
+                                    el.attr('image/href', ruta);
+                                }
                             } catch (err) { console.error("No se pudo recargar SVG:", ruta, err); }
                         }
                         const etiquetaId = el.get('etiquetaId');
@@ -902,7 +951,6 @@
             currentScale = paper.scale().sx;
         };
 
-        // --- FUNCIÓN DE IMPRESIÓN CORREGIDA Y AJUSTADA A LA HOJA ---
         window.prepararImpresion = function() {
             const caja = document.getElementById('caja-impresion'); 
             caja.innerHTML = ''; 
@@ -913,44 +961,31 @@
                 return; 
             }
             
-            // Añadimos un margen blanco alrededor del dibujo
             const margen = 40; 
             const anchoTotal = bbox.width + (margen * 2); 
             const altoTotal = bbox.height + (margen * 2);
             
-            // Creamos un nuevo SVG desde cero
             const svgImpresion = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             
-            // El viewBox enmarca exactamente el dibujo con su margen
             svgImpresion.setAttribute('viewBox', `${bbox.x - margen} ${bbox.y - margen} ${anchoTotal} ${altoTotal}`);
-            
-            // Forzamos a que ocupe el 100% disponible sin deformarse
             svgImpresion.setAttribute('width', '100%'); 
             svgImpresion.setAttribute('height', '100%'); 
             svgImpresion.setAttribute('preserveAspectRatio', 'xMidYMid meet'); 
             svgImpresion.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
             
-            // Copiamos las definiciones (gradientes, filtros, etc.)
             const defs = paper.svg.querySelector('defs');
             if (defs) svgImpresion.appendChild(defs.cloneNode(true));
 
-            // Copiamos los elementos del dibujo (capas)
             const viewport = paper.svg.querySelector('.joint-viewport');
             if (viewport) {
                 const clonViewport = viewport.cloneNode(true);
-                
-                // Limpiamos todo lo que no queremos que salga en la impresión
                 clonViewport.querySelectorAll('.joint-grid, .joint-port, .joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
-                
-                // Aseguramos que las líneas tengan color visible
                 clonViewport.querySelectorAll('.joint-link path').forEach(el => { 
                     if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
                 });
-                
                 svgImpresion.appendChild(clonViewport);
             }
             
-            // Añadimos un fondo blanco puro para que no salga el fondo gris de la pantalla
             const rectFondo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
             rectFondo.setAttribute('x', bbox.x - margen); 
             rectFondo.setAttribute('y', bbox.y - margen);
@@ -959,10 +994,8 @@
             rectFondo.setAttribute('fill', '#ffffff');
             svgImpresion.insertBefore(rectFondo, svgImpresion.firstChild);
             
-            // Lo inyectamos en la caja de impresión
             caja.appendChild(svgImpresion);
             
-            // Lanzamos la impresión
             setTimeout(() => { 
                 window.print(); 
                 setTimeout(() => { caja.innerHTML = ''; }, 500); 
@@ -1056,26 +1089,68 @@
             document.getElementById('lienzo').style.cursor = modoTexto ? 'text' : 'default';
         };
 
-        function actualizarRutaOrtogonalManual(destino) {
-            if (!lineaEnCurso || puntosLinea.length === 0) return;
-            const vertices = [];
-            for (let i = 1; i < puntosLinea.length; i++) {
-                const anterior = puntosLinea[i - 1];
-                const actual = puntosLinea[i];
-                vertices.push({ x: Math.round(actual.x / 10) * 10, y: Math.round(anterior.y / 10) * 10 });
-                vertices.push({ x: Math.round(actual.x / 10) * 10, y: Math.round(actual.y / 10) * 10 });
+        window.toggleAnclar = function() {
+            modoAnclar = !modoAnclar;
+            document.getElementById('btn-anclar').classList.toggle('active', modoAnclar);
+            document.getElementById('lienzo').style.cursor = modoAnclar ? 'crosshair' : 'default';
+            if (modoAnclar) {
+                modoLinea = false; modoTexto = false;
+                document.getElementById('btn-linea').classList.remove('active');
+                document.getElementById('btn-texto').classList.remove('active');
             }
-            const ultimo = puntosLinea[puntosLinea.length - 1];
-            if (destino) {
-                vertices.push({ x: Math.round(destino.x / 10) * 10, y: Math.round(ultimo.y / 10) * 10 });
-                lineaEnCurso.target({ x: Math.round(destino.x / 10) * 10, y: Math.round(destino.y / 10) * 10 });
-            } else {
-                lineaEnCurso.target({ x: Math.round(ultimo.x / 10) * 10, y: Math.round(ultimo.y / 10) * 10 });
-            }
-            lineaEnCurso.vertices(vertices);
-        }
+        };
 
+        window.eliminarPuertoClic = function() {
+            if (!confirm("Haz clic en el punto rojo que deseas eliminar del símbolo.")) return;
+            papelModoBorrarPuerto = true;
+            document.getElementById('lienzo').style.cursor = 'not-allowed';
+        };
+        let papelModoBorrarPuerto = false;
+
+        // MAGIA: Al hacer clic en el lienzo (si el modo anclar está activo), añade un puerto al símbolo más cercano
         paper.on('blank:pointerdown', function(evt, x, y) {
+            if (modoAnclar) {
+                const elementos = graph.getElements();
+                let elementoCercano = null;
+                let distanciaMin = Infinity;
+
+                elementos.forEach(el => {
+                    if (el.get('tipo') === 'texto' || el.get('isPuerto')) return;
+                    const bbox = el.getBBox();
+                    if (x >= bbox.x - 30 && x <= bbox.x + bbox.width + 30 && y >= bbox.y - 30 && y <= bbox.y + bbox.height + 30) {
+                        const centro = { x: bbox.x + bbox.width/2, y: bbox.y + bbox.height/2 };
+                        const dist = Math.hypot(x - centro.x, y - centro.y);
+                        if (dist < distanciaMin) { distanciaMin = dist; elementoCercano = el; }
+                    }
+                });
+
+                if (elementoCercano) {
+                    const posEl = elementoCercano.position();
+                    const tamEl = elementoCercano.size();
+                    
+                    const relX = Math.max(0, Math.min(tamEl.width, x - posEl.x));
+                    const relY = Math.max(0, Math.min(tamEl.height, y - posEl.y));
+                    
+                    let puertosItems = elementoCercano.prop('ports/items') || [];
+                    const nuevoId = 'p_custom_' + Date.now();
+                    
+                    puertosItems.push({ 
+                        group: 'port', 
+                        id: nuevoId, 
+                        args: { x: relX, y: relY } 
+                    });
+                    
+                    // Forzar renderizado y refresco inmediato de puertos en JointJS
+                    elementoCercano.prop('ports/items', []);
+                    elementoCercano.prop('ports/items', puertosItems);
+                    
+                    mostrarEstado("¡Punto de anclaje añadido con éxito!");
+                } else {
+                    alert("Haz clic más cerca de un símbolo para añadirle un punto de anclaje.");
+                }
+                return;
+            }
+
             const snappedX = Math.round(x / 10) * 10;
             const snappedY = Math.round(y / 10) * 10;
             if (modoTexto) {
@@ -1099,7 +1174,7 @@
                         source: { x: snappedX, y: snappedY },
                         target: { x: snappedX, y: snappedY },
                         router: configuracionRouter,
-                        connector: { name: 'jumpover', args: { size: 10 } },
+                        connector: configuracionConector,
                         attrs: { line: { stroke: obtenerStrokeLinea(grosorActual, colorActual, esTuberiaDegradada), strokeWidth: grosorActual, targetMarker: null } }
                     });
                     lineaEnCurso.set('esTuberiaDegradada', esTuberiaDegradada);
@@ -1110,6 +1185,45 @@
                     lineaEnCurso = null;
                     puntosLinea = [];
                     toggleLinea(); 
+                }
+            }
+        });
+
+        function mostrarEstado(mensaje) {
+            let notif = document.getElementById('notificacion-flotante');
+            if (!notif) {
+                notif = document.createElement('div');
+                notif.id = 'notificacion-flotante';
+                notif.style.cssText = "position:fixed; bottom:20px; right:20px; background:#2ecc71; color:white; padding:10px 20px; border-radius:5px; font-weight:bold; z-index:9999; transition: opacity 0.3s;";
+                document.body.appendChild(notif);
+            }
+            notif.innerText = mensaje;
+            notif.style.opacity = '1';
+            setTimeout(() => { notif.style.opacity = '0'; }, 2000);
+        }
+
+        paper.on('element:pointerclick', function(elementView, evt) {
+            if (papelModoBorrarPuerto) {
+                const el = elementView.model;
+                const localPoint = paper.clientToLocalPoint({ x: evt.clientX, y: evt.clientY });
+                
+                let puertosItems = el.prop('ports/items') || [];
+                let puertoAEliminarIndex = -1;
+                
+                puertosItems.forEach((p, index) => {
+                    const pX = el.position().x + p.args.x;
+                    const pY = el.position().y + p.args.y;
+                    if (Math.hypot(localPoint.x - pX, localPoint.y - pY) < 15) {
+                        puertoAEliminarIndex = index;
+                    }
+                });
+
+                if (puertoAEliminarIndex !== -1) {
+                    puertosItems.splice(puertoAEliminarIndex, 1);
+                    el.prop('ports/items', puertosItems);
+                    papelModoBorrarPuerto = false;
+                    document.getElementById('lienzo').style.cursor = 'default';
+                    mostrarEstado("Punto eliminado");
                 }
             }
         });
@@ -1146,7 +1260,7 @@
         };
 
         paper.on('element:pointerdown', function(elementView, evt) {
-            if (modoLinea || modoTexto) return;
+            if (modoLinea || modoTexto || modoAnclar) return;
             const el = elementView.model; const ahora = new Date().getTime();
             if (ahora - ultimoClicTiempo < 300 && elementoClicAnterior === el.id) {
                 if (el.get('tipo') === 'texto') {
@@ -1194,12 +1308,12 @@
         });
 
         paper.on('blank:pointerdown', function() {
-            if (modoLinea || modoTexto) return;
+            if (modoLinea || modoTexto || modoAnclar) return;
             paper.model.getElements().forEach(el => { 
                 el.unset('selected'); 
                 const v = paper.findViewByModel(el);
                 if (v && v.el) v.el.classList.remove('elemento-seleccionado');
-                if (el.get('tipo') === 'texto') el.attr('body/stroke', 'none'); 
+                if (otherEl.get('tipo') === 'texto') otherEl.attr('body/stroke', 'none'); 
             });
             paper.model.getLinks().forEach(l => l.unset('selected'));
             paper.removeTools();
