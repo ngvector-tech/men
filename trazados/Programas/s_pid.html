@@ -143,7 +143,6 @@
 
         #caja-impresion { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; }
         
-        /* Modificado para asegurar que el SVG ocupe todo el espacio disponible sin recortes */
         #caja-impresion svg { 
             width: 100% !important; 
             height: 100% !important; 
@@ -171,11 +170,11 @@
             stroke: #3498db !important; stroke-width: 2px !important; stroke-dasharray: 4 4 !important;
         }
 
-        /* --- REGLAS DE IMPRESIÓN CORREGIDAS --- */
+        /* --- REGLAS DE IMPRESIÓN MEJORADAS --- */
         @media print {
             @page { 
                 size: landscape; 
-                margin: 10mm; /* Margen de la hoja */
+                margin: 0; /* Margen 0 para que el SVG ocupe todo y no se desplace */
             }
             html, body { 
                 width: 100% !important; 
@@ -204,11 +203,6 @@
                 padding: 0 !important;
                 background: white !important; 
                 z-index: 99999 !important;
-            }
-            /* Ocultar elementos de interfaz al imprimir */
-            .joint-port, .joint-tools, .joint-link-tools, .joint-tool-segments, .joint-grid {
-                display: none !important; 
-                visibility: hidden !important;
             }
         }
 
@@ -908,38 +902,67 @@
             currentScale = paper.scale().sx;
         };
 
-        // --- FUNCIÓN DE IMPRESIÓN CORREGIDA ---
+        // --- FUNCIÓN DE IMPRESIÓN CORREGIDA Y AJUSTADA A LA HOJA ---
         window.prepararImpresion = function() {
             const caja = document.getElementById('caja-impresion'); 
             caja.innerHTML = ''; 
+            
             const bbox = graph.getBBox();
-            if (!bbox || bbox.width === 0 || bbox.height === 0) { alert("No hay nada que imprimir."); return; }
+            if (!bbox || bbox.width === 0 || bbox.height === 0) { 
+                alert("No hay nada que imprimir."); 
+                return; 
+            }
             
+            // Añadimos un margen blanco alrededor del dibujo
             const margen = 40; 
-            const anchoTotal = bbox.width + margen * 2; 
-            const altoTotal = bbox.height + margen * 2;
+            const anchoTotal = bbox.width + (margen * 2); 
+            const altoTotal = bbox.height + (margen * 2);
             
-            // Clonamos el SVG
-            const svgClon = paper.svg.cloneNode(true);
+            // Creamos un nuevo SVG desde cero
+            const svgImpresion = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             
-            // Ajustamos el viewBox para que encaje perfectamente
-            svgClon.setAttribute('viewBox', `${bbox.x - margen} ${bbox.y - margen} ${anchoTotal} ${altoTotal}`);
-            svgClon.setAttribute('width', '100%'); 
-            svgClon.setAttribute('height', '100%'); 
-            svgClon.setAttribute('preserveAspectRatio', 'xMidYMid meet'); // Esto asegura que quepa sin recortarse
+            // El viewBox enmarca exactamente el dibujo con su margen
+            svgImpresion.setAttribute('viewBox', `${bbox.x - margen} ${bbox.y - margen} ${anchoTotal} ${altoTotal}`);
             
-            // Ocultamos elementos interactivos
-            svgClon.querySelectorAll('.joint-grid').forEach(el => el.remove());
-            svgClon.querySelectorAll('.joint-port').forEach(el => el.remove());
-            svgClon.querySelectorAll('.joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
+            // Forzamos a que ocupe el 100% disponible sin deformarse
+            svgImpresion.setAttribute('width', '100%'); 
+            svgImpresion.setAttribute('height', '100%'); 
+            svgImpresion.setAttribute('preserveAspectRatio', 'xMidYMid meet'); 
+            svgImpresion.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
             
-            // Aseguramos que las líneas tengan color
-            svgClon.querySelectorAll('.joint-link path').forEach(el => { 
-                if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
-            });
+            // Copiamos las definiciones (gradientes, filtros, etc.)
+            const defs = paper.svg.querySelector('defs');
+            if (defs) svgImpresion.appendChild(defs.cloneNode(true));
+
+            // Copiamos los elementos del dibujo (capas)
+            const viewport = paper.svg.querySelector('.joint-viewport');
+            if (viewport) {
+                const clonViewport = viewport.cloneNode(true);
+                
+                // Limpiamos todo lo que no queremos que salga en la impresión
+                clonViewport.querySelectorAll('.joint-grid, .joint-port, .joint-link-tools, .joint-tools, .joint-tool-segments, .joint-marker-layer').forEach(el => el.remove());
+                
+                // Aseguramos que las líneas tengan color visible
+                clonViewport.querySelectorAll('.joint-link path').forEach(el => { 
+                    if (!el.getAttribute('stroke')) el.setAttribute('stroke', '#000'); 
+                });
+                
+                svgImpresion.appendChild(clonViewport);
+            }
             
-            caja.appendChild(svgClon);
+            // Añadimos un fondo blanco puro para que no salga el fondo gris de la pantalla
+            const rectFondo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rectFondo.setAttribute('x', bbox.x - margen); 
+            rectFondo.setAttribute('y', bbox.y - margen);
+            rectFondo.setAttribute('width', anchoTotal); 
+            rectFondo.setAttribute('height', altoTotal);
+            rectFondo.setAttribute('fill', '#ffffff');
+            svgImpresion.insertBefore(rectFondo, svgImpresion.firstChild);
             
+            // Lo inyectamos en la caja de impresión
+            caja.appendChild(svgImpresion);
+            
+            // Lanzamos la impresión
             setTimeout(() => { 
                 window.print(); 
                 setTimeout(() => { caja.innerHTML = ''; }, 500); 
@@ -1107,32 +1130,19 @@
             enlaces.forEach(link => { paper.removeTools(); link.remove(); });
         };
 
-              window.rotar90 = function() {
+        window.rotar90 = function() {
             const seleccionado = paper.model.getElements().find(el => el.get('selected'));
             if (!seleccionado || seleccionado.get('tipo') === 'texto') return;
 
-            // 1. Obtener el ángulo actual (si no tiene, empezamos en 0)
             let anguloActual = seleccionado.angle() || 0;
-            
-            // 2. Sumar 90 grados
             let nuevoAngulo = anguloActual + 90;
             
-            // 3. Si llega a 360, volver a 0 para que no se acumulen números gigantes
             if (nuevoAngulo >= 360) {
                 nuevoAngulo = nuevoAngulo - 360;
             }
 
-            // 4. Aplicar la rotación
             seleccionado.rotate(nuevoAngulo);
-            
-            // 5. Forzar a JointJS a guardar el nuevo estado
             seleccionado.set('angle', nuevoAngulo);
-
-            // Opcional: Ver en consola cómo va sumando
-            console.log("Girando a: " + nuevoAngulo + "º");
-            
-            // 6. Redibujar el lienzo
-            dibujar();
         };
 
         paper.on('element:pointerdown', function(elementView, evt) {
