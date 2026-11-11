@@ -1215,6 +1215,10 @@
             "ruta": "./s-procesados/Conexiones/Acople_EA_soldable.png"
         },
         {
+            "nombre": "Adpatador brida PVC",
+            "ruta": "./s-procesados/Conexiones/Adpatador brida PVC.png"
+        },
+        {
             "nombre": "Asiento clamp",
             "ruta": "./s-procesados/Conexiones/Asiento clamp.png"
         },
@@ -1285,6 +1289,10 @@
         {
             "nombre": "Cap",
             "ruta": "./s-procesados/Conexiones/Cap.png"
+        },
+        {
+            "nombre": "Carrete de desmontaje",
+            "ruta": "./s-procesados/Conexiones/Carrete de desmontaje.png"
         },
         {
             "nombre": "Codo",
@@ -1405,6 +1413,10 @@
         {
             "nombre": "Manguito reduccion hembra Fig240",
             "ruta": "./s-procesados/Conexiones/Manguito reduccion hembra Fig240.png"
+        },
+        {
+            "nombre": "Multidiametro sinoflex",
+            "ruta": "./s-procesados/Conexiones/Multidiametro sinoflex.png"
         },
         {
             "nombre": "NW casquillo",
@@ -1640,11 +1652,27 @@
         },
         {
             "nombre": "Barril",
-            "ruta": "./s-procesados/Depositos/Barril.svg"
+            "ruta": "./s-procesados/Depositos/Barril.png"
+        },
+        {
+            "nombre": "Barril 200",
+            "ruta": "./s-procesados/Depositos/Barril 200.png"
+        },
+        {
+            "nombre": "Barril cerveza eurokeg 30l",
+            "ruta": "./s-procesados/Depositos/Barril cerveza eurokeg 30l.png"
+        },
+        {
+            "nombre": "Barril cerveza eurokeg 60l",
+            "ruta": "./s-procesados/Depositos/Barril cerveza eurokeg 60l.png"
         },
         {
             "nombre": "Batería de tanques",
             "ruta": "./s-procesados/Depositos/Batería_de_tanques.svg"
+        },
+        {
+            "nombre": "Bidon de plastico",
+            "ruta": "./s-procesados/Depositos/Bidon de plastico.png"
         },
         {
             "nombre": "Caldera de cocción (cervecera)",
@@ -1867,6 +1895,14 @@
             "ruta": "./s-procesados/Depositos/Escotilla.svg"
         },
         {
+            "nombre": "Garrafa",
+            "ruta": "./s-procesados/Depositos/Garrafa.png"
+        },
+        {
+            "nombre": "IBC",
+            "ruta": "./s-procesados/Depositos/IBC.png"
+        },
+        {
             "nombre": "Instalación de almacenamiento 1",
             "ruta": "./s-procesados/Depositos/Instalación_de_almacenamiento_1.svg"
         },
@@ -1921,6 +1957,10 @@
         {
             "nombre": "Intercambiador de calor",
             "ruta": "./s-procesados/Depositos/Intercambiador_de_calor.svg"
+        },
+        {
+            "nombre": "Keg",
+            "ruta": "./s-procesados/Depositos/Keg.png"
         },
         {
             "nombre": "Perno",
